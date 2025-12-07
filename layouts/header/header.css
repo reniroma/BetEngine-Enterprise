@@ -1,1 +1,100 @@
 /* header.css placeholder for BetEngine enterprise structure */
+/* ================================================
+   HEADER DESKTOP + MOBILE (BetEngine Enterprise)
+   Valid CSS — No assumptions — OddsPortal structure
+=================================================== */
+
+/* RESET */
+.header-desktop,
+.header-mobile {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* GLOBAL COLORS */
+:root {
+    --bg-main: #0a0c12;
+    --bg-header: #0a0c12;
+    --bg-nav: #0a0c12;
+    --bg-panel: #11141d;
+
+    --text-primary: #ffb84d;
+    --text-secondary: #00eaff;
+    --text-muted: #b3b3b3;
+
+    --bg-button-primary: #ffec00;
+    --border-neon: #ff0000;
+}
+
+/* ================================================
+   DESKTOP HEADER
+=================================================== */
+
+.header-desktop {
+    background-color: var(--bg-header);
+    color: var(--text-secondary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* ROW BASE */
+.header-desktop .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background-color: var(--bg-header);
+}
+
+/* SEPARATOR */
+.header-desktop .row-separator {
+    width: 100%;
+    height: 1px;
+    background-color: var(--border-neon);
+}
+
+/* --------------------------------
+   ROW 1 — TOP BAR
+----------------------------------- */
+
+.header-desktop .row-top {
+    gap: 16px;
+}
+
+.header-desktop .row-top .right {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+/* Odds format */
+.odds-format {
+    position: relative;
+}
+
+.odds-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.odds-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    display: none;
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-neon);
+    padding: 8px 12px;
+    z-index: 2000;
+}
+
+.odds-dropdown .item {
+    padding: 4p
