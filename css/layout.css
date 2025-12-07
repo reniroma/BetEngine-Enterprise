@@ -1,1 +1,172 @@
+/* ============================
+   BetEngine Minimal Layout CSS
+   ============================ */
+
+/* HEADER WRAPPER */
+.header-desktop {
+    width: 100%;
+    background-color: var(--bg-header);
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* ROWS */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    gap: 16px;
+}
+
+/* TOP ROW */
+.row-top {
+    background-color: var(--bg-header);
+    font-size: 13px;
+}
+
+/* MAIN ROW */
+.row-main {
+    background-color: var(--bg-header);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* SUBNAV */
+.row-sub {
+    background-color: var(--bg-subheader);
+    display: flex;
+    gap: 18px;
+    padding: 10px 16px;
+    overflow-x: auto;
+}
+
+.row-sub .sub-item {
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.row-sub .sub-item:hover,
+.row-sub .sub-item.active {
+    color: var(--accent);
+}
+
+/* BRAND */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand .logo {
+    height: 32px;
+}
+
+.brand-text .name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.brand-text .tagline {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* MAIN NAV */
+.main-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.main-nav .nav-item {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.main-nav .nav-item:hover,
+.main-nav .nav-item.active {
+    color: var(--accent);
+}
+
+/* SEARCH BOX */
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    margin-left: 6px;
+}
+
+/* AUTH BUTTONS */
+.btn-auth {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.btn-auth:hover {
+    background-color: var(--accent);
+    color: #000;
+}
+
+/* DROPDOWNS */
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown {
+    position: absolute;
+    background-color: var(--bg-header);
+    border: 1px solid var(--border-light);
+    padding: 6px 0;
+    margin-top: 4px;
+    display: none;
+    z-index: 20;
+}
+
+.odds-dropdown .item,
+.language-dropdown .item,
+.tools-dropdown .item {
+    padding: 6px 14px;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.odds-dropdown .item:hover,
+.language-dropdown .item:hover,
+.tools-dropdown .item:hover {
+    background-color: var(--accent-soft);
+}
+
+
+/* ================================
+   MOBILE HEADER (Minimal)
+   ================================ */
+.header-mobile {
+    display: none;
+    padding: 10px;
+    background-color: var(--bg-header);
+}
+
+/* Show mobile header under 820px */
+@media (max-width: 820px) {
+    .header-desktop {
+        display: none;
+    }
+    .header-mobile {
+        display: block;
+    }
+}
 /* layout.css placeholder for BetEngine enterprise structure */
