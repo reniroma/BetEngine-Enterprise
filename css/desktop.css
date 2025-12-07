@@ -345,5 +345,17 @@
 @media only screen and (max-width: 980px) {
     .header-desktop {
         display: none !important;
-    }
+    
 }
+/* Prevent premium star from overlapping dropdowns */
+.premium-link {
+    position: relative;
+    z-index: 5;
+}
+
+.odds-dropdown,
+.language-dropdown {
+    z-index: 1200 !important;
+}
+    
+
