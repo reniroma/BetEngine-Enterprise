@@ -5,21 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetEngine Enterprise Skeleton</title>
 
-    <!-- Base + Layout styles -->
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
+    <!-- CSS FIX: use relative paths -->
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/layout.css">
 </head>
+
 <body>
 
     <!-- ========================= -->
     <!-- DESKTOP HEADER           -->
     <!-- ========================= -->
     <header class="header-desktop">
+
         <!-- ROW 1 — TOP BAR -->
         <div class="header-row row-top">
             <div class="left"></div>
 
             <div class="right">
+
                 <!-- Odds format -->
                 <div class="odds-format">
                     <button class="odds-toggle" type="button">
@@ -27,6 +30,7 @@
                         <span class="value odds-label">Decimal Odds</span>
                         <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
+
                     <div class="odds-dropdown">
                         <div class="item active">Decimal Odds (1.50)</div>
                         <div class="item">Fractional Odds (1/2)</div>
@@ -44,6 +48,7 @@
                         <span class="lang-code">English</span>
                         <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
+
                     <div class="language-dropdown">
                         <div class="item">English</div>
                         <div class="item">German</div>
@@ -59,10 +64,12 @@
                     <img src="/assets/icons/login.svg" alt="">
                     <span>LOGIN</span>
                 </button>
+
                 <button class="btn-auth register" type="button">
                     <img src="/assets/icons/register.svg" alt="">
                     <span>REGISTER</span>
                 </button>
+
             </div>
         </div>
 
@@ -71,6 +78,7 @@
 
         <!-- ROW 2 — MAIN NAVIGATION -->
         <div class="header-row row-main">
+
             <!-- Brand -->
             <div class="brand">
                 <img src="/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
@@ -93,7 +101,7 @@
             <!-- Search + notifications -->
             <div class="search-notify">
                 <div class="search-box">
-                    <img src="/assets/icons/search.svg" alt="" class="search-icon">
+                    <img src="/assets/icons/search.svg" class="search-icon" alt="">
                     <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
                 </div>
 
@@ -101,6 +109,7 @@
                     <img src="/assets/icons/notification.svg" class="notif-icon" alt="">
                 </button>
             </div>
+
         </div>
 
         <!-- SEPARATOR -->
@@ -108,8 +117,10 @@
 
         <!-- ROW 3 — SUB NAVIGATION -->
         <nav class="header-row row-sub" aria-label="Secondary navigation">
+
             <!-- ODDS SUBNAV -->
             <div class="subnav-group active" data-subnav="odds">
+
                 <a href="#" data-tab="home" class="sub-item">HOME</a>
                 <a href="#" data-tab="next-matches" class="sub-item">NEXT MATCHES</a>
                 <a href="#" data-tab="dropping-odds" class="sub-item">DROPPING ODDS</a>
@@ -120,6 +131,7 @@
                 <div class="sub-item sub-item-tools">
                     BETTING TOOLS
                     <img src="/assets/icons/caret-down.svg" class="caret" alt="">
+
                     <div class="tools-dropdown">
                         <div class="item">BLOCKED ODDS</div>
                         <div class="item">VALUE BETS</div>
@@ -129,6 +141,7 @@
                         <div class="item">BET CALCULATOR</div>
                     </div>
                 </div>
+
             </div>
 
             <!-- COMMUNITY SUBNAV -->
@@ -164,6 +177,7 @@
                 <a href="#" class="sub-item">AI Live Momentum</a>
                 <a href="#" class="sub-item">Fake Trend Detector</a>
             </div>
+
         </nav>
     </header>
 
@@ -171,11 +185,10 @@
     <!-- MOBILE HEADER             -->
     <!-- ========================= -->
     <header class="header-mobile">
-        <!-- TOP ROW: hamburger + top options -->
+
+        <!-- TOP ROW -->
         <div class="mobile-row row-top">
-            <button class="hamburger" type="button" aria-label="Toggle menu">
-                ☰
-            </button>
+            <button class="hamburger" type="button" aria-label="Toggle menu">☰</button>
 
             <div class="top-options">
                 <button class="odds-toggle" type="button">
@@ -232,6 +245,7 @@
                 <button class="sub-chip tools" type="button">BETTING TOOLS ▾</button>
             </div>
         </nav>
+
     </header>
 
     <!-- ========================= -->
@@ -245,8 +259,8 @@
     <!-- ========================= -->
     <!-- JS FILES                  -->
     <!-- ========================= -->
-    <script src="js/main.js"></script>
-    <script src="/js/ui/header.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/ui/header.js"></script>
 
 </body>
 </html>
