@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetEngine Enterprise Skeleton</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/BetEngine-Enterprise/css/base.css">
-    <link rel="stylesheet" href="/BetEngine-Enterprise/css/layout.css">
+    <!-- CSS: Enterprise structure -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/utilities.css">
 </head>
 
 <body>
@@ -29,7 +34,7 @@
                     <button class="odds-toggle" type="button">
                         <span class="label">Odds format:</span>
                         <span class="value odds-label">Decimal Odds</span>
-                        <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                        <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
                     <div class="odds-dropdown">
                         <div class="item active">Decimal Odds (1.50)</div>
@@ -44,9 +49,9 @@
                 <!-- Language -->
                 <div class="language-selector">
                     <button class="language-toggle" type="button">
-                        <img src="/BetEngine-Enterprise/assets/icons/language.svg" class="icon-lang" alt="">
+                        <img src="assets/icons/language.svg" class="icon-lang" alt="">
                         <span class="lang-code">English</span>
-                        <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                        <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
                     <div class="language-dropdown">
                         <div class="item">English</div>
@@ -60,11 +65,11 @@
 
                 <!-- Auth buttons -->
                 <button class="btn-auth login" type="button">
-                    <img src="/BetEngine-Enterprise/assets/icons/login.svg" alt="">
+                    <img src="assets/icons/login.svg" alt="">
                     <span>LOGIN</span>
                 </button>
                 <button class="btn-auth register" type="button">
-                    <img src="/BetEngine-Enterprise/assets/icons/register.svg" alt="">
+                    <img src="assets/icons/register.svg" alt="">
                     <span>REGISTER</span>
                 </button>
             </div>
@@ -77,7 +82,7 @@
 
             <!-- Brand -->
             <div class="brand">
-                <img src="/BetEngine-Enterprise/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+                <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
                 <div class="brand-text">
                     <span class="name">BetEngine</span>
                     <span class="tagline">Smart betting tools</span>
@@ -97,12 +102,12 @@
             <!-- Search + notifications -->
             <div class="search-notify">
                 <div class="search-box">
-                    <img src="/BetEngine-Enterprise/assets/icons/search.svg" alt="" class="search-icon">
+                    <img src="assets/icons/search.svg" alt="" class="search-icon">
                     <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
                 </div>
 
                 <button class="notif-button" type="button" aria-label="Notifications">
-                    <img src="/BetEngine-Enterprise/assets/icons/notification.svg" class="notif-icon" alt="">
+                    <img src="assets/icons/notification.svg" class="notif-icon" alt="">
                 </button>
             </div>
         </div>
@@ -123,7 +128,7 @@
 
                 <div class="sub-item sub-item-tools">
                     BETTING TOOLS
-                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="caret" alt="">
+                    <img src="assets/icons/caret-down.svg" class="caret" alt="">
                     <div class="tools-dropdown">
                         <div class="item">BLOCKED ODDS</div>
                         <div class="item">VALUE BETS</div>
@@ -187,20 +192,20 @@
             <div class="top-options">
                 <button class="odds-toggle" type="button">
                     <span class="value">Decimal Odds</span>
-                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret">
+                    <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
 
                 <button class="lang-toggle" type="button">
-                    <img src="/BetEngine-Enterprise/assets/icons/language.svg" class="icon-lang">
+                    <img src="assets/icons/language.svg" class="icon-lang" alt="">
                     <span class="lang-code">EN</span>
-                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret">
+                    <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
             </div>
         </div>
 
         <!-- BRAND ROW -->
         <div class="mobile-row row-brand">
-            <img src="/BetEngine-Enterprise/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+            <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
             <div class="brand-text">
                 <span class="name">BetEngine</span>
                 <span class="tagline">Smart betting tools</span>
@@ -210,12 +215,12 @@
         <!-- SEARCH ROW -->
         <div class="mobile-row row-search">
             <div class="search-box">
-                <img src="/BetEngine-Enterprise/assets/icons/search.svg" class="search-icon">
+                <img src="assets/icons/search.svg" class="search-icon" alt="">
                 <input type="search" placeholder="Search (team / player)">
             </div>
 
             <button class="notif-button" aria-label="Notifications">
-                <img src="/BetEngine-Enterprise/assets/icons/notification.svg" class="notif-icon">
+                <img src="assets/icons/notification.svg" class="notif-icon" alt="">
             </button>
         </div>
 
@@ -252,8 +257,10 @@
         <p>This is the base skeleton structure for BetEngine using OddsPortal-style architecture.</p>
     </main>
 
-    <!-- JS -->
-    <script src="/BetEngine-Enterprise/js/ui/header.js"></script>
+    <!-- JS: Enterprise structure -->
+    <script src="js/core/core.js"></script>
+    <script src="js/ui/header.js"></script>
+    <script src="js/ui/widgets.js"></script>
 
 </body>
 </html>
