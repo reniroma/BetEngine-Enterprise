@@ -119,3 +119,386 @@
 .nav-item.premium .star {
     color: #ffb300;
 }
+/************************************
+ * BETENGINE — HEADER DESKTOP + MOBILE
+ * Final Enterprise Version
+************************************/
+
+/* GLOBAL */
+.header-desktop,
+.header-mobile {
+    width: 100%;
+    background: var(--bg-header, #0a0c12);
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+/* ===========================================================
+   DESKTOP HEADER
+=========================================================== */
+
+.header-desktop {
+    display: block;
+}
+
+.header-desktop .header-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 18px;
+}
+
+.row-separator {
+    width: 100%;
+    height: 1px;
+    background: #1b1e26;
+}
+
+/* -------------------------------
+   ROW 1 — Top bar
+-------------------------------- */
+
+.header-desktop .row-top .right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* DROPDOWNS BASE STYLE */
+.odds-format,
+.language-selector {
+    position: relative;
+}
+
+.odds-toggle,
+.language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #11141d;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #222533;
+    color: #ffec00;
+    font-size: 13px;
+}
+
+.odds-toggle:hover,
+.language-toggle:hover {
+    background: #1a1e2b;
+}
+
+.odds-dropdown,
+.language-dropdown {
+    display: none;
+    position: absolute;
+    top: 36px;
+    right: 0;
+    width: 180px;
+    background: #11141d;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    padding: 5px 0;
+    z-index: 1000;
+}
+
+.odds-dropdown .item,
+.language-dropdown .item {
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #dcdcdc;
+}
+
+.odds-dropdown .item:hover,
+.language-dropdown .item:hover {
+    background: #1f2230;
+    color: #ffec00;
+}
+
+.show {
+    display: block !important;
+}
+
+/* AUTH BUTTONS */
+.btn-auth {
+    background: #ffec00;
+    color: #000;
+    font-weight: bold;
+    border-radius: 3px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    border: none;
+}
+
+.btn-auth:hover {
+    background: #fff27a;
+}
+
+/* --------------------------------
+   ROW 2 — Brand + main navigation
+----------------------------------- */
+
+.row-main {
+    position: relative;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand .logo {
+    height: 34px;
+}
+
+.brand-text .name {
+    font-size: 17px;
+    font-weight: bold;
+    color: #ffec00;
+}
+
+.brand-text .tagline {
+    font-size: 12px;
+    color: #8f95a3;
+}
+
+.main-nav {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-item {
+    color: #d7d7d7;
+    font-size: 14px;
+    text-decoration: none;
+    position: relative;
+}
+
+.nav-item:hover {
+    color: #ffec00;
+}
+
+.nav-item.active {
+    color: #ffec00;
+    font-weight: bold;
+}
+
+/* PREMIUM ICON */
+.premium-link .premium-star {
+    color: #ffec00;
+    margin-left: 4px;
+}
+
+/* SEARCH + NOTIFICATIONS */
+.search-notify {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.search-box {
+    background: #11141d;
+    border: 1px solid #222533;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 160px;
+}
+
+/* NOTIFICATION ICON */
+.notif-button {
+    background: #11141d;
+    border: 1px solid #222533;
+    padding: 7px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.notif-button:hover {
+    background: #1a1e2b;
+}
+
+/* --------------------------------
+   ROW 3 — Sub-navigation
+----------------------------------- */
+
+.row-sub {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 8px 18px;
+    overflow-x: auto;
+}
+
+.sub-item {
+    color: #b8b8b8;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.sub-item:hover {
+    color: #ffec00;
+}
+
+.sub-item-tools {
+    position: relative;
+    cursor: pointer;
+}
+
+.tools-dropdown {
+    display: none;
+    position: absolute;
+    top: 22px;
+    left: 0;
+    background: #11141d;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    width: 180px;
+    padding: 5px 0;
+    z-index: 900;
+}
+
+.tools-dropdown .item {
+    padding: 7px 12px;
+    font-size: 13px;
+    color: #dcdcdc;
+    cursor: pointer;
+}
+
+.tools-dropdown .item:hover {
+    background: #1f2230;
+    color: #ffec00;
+}
+
+/* ===========================================================
+   MOBILE HEADER
+=========================================================== */
+
+.header-mobile {
+    display: none;
+    padding-bottom: 6px;
+}
+
+.mobile-row {
+    width: 100%;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* TOP ROW */
+.hamburger {
+    background: transparent;
+    border: 1px solid #ffec00;
+    color: #ffec00;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 20px;
+}
+
+/* Odds + Language */
+.top-options {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.top-options button {
+    background: #11141d;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    color: #ffec00;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* BRAND */
+.row-brand .logo {
+    height: 38px;
+}
+
+/* SEARCH */
+.row-search .search-box {
+    width: 100%;
+}
+
+.row-search input {
+    width: 100%;
+}
+
+/* NAV CHIPS */
+.mobile-main-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 14px;
+}
+
+.nav-chip {
+    background: #11141d;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid #222533;
+    font-size: 13px;
+    color: #dcdcdc;
+}
+
+.nav-chip.active,
+.nav-chip:hover {
+    background: #ffec00;
+    color: #000;
+}
+
+/* SUB CHIPS */
+.mobile-sub-nav {
+    padding: 4px 14px;
+}
+
+.sub-chip {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #11141d;
+    color: #cfcfcf;
+    font-size: 13px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+.sub-chip:hover {
+    background: #ffec00;
+    color: #000;
+}
+
+/* ===========================================================
+   RESPONSIVE RULES
+=========================================================== */
+
+@media only screen and (max-width: 980px) {
+    .header-desktop {
+        display: none;
+    }
+    .header-mobile {
+        display: block;
+    }
+}
