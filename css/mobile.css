@@ -1,6 +1,6 @@
 /************************************
  * BetEngine Enterprise
- * Mobile header styling
+ * Mobile header styling (FINAL)
 ************************************/
 
 /* Hidden by default on large screens */
@@ -185,16 +185,26 @@
     font-weight: 600;
 }
 
+
 /* ==========================================
-   Responsive: switch desktop ↔ mobile
+   RESPONSIVE OVERRIDE (ENTERPRISE PRIORITY)
 ========================================== */
 
 @media only screen and (max-width: 980px) {
+
+    /* FORCE-HIDE DESKTOP HEADER */
     .header-desktop {
-        display: none;
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }
 
+    /* FORCE-SHOW MOBILE HEADER */
     .header-mobile {
-        display: block;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 }
