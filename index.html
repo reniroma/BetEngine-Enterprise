@@ -12,18 +12,74 @@
 
 <body>
 
-    <!-- DESKTOP HEADER -->
-    <?php include "layouts/header/header-desktop.html"; ?>
+    <!-- ========================== -->
+    <!-- DESKTOP HEADER (INLINE)   -->
+    <!-- ========================== -->
 
-    <!-- MOBILE HEADER -->
-    <?php include "layouts/header/header-mobile.html"; ?>
+    <header class="header-desktop">
+
+        <div class="header-row row-top">
+            <div class="left">
+                <div class="odds-format">
+                    <select>
+                        <option>Decimal Odds</option>
+                        <option>Fractional Odds</option>
+                        <option>Moneyline Odds</option>
+                    </select>
+                </div>
+
+                <div class="language-switch">
+                    <select>
+                        <option>EN</option>
+                        <option>DE</option>
+                        <option>ES</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="right">
+                <button class="btn-login">LOGIN</button>
+                <button class="btn-register">REGISTER</button>
+            </div>
+        </div>
+
+        <div class="header-row row-middle">
+            <div class="logo-area">
+                <img src="/BetEngine-Enterprise/assets/images/logo.png" alt="BetEngine logo">
+                <span class="brand">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+
+            <div class="search-area">
+                <input type="text" placeholder="Search (team / player)">
+            </div>
+        </div>
+
+        <div class="header-row row-bottom">
+            <nav class="nav-main">
+                <a href="#" class="nav-item active">ODDS COMPARISON</a>
+                <a href="#" class="nav-item">COMMUNITY</a>
+                <a href="#" class="nav-item">BOOKMAKERS</a>
+                <a href="#" class="nav-item premium">PREMIUM <span class="star">★</span></a>
+            </nav>
+        </div>
+
+    </header>
+
+
+    <!-- ========================== -->
+    <!-- MAIN CONTENT               -->
+    <!-- ========================== -->
 
     <main>
         <h1>BetEngine Enterprise Skeleton</h1>
         <p>This is the base skeleton structure for BetEngine using OddsPortal-style architecture.</p>
     </main>
 
-    <!-- JS -->
+    <!-- ========================== -->
+    <!-- JS                         -->
+    <!-- ========================== -->
     <script src="/BetEngine-Enterprise/js/ui/header.js"></script>
+
 </body>
 </html>
