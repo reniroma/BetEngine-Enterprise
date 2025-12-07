@@ -1,99 +1,121 @@
-/* ===========================
-   LAYOUT CSS – Header Desktop
-   =========================== */
+/* ============================= */
+/* HEADER DESKTOP – FINAL BUILD  */
+/* ============================= */
 
 .header-desktop {
     width: 100%;
-    background: #0f1117;
-    border-bottom: 1px solid #1c1f26;
+    background: #0d0f15;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     padding: 10px 20px;
+    border-bottom: 1px solid #1b1e27;
 }
 
-/* ROW 1 – TOP BAR */
-.header-row-row-top {
+/* GENERIC ROW STYLE */
+.header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    width: 100%;
 }
 
-.left {
+/* ----------------------------- */
+/* ROW 1 — TOP BAR */
+/* ----------------------------- */
+
+.row-top .left,
+.row-top .right {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 12px;
 }
 
-.right {
-    display: flex;
-    gap: 15px;
-    align-items: center;
+.row-top select {
+    background: #1a1c22;
+    border: 1px solid #2a2d35;
+    padding: 4px 8px;
+    color: #fff;
 }
 
-/* Dropdowns (minimal) */
-.odds-format select,
-.language-select select {
-    background: #1c1f26;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
-
-/* Auth buttons */
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.auth-buttons button {
-    padding: 6px 14px;
+.btn-login,
+.btn-register {
+    padding: 6px 12px;
     background: #ffec00;
     color: #000;
-    border-radius: 4px;
+    border: none;
+    cursor: pointer;
     font-weight: bold;
 }
 
-/* LOGO CENTER */
-.header-logo {
-    text-align: center;
-    margin: 15px 0;
+.btn-register {
+    background: #ffcc00;
 }
 
-.header-logo img {
-    height: 36px;
+/* ----------------------------- */
+/* ROW 2 — LOGO + SEARCH */
+/* ----------------------------- */
+
+.row-middle {
+    padding: 6px 0;
 }
 
-/* ROW 2 – MAIN NAV */
-.main-nav {
+.logo-area {
     display: flex;
-    justify-content: center;
-    gap: 25px;
-    padding: 10px 0;
+    align-items: center;
+    gap: 8px;
 }
 
-.main-nav a {
-    font-size: 14px;
+.logo-area img {
+    height: 34px;
+}
+
+.brand {
+    font-size: 20px;
     font-weight: bold;
-    color: #ffffff;
+    color: #ffeb3b;
 }
 
-.main-nav a.active {
-    color: #ffec00;
+.tagline {
+    font-size: 12px;
+    color: #cccccc;
 }
 
-/* ROW 3 – SUB NAV */
-.sub-nav {
+.search-area input {
+    width: 260px;
+    padding: 6px 10px;
+    background: #1a1c22;
+    border: 1px solid #2a2d35;
+    color: #fff;
+}
+
+/* ----------------------------- */
+/* ROW 3 — MENU NAVIGATION */
+/* ----------------------------- */
+
+.nav-main {
     display: flex;
-    justify-content: center;
     gap: 20px;
-    background: #12141c;
-    padding: 10px 0;
 }
 
-.sub-nav a {
-    font-size: 13px;
-    color: #c9c9c9;
+.nav-item {
+    color: #ffffffcc;
+    text-decoration: none;
+    font-size: 14px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
 }
 
-.sub-nav a:hover {
-    color: white;
+.nav-item:hover {
+    color: #fff;
+}
+
+.nav-item.active {
+    color: #ffec00;
+    border-color: #ffec00;
+}
+
+.nav-item.premium .star {
+    color: #ffb300;
 }
