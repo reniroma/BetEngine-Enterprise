@@ -1,95 +1,75 @@
 /*******************************************************
- * BetEngine – HEADER FINAL JS
- * Desktop + Mobile Dropdown Logic
+ * BetEngine – HEADER JS (FINAL ENTERPRISE VERSION)
+ * Desktop + Mobile Navigation + Dropdown Engine
  *******************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =====================================================
-       DESKTOP DROPDOWNS — Odds & Language
-    ===================================================== */
-
-    const oddsToggle = document.querySelector(".odds-toggle");
-    const oddsDropdown = document.querySelector(".odds-dropdown");
-
-    const langToggle = document.querySelector(".language-toggle");
-    const langDropdown = document.querySelector(".language-dropdown");
+    /********************************************************
+     * GLOBAL DROPDOWN CONTROLLER (DESKTOP)
+     ********************************************************/
+    const dropdowns = {
+        odds: {
+            toggle: document.querySelector(".odds-toggle"),
+            panel: document.querySelector(".odds-dropdown"),
+        },
+        lang: {
+            toggle: document.querySelector(".language-toggle"),
+            panel: document.querySelector(".language-dropdown"),
+        },
+        tools: {
+            toggle: document.querySelector(".sub-item-tools"),
+            panel: document.querySelector(".sub-item-tools .tools-dropdown"),
+        }
+    };
 
     function closeAllDropdowns() {
-        document.querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
-            .forEach(el => el.classList.remove("show"));
+        document.querySelectorAll(".show").forEach(el => el.classList.remove("show"));
     }
 
-    if (oddsToggle) {
-        oddsToggle.addEventListener("click", (e) => {
+    // Attach desktop dropdown handlers
+    Object.values(dropdowns).forEach(entry => {
+        if (!entry.toggle || !entry.panel) return;
+
+        entry.toggle.addEventListener("click", (e) => {
             e.stopPropagation();
             closeAllDropdowns();
-            oddsDropdown.classList.toggle("show");
+            entry.panel.classList.toggle("show");
         });
-    }
 
-    if (langToggle) {
-        langToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            closeAllDropdowns();
-            langDropdown.classList.toggle("show");
-        });
-    }
-
-    /* =====================================================
-       DESKTOP — Betting Tools Dropdown (Row 3)
-    ===================================================== */
-
-    const toolsToggle = document.querySelector(".sub-item-tools");
-    const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
-
-    if (toolsToggle) {
-        toolsToggle.addEventListener("click", (e) => {
-            e.stopPropagation();
-            closeAllDropdowns();
-            toolsDropdown.classList.toggle("show");
-        });
-    }
-
-    /* Close dropdowns when clicking outside */
-    document.addEventListener("click", () => {
-        closeAllDropdowns();
+        // Prevent closing when clicking inside dropdown
+        entry.panel.addEventListener("click", (e) => e.stopPropagation());
     });
 
+    // Click outside closes everything
+    document.addEventListener("click", () => closeAllDropdowns());
 
-    /* =====================================================
-       SUBNAV SWITCHING — Desktop
-       (odds / community / bookmakers / premium)
-    ===================================================== */
 
+    /********************************************************
+     * DESKTOP — SUBNAV SWITCHING (ODDS / COMMUNITY / ...)
+     ********************************************************/
     const navItems = document.querySelectorAll(".main-nav .nav-item");
-    const subnavGroups = document.querySelectorAll(".subnav-group");
+    const subgroups = document.querySelectorAll(".subnav-group");
 
     navItems.forEach(item => {
         item.addEventListener("click", (e) => {
             e.preventDefault();
 
-            // remove active from all
-            navItems.forEach(i => i.classList.remove("active"));
+            navItems.forEach(n => n.classList.remove("active"));
             item.classList.add("active");
 
-            const section = item.getAttribute("data-section");
+            const target = item.dataset.section;
 
-            subnavGroups.forEach(group => {
-                group.classList.remove("active");
-                if (group.getAttribute("data-subnav") === section) {
-                    group.classList.add("active");
-                }
+            subgroups.forEach(g => {
+                g.classList.toggle("active", g.dataset.subnav === target);
             });
-
         });
     });
 
 
-    /* =====================================================
-       MOBILE — Hamburger Menu Toggle
-    ===================================================== */
-
+    /********************************************************
+     * MOBILE — HAMBURGER (future slide-in menu)
+     ********************************************************/
     const hamburger = document.querySelector(".hamburger");
     const mobileHeader = document.querySelector(".header-mobile");
 
@@ -99,57 +79,51 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* =====================================================
-       MOBILE — Odds & Language Toggle
-    ===================================================== */
 
+    /********************************************************
+     * MOBILE — Odds & Language (placeholder alerts)
+     ********************************************************/
     const mobileOddsToggle = document.querySelector(".mobile-row .odds-toggle");
     const mobileLangToggle = document.querySelector(".mobile-row .lang-toggle");
 
     if (mobileOddsToggle) {
         mobileOddsToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            alert("Odds dropdown mobile (placeholder)");
+            alert("Mobile odds dropdown (placeholder)");
         });
     }
 
     if (mobileLangToggle) {
         mobileLangToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            alert("Language dropdown mobile (placeholder)");
+            alert("Mobile language dropdown (placeholder)");
         });
     }
 
-    /* =====================================================
-       MOBILE — NAV CHIPS (ODDS / COMMUNITY / BOOKMAKERS / PREMIUM)
-    ===================================================== */
 
+    /********************************************************
+     * MOBILE — NAV CHIPS SWITCHING
+     ********************************************************/
     const chips = document.querySelectorAll(".nav-chip");
-    const mobileSubnavGroups = document.querySelectorAll(".mobile-sub-nav .subnav-group");
+    const mobileSubnav = document.querySelectorAll(".mobile-sub-nav .subnav-group");
 
     chips.forEach(chip => {
         chip.addEventListener("click", () => {
-
-            // remove active
             chips.forEach(c => c.classList.remove("active"));
             chip.classList.add("active");
 
-            const section = chip.getAttribute("data-section");
+            const target = chip.dataset.section;
 
-            // switch subnav
-            mobileSubnavGroups.forEach(group => {
-                group.classList.remove("active");
-                if (group.getAttribute("data-subnav") === section) {
-                    group.classList.add("active");
-                }
+            mobileSubnav.forEach(g => {
+                g.classList.toggle("active", g.dataset.subnav === target);
             });
         });
     });
 
-    /* =====================================================
-       MOBILE — Betting Tools Dropdown (subnav)
-    ===================================================== */
 
+    /********************************************************
+     * MOBILE — Betting Tools Dropdown (placeholder)
+     ********************************************************/
     const mobileTools = document.querySelector(".sub-chip.tools");
 
     if (mobileTools) {
