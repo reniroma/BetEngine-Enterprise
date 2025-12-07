@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BetEngine Enterprise Skeleton</title>
 
-    <!-- CSS FIX: use relative paths -->
-    <link rel="stylesheet" href="./css/base.css">
-    <link rel="stylesheet" href="./css/layout.css">
+    <!-- Correct absolute paths for GitHub Pages -->
+    <link rel="stylesheet" href="/BetEngine-Enterprise/css/base.css">
+    <link rel="stylesheet" href="/BetEngine-Enterprise/css/layout.css">
 </head>
 
 <body>
@@ -28,7 +28,7 @@
                     <button class="odds-toggle" type="button">
                         <span class="label">Odds format:</span>
                         <span class="value odds-label">Decimal Odds</span>
-                        <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                        <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
 
                     <div class="odds-dropdown">
@@ -44,9 +44,9 @@
                 <!-- Language -->
                 <div class="language-selector">
                     <button class="language-toggle" type="button">
-                        <img src="/assets/icons/language.svg" class="icon-lang" alt="">
+                        <img src="/BetEngine-Enterprise/assets/icons/language.svg" class="icon-lang" alt="">
                         <span class="lang-code">English</span>
-                        <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                        <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
 
                     <div class="language-dropdown">
@@ -61,19 +61,18 @@
 
                 <!-- Auth buttons -->
                 <button class="btn-auth login" type="button">
-                    <img src="/assets/icons/login.svg" alt="">
+                    <img src="/BetEngine-Enterprise/assets/icons/login.svg" alt="">
                     <span>LOGIN</span>
                 </button>
 
                 <button class="btn-auth register" type="button">
-                    <img src="/assets/icons/register.svg" alt="">
+                    <img src="/BetEngine-Enterprise/assets/icons/register.svg" alt="">
                     <span>REGISTER</span>
                 </button>
 
             </div>
         </div>
 
-        <!-- SEPARATOR -->
         <div class="row-separator"></div>
 
         <!-- ROW 2 — MAIN NAVIGATION -->
@@ -81,7 +80,7 @@
 
             <!-- Brand -->
             <div class="brand">
-                <img src="/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+                <img src="/BetEngine-Enterprise/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
                 <div class="brand-text">
                     <span class="name">BetEngine</span>
                     <span class="tagline">Smart betting tools</span>
@@ -98,21 +97,20 @@
                 </a>
             </nav>
 
-            <!-- Search + notifications -->
+            <!-- Search -->
             <div class="search-notify">
                 <div class="search-box">
-                    <img src="/assets/icons/search.svg" class="search-icon" alt="">
+                    <img src="/BetEngine-Enterprise/assets/icons/search.svg" class="search-icon" alt="">
                     <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
                 </div>
 
                 <button class="notif-button" type="button" aria-label="Notifications">
-                    <img src="/assets/icons/notification.svg" class="notif-icon" alt="">
+                    <img src="/BetEngine-Enterprise/assets/icons/notification.svg" class="notif-icon" alt="">
                 </button>
             </div>
 
         </div>
 
-        <!-- SEPARATOR -->
         <div class="row-separator"></div>
 
         <!-- ROW 3 — SUB NAVIGATION -->
@@ -121,17 +119,16 @@
             <!-- ODDS SUBNAV -->
             <div class="subnav-group active" data-subnav="odds">
 
-                <a href="#" data-tab="home" class="sub-item">HOME</a>
-                <a href="#" data-tab="next-matches" class="sub-item">NEXT MATCHES</a>
-                <a href="#" data-tab="dropping-odds" class="sub-item">DROPPING ODDS</a>
-                <a href="#" data-tab="sure-bets" class="sub-item">SURE BETS</a>
-                <a href="#" data-tab="in-play-odds" class="sub-item">IN PLAY ODDS</a>
-                <a href="#" data-tab="all-events" class="sub-item">ALL EVENTS</a>
+                <a href="#" class="sub-item">HOME</a>
+                <a href="#" class="sub-item">NEXT MATCHES</a>
+                <a href="#" class="sub-item">DROPPING ODDS</a>
+                <a href="#" class="sub-item">SURE BETS</a>
+                <a href="#" class="sub-item">IN PLAY ODDS</a>
+                <a href="#" class="sub-item">ALL EVENTS</a>
 
                 <div class="sub-item sub-item-tools">
                     BETTING TOOLS
-                    <img src="/assets/icons/caret-down.svg" class="caret" alt="">
-
+                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="caret" alt="">
                     <div class="tools-dropdown">
                         <div class="item">BLOCKED ODDS</div>
                         <div class="item">VALUE BETS</div>
@@ -188,25 +185,25 @@
 
         <!-- TOP ROW -->
         <div class="mobile-row row-top">
-            <button class="hamburger" type="button" aria-label="Toggle menu">☰</button>
+            <button class="hamburger" type="button">☰</button>
 
             <div class="top-options">
                 <button class="odds-toggle" type="button">
                     <span class="value">Decimal Odds</span>
-                    <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
 
                 <button class="lang-toggle" type="button">
-                    <img src="/assets/icons/language.svg" alt="" class="icon-lang">
+                    <img src="/BetEngine-Enterprise/assets/icons/language.svg" class="icon-lang" alt="">
                     <span class="lang-code">EN</span>
-                    <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+                    <img src="/BetEngine-Enterprise/assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
             </div>
         </div>
 
         <!-- BRAND ROW -->
         <div class="mobile-row row-brand">
-            <img src="/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+            <img src="/BetEngine-Enterprise/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
             <div class="brand-text">
                 <span class="name">BetEngine</span>
                 <span class="tagline">Smart betting tools</span>
@@ -216,33 +213,33 @@
         <!-- SEARCH ROW -->
         <div class="mobile-row row-search">
             <div class="search-box">
-                <img src="/assets/icons/search.svg" class="search-icon" alt="">
+                <img src="/BetEngine-Enterprise/assets/icons/search.svg" class="search-icon" alt="">
                 <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
             </div>
 
-            <button class="notif-button" type="button" aria-label="Notifications">
-                <img src="/assets/icons/notification.svg" alt="" class="notif-icon">
+            <button class="notif-button" type="button">
+                <img src="/BetEngine-Enterprise/assets/icons/notification.svg" class="notif-icon" alt="">
             </button>
         </div>
 
-        <!-- MAIN NAV CHIPS -->
-        <nav class="mobile-main-nav" aria-label="Primary navigation">
-            <button class="nav-chip active" type="button" data-section="odds">ODDS</button>
-            <button class="nav-chip" type="button" data-section="community">COMMUNITY</button>
-            <button class="nav-chip" type="button" data-section="bookmakers">BOOKMAKERS</button>
-            <button class="nav-chip" type="button" data-section="premium">PREMIUM ★</button>
+        <!-- MAIN NAV -->
+        <nav class="mobile-main-nav">
+            <button class="nav-chip active" data-section="odds">ODDS</button>
+            <button class="nav-chip" data-section="community">COMMUNITY</button>
+            <button class="nav-chip" data-section="bookmakers">BOOKMAKERS</button>
+            <button class="nav-chip" data-section="premium">PREMIUM ★</button>
         </nav>
 
         <!-- SUB NAV -->
-        <nav class="mobile-sub-nav" aria-label="Secondary navigation">
+        <nav class="mobile-sub-nav">
             <div class="subnav-group active" data-subnav="odds">
-                <button class="sub-chip" type="button">HOME</button>
-                <button class="sub-chip" type="button">NEXT MATCHES</button>
-                <button class="sub-chip" type="button">DROPPING ODDS</button>
-                <button class="sub-chip" type="button">SURE BETS</button>
-                <button class="sub-chip" type="button">IN PLAY ODDS</button>
-                <button class="sub-chip" type="button">ALL EVENTS</button>
-                <button class="sub-chip tools" type="button">BETTING TOOLS ▾</button>
+                <button class="sub-chip">HOME</button>
+                <button class="sub-chip">NEXT MATCHES</button>
+                <button class="sub-chip">DROPPING ODDS</button>
+                <button class="sub-chip">SURE BETS</button>
+                <button class="sub-chip">IN PLAY ODDS</button>
+                <button class="sub-chip">ALL EVENTS</button>
+                <button class="sub-chip tools">BETTING TOOLS ▾</button>
             </div>
         </nav>
 
@@ -256,11 +253,9 @@
         <p>This is the base skeleton structure for BetEngine using OddsPortal-style architecture.</p>
     </main>
 
-    <!-- ========================= -->
-    <!-- JS FILES                  -->
-    <!-- ========================= -->
-    <script src="./js/main.js"></script>
-    <script src="./js/ui/header.js"></script>
+    <!-- JS FILES -->
+    <script src="/BetEngine-Enterprise/js/main.js"></script>
+    <script src="/BetEngine-Enterprise/js/ui/header.js"></script>
 
 </body>
 </html>
