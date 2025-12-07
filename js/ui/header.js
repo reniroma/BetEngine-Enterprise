@@ -11,23 +11,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const dropdowns = {
         odds: {
             toggle: document.querySelector(".odds-toggle"),
-            panel: document.querySelector(".odds-dropdown"),
+            panel: document.querySelector(".odds-dropdown")
         },
         lang: {
             toggle: document.querySelector(".language-toggle"),
-            panel: document.querySelector(".language-dropdown"),
+            panel: document.querySelector(".language-dropdown")
         },
         tools: {
             toggle: document.querySelector(".sub-item-tools"),
-            panel: document.querySelector(".sub-item-tools .tools-dropdown"),
+            panel: document.querySelector(".sub-item-tools .tools-dropdown")
         }
     };
 
     function closeAllDropdowns() {
-        document.querySelectorAll(".show").forEach(el => el.classList.remove("show"));
+        document
+            .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+            .forEach(el => el.classList.remove("show"));
     }
 
-    // Attach desktop dropdown handlers
     Object.values(dropdowns).forEach(entry => {
         if (!entry.toggle || !entry.panel) return;
 
@@ -37,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
             entry.panel.classList.toggle("show");
         });
 
-        // Prevent closing when clicking inside dropdown
-        entry.panel.addEventListener("click", (e) => e.stopPropagation());
+        entry.panel.addEventListener("click", (e) => {
+            e.stopPropagation();
+        });
     });
 
-    // Click outside closes everything
     document.addEventListener("click", () => closeAllDropdowns());
 
 
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const hamburger = document.querySelector(".hamburger");
     const mobileHeader = document.querySelector(".header-mobile");
 
-    if (hamburger) {
+    if (hamburger && mobileHeader) {
         hamburger.addEventListener("click", () => {
             mobileHeader.classList.toggle("open");
         });
@@ -81,24 +82,98 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /********************************************************
-     * MOBILE — Odds & Language (placeholder alerts)
+     * MOBILE MODAL SYSTEM (BOTTOM SHEETS)
      ********************************************************/
-    const mobileOddsToggle = document.querySelector(".mobile-row .odds-toggle");
-    const mobileLangToggle = document.querySelector(".mobile-row .lang-toggle");
+    const body = document.body;
+    const mobileModals = document.querySelectorAll(".mobile-modal");
+
+    function openMobileModal(type) {
+        const modal = document.querySelector(`.mobile-modal[data-modal="${type}"]`);
+        if (!modal) return;
+        modal.classList.add("is-open");
+        body.classList.add("no-scroll-mobile-modal");
+    }
+
+    function closeMobileModal(modal) {
+        if (!modal) return;
+        modal.classList.remove("is-open");
+
+        const stillOpen = document.querySelector(".mobile-modal.is-open");
+        if (!stillOpen) {
+            body.classList.remove("no-scroll-mobile-modal");
+        }
+    }
+
+    mobileModals.forEach(modal => {
+        const overlay = modal.querySelector(".mobile-modal-overlay");
+        const closeBtn = modal.querySelector(".mobile-modal-close");
+
+        if (overlay) {
+            overlay.addEventListener("click", () => {
+                closeMobileModal(modal);
+            });
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener("click", () => {
+                closeMobileModal(modal);
+            });
+        }
+    });
+
+
+    /********************************************************
+     * MOBILE — Odds & Language Toggle → open modals
+     ********************************************************/
+    const mobileOddsToggle = document.querySelector(".header-mobile .odds-toggle");
+    const mobileLangToggle = document.querySelector(".header-mobile .lang-toggle");
 
     if (mobileOddsToggle) {
         mobileOddsToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            alert("Mobile odds dropdown (placeholder)");
+            openMobileModal("odds");
         });
     }
 
     if (mobileLangToggle) {
         mobileLangToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            alert("Mobile language dropdown (placeholder)");
+            openMobileModal("lang");
         });
     }
+
+    /********************************************************
+     * MOBILE — Apply selection (Odds + Language)
+     ********************************************************/
+    const oddsValueEl = document.querySelector(".header-mobile .odds-toggle .value");
+    const langCodeEl = document.querySelector(".header-mobile .lang-toggle .lang-code");
+
+    const oddsItems = document.querySelectorAll('.mobile-modal[data-modal="odds"] .mobile-modal-item');
+    oddsItems.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const label = btn.getAttribute("data-odds-label") || btn.textContent.trim();
+            if (oddsValueEl && label) {
+                oddsValueEl.textContent = label;
+            }
+            const modal = btn.closest(".mobile-modal");
+            closeMobileModal(modal);
+        });
+    });
+
+    const langItems = document.querySelectorAll('.mobile-modal[data-modal="lang"] .mobile-modal-item');
+    langItems.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const code = btn.getAttribute("data-lang-code");
+            const label = btn.getAttribute("data-lang-label") || btn.textContent.trim();
+
+            if (langCodeEl && code) {
+                langCodeEl.textContent = code;
+            }
+
+            const modal = btn.closest(".mobile-modal");
+            closeMobileModal(modal);
+        });
+    });
 
 
     /********************************************************
