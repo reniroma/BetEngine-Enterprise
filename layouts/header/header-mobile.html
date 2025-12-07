@@ -1,1 +1,63 @@
 <!-- header-mobile.html placeholder for BetEngine enterprise structure -->
+<header class="header-mobile">
+
+    <!-- TOP ROW: hamburger + odds + language -->
+    <div class="mobile-row row-top">
+        <button class="hamburger" type="button">☰</button>
+
+        <div class="top-options">
+            <button class="odds-toggle" type="button">
+                <span class="value">Decimal Odds</span>
+                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+            </button>
+
+            <button class="lang-toggle" type="button">
+                <img src="/assets/icons/language.svg" alt="" class="icon-lang">
+                <span class="lang-code">EN</span>
+                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+            </button>
+        </div>
+    </div>
+
+    <!-- BRAND ROW -->
+    <div class="mobile-row row-brand">
+        <img src="/assets/logos/logo.svg" class="logo" alt="">
+        <div class="brand-text">
+            <span class="name">BetEngine</span>
+            <span class="tagline">Smart betting tools</span>
+        </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="mobile-row row-search">
+        <div class="search-box">
+            <img src="/assets/icons/search.svg" class="search-icon" alt="">
+            <input type="search" placeholder="Search (team / player)">
+        </div>
+
+        <button class="notif-button">
+            <img src="/assets/icons/notification.svg" alt="" class="notif-icon">
+        </button>
+    </div>
+
+    <!-- MAIN NAV SCROLL -->
+    <nav class="mobile-main-nav" aria-label="Primary navigation">
+        <button class="nav-chip active" data-section="odds">ODDS</button>
+        <button class="nav-chip" data-section="community">COMMUNITY</button>
+        <button class="nav-chip" data-section="bookmakers">BOOKMAKERS</button>
+        <button class="nav-chip" data-section="premium">PREMIUM ★</button>
+    </nav>
+
+    <!-- SUB NAV SCROLL -->
+    <nav class="mobile-sub-nav" aria-label="Secondary navigation">
+        <div class="subnav-group" data-subnav="odds">
+            <button class="sub-chip">HOME</button>
+            <button class="sub-chip">NEXT MATCHES</button>
+            <button class="sub-chip">DROPPING ODDS</button>
+            <button class="sub-chip">SURE BETS</button>
+            <button class="sub-chip">IN PLAY ODDS</button>
+            <button class="sub-chip">ALL EVENTS</button>
+            <button class="sub-chip tools">BETTING TOOLS ▾</button>
+        </div>
+    </nav>
+</header>
