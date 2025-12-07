@@ -1,25 +1,26 @@
 /*******************************************************
- * BetEngine – HEADER FINAL JS
- * Desktop + Mobile Dropdown & Modal Logic
+ * BetEngine – HEADER FINAL JS (Enterprise Build)
+ * Desktop + Mobile Dropdown Logic
  *******************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
-       DESKTOP DROPDOWNS — Odds & Language
+       UTIL — Close all dropdowns
     ===================================================== */
+    function closeAllDropdowns() {
+        document.querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+            .forEach(el => el.classList.remove("show"));
+    }
 
+    /* =====================================================
+       DESKTOP — Odds & Language Dropdowns
+    ===================================================== */
     const oddsToggle = document.querySelector(".odds-toggle");
     const oddsDropdown = document.querySelector(".odds-dropdown");
 
     const langToggle = document.querySelector(".language-toggle");
     const langDropdown = document.querySelector(".language-dropdown");
-
-    function closeAllDropdowns() {
-        document
-            .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
-            .forEach((el) => el.classList.remove("show"));
-    }
 
     if (oddsToggle && oddsDropdown) {
         oddsToggle.addEventListener("click", (e) => {
@@ -40,11 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        DESKTOP — Betting Tools Dropdown (Row 3)
     ===================================================== */
-
     const toolsToggle = document.querySelector(".sub-item-tools");
-    const toolsDropdown = toolsToggle
-        ? toolsToggle.querySelector(".tools-dropdown")
-        : null;
+    const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
 
     if (toolsToggle && toolsDropdown) {
         toolsToggle.addEventListener("click", (e) => {
@@ -54,29 +52,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* Close dropdowns when clicking outside */
+    /* =====================================================
+       CLICK OUTSIDE TO CLOSE
+    ===================================================== */
     document.addEventListener("click", () => {
         closeAllDropdowns();
     });
 
     /* =====================================================
        SUBNAV SWITCHING — Desktop
-       (odds / community / bookmakers / premium)
     ===================================================== */
-
     const navItems = document.querySelectorAll(".main-nav .nav-item");
     const subnavGroups = document.querySelectorAll(".subnav-group");
 
-    navItems.forEach((item) => {
+    navItems.forEach(item => {
         item.addEventListener("click", (e) => {
             e.preventDefault();
 
-            navItems.forEach((i) => i.classList.remove("active"));
+            navItems.forEach(i => i.classList.remove("active"));
             item.classList.add("active");
 
             const section = item.getAttribute("data-section");
 
-            subnavGroups.forEach((group) => {
+            subnavGroups.forEach(group => {
                 group.classList.remove("active");
                 if (group.getAttribute("data-subnav") === section) {
                     group.classList.add("active");
@@ -88,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /* =====================================================
        MOBILE — Hamburger Menu Toggle
     ===================================================== */
-
     const hamburger = document.querySelector(".hamburger");
     const mobileHeader = document.querySelector(".header-mobile");
 
@@ -99,124 +96,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =====================================================
-       MOBILE MODALS — Core Helpers
+       MOBILE — Odds & Language Toggles (placeholder)
     ===================================================== */
-
-    function openModal(id) {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-        modal.classList.add("active");
-        modal.setAttribute("aria-hidden", "false");
-        document.body.classList.add("modal-open");
-    }
-
-    function closeModal(modal) {
-        if (!modal) return;
-        modal.classList.remove("active");
-        modal.setAttribute("aria-hidden", "true");
-
-        const anyOpen = document.querySelector(".mobile-modal.active");
-        if (!anyOpen) {
-            document.body.classList.remove("modal-open");
-        }
-    }
-
-    function wireModal(modal) {
-        if (!modal) return;
-
-        const overlay = modal.querySelector(".modal-overlay");
-        const closeButtons = modal.querySelectorAll(".modal-close");
-
-        if (overlay) {
-            overlay.addEventListener("click", () => {
-                closeModal(modal);
-            });
-        }
-
-        closeButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-                closeModal(modal);
-            });
-        });
-
-        // Simple swipe-down gesture on the panel
-        const panel = modal.querySelector(".modal-panel");
-        if (panel) {
-            let startY = 0;
-            let currentY = 0;
-            let isDragging = false;
-
-            panel.addEventListener("touchstart", (e) => {
-                if (!e.touches || !e.touches[0]) return;
-                startY = e.touches[0].clientY;
-                currentY = startY;
-                isDragging = true;
-            });
-
-            panel.addEventListener("touchmove", (e) => {
-                if (!isDragging || !e.touches || !e.touches[0]) return;
-                currentY = e.touches[0].clientY;
-            });
-
-            panel.addEventListener("touchend", () => {
-                if (!isDragging) return;
-                const delta = currentY - startY;
-                if (delta > 60) {
-                    closeModal(modal);
-                }
-                isDragging = false;
-            });
-        }
-    }
-
-    const modalOdds = document.getElementById("modal-odds");
-    const modalLanguage = document.getElementById("modal-language");
-
-    wireModal(modalOdds);
-    wireModal(modalLanguage);
-
-    /* =====================================================
-       MOBILE — Odds & Language Toggle → Open Modal
-    ===================================================== */
-
-    const mobileOddsToggle = document.querySelector(
-        ".header-mobile .row-top .odds-toggle"
-    );
-    const mobileLangToggle = document.querySelector(
-        ".header-mobile .row-top .lang-toggle"
-    );
+    const mobileOddsToggle = document.querySelector(".mobile-row .odds-toggle");
+    const mobileLangToggle = document.querySelector(".mobile-row .lang-toggle");
 
     if (mobileOddsToggle) {
         mobileOddsToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            openModal("modal-odds");
+            alert("Odds dropdown (mobile version coming soon)");
         });
     }
 
     if (mobileLangToggle) {
         mobileLangToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            openModal("modal-language");
+            alert("Language dropdown (mobile version coming soon)");
         });
     }
 
     /* =====================================================
-       MOBILE — NAV CHIPS (ODDS / COMMUNITY / BOOKMAKERS / PREMIUM)
+       MOBILE — Navigation Chips
     ===================================================== */
-
     const chips = document.querySelectorAll(".nav-chip");
-    const mobileSubnavGroups = document.querySelectorAll(
-        ".mobile-sub-nav .subnav-group"
-    );
+    const mobileSubnavGroups = document.querySelectorAll(".mobile-sub-nav .subnav-group");
 
-    chips.forEach((chip) => {
+    chips.forEach(chip => {
         chip.addEventListener("click", () => {
-            chips.forEach((c) => c.classList.remove("active"));
+
+            chips.forEach(c => c.classList.remove("active"));
             chip.classList.add("active");
 
             const section = chip.getAttribute("data-section");
 
-            mobileSubnavGroups.forEach((group) => {
+            mobileSubnavGroups.forEach(group => {
                 group.classList.remove("active");
                 if (group.getAttribute("data-subnav") === section) {
                     group.classList.add("active");
@@ -226,77 +139,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =====================================================
-       MOBILE — Betting Tools Dropdown (subnav)
-       (placeholder behavior for now)
+       MOBILE — Betting Tools Placeholder
     ===================================================== */
-
     const mobileTools = document.querySelector(".sub-chip.tools");
 
     if (mobileTools) {
         mobileTools.addEventListener("click", () => {
-            // Placeholder: later will be replaced with real tools menu
-            alert("Mobile betting tools (coming soon)");
+            alert("Mobile Betting Tools menu coming soon");
         });
     }
 
     /* =====================================================
-       MOBILE — LANGUAGE LIST POPULATION (23 languages)
+       FIX — Prevent closing dropdown on scroll
     ===================================================== */
+    let isDropdownOpen = false;
 
-    const languageList = [
-        "English",
-        "German",
-        "Dutch",
-        "French",
-        "Italian",
-        "Spanish",
-        "Portuguese",
-        "Danish",
-        "Swedish",
-        "Norwegian",
-        "Finnish",
-        "Polish",
-        "Czech",
-        "Slovak",
-        "Hungarian",
-        "Romanian",
-        "Greek",
-        "Turkish",
-        "Croatian",
-        "Serbian",
-        "Bulgarian",
-        "Russian",
-        "Ukrainian"
-    ];
+    [oddsDropdown, langDropdown, toolsDropdown].forEach(drop => {
+        if (!drop) return;
 
-    const languageModalContent = document.getElementById(
-        "language-modal-content"
-    );
-    const mobileLangCode = document.querySelector(
-        ".header-mobile .lang-code"
-    );
-    const desktopLangCode = document.querySelector(
-        ".language-toggle .lang-code"
-    );
-
-    if (languageModalContent && languageList.length > 0) {
-        languageList.forEach((lang) => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "modal-item";
-            btn.textContent = lang;
-            btn.dataset.lang = lang;
-            btn.addEventListener("click", () => {
-                if (mobileLangCode) {
-                    mobileLangCode.textContent = lang === "English" ? "EN" : lang.slice(0, 2).toUpperCase();
-                }
-                if (desktopLangCode) {
-                    desktopLangCode.textContent = lang;
-                }
-                closeModal(modalLanguage);
-            });
-            languageModalContent.appendChild(btn);
+        drop.addEventListener("mouseenter", () => {
+            isDropdownOpen = true;
         });
-    }
+
+        drop.addEventListener("mouseleave", () => {
+            isDropdownOpen = false;
+        });
+    });
+
+    window.addEventListener("scroll", () => {
+        if (!isDropdownOpen) {
+            closeAllDropdowns();
+        }
+    });
 
 });
