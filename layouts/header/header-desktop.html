@@ -1,1 +1,141 @@
 <!-- header-desktop.html placeholder for BetEngine enterprise structure -->
+<header class="header-desktop">
+
+    <!-- ROW 1 — TOP BAR -->
+    <div class="header-row row-top">
+        <div class="left"></div>
+
+        <div class="right">
+            <!-- Odds format -->
+            <div class="odds-format">
+                <button class="odds-toggle" type="button">
+                    <span class="label">Odds format:</span>
+                    <span class="value">Decimal Odds</span>
+                    <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                </button>
+                <div class="odds-dropdown">
+                    <div class="item active">Decimal Odds (1.50)</div>
+                    <div class="item">Fractional Odds (1/2)</div>
+                    <div class="item">Moneyline Odds (-200)</div>
+                    <div class="item">Hong Kong Odds (0.50)</div>
+                    <div class="item">Malay Odds (0.50)</div>
+                    <div class="item">Indonesian Odds (-2.00)</div>
+                </div>
+            </div>
+
+            <!-- Language -->
+            <div class="language-selector">
+                <button class="language-toggle" type="button">
+                    <img src="/assets/icons/language.svg" class="icon-lang" alt="">
+                    <span class="lang-code">English</span>
+                    <img src="/assets/icons/caret-down.svg" class="icon-caret" alt="">
+                </button>
+                <div class="language-dropdown"></div>
+            </div>
+
+            <!-- Auth -->
+            <button class="btn-auth login" type="button">
+                <img src="/assets/icons/login.svg" alt="">
+                LOGIN
+            </button>
+            <button class="btn-auth register" type="button">
+                <img src="/assets/icons/register.svg" alt="">
+                REGISTER
+            </button>
+        </div>
+    </div>
+
+    <!-- separator -->
+    <div class="row-separator"></div>
+
+    <!-- ROW 2 — MAIN NAVIGATION -->
+    <div class="header-row row-main">
+        <div class="brand">
+            <img src="/assets/logos/logo.svg" class="logo" alt="">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Main navigation">
+            <a href="#" data-section="odds" class="nav-item active">ODDS COMPARISON</a>
+            <a href="#" data-section="community" class="nav-item">COMMUNITY</a>
+            <a href="#" data-section="bookmakers" class="nav-item">BOOKMAKERS</a>
+            <a href="#" data-section="premium" class="nav-item premium-link">
+                PREMIUM <span class="premium-star">★</span>
+            </a>
+        </nav>
+
+        <div class="search-notify">
+            <div class="search-box">
+                <img src="/assets/icons/search.svg" alt="" class="search-icon">
+                <input type="search" placeholder="Search (team / player)">
+            </div>
+
+            <button class="notif-button">
+                <img src="/assets/icons/notification.svg" class="notif-icon" alt="">
+            </button>
+        </div>
+    </div>
+
+    <!-- separator -->
+    <div class="row-separator"></div>
+
+    <!-- ROW 3 — SUB NAVIGATION -->
+    <nav class="header-row row-sub" aria-label="Subnavigation">
+
+        <div class="subnav-group" data-subnav="odds">
+            <a href="#" data-tab="home" class="sub-item">HOME</a>
+            <a href="#" data-tab="next-matches" class="sub-item">NEXT MATCHES</a>
+            <a href="#" data-tab="dropping-odds" class="sub-item">DROPPING ODDS</a>
+            <a href="#" data-tab="sure-bets" class="sub-item">SURE BETS</a>
+            <a href="#" data-tab="in-play-odds" class="sub-item">IN PLAY ODDS</a>
+            <a href="#" data-tab="all-events" class="sub-item">ALL EVENTS</a>
+
+            <div class="sub-item sub-item-tools">
+                BETTING TOOLS
+                <img src="/assets/icons/caret-down.svg" class="caret" alt="">
+                <div class="tools-dropdown">
+                    <div class="item">BLOCKED ODDS</div>
+                    <div class="item">VALUE BETS</div>
+                    <div class="item">HOT MATCHES</div>
+                    <div class="item">ARCHIVED RESULTS</div>
+                    <div class="item">STANDINGS</div>
+                    <div class="item">BET CALCULATOR</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="subnav-group" data-subnav="community">
+            <a href="#" class="sub-item">HOME</a>
+            <a href="#" class="sub-item">FEED</a>
+            <a href="#" class="sub-item">USERS</a>
+            <a href="#" class="sub-item">TOP PREDICTIONS</a>
+            <a href="#" class="sub-item">MY STATISTICS</a>
+            <a href="#" class="sub-item">MY PROFILE</a>
+            <a href="#" class="sub-item">MY PREDICTIONS</a>
+            <a href="#" class="sub-item">MY COUPONS</a>
+        </div>
+
+        <div class="subnav-group" data-subnav="bookmakers">
+            <a href="#" class="sub-item">BOOKIE INFO</a>
+            <a href="#" class="sub-item">BONUS OFFERS</a>
+            <a href="#" class="sub-item">ODDS QUALITY</a>
+            <a href="#" class="sub-item">BETTING APPS</a>
+        </div>
+
+        <div class="subnav-group" data-subnav="premium">
+            <a href="#" class="sub-item">Premium Dashboard</a>
+            <a href="#" class="sub-item">Market Insights</a>
+            <a href="#" class="sub-item">Fair Odds Engine</a>
+            <a href="#" class="sub-item">AI Predictions</a>
+            <a href="#" class="sub-item">Smart H2H Insights</a>
+            <a href="#" class="sub-item">Value Finder</a>
+            <a href="#" class="sub-item">Sharp vs Public Money</a>
+            <a href="#" class="sub-item">Shock Alerts</a>
+            <a href="#" class="sub-item">AI Live Momentum</a>
+            <a href="#" class="sub-item">Fake Trend Detector</a>
+        </div>
+    </nav>
+</header>
