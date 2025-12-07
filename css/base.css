@@ -1,1 +1,47 @@
+/* ============================
+   BetEngine Minimal Base CSS
+   ============================ */
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ROOT COLORS */
+:root {
+    --bg-main: #0a0c12;
+    --bg-header: #11141d;
+    --bg-subheader: #161922;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent: #ffec00;
+    --accent-soft: rgba(255, 236, 0, 0.18);
+    --border-light: #2a2d36;
+    --input-bg: #1c1f29;
+}
+
+/* BODY */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+/* UTILS */
+.flex {
+    display: flex;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
 /* base.css placeholder for BetEngine enterprise structure */
