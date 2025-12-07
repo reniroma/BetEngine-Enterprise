@@ -60,7 +60,6 @@
                         <div class="item">French</div>
                         <div class="item">Italian</div>
                         <div class="item">Spanish</div>
-                        <!-- Here later we will extend to full 23 languages as per BetEngine plan -->
                     </div>
                 </div>
 
@@ -181,7 +180,7 @@
 
 
     <!-- ================================= -->
-    <!-- MOBILE HEADER -->
+    <!-- MOBILE HEADER                     -->
     <!-- ================================= -->
 
     <header class="header-mobile">
@@ -248,73 +247,44 @@
     </header>
 
 
+
     <!-- ================================= -->
-    <!-- MOBILE MODALS (BOTTOM SHEETS)     -->
+    <!-- MOBILE MODALS (ODDS / LANGUAGE)   -->
     <!-- ================================= -->
 
-    <!-- Mobile Odds Format Modal -->
-    <div class="mobile-modal" data-modal="odds">
-        <div class="mobile-modal-overlay"></div>
-        <div class="mobile-modal-panel">
-            <div class="mobile-modal-header">
-                <span class="mobile-modal-title">Select Odds Format</span>
-                <button class="mobile-modal-close" type="button" aria-label="Close odds format selector">
+    <!-- MOBILE MODAL: ODDS FORMAT -->
+    <div class="mobile-modal" id="modal-odds" aria-hidden="true">
+        <div class="modal-overlay"></div>
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" type="button" aria-label="Close">
                     <img src="assets/icons/close.svg" alt="">
                 </button>
+                <span class="modal-title">Odds Format</span>
             </div>
-            <div class="mobile-modal-body">
-                <button class="mobile-modal-item" data-odds-label="Decimal Odds">
-                    Decimal Odds (1.50)
-                </button>
-                <button class="mobile-modal-item" data-odds-label="Fractional Odds">
-                    Fractional Odds (1/2)
-                </button>
-                <button class="mobile-modal-item" data-odds-label="Moneyline Odds">
-                    Moneyline Odds (-200)
-                </button>
-                <button class="mobile-modal-item" data-odds-label="Hong Kong Odds">
-                    Hong Kong Odds (0.50)
-                </button>
-                <button class="mobile-modal-item" data-odds-label="Malay Odds">
-                    Malay Odds (0.50)
-                </button>
-                <button class="mobile-modal-item" data-odds-label="Indonesian Odds">
-                    Indonesian Odds (-2.00)
-                </button>
+            <div class="modal-content">
+                <button class="modal-item" data-odds="decimal">Decimal Odds</button>
+                <button class="modal-item" data-odds="fractional">Fractional Odds</button>
+                <button class="modal-item" data-odds="moneyline">Moneyline Odds</button>
+                <button class="modal-item" data-odds="hongkong">Hong Kong Odds</button>
+                <button class="modal-item" data-odds="malay">Malay Odds</button>
+                <button class="modal-item" data-odds="indo">Indonesian Odds</button>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Language Modal -->
-    <div class="mobile-modal" data-modal="lang">
-        <div class="mobile-modal-overlay"></div>
-        <div class="mobile-modal-panel">
-            <div class="mobile-modal-header">
-                <span class="mobile-modal-title">Select Language</span>
-                <button class="mobile-modal-close" type="button" aria-label="Close language selector">
+    <!-- MOBILE MODAL: LANGUAGE -->
+    <div class="mobile-modal" id="modal-language" aria-hidden="true">
+        <div class="modal-overlay"></div>
+        <div class="modal-panel">
+            <div class="modal-header">
+                <button class="modal-close" type="button" aria-label="Close">
                     <img src="assets/icons/close.svg" alt="">
                 </button>
+                <span class="modal-title">Select Language</span>
             </div>
-            <div class="mobile-modal-body">
-                <!-- For now a core subset; later we extend to all 23 languages as per BetEngine plan -->
-                <button class="mobile-modal-item" data-lang-label="English" data-lang-code="EN">
-                    English (EN)
-                </button>
-                <button class="mobile-modal-item" data-lang-label="German" data-lang-code="DE">
-                    German (DE)
-                </button>
-                <button class="mobile-modal-item" data-lang-label="Dutch" data-lang-code="NL">
-                    Dutch (NL)
-                </button>
-                <button class="mobile-modal-item" data-lang-label="French" data-lang-code="FR">
-                    French (FR)
-                </button>
-                <button class="mobile-modal-item" data-lang-label="Italian" data-lang-code="IT">
-                    Italian (IT)
-                </button>
-                <button class="mobile-modal-item" data-lang-label="Spanish" data-lang-code="ES">
-                    Spanish (ES)
-                </button>
+            <div class="modal-content" id="language-modal-content">
+                <!-- Languages will be injected by JS -->
             </div>
         </div>
     </div>
