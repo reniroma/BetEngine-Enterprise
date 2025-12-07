@@ -1,1 +1,363 @@
-/* desktop.css placeholder for BetEngine enterprise structure */
+/************************************
+ * BetEngine Enterprise
+ * Desktop header styling (OddsPortal-style)
+************************************/
+
+/* Desktop header visibility by default */
+.header-desktop {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #1b1e27;
+}
+
+/* Desktop top bar (Row 1) */
+.header-desktop .row-top {
+    padding: 4px 24px;
+    min-height: 32px;
+    font-size: 12px;
+    background: #0a0c12;
+    opacity: 0.96;
+}
+
+.header-desktop .row-top .left {
+    flex: 1;
+}
+
+.header-desktop .row-top .right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* Odds format and language dropdown containers */
+.odds-format,
+.language-selector {
+    position: relative;
+}
+
+/* Base toggle buttons (odds + language) */
+.odds-toggle,
+.language-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #11141d;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #222533;
+    color: #ffec00;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.odds-toggle .label {
+    color: #b8becf;
+    font-size: 11px;
+}
+
+.odds-toggle .value,
+.language-toggle .lang-code {
+    font-weight: 600;
+}
+
+.odds-toggle:hover,
+.language-toggle:hover {
+    background: #171b27;
+}
+
+/* Dropdown panels (odds + language) */
+.odds-dropdown,
+.language-dropdown {
+    display: none;
+    position: absolute;
+    top: 34px;
+    right: 0;
+    width: 190px;
+    background: #11141d;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    padding: 4px 0;
+    z-index: 1000;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.odds-dropdown .item,
+.language-dropdown .item {
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #dcdcdc;
+    white-space: nowrap;
+}
+
+.odds-dropdown .item:hover,
+.language-dropdown .item:hover {
+    background: #1f2230;
+    color: #ffec00;
+}
+
+/* Auth buttons (login / register) */
+.btn-auth {
+    background: #ffec00;
+    color: #000;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    border: none;
+    text-transform: uppercase;
+}
+
+.btn-auth img {
+    height: 14px;
+    width: 14px;
+}
+
+.btn-auth.login {
+    background: #ffec00;
+}
+
+.btn-auth.register {
+    background: #ffc400;
+}
+
+.btn-auth:hover {
+    filter: brightness(1.08);
+}
+
+/* ==========================================
+   Row 2 — Brand + main navigation + search
+========================================== */
+
+.header-desktop .row-main {
+    padding: 8px 24px;
+    min-height: 54px;
+    background: #0a0c12;
+}
+
+.header-desktop .row-main {
+    display: flex;
+    align-items: center;
+}
+
+/* Brand area (logo + text) */
+.header-desktop .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 24px;
+}
+
+.header-desktop .brand .logo {
+    height: 36px;
+    width: auto;
+}
+
+.header-desktop .brand-text .name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffec00;
+    display: block;
+}
+
+.header-desktop .brand-text .tagline {
+    font-size: 11px;
+    color: #8f95a3;
+    display: block;
+}
+
+/* Main navigation centered */
+.header-desktop .main-nav {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-desktop .nav-item {
+    color: #d7d7d7;
+    font-size: 14px;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.header-desktop .nav-item:hover {
+    color: #ffec00;
+}
+
+.header-desktop .nav-item.active {
+    color: #ffec00;
+    font-weight: 700;
+}
+
+.header-desktop .nav-item.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: #ffec00;
+}
+
+/* Premium star in superscript style */
+.premium-link .premium-star {
+    font-size: 11px;
+    color: #ffec00;
+    margin-left: 4px;
+    position: relative;
+    top: -2px;
+}
+
+/* Search + notifications (right side) */
+.header-desktop .search-notify {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: 24px;
+}
+
+.header-desktop .search-box {
+    background: #11141d;
+    border: 1px solid #222533;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.header-desktop .search-box .search-icon {
+    height: 14px;
+    width: 14px;
+    opacity: 0.7;
+}
+
+.header-desktop .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    width: 180px;
+    font-size: 13px;
+}
+
+/* Notification icon button */
+.header-desktop .notif-button {
+    background: #11141d;
+    border: 1px solid #222533;
+    padding: 7px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.header-desktop .notif-button .notif-icon {
+    height: 16px;
+    width: 16px;
+    opacity: 0.9;
+}
+
+.header-desktop .notif-button:hover {
+    background: #1a1e2b;
+}
+
+/* ==========================================
+   Row 3 — Subnavigation for sections
+========================================== */
+
+.header-desktop .row-sub {
+    padding: 7px 24px 10px;
+    background: #0a0c12;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.header-desktop .row-sub .sub-item {
+    color: #b8b8b8;
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.header-desktop .row-sub .sub-item:hover {
+    color: #ffec00;
+}
+
+.header-desktop .row-sub .sub-item.active {
+    color: #ffec00;
+}
+
+/* Betting tools dropdown inside subnav */
+.header-desktop .sub-item.sub-item-tools {
+    position: relative;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.header-desktop .sub-item.sub-item-tools .caret {
+    height: 10px;
+    width: 10px;
+    opacity: 0.9;
+}
+
+/* Tools dropdown panel */
+.header-desktop .tools-dropdown {
+    display: none;
+    position: absolute;
+    top: 22px;
+    left: 0;
+    background: #11141d;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    width: 190px;
+    padding: 5px 0;
+    z-index: 900;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.header-desktop .tools-dropdown .item {
+    padding: 7px 12px;
+    font-size: 13px;
+    color: #dcdcdc;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.header-desktop .tools-dropdown .item:hover {
+    background: #1f2230;
+    color: #ffec00;
+}
+
+/* Ensure only the active subnav group is shown (desktop) */
+.header-desktop .row-sub .subnav-group {
+    display: none;
+    gap: 22px;
+}
+
+.header-desktop .row-sub .subnav-group.active {
+    display: flex;
+}
+
+/* ==========================================
+   Desktop-only visibility
+========================================== */
+
+@media only screen and (max-width: 980px) {
+    .header-desktop {
+        display: none;
+    }
+}
