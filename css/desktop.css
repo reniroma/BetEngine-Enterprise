@@ -399,3 +399,42 @@
     background: rgba(255,236,0,0.12);
     color: var(--text-primary);
 }
+
+/*********************************************************
+ * PATCH – NOTIFICATION ICON FIX (DESKTOP)
+ *********************************************************/
+
+.header-desktop .search-notify {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    min-width: 220px !important;
+    position: relative;
+    z-index: 500; /* ensures visibility */
+}
+
+/* Fix button container */
+.header-desktop .notif-button {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: var(--bg-panel-soft, #181824) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    position: relative;
+    z-index: 600 !important;
+}
+
+/* Fix actual icon */
+.header-desktop .notif-icon {
+    width: 20px !important;
+    height: 20px !important;
+    display: block !important;
+    opacity: 1 !important;
+}
+
+
+
