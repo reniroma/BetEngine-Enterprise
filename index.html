@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetEngine Enterprise Skeleton</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BetEngine Enterprise</title>
 
-    <!-- CSS: Correct Enterprise Order (v=3 cache-bust) -->
-    <link rel="stylesheet" href="css/variables.css?v=3">
-    <link rel="stylesheet" href="css/base.css?v=3">
-    <link rel="stylesheet" href="css/utilities.css?v=3">
-    <link rel="stylesheet" href="css/layout.css?v=3">
-    <link rel="stylesheet" href="css/components.css?v=3">
-    <link rel="stylesheet" href="css/desktop.css?v=3">
-    <link rel="stylesheet" href="css/mobile.css?v=3">
-
+    <!-- CSS ORDER (Enterprise Standard) -->
+    <link rel="stylesheet" href="css/variables.css?v=4">
+    <link rel="stylesheet" href="css/base.css?v=4">
+    <link rel="stylesheet" href="css/utilities.css?v=4">
+    <link rel="stylesheet" href="css/layout.css?v=4">
+    <link rel="stylesheet" href="css/components.css?v=4">
+    <link rel="stylesheet" href="css/desktop.css?v=4">
+    <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
 <body>
 
-    <!-- ================================= -->
-    <!-- DESKTOP HEADER                    -->
-    <!-- ================================= -->
-
+    <!-- ====================================================
+         DESKTOP HEADER
+    ======================================================= -->
     <header class="header-desktop">
 
-        <!-- ROW 1 — TOP BAR -->
+        <!-- ROW 1: TOP BAR -->
         <div class="header-row row-top">
+
             <div class="left"></div>
 
             <div class="right">
@@ -37,6 +37,7 @@
                         <span class="value odds-label">Decimal Odds</span>
                         <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
+
                     <div class="odds-dropdown">
                         <div class="item active" data-odds="decimal">Decimal Odds (1.50)</div>
                         <div class="item" data-odds="fractional">Fractional Odds (1/2)</div>
@@ -54,11 +55,11 @@
                         <span class="lang-code">English</span>
                         <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                     </button>
+
                     <div class="language-dropdown">
                         <div class="item" data-lang="sq">Albanian</div>
                         <div class="item" data-lang="ar">Arabic</div>
                         <div class="item" data-lang="zh">Chinese</div>
-                        <div class="item" data-lang="hr">Croatian</div>
                         <div class="item" data-lang="nl">Dutch</div>
                         <div class="item active" data-lang="en">English</div>
                         <div class="item" data-lang="fr">French</div>
@@ -85,6 +86,7 @@
                     <img src="assets/icons/login.svg" alt="">
                     <span>LOGIN</span>
                 </button>
+
                 <button class="btn-auth register" type="button">
                     <img src="assets/icons/register.svg" alt="">
                     <span>REGISTER</span>
@@ -94,36 +96,33 @@
 
         <div class="row-separator"></div>
 
-        <!-- ROW 2 — MAIN NAVIGATION -->
+        <!-- ROW 2: MAIN NAVIGATION -->
         <div class="header-row row-main">
 
-            <!-- Brand -->
             <div class="brand">
-                <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+                <img src="assets/logos/logo.svg" alt="BetEngine logo" class="logo">
                 <div class="brand-text">
                     <span class="name">BetEngine</span>
                     <span class="tagline">Smart betting tools</span>
                 </div>
             </div>
 
-            <!-- Main nav -->
             <nav class="main-nav" aria-label="Main navigation">
-                <a href="#" data-section="odds" class="nav-item active">ODDS COMPARISON</a>
-                <a href="#" data-section="community" class="nav-item">COMMUNITY</a>
-                <a href="#" data-section="bookmakers" class="nav-item">BOOKMAKERS</a>
-                <a href="#" data-section="premium" class="nav-item premium-link">
+                <a href="#" class="nav-item active" data-section="odds">ODDS COMPARISON</a>
+                <a href="#" class="nav-item" data-section="community">COMMUNITY</a>
+                <a href="#" class="nav-item" data-section="bookmakers">BOOKMAKERS</a>
+                <a href="#" class="nav-item premium-link" data-section="premium">
                     PREMIUM <span class="premium-star">★</span>
                 </a>
             </nav>
 
-            <!-- Search + notifications -->
             <div class="search-notify">
                 <div class="search-box">
-                    <img src="assets/icons/search.svg" alt="" class="search-icon">
-                    <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
+                    <img src="assets/icons/search.svg" class="search-icon" alt="">
+                    <input type="search" placeholder="Search (team / player)">
                 </div>
 
-                <button class="notif-button" type="button" aria-label="Notifications">
+                <button class="notif-button" type="button">
                     <img src="assets/icons/notification.svg" class="notif-icon" alt="">
                 </button>
             </div>
@@ -131,7 +130,7 @@
 
         <div class="row-separator"></div>
 
-        <!-- ROW 3 — SUB NAVIGATION -->
+        <!-- ROW 3: SUB NAVIGATION -->
         <nav class="header-row row-sub" aria-label="Secondary navigation">
 
             <!-- ODDS SUBNAV -->
@@ -194,18 +193,17 @@
         </nav>
     </header>
 
-
-    <!-- ================================= -->
-    <!-- MOBILE HEADER                     -->
-    <!-- ================================= -->
-
+    <!-- ====================================================
+         MOBILE HEADER
+    ======================================================= -->
     <header class="header-mobile">
 
         <!-- TOP ROW -->
         <div class="mobile-row row-top">
-            <button class="hamburger" type="button" aria-label="Toggle menu">☰</button>
+            <button class="hamburger" type="button">☰</button>
 
             <div class="top-options">
+
                 <button class="odds-toggle mobile-odds-toggle" type="button">
                     <span class="value">Decimal Odds</span>
                     <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
@@ -216,10 +214,11 @@
                     <span class="lang-code">EN</span>
                     <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
+
             </div>
         </div>
 
-        <!-- BRAND ROW -->
+        <!-- BRAND -->
         <div class="mobile-row row-brand">
             <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
             <div class="brand-text">
@@ -228,14 +227,14 @@
             </div>
         </div>
 
-        <!-- SEARCH ROW -->
+        <!-- SEARCH -->
         <div class="mobile-row row-search">
             <div class="search-box">
                 <img src="assets/icons/search.svg" class="search-icon" alt="">
                 <input type="search" placeholder="Search (team / player)">
             </div>
 
-            <button class="notif-button" aria-label="Notifications">
+            <button class="notif-button">
                 <img src="assets/icons/notification.svg" class="notif-icon" alt="">
             </button>
         </div>
@@ -248,7 +247,7 @@
             <button class="nav-chip" data-section="premium">PREMIUM ★</button>
         </nav>
 
-        <!-- SUB NAV -->
+        <!-- SUBNAV -->
         <nav class="mobile-sub-nav">
             <div class="subnav-group active" data-subnav="odds">
                 <button class="sub-chip">HOME</button>
@@ -262,23 +261,22 @@
         </nav>
     </header>
 
-
-    <!-- ================================= -->
-    <!-- MOBILE FULLSCREEN MODAL           -->
-    <!-- ================================= -->
-
-    <div class="be-modal-overlay" id="mobile-header-modal" aria-hidden="true">
+    <!-- ====================================================
+         MOBILE MODAL
+    ======================================================= -->
+    <div class="be-modal-overlay" id="mobile-header-modal">
         <div class="be-modal">
+
             <div class="be-modal-header">
                 <span class="be-modal-title">Select option</span>
-                <button class="be-modal-close" type="button" aria-label="Close">
+                <button class="be-modal-close" type="button">
                     <img src="assets/icons/close.svg" alt="">
                 </button>
             </div>
 
             <div class="be-modal-body">
 
-                <!-- ODDS PANEL -->
+                <!-- ODDS -->
                 <div class="be-modal-section modal-odds active">
                     <button class="be-modal-item" data-odds="decimal">Decimal Odds (1.50)</button>
                     <button class="be-modal-item" data-odds="fractional">Fractional Odds (1/2)</button>
@@ -288,12 +286,11 @@
                     <button class="be-modal-item" data-odds="indonesian">Indonesian Odds (-2.00)</button>
                 </div>
 
-                <!-- LANGUAGE PANEL -->
+                <!-- LANGUAGE -->
                 <div class="be-modal-section modal-language">
                     <button class="be-modal-item" data-lang="sq">Albanian</button>
                     <button class="be-modal-item" data-lang="ar">Arabic</button>
                     <button class="be-modal-item" data-lang="zh">Chinese</button>
-                    <button class="be-modal-item" data-lang="hr">Croatian</button>
                     <button class="be-modal-item" data-lang="nl">Dutch</button>
                     <button class="be-modal-item" data-lang="en">English</button>
                     <button class="be-modal-item" data-lang="fr">French</button>
@@ -314,7 +311,7 @@
                     <button class="be-modal-item" data-lang="uk">Ukrainian</button>
                 </div>
 
-                <!-- TOOLS PANEL -->
+                <!-- TOOLS -->
                 <div class="be-modal-section modal-tools">
                     <button class="be-modal-item">Blocked Odds</button>
                     <button class="be-modal-item">Value Bets</button>
@@ -327,17 +324,17 @@
         </div>
     </div>
 
-
-    <!-- ================================= -->
-    <!-- MAIN CONTENT -->
-    <!-- ================================= -->
-
+    <!-- ====================================================
+         MAIN CONTENT
+    ======================================================= -->
     <main>
-        <h1>BetEngine Enterprise Skeleton</h1>
-        <p>This is the base skeleton structure for BetEngine using OddsPortal-style architecture.</p>
+        <h1>BetEngine Enterprise</h1>
+        <p>Enterprise-ready skeleton layout.</p>
     </main>
 
-    <!-- JS -->
+    <!-- ====================================================
+         JAVASCRIPT
+    ======================================================= -->
     <script src="js/core/core.js"></script>
     <script src="js/ui/header.js"></script>
     <script src="js/ui/widgets.js"></script>
