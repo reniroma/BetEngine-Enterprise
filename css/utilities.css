@@ -1,105 +1,193 @@
-/************************************
- * BetEngine Enterprise
- * UTILITIES (helpers only)
-************************************/
+/*********************************************************
+ * BetEngine Enterprise – UTILITIES.CSS (FINAL FIX)
+ * Universal helpers for layout, spacing, display,
+ * alignment, sizing, shadows, borders, text, visibility.
+ *********************************************************/
 
-/* ==========================================
-   DISPLAY UTILITIES
-========================================== */
+/* =======================================================
+   DISPLAY
+======================================================= */
 
-.u-hidden {
-    display: none !important;
+.d-block      { display: block !important; }
+.d-inline     { display: inline !important; }
+.d-inline-flex { display: inline-flex !important; }
+.d-flex       { display: flex !important; }
+.d-grid       { display: grid !important; }
+.d-none       { display: none !important; }
+
+/* =======================================================
+   FLEXBOX UTILITIES
+======================================================= */
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.u-show {
-    display: block !important;
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.u-flex {
-    display: flex !important;
+.flex-around {
+    display: flex;
+    justify-content: space-around;
 }
 
-.u-inline-flex {
-    display: inline-flex !important;
-}
+.flex-start    { display: flex; justify-content: flex-start; }
+.flex-end      { display: flex; justify-content: flex-end; }
+.flex-column   { display: flex; flex-direction: column; }
+.flex-wrap     { display: flex; flex-wrap: wrap; }
 
-.u-flex-center {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
+.align-center  { align-items: center !important; }
+.align-start   { align-items: flex-start !important; }
+.align-end     { align-items: flex-end !important; }
 
-.u-flex-between {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-}
+.justify-center { justify-content: center !important; }
+.justify-start  { justify-content: flex-start !important; }
+.justify-end    { justify-content: flex-end !important; }
 
+/* =======================================================
+   WIDTH & HEIGHT
+======================================================= */
 
-/* ==========================================
-   SPACING UTILITIES
-   (only essential helpers — do not bloat)
-========================================== */
+.w-100 { width: 100% !important; }
+.h-100 { height: 100% !important; }
 
-.u-mt-4 { margin-top: var(--space-4) !important; }
-.u-mt-8 { margin-top: var(--space-8) !important; }
-.u-mt-12 { margin-top: var(--space-12) !important; }
-.u-mt-16 { margin-top: var(--space-16) !important; }
+.min-w-0 { min-width: 0 !important; }
+.min-h-0 { min-height: 0 !important; }
 
-.u-mb-4 { margin-bottom: var(--space-4) !important; }
-.u-mb-8 { margin-bottom: var(--space-8) !important; }
+.max-w-full { max-width: 100% !important; }
+.max-h-full { max-height: 100% !important; }
 
-.u-px-10 { padding-left: var(--space-10) !important; padding-right: var(--space-10) !important; }
-.u-px-16 { padding-left: var(--space-16) !important; padding-right: var(--space-16) !important; }
+/* =======================================================
+   MARGINS (TOP / BOTTOM / LEFT / RIGHT)
+======================================================= */
 
+.m-0   { margin: 0 !important; }
+.mt-4  { margin-top: 4px !important; }
+.mt-8  { margin-top: 8px !important; }
+.mt-12 { margin-top: 12px !important; }
+.mt-16 { margin-top: 16px !important; }
+.mt-24 { margin-top: 24px !important; }
+.mt-32 { margin-top: 32px !important; }
 
-/* ==========================================
+.mb-4  { margin-bottom: 4px !important; }
+.mb-8  { margin-bottom: 8px !important; }
+.mb-12 { margin-bottom: 12px !important; }
+.mb-16 { margin-bottom: 16px !important; }
+.mb-24 { margin-bottom: 24px !important; }
+.mb-32 { margin-bottom: 32px !important; }
+
+.ml-4  { margin-left: 4px !important; }
+.ml-8  { margin-left: 8px !important; }
+.ml-12 { margin-left: 12px !important; }
+.ml-16 { margin-left: 16px !important; }
+
+.mr-4  { margin-right: 4px !important; }
+.mr-8  { margin-right: 8px !important; }
+.mr-12 { margin-right: 12px !important; }
+.mr-16 { margin-right: 16px !important; }
+
+/* =======================================================
+   PADDING UTILITIES
+======================================================= */
+
+.p-0  { padding: 0 !important; }
+.p-4  { padding: 4px !important; }
+.p-8  { padding: 8px !important; }
+.p-12 { padding: 12px !important; }
+.p-16 { padding: 16px !important; }
+.p-24 { padding: 24px !important; }
+
+.pt-4  { padding-top: 4px !important; }
+.pt-8  { padding-top: 8px !important; }
+.pt-12 { padding-top: 12px !important; }
+
+.pb-4  { padding-bottom: 4px !important; }
+.pb-8  { padding-bottom: 8px !important; }
+.pb-12 { padding-bottom: 12px !important; }
+
+.pl-4  { padding-left: 4px !important; }
+.pl-8  { padding-left: 8px !important; }
+
+.pr-4  { padding-right: 4px !important; }
+.pr-8  { padding-right: 8px !important; }
+
+/* =======================================================
    TEXT UTILITIES
-========================================== */
+======================================================= */
 
-.u-text-center {
-    text-align: center !important;
-}
+.text-left   { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right  { text-align: right !important; }
 
-.u-text-right {
-    text-align: right !important;
-}
+.text-primary   { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-muted     { color: var(--text-muted) !important; }
 
-.u-text-muted {
-    color: var(--color-text-muted) !important;
-}
+.bold      { font-weight: 700 !important; }
+.semibold  { font-weight: 600 !important; }
+.light     { font-weight: 300 !important; }
 
+.uppercase { text-transform: uppercase !important; }
+.lowercase { text-transform: lowercase !important; }
 
-/* ==========================================
-   CURSOR & INTERACTION
-========================================== */
+/* =======================================================
+   BORDERS / RADIUS
+======================================================= */
 
-.u-pointer {
-    cursor: pointer !important;
-}
+.radius-4  { border-radius: 4px !important; }
+.radius-8  { border-radius: 8px !important; }
+.radius-12 { border-radius: 12px !important; }
+.radius-20 { border-radius: 20px !important; }
+.rounded   { border-radius: 999px !important; }
 
-.u-no-select {
-    user-select: none !important;
-}
+.border         { border: 1px solid var(--border-soft) !important; }
+.border-medium  { border: 1px solid var(--border-medium) !important; }
+.border-bottom  { border-bottom: 1px solid var(--border-soft) !important; }
 
+/* =======================================================
+   SHADOWS
+======================================================= */
 
-/* ==========================================
-   STATE UTILITIES
-========================================== */
+.shadow-soft   { box-shadow: var(--shadow-soft) !important; }
+.shadow-strong { box-shadow: var(--shadow-strong) !important; }
 
-.show {
-    display: block !important;
-}
+/* =======================================================
+   POSITIONING
+======================================================= */
 
-.be-modal-open {
-    overflow: hidden !important;
-}
+.relative { position: relative !important; }
+.absolute { position: absolute !important; }
+.fixed    { position: fixed !important; }
+.sticky   { position: sticky !important; top: 0; }
 
+.z-10    { z-index: 10 !important; }
+.z-50    { z-index: 50 !important; }
+.z-100   { z-index: 100 !important; }
+.z-500   { z-index: 500 !important; }
+.z-999   { z-index: 999 !important; }
+.z-max   { z-index: 9999 !important; }
 
-/* ==========================================
-   MISC
-========================================== */
+/* =======================================================
+   VISIBILITY
+======================================================= */
 
-.u-nowrap {
-    white-space: nowrap !important;
-}
+.hidden     { display: none !important; }
+.invisible  { visibility: hidden !important; }
+.no-select  { user-select: none !important; }
+.overflow-hidden { overflow: hidden !important; }
+.overflow-auto   { overflow: auto !important; }
+
+/* =======================================================
+   OPACITY
+======================================================= */
+
+.opacity-0   { opacity: 0 !important; }
+.opacity-25  { opacity: 0.25 !important; }
+.opacity-50  { opacity: 0.50 !important; }
+.opacity-75  { opacity: 0.75 !important; }
+.opacity-100 { opacity: 1 !important; }
