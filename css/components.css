@@ -1,387 +1,531 @@
-/************************************
- * BetEngine Enterprise
- * COMPONENTS (UI Elements)
-************************************/
+/*********************************************************
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL)
+ * Buttons, dropdowns, chips, modal, header elements
+ *********************************************************/
 
-/* ==========================================
-   BUTTONS
-========================================== */
+/* -------------------------------------------------------
+   GENERIC BUTTONS / CONTROLS
+-------------------------------------------------------- */
 
-.btn,
-.btn-icon,
-.btn-auth {
+button {
+    font-family: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: none;
+}
+
+.btn-auth,
+.odds-toggle,
+.language-toggle,
+.hamburger,
+.notif-button,
+.nav-chip,
+.sub-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-6);
-    font-family: var(--font-family-base);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    border: none;
-    outline: none;
-    white-space: nowrap;
-}
-
-/* Auth buttons (Login / Register) */
-.btn-auth {
-    padding: var(--space-6) var(--space-14);
-    border-radius: var(--radius-sm);
-    font-weight: var(--font-weight-bold);
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
-    background: var(--color-brand-primary);
-    color: var(--color-text-dark);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
 .btn-auth.login {
-    background: var(--color-brand-primary);
+    background: var(--bg-button-secondary, #222236);
+    color: var(--text-secondary, #00eaff);
 }
 
 .btn-auth.register {
-    background: var(--color-brand-secondary);
+    background: var(--bg-button-primary, #ffec00);
+    color: #000;
 }
 
-.btn-auth:hover {
-    filter: brightness(1.08);
+.btn-auth img {
+    width: 14px;
+    height: 14px;
 }
 
-/* Icon button */
-.btn-icon {
-    padding: var(--space-6);
-    background: var(--color-bg-panel);
-    border: 1px solid var(--color-border);
+/* Notification button */
+.notif-button {
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-}
-
-.btn-icon:hover {
-    background: var(--color-bg-hover);
-}
-
-/* ==========================================
-   DROPDOWN SYSTEM
-========================================== */
-
-/* Toggle buttons */
-.dropdown-toggle,
-.odds-toggle,
-.language-toggle {
+    background: var(--bg-panel-soft, #181824);
     display: inline-flex;
     align-items: center;
-    gap: var(--space-6);
-    padding: var(--space-6) var(--space-10);
-    background: var(--color-bg-panel);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    color: var(--color-text-accent);
-    font-size: var(--font-size-sm);
-}
-
-.dropdown-toggle:hover,
-.odds-toggle:hover,
-.language-toggle:hover {
-    background: var(--color-bg-hover);
-}
-
-/* Dropdown containers */
-.dropdown-menu,
-.odds-dropdown,
-.language-dropdown,
-.tools-dropdown {
-    position: absolute;
-    display: none;
-    background: var(--color-bg-dropdown);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-4) 0;
-    box-shadow: var(--shadow-dropdown);
-    z-index: var(--z-dropdown-top);
-    min-width: 160px;
-}
-
-/* Dropdown items */
-.dropdown-item,
-.odds-dropdown .item,
-.language-dropdown .item,
-.tools-dropdown .item {
-    padding: var(--space-6) var(--space-12);
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.dropdown-item:hover,
-.odds-dropdown .item:hover,
-.language-dropdown .item:hover,
-.tools-dropdown .item:hover {
-    background: var(--color-bg-hover);
-    color: var(--color-text-accent);
-}
-
-/* Dropdown visible state */
-.dropdown-menu.show,
-.odds-dropdown.show,
-.language-dropdown.show,
-.tools-dropdown.show {
-    display: block;
-}
-
-/* ==========================================
-   HEADER COMPONENTS (Rows 1–2–3)
-========================================== */
-
-.header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* Row top (odds + language + auth) */
-.header-row.row-top {
-    padding: var(--space-4) var(--space-24);
-    min-height: 32px;
-    font-size: var(--font-size-sm);
-    background: var(--color-bg-main);
-    opacity: 0.96;
-}
-
-/* Row main (brand + nav + search) */
-.header-row.row-main {
-    padding: var(--space-8) var(--space-24);
-    min-height: 54px;
-    background: var(--color-bg-main);
-}
-
-/* Row sub (sub-navigation) */
-.header-row.row-sub {
-    padding: var(--space-6) var(--space-24) var(--space-10);
-    background: var(--color-bg-main);
-    display: flex;
-    gap: var(--space-24);
-}
-
-/* Brand */
-.brand {
-    display: flex;
-    align-items: center;
-    gap: var(--space-10);
-}
-
-.brand .logo {
-    height: 36px;
-}
-
-.brand-text .name {
-    color: var(--color-text-accent);
-    font-size: var(--font-size-xxl);
-    font-weight: var(--font-weight-bold);
-}
-
-.brand-text .tagline {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-xs);
-}
-
-/* Navigation (Row 2) */
-.main-nav {
-    display: flex;
-    gap: var(--space-28);
-    flex: 1;
     justify-content: center;
 }
 
-.nav-item {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding-bottom: var(--space-4);
-    position: relative;
+.notif-icon {
+    width: 18px;
+    height: 18px;
 }
 
-.nav-item:hover {
-    color: var(--color-text-accent);
+/* Hamburger - desktop hidden in layout.css / mobile.css */
+.hamburger {
+    font-size: 20px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
 }
 
-.nav-item.active {
-    color: var(--color-text-accent);
-    font-weight: var(--font-weight-bold);
+/* -------------------------------------------------------
+   HEADER LEFT/RIGHT BLOCKS
+-------------------------------------------------------- */
+
+.header-row.row-top .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
-.nav-item.active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 2px;
-    background: var(--color-text-accent);
+/* Brand block */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Premium star */
-.premium-link .premium-star {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-accent);
-    position: relative;
-    top: -2px;
+.brand .logo {
+    width: 34px;
+    height: 34px;
 }
 
-/* ==========================================
-   SEARCH BOX
-========================================== */
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.brand-text .name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary, #ffec00);
+}
+
+.brand-text .tagline {
+    font-size: 11px;
+    color: var(--text-muted, #b3b3b3);
+}
+
+/* Search box */
+.search-notify {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 .search-box {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
-    background: var(--color-bg-panel);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    padding: var(--space-6) var(--space-10);
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--bg-panel-soft, #181824);
+    min-width: 220px;
 }
 
-.search-box .search-icon {
-    height: 14px;
+.search-icon {
     width: 14px;
-    opacity: 0.7;
+    height: 14px;
 }
 
 .search-box input {
-    background: transparent;
     border: none;
     outline: none;
-    color: var(--color-text-primary);
-    font-size: var(--font-size-md);
+    background: transparent;
+    color: var(--text-secondary, #00eaff);
+    font-size: 13px;
 }
 
-/* ==========================================
-   SUBNAV SYSTEM (Row 3)
-========================================== */
+/* -------------------------------------------------------
+   MAIN NAV (DESKTOP)
+-------------------------------------------------------- */
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.main-nav .nav-item {
+    position: relative;
+    font-size: 13px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #b3b3b3);
+    padding: 6px 0;
+}
+
+.main-nav .nav-item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+.main-nav .nav-item.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--text-secondary, #00eaff);
+}
+
+/* Premium link + star centered */
+.premium-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--bg-badge-premium, #ff9800);
+}
+
+.premium-link .premium-star {
+    font-size: 13px;
+    line-height: 1;
+}
+
+/* -------------------------------------------------------
+   SUBNAV (DESKTOP) + BETTING TOOLS DROPDOWN
+-------------------------------------------------------- */
+
+.row-sub {
+    display: flex;
+    align-items: center;
+}
+
+.row-sub .subnav-group {
+    display: none;
+    align-items: center;
+    gap: 14px;
+}
+
+.row-sub .subnav-group.active {
+    display: flex;
+}
 
 .sub-item {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-md);
+    position: relative;
+    font-size: 12px;
+    text-decoration: none;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted, #b3b3b3);
+    padding: 4px 0;
     cursor: pointer;
-    white-space: nowrap;
 }
 
 .sub-item:hover {
-    color: var(--color-text-accent);
+    color: var(--text-secondary, #00eaff);
 }
 
-.sub-item.active {
-    color: var(--color-text-accent);
-}
-
+/* Betting tools container */
 .sub-item-tools {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: 4px;
     position: relative;
 }
 
 .sub-item-tools .caret {
     width: 10px;
     height: 10px;
-    opacity: 0.9;
 }
 
-/* Active subnav group display */
-.subnav-group {
+/* Tools dropdown */
+.tools-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    min-width: 200px;
+    background: var(--bg-panel, #11141d);
+    border-radius: 8px;
+    padding: 6px 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    z-index: 50;
+}
+
+.tools-dropdown .item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+    white-space: nowrap;
+}
+
+.tools-dropdown .item:hover {
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+}
+
+/* Visible state for all dropdowns (shared class) */
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+}
+
+.odds-dropdown.show,
+.language-dropdown.show,
+.tools-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* -------------------------------------------------------
+   ODDS FORMAT + LANGUAGE (DESKTOP)
+-------------------------------------------------------- */
+
+.odds-format,
+.language-selector {
+    position: relative;
+}
+
+.odds-toggle,
+.language-toggle {
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.odds-toggle .label {
+    font-size: 11px;
+    text-transform: none;
+    opacity: 0.7;
+}
+
+.odds-toggle .value {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.icon-caret {
+    width: 10px;
+    height: 10px;
+}
+
+/* Odds dropdown panel */
+.odds-dropdown {
+    position: absolute;
+    right: 0;
+    top: 120%;
+    min-width: 230px;
+    background: var(--bg-panel, #11141d);
+    border-radius: 8px;
+    padding: 6px 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    z-index: 50;
+}
+
+.odds-dropdown .item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.odds-dropdown .item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+.odds-dropdown .item:hover {
+    background: var(--bg-panel-soft, #181824);
+}
+
+/* Language dropdown panel */
+.language-dropdown {
+    position: absolute;
+    right: 0;
+    top: 120%;
+    min-width: 210px;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--bg-panel, #11141d);
+    border-radius: 8px;
+    padding: 6px 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    z-index: 50;
+}
+
+.language-dropdown .item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.language-dropdown .item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+.language-dropdown .item:hover {
+    background: var(--bg-panel-soft, #181824);
+}
+
+/* -------------------------------------------------------
+   MOBILE HEADER – CHIPS & ROWS
+-------------------------------------------------------- */
+
+.header-mobile .mobile-row {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    gap: 8px;
+}
+
+.header-mobile .row-top {
+    justify-content: space-between;
+}
+
+.header-mobile .top-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-mobile .row-brand .logo {
+    width: 30px;
+    height: 30px;
+}
+
+.header-mobile .row-search .search-box {
+    flex: 1;
+}
+
+/* Mobile main nav chips */
+.mobile-main-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 10px;
+    overflow-x: auto;
+}
+
+.nav-chip {
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-muted, #b3b3b3);
+    flex-shrink: 0;
+}
+
+.nav-chip.active {
+    background: var(--bg-button-primary-soft, rgba(255, 236, 0, 0.12));
+    color: var(--text-primary, #ffec00);
+}
+
+/* Mobile subnav chips */
+.mobile-sub-nav {
+    padding: 0 12px 10px;
+}
+
+.mobile-sub-nav .subnav-group {
     display: none;
-    gap: var(--space-22);
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
-.subnav-group.active {
+.mobile-sub-nav .subnav-group.active {
     display: flex;
 }
 
-/* ==========================================
-   MOBILE COMPONENTS (chips, rows)
-========================================== */
-
-.nav-chip,
 .sub-chip {
-    display: inline-flex;
-    align-items: center;
-    background: var(--color-bg-chip);
-    border: 1px solid var(--color-border);
-    padding: var(--space-6) var(--space-14);
-    border-radius: 20px;
-    font-size: var(--font-size-md);
-    color: var(--color-text-secondary);
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.nav-chip:hover,
-.nav-chip.active,
-.sub-chip:hover {
-    background: var(--color-brand-primary);
-    color: var(--color-text-dark);
-}
-
-.sub-chip {
-    border-radius: var(--radius-md);
+    border-radius: 999px;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-muted, #b3b3b3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 10px;
 }
 
 .sub-chip.tools {
-    font-weight: var(--font-weight-semibold);
+    background: var(--bg-button-secondary, #222236);
+    color: var(--text-secondary, #00eaff);
 }
 
-/* ==========================================
-   MODAL SYSTEM
-========================================== */
+/* -------------------------------------------------------
+   MOBILE MODAL
+-------------------------------------------------------- */
 
 .be-modal-overlay {
     position: fixed;
     inset: 0;
-    background: var(--color-overlay-dark);
     display: none;
-    justify-content: center;
     align-items: center;
-    z-index: var(--z-modal);
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
 }
 
-.be-modal-overlay.open {
+.be-modal-overlay.show {
     display: flex;
 }
 
 .be-modal {
-    background: var(--color-bg-main);
-    border: 1px solid var(--color-border);
-    width: 100%;
-    max-width: 480px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    width: 90%;
+    max-width: 360px;
+    background: var(--bg-panel, #11141d);
+    border-radius: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
 }
 
 .be-modal-header {
-    padding: var(--space-12) var(--space-16);
-    background: var(--color-bg-panel-soft);
-    border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--bg-panel-strong, #0d0d16);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .be-modal-title {
-    color: var(--color-text-primary);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary, #00eaff);
+}
+
+.be-modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--bg-panel-soft, #181824);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .be-modal-close img {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
 }
 
 .be-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--space-8) 0 var(--space-16);
+    padding: 8px 0;
 }
 
 .be-modal-section {
@@ -395,15 +539,21 @@
 .be-modal-item {
     width: 100%;
     text-align: left;
-    padding: var(--space-10) var(--space-18);
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
     background: transparent;
-    border: none;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-    cursor: pointer;
 }
 
 .be-modal-item:hover {
-    background: var(--color-bg-hover);
-    color: var(--color-text-accent);
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
 }
+
+/* -------------------------------------------------------
+   RESPONSIVE HOOKS (DESKTOP vs MOBILE)
+   (Visibility itself kontrollohet në desktop.css + mobile.css)
+-------------------------------------------------------- */
+
+/* No visibility rules here on purpose – only style.
+   Desktop/mobile display is controlled in desktop.css and mobile.css. */
