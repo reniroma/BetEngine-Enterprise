@@ -245,5 +245,113 @@
 
     .main-nav {
         gap: 14px;
-    }
+    
+}
+
+/*********************************************************
+ * DESKTOP HEADER FIXES – BetEngine Enterprise
+ * Fix pack for 9 issues (search bar, spacing, logos, etc.)
+ *********************************************************/
+
+/* --------------------------------------------------------
+   (1) LOGO LEFT PADDING
+-------------------------------------------------------- */
+.header-desktop .row-main {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+
+/* --------------------------------------------------------
+   (2) SEARCH BAR WIDTH + POSITION
+-------------------------------------------------------- */
+.header-desktop .search-notify {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-desktop .search-box {
+    min-width: 260px !important;
+    width: 260px !important;
+}
+
+.header-desktop .search-box input {
+    width: 100%;
+}
+
+/* --------------------------------------------------------
+   (3) FIX – NOTIFICATION ICON (REMOVE GREY CIRCLE)
+-------------------------------------------------------- */
+.header-desktop .notif-button {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-desktop .notif-icon {
+    width: 22px !important;
+    height: 22px !important;
+}
+
+/* --------------------------------------------------------
+   (4) ROW 1 – RIGHT SIDE IS TOO COMPRESSED
+-------------------------------------------------------- */
+.header-desktop .row-top .right > * {
+    margin-left: 14px !important;
+}
+
+/* --------------------------------------------------------
+   (5) PREMIUM STAR ALIGNMENT
+-------------------------------------------------------- */
+.premium-link .premium-star {
+    font-size: 14px;
+    position: relative;
+    top: -1px;
+    margin-left: 4px;
+}
+
+/* --------------------------------------------------------
+   (6) SUBNAV ITEMS TOO CLOSE
+-------------------------------------------------------- */
+.header-desktop .row-sub .sub-item {
+    padding: 10px 18px !important;
+}
+
+/* --------------------------------------------------------
+   (7) HEADER BACKGROUND IMPROVEMENT (BRIGHTER + DEPTH)
+-------------------------------------------------------- */
+.header-desktop {
+    background: linear-gradient(
+        to bottom,
+        #0b0b12 0%,
+        #101018 50%,
+        #11141d 100%
+    ) !important;
+}
+
+/* --------------------------------------------------------
+   (8) HEADER SHADOW (ENTERPRISE DEPTH)
+-------------------------------------------------------- */
+.header-desktop {
+    box-shadow: 0 5px 25px rgba(0,0,0,0.55) !important;
+    position: relative;
+    z-index: 100;
+}
+
+/* --------------------------------------------------------
+   (9) REDUCE HEADER HEIGHT (REMOVE EXTRA PADDING)
+-------------------------------------------------------- */
+.header-desktop .header-row {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.header-desktop .row-main {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
 }
