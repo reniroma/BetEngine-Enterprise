@@ -1,1 +1,105 @@
-/* utilities.css placeholder for BetEngine enterprise structure */
+/************************************
+ * BetEngine Enterprise
+ * UTILITIES (helpers only)
+************************************/
+
+/* ==========================================
+   DISPLAY UTILITIES
+========================================== */
+
+.u-hidden {
+    display: none !important;
+}
+
+.u-show {
+    display: block !important;
+}
+
+.u-flex {
+    display: flex !important;
+}
+
+.u-inline-flex {
+    display: inline-flex !important;
+}
+
+.u-flex-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.u-flex-between {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+
+/* ==========================================
+   SPACING UTILITIES
+   (only essential helpers — do not bloat)
+========================================== */
+
+.u-mt-4 { margin-top: var(--space-4) !important; }
+.u-mt-8 { margin-top: var(--space-8) !important; }
+.u-mt-12 { margin-top: var(--space-12) !important; }
+.u-mt-16 { margin-top: var(--space-16) !important; }
+
+.u-mb-4 { margin-bottom: var(--space-4) !important; }
+.u-mb-8 { margin-bottom: var(--space-8) !important; }
+
+.u-px-10 { padding-left: var(--space-10) !important; padding-right: var(--space-10) !important; }
+.u-px-16 { padding-left: var(--space-16) !important; padding-right: var(--space-16) !important; }
+
+
+/* ==========================================
+   TEXT UTILITIES
+========================================== */
+
+.u-text-center {
+    text-align: center !important;
+}
+
+.u-text-right {
+    text-align: right !important;
+}
+
+.u-text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+
+/* ==========================================
+   CURSOR & INTERACTION
+========================================== */
+
+.u-pointer {
+    cursor: pointer !important;
+}
+
+.u-no-select {
+    user-select: none !important;
+}
+
+
+/* ==========================================
+   STATE UTILITIES
+========================================== */
+
+.show {
+    display: block !important;
+}
+
+.be-modal-open {
+    overflow: hidden !important;
+}
+
+
+/* ==========================================
+   MISC
+========================================== */
+
+.u-nowrap {
+    white-space: nowrap !important;
+}
