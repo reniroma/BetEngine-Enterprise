@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
      * UTILITY FUNCTIONS
      *******************************************************/
     const closeAllDesktopDropdowns = () => {
-        document.querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+        document
+            .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
             .forEach(el => el.classList.remove("show"));
     };
 
@@ -230,7 +231,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
      * DESKTOP AUTH MODAL (LOGIN / REGISTER)
-     * NEW PATCH — ADDED SAFELY
      *******************************************************/
     function initDesktopAuth() {
         const overlay = document.querySelector(".be-auth-overlay");
@@ -267,11 +267,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
-     * INIT ALL MODULES
+     * INIT ALL MODULES AFTER HEADER IS LOADED
      *******************************************************/
-    initDesktopDropdowns();
-    initSectionNavigation();
-    initMobileModal();
-    initDesktopAuth();  // NEW PATCH
+    document.addEventListener("headerLoaded", () => {
+        initDesktopDropdowns();
+        initSectionNavigation();
+        initMobileModal();
+        initDesktopAuth();
+    });
 
 });
