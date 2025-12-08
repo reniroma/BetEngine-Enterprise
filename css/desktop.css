@@ -276,16 +276,23 @@
     background: none !important;
     border: none !important;
     padding: 0 !important;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
 }
 
 .header-desktop .notif-icon {
     width: 22px !important;
     height: 22px !important;
+    display: block !important;
+    object-fit: contain;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -1px;
 }
 
 /* (4) ROW 1 SPACING */
