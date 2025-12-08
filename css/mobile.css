@@ -1,29 +1,35 @@
 /************************************
  * BetEngine Enterprise
- * MOBILE STYLES (mobile-only behavior)
+ * MOBILE UI (FINAL CLEAN VERSION)
 ************************************/
 
-/* Mobile header visible only on small screens */
+/* Mobile header hidden by default (desktop-first) */
 .header-mobile {
     display: none;
 }
 
+/************************************
+ * MOBILE ACTIVATION BREAKPOINT
+************************************/
 @media (max-width: 980px) {
 
-    /* Activate mobile header */
+    /* Enable mobile header */
     .header-mobile {
         display: block;
+        width: 100%;
+        background: var(--color-bg-main);
+        position: relative;
+        z-index: var(--z-header);
     }
 
-    /* Hide desktop header */
+    /* Disable desktop header */
     .header-desktop {
         display: none;
     }
 
-    /* -----------------------------------------
-       MOBILE LAYOUT SECTIONS
-       (Row spacing & organization only)
-    ------------------------------------------ */
+    /************************************
+     * MOBILE ROWS (STRUCTURE + SPACING)
+    ************************************/
 
     .header-mobile .mobile-row,
     .header-mobile .row-top,
@@ -31,50 +37,142 @@
     .header-mobile .row-search {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: var(--space-10);
         padding: var(--space-8) var(--space-14);
+        background: var(--color-bg-main);
+        position: relative;
+        overflow: visible;
     }
 
-    /* Chips scroller */
+    /************************************
+     * TOP ROW (hamburger + odds/lang)
+    ************************************/
+    .header-mobile .row-top .hamburger {
+        font-size: 22px;
+        padding: var(--space-4) var(--space-10);
+        color: var(--color-text-accent);
+        background: transparent;
+        border: 1px solid var(--color-text-accent);
+        border-radius: var(--radius-md);
+    }
+
+    .header-mobile .top-options {
+        display: flex;
+        align-items: center;
+        gap: var(--space-10);
+    }
+
+    .header-mobile .top-options .odds-toggle,
+    .header-mobile .top-options .lang-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-6);
+        background: var(--color-bg-panel);
+        padding: var(--space-6) var(--space-10);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        color: var(--color-text-accent);
+        font-size: var(--font-size-sm);
+    }
+
+    .header-mobile .top-options .icon-lang,
+    .header-mobile .top-options .icon-caret {
+        width: 14px;
+        height: 14px;
+    }
+
+    /************************************
+     * BRAND ROW
+    ************************************/
+    .header-mobile .row-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--space-10);
+    }
+
+    .header-mobile .row-brand .logo {
+        height: 38px;
+        width: auto;
+    }
+
+    .header-mobile .row-brand .brand-text .name {
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-accent);
+    }
+
+    .header-mobile .row-brand .brand-text .tagline {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-muted);
+    }
+
+    /************************************
+     * SEARCH ROW
+    ************************************/
+    .header-mobile .row-search .search-box {
+        width: 100%;
+    }
+
+    .header-mobile .row-search .notif-button {
+        background: var(--color-bg-panel);
+        border: 1px solid var(--color-border);
+        padding: var(--space-6);
+        border-radius: 50%;
+    }
+
+    .header-mobile .row-search .notif-button:hover {
+        background: var(--color-bg-hover);
+    }
+
+    /************************************
+     * MAIN NAVIGATION (CHIPS)
+    ************************************/
     .header-mobile .mobile-main-nav {
         display: flex;
         gap: var(--space-8);
         overflow-x: auto;
         padding: var(--space-6) var(--space-14);
         scrollbar-width: thin;
+        background: var(--color-bg-main);
+        white-space: nowrap;
     }
 
-    /* Subnav mobile container */
+    /************************************
+     * SUBNAV (SECONDARY CHIPS)
+    ************************************/
     .header-mobile .mobile-sub-nav {
         padding: var(--space-4) var(--space-14) var(--space-8);
+        background: var(--color-bg-main);
     }
 
     .header-mobile .mobile-sub-nav .subnav-group {
         display: none;
+        flex-wrap: wrap;
+        gap: var(--space-8);
     }
 
     .header-mobile .mobile-sub-nav .subnav-group.active {
         display: block;
     }
 
-    /* -----------------------------------------
-       MOBILE MODAL (Fullscreen behavior)
-       UI itself is in components.css
-    ------------------------------------------ */
-
+    /************************************
+     * MOBILE MODAL (FULLSCREEN)
+    ************************************/
     .be-modal {
         width: 100%;
         max-width: 100%;
         height: 100%;
         max-height: 100%;
         border-radius: 0;
+        background: var(--color-bg-main);
     }
 
     .be-modal-body {
         overflow-y: auto;
     }
 
-    /* Prevent body scroll when modal open */
+    /* Prevent body scroll when modal is open */
     .be-modal-open {
         overflow: hidden !important;
     }
