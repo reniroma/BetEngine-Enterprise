@@ -1,6 +1,18 @@
 /************************************
  * BetEngine Enterprise
- * COMPONENTS (UI Elements)
+ * COMPONENTS (UI ELEMENTS – HEADER)
+ * - Buttons / Auth
+ * - Toggles + Dropdowns
+ * - Brand
+ * - Main nav items
+ * - Subnav items
+ * - Search + Notification
+ * - Mobile chips
+ * - Modal
+ *
+ * IMPORTANT:
+ * - Nuk prekim .header-row, .row-top, .row-main, .row-sub
+ *   (layout + spacing i menaxhohen nga desktop.css / mobile.css)
 ************************************/
 
 /* ==========================================
@@ -40,11 +52,16 @@
     background: var(--color-brand-secondary);
 }
 
+.btn-auth img {
+    width: 14px;
+    height: 14px;
+}
+
 .btn-auth:hover {
     filter: brightness(1.08);
 }
 
-/* Icon button */
+/* Icon-only button (notifications, etc.) */
 .btn-icon {
     padding: var(--space-6);
     background: var(--color-bg-panel);
@@ -58,13 +75,12 @@
 
 
 /* ==========================================
-   DROPDOWN SYSTEM
+   TOGGLES (ODDS / LANGUAGE)
 ========================================== */
 
-/* Toggle buttons */
-.dropdown-toggle,
 .odds-toggle,
-.language-toggle {
+.language-toggle,
+.lang-toggle {
     display: inline-flex;
     align-items: center;
     gap: var(--space-6);
@@ -75,15 +91,44 @@
     cursor: pointer;
     color: var(--color-text-accent);
     font-size: var(--font-size-sm);
+    white-space: nowrap;
 }
 
-.dropdown-toggle:hover,
+.odds-toggle .label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.odds-toggle .value,
+.language-toggle .lang-code,
+.lang-toggle .lang-code {
+    font-weight: var(--font-weight-semibold);
+}
+
+.icon-lang,
+.icon-caret {
+    width: 14px;
+    height: 14px;
+}
+
 .odds-toggle:hover,
-.language-toggle:hover {
+.language-toggle:hover,
+.lang-toggle:hover {
     background: var(--color-bg-hover);
 }
 
-/* Dropdown containers */
+/* Containers for desktop toggles */
+.odds-format,
+.language-selector {
+    position: relative;
+}
+
+
+/* ==========================================
+   DROPDOWN SYSTEM
+========================================== */
+
+/* Core dropdown panels */
 .dropdown-menu,
 .odds-dropdown,
 .language-dropdown,
@@ -99,7 +144,7 @@
     min-width: 160px;
 }
 
-/* Dropdown items */
+/* Items */
 .dropdown-item,
 .odds-dropdown .item,
 .language-dropdown .item,
@@ -119,7 +164,7 @@
     color: var(--color-text-accent);
 }
 
-/* Dropdown visible state */
+/* Visible state (used nga JS me .show) */
 .dropdown-menu.show,
 .odds-dropdown.show,
 .language-dropdown.show,
@@ -127,43 +172,17 @@
     display: block;
 }
 
+/* Language dropdown minimal width = toggle width */
+.language-dropdown {
+    min-width: 100%;
+    width: max-content;
+}
+
 
 /* ==========================================
-   HEADER COMPONENTS (Rows 1–2–3)
+   BRAND (LOGO + TEXT)
 ========================================== */
 
-/* Generic row styling */
-.header-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* Row top (odds + language + auth) */
-.header-row.row-top {
-    padding: var(--space-4) var(--space-24);
-    min-height: 32px;
-    font-size: var(--font-size-sm);
-    background: var(--color-bg-main);
-    opacity: 0.96;
-}
-
-/* Row main (brand + nav + search) */
-.header-row.row-main {
-    padding: var(--space-8) var(--space-24);
-    min-height: 54px;
-    background: var(--color-bg-main);
-}
-
-/* Row sub (sub-navigation) */
-.header-row.row-sub {
-    padding: var(--space-6) var(--space-24) var(--space-10);
-    background: var(--color-bg-main);
-    display: flex;
-    gap: var(--space-24);
-}
-
-/* Brand */
 .brand {
     display: flex;
     align-items: center;
@@ -172,11 +191,13 @@
 
 .brand .logo {
     height: 36px;
+    width: auto;
+    display: block;
 }
 
 .brand-text .name {
     color: var(--color-text-accent);
-    font-size: var(--font-size-xxl);
+    font-size: var(--font-size-xl);
     font-weight: var(--font-weight-bold);
 }
 
@@ -185,10 +206,15 @@
     font-size: var(--font-size-xs);
 }
 
-/* Navigation (Row 2) */
+
+/* ==========================================
+   MAIN NAV (Row 2 – center menu)
+========================================== */
+
 .main-nav {
     display: flex;
-    gap: var(--space-28);
+    align-items: center;
+    gap: var(--space-20);
     flex: 1;
     justify-content: center;
 }
@@ -200,6 +226,7 @@
     letter-spacing: 0.03em;
     padding-bottom: var(--space-4);
     position: relative;
+    white-space: nowrap;
 }
 
 .nav-item:hover {
@@ -214,7 +241,8 @@
 .nav-item.active::after {
     content: "";
     position: absolute;
-    left: 0; right: 0;
+    left: 0;
+    right: 0;
     bottom: -2px;
     height: 2px;
     background: var(--color-text-accent);
@@ -224,13 +252,14 @@
 .premium-link .premium-star {
     font-size: var(--font-size-xs);
     color: var(--color-text-accent);
+    margin-left: 4px;
     position: relative;
     top: -2px;
 }
 
 
 /* ==========================================
-   SEARCH BOX
+   SEARCH BOX + NOTIFICATIONS
 ========================================== */
 
 .search-box {
@@ -255,11 +284,34 @@
     outline: none;
     color: var(--color-text-primary);
     font-size: var(--font-size-md);
+    width: 180px;
+}
+
+/* Notification button (can reuse .btn-icon, por le ta mbajmë të qartë) */
+.notif-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-panel);
+    cursor: pointer;
+}
+
+.notif-button .notif-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.9;
+}
+
+.notif-button:hover {
+    background: var(--color-bg-hover);
 }
 
 
 /* ==========================================
-   SUBNAV SYSTEM (Row 3)
+   SUBNAV (Row 3 – items + tools)
 ========================================== */
 
 .sub-item {
@@ -291,20 +343,21 @@
     opacity: 0.9;
 }
 
-/* Active subnav group display */
+/* Active subnav group (desktop + mobile) */
 .subnav-group {
     display: none;
-    gap: var(--space-22);
 }
 
 .subnav-group.active {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-10);
 }
 
 
 /* ==========================================
-   MOBILE COMPONENTS (chips, rows)
-   (UI only, behavior stays in mobile.css)
+   MOBILE COMPONENTS (chips / sub-chips)
 ========================================== */
 
 .nav-chip,
@@ -314,7 +367,7 @@
     background: var(--color-bg-chip);
     border: 1px solid var(--color-border);
     padding: var(--space-6) var(--space-14);
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
     font-size: var(--font-size-md);
     color: var(--color-text-secondary);
     white-space: nowrap;
@@ -322,14 +375,20 @@
 }
 
 .nav-chip:hover,
-.nav-chip.active,
-.sub-chip:hover {
+.nav-chip.active {
     background: var(--color-brand-primary);
     color: var(--color-text-dark);
+    border-color: var(--color-brand-primary);
 }
 
 .sub-chip {
     border-radius: var(--radius-md);
+}
+
+.sub-chip:hover {
+    background: var(--color-brand-primary);
+    color: var(--color-text-dark);
+    border-color: var(--color-brand-primary);
 }
 
 .sub-chip.tools {
@@ -338,7 +397,7 @@
 
 
 /* ==========================================
-   MODAL SYSTEM (shared desktop/mobile)
+   MODAL SYSTEM (mobile odds/lang/tools)
 ========================================== */
 
 .be-modal-overlay {
@@ -361,6 +420,7 @@
     width: 100%;
     max-width: 480px;
     height: 100%;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -378,6 +438,13 @@
     color: var(--color-text-primary);
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-semibold);
+}
+
+.be-modal-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-4);
 }
 
 .be-modal-close img {
@@ -406,11 +473,16 @@
     background: transparent;
     border: none;
     color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-md);
     cursor: pointer;
 }
 
 .be-modal-item:hover {
     background: var(--color-bg-hover);
     color: var(--color-text-accent);
+}
+
+/* Prevent body scroll kur modal është hapur (shtohet në <body> nga JS) */
+.be-modal-open {
+    overflow: hidden;
 }
