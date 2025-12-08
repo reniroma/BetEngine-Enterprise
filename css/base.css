@@ -1,35 +1,95 @@
-/* ===========================
-   BASE CSS – BetEngine Minimal
-   =========================== */
+/************************************
+ * BetEngine Enterprise
+ * BASE CSS (Reset + Global Defaults)
+************************************/
 
-* {
+/* ----------------------------------
+   RESET
+---------------------------------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
+
+/* ----------------------------------
+   DOCUMENT DEFAULTS
+---------------------------------- */
 
 html, body {
     height: 100%;
-    font-family: Arial, sans-serif;
-    background: #0a0c12;
-    color: #ffffff;
 }
 
+html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-family-base, Arial, sans-serif);
+    line-height: 1.4;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* ----------------------------------
+   MEDIA ELEMENTS
+---------------------------------- */
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* ----------------------------------
+   LINKS
+---------------------------------- */
+
 a {
-    color: #ffec00;
+    color: inherit;
     text-decoration: none;
 }
 
-a:hover {
-    text-decoration: underline;
-}
+/* ----------------------------------
+   BUTTONS
+---------------------------------- */
 
 button {
     cursor: pointer;
+    font: inherit;
+    color: inherit;
+    background: none;
     border: none;
 }
 
-img {
-    max-width: 100%;
-    display: block;
+/* ----------------------------------
+   FORM ELEMENTS
+---------------------------------- */
+
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+/* ----------------------------------
+   LISTS
+---------------------------------- */
+
+ul,
+ol {
+    list-style: none;
 }
