@@ -1,63 +1,67 @@
+<!-- ====================================================
+     MOBILE HEADER
+======================================================= -->
 <header class="header-mobile">
-    <!-- TOP ROW: hamburger + top options -->
+
+    <!-- TOP ROW -->
     <div class="mobile-row row-top">
-        <button class="hamburger" type="button" aria-label="Toggle menu">
-            ☰
-        </button>
+        <button class="hamburger" type="button">☰</button>
 
         <div class="top-options">
-            <button class="odds-toggle" type="button">
+
+            <button class="odds-toggle mobile-odds-toggle" type="button">
                 <span class="value">Decimal Odds</span>
-                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+                <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
             </button>
 
-            <button class="lang-toggle" type="button">
-                <img src="/assets/icons/language.svg" alt="" class="icon-lang">
+            <button class="lang-toggle mobile-lang-toggle" type="button">
+                <img src="assets/icons/language.svg" class="icon-lang" alt="">
                 <span class="lang-code">EN</span>
-                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
+                <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
             </button>
+
         </div>
     </div>
 
-    <!-- BRAND ROW -->
+    <!-- BRAND -->
     <div class="mobile-row row-brand">
-        <img src="/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
+        <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
         <div class="brand-text">
             <span class="name">BetEngine</span>
             <span class="tagline">Smart betting tools</span>
         </div>
     </div>
 
-    <!-- SEARCH ROW -->
+    <!-- SEARCH -->
     <div class="mobile-row row-search">
         <div class="search-box">
-            <img src="/assets/icons/search.svg" class="search-icon" alt="">
-            <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
+            <img src="assets/icons/search.svg" class="search-icon" alt="">
+            <input type="search" placeholder="Search (team / player)">
         </div>
 
-        <button class="notif-button" type="button" aria-label="Notifications">
-            <img src="/assets/icons/notification.svg" alt="" class="notif-icon">
+        <button class="notif-button">
+            <img src="assets/icons/notification.svg" class="notif-icon" alt="">
         </button>
     </div>
 
-    <!-- MAIN NAV CHIPS -->
-    <nav class="mobile-main-nav" aria-label="Primary navigation">
-        <button class="nav-chip active" type="button" data-section="odds">ODDS</button>
-        <button class="nav-chip" type="button" data-section="community">COMMUNITY</button>
-        <button class="nav-chip" type="button" data-section="bookmakers">BOOKMAKERS</button>
-        <button class="nav-chip" type="button" data-section="premium">PREMIUM ★</button>
+    <!-- NAV CHIPS -->
+    <nav class="mobile-main-nav">
+        <button class="nav-chip active" data-section="odds">ODDS</button>
+        <button class="nav-chip" data-section="community">COMMUNITY</button>
+        <button class="nav-chip" data-section="bookmakers">BOOKMAKERS</button>
+        <button class="nav-chip" data-section="premium">PREMIUM ★</button>
     </nav>
 
-    <!-- SUB NAV (for now only ODDS group, ready for extension) -->
-    <nav class="mobile-sub-nav" aria-label="Secondary navigation">
+    <!-- SUBNAV -->
+    <nav class="mobile-sub-nav">
         <div class="subnav-group active" data-subnav="odds">
-            <button class="sub-chip" type="button">HOME</button>
-            <button class="sub-chip" type="button">NEXT MATCHES</button>
-            <button class="sub-chip" type="button">DROPPING ODDS</button>
-            <button class="sub-chip" type="button">SURE BETS</button>
-            <button class="sub-chip" type="button">IN PLAY ODDS</button>
-            <button class="sub-chip" type="button">ALL EVENTS</button>
-            <button class="sub-chip tools" type="button">BETTING TOOLS ▾</button>
+            <button class="sub-chip">HOME</button>
+            <button class="sub-chip">NEXT MATCHES</button>
+            <button class="sub-chip">DROPPING ODDS</button>
+            <button class="sub-chip">SURE BETS</button>
+            <button class="sub-chip">IN PLAY ODDS</button>
+            <button class="sub-chip">ALL EVENTS</button>
+            <button class="sub-chip tools mobile-tools-trigger">BETTING TOOLS ▾</button>
         </div>
     </nav>
 </header>
