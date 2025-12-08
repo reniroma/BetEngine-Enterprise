@@ -1,6 +1,6 @@
 /*********************************************************
  * BetEngine Enterprise – DESKTOP CSS (FINAL FIX)
- * No structural changes. Only alignment, spacing, z-index.
+ * Full merged file (original + all fix patches).
  *********************************************************/
 
 /* =======================================================
@@ -30,7 +30,7 @@
 
 .header-desktop {
     width: 100%;
-    background: var(--bg-header, #0a0c12);
+    background: var(--bg-header, #0b0b12);
     position: relative;
     z-index: 100;
     border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -157,7 +157,6 @@
     user-select: none;
 }
 
-/* Tools dropdown alignment fix */
 .sub-item-tools {
     position: relative;
 }
@@ -191,7 +190,7 @@
     overflow-y: auto;
 }
 
-/* Fix padding for odds dropdown */
+/* Padding for odds dropdown */
 .odds-dropdown .item {
     padding: 8px 12px;
     display: flex;
@@ -199,7 +198,8 @@
 }
 
 /* =======================================================
-   SEARCH BOX FIX
+   OLD SEARCH BOX BEHAVIOR (REMOVED)
+   This is kept only for legacy structure compatibility.
 ======================================================= */
 
 .search-box input {
@@ -212,17 +212,19 @@
 }
 
 /* =======================================================
-   Z-INDEX ARCHITECTURE (ENTERPRISE)
+   Z-INDEX ARCHITECTURE
 ======================================================= */
 
 .header-desktop { z-index: 100; }
-.row-top         { z-index: 300; }
-.row-main        { z-index: 250; }
-.row-sub         { z-index: 200; }
+.row-top        { z-index: 300; }
+.row-main       { z-index: 250; }
+.row-sub        { z-index: 200; }
 
 .odds-dropdown,
 .language-dropdown,
-.tools-dropdown { z-index: 999; }
+.tools-dropdown {
+    z-index: 999;
+}
 
 /* =======================================================
    RESPONSIVE DESKTOP TWEAKS
@@ -232,7 +234,6 @@
     .row-main {
         grid-template-columns: 200px 1fr 200px;
     }
-
     .main-nav {
         gap: 16px;
     }
@@ -242,28 +243,23 @@
     .row-main {
         grid-template-columns: 180px 1fr 180px;
     }
-
     .main-nav {
         gap: 14px;
-    
+    }
 }
 
 /*********************************************************
- * DESKTOP HEADER FIXES – BetEngine Enterprise
- * Fix pack for 9 issues (search bar, spacing, logos, etc.)
+ * ENTERPRISE FIX PACK (ALL 9 FIXES)
+ * Placed at the bottom to override earlier rules safely.
  *********************************************************/
 
-/* --------------------------------------------------------
-   (1) LOGO LEFT PADDING
--------------------------------------------------------- */
+/* (1) LOGO LEFT PADDING */
 .header-desktop .row-main {
     padding-left: 24px !important;
     padding-right: 24px !important;
 }
 
-/* --------------------------------------------------------
-   (2) SEARCH BAR WIDTH + POSITION
--------------------------------------------------------- */
+/* (2) SEARCH BAR WIDTH + POSITION */
 .header-desktop .search-notify {
     display: flex;
     align-items: center;
@@ -279,9 +275,7 @@
     width: 100%;
 }
 
-/* --------------------------------------------------------
-   (3) FIX – NOTIFICATION ICON (REMOVE GREY CIRCLE)
--------------------------------------------------------- */
+/* (3) FIX – NOTIFICATION ICON */
 .header-desktop .notif-button {
     background: none !important;
     border: none !important;
@@ -298,16 +292,12 @@
     height: 22px !important;
 }
 
-/* --------------------------------------------------------
-   (4) ROW 1 – RIGHT SIDE IS TOO COMPRESSED
--------------------------------------------------------- */
+/* (4) ROW 1 SPACING */
 .header-desktop .row-top .right > * {
     margin-left: 14px !important;
 }
 
-/* --------------------------------------------------------
-   (5) PREMIUM STAR ALIGNMENT
--------------------------------------------------------- */
+/* (5) PREMIUM STAR ALIGNMENT */
 .premium-link .premium-star {
     font-size: 14px;
     position: relative;
@@ -315,16 +305,12 @@
     margin-left: 4px;
 }
 
-/* --------------------------------------------------------
-   (6) SUBNAV ITEMS TOO CLOSE
--------------------------------------------------------- */
+/* (6) SUBNAV ITEM SPACING */
 .header-desktop .row-sub .sub-item {
     padding: 10px 18px !important;
 }
 
-/* --------------------------------------------------------
-   (7) HEADER BACKGROUND IMPROVEMENT (BRIGHTER + DEPTH)
--------------------------------------------------------- */
+/* (7) HEADER BACKGROUND GRADIENT */
 .header-desktop {
     background: linear-gradient(
         to bottom,
@@ -334,18 +320,12 @@
     ) !important;
 }
 
-/* --------------------------------------------------------
-   (8) HEADER SHADOW (ENTERPRISE DEPTH)
--------------------------------------------------------- */
+/* (8) HEADER SHADOW */
 .header-desktop {
     box-shadow: 0 5px 25px rgba(0,0,0,0.55) !important;
-    position: relative;
-    z-index: 100;
 }
 
-/* --------------------------------------------------------
-   (9) REDUCE HEADER HEIGHT (REMOVE EXTRA PADDING)
--------------------------------------------------------- */
+/* (9) REDUCED HEADER HEIGHT */
 .header-desktop .header-row {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
