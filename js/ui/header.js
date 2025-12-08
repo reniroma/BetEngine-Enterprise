@@ -229,9 +229,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
+     * DESKTOP AUTH MODAL (LOGIN / REGISTER)
+     * NEW PATCH — ADDED SAFELY
+     *******************************************************/
+    function initDesktopAuth() {
+        const overlay = document.querySelector(".be-auth-overlay");
+        if (!overlay) return;
+
+        const loginBtn = document.querySelector(".btn-auth.login");
+        const registerBtn = document.querySelector(".btn-auth.register");
+        const closeBtn = overlay.querySelector(".auth-close");
+
+        const title = overlay.querySelector(".auth-header span");
+
+        const openModal = (type) => {
+            title.textContent = type === "login" ? "Login" : "Register";
+            overlay.classList.add("show");
+            lockBodyScroll(true);
+        };
+
+        const closeModal = () => {
+            overlay.classList.remove("show");
+            lockBodyScroll(false);
+        };
+
+        loginBtn?.addEventListener("click", () => openModal("login"));
+        registerBtn?.addEventListener("click", () => openModal("register"));
+        closeBtn?.addEventListener("click", closeModal);
+
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) closeModal();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeModal();
+        });
+    }
+
+    /*******************************************************
      * INIT ALL MODULES
      *******************************************************/
     initDesktopDropdowns();
     initSectionNavigation();
     initMobileModal();
+    initDesktopAuth();  // NEW PATCH
+
 });
