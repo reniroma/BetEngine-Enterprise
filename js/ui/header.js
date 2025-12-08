@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
-     * DESKTOP HEADER — ODDS + LANGUAGE DROPDOWNS
+     * DESKTOP HEADER — ODDS + LANGUAGE + TOOLS DROPDOWNS
      *******************************************************/
     function initDesktopDropdowns() {
         const oddsToggle = document.querySelector(".odds-toggle");
@@ -32,16 +32,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const toolsToggle = document.querySelector(".sub-item-tools");
         const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
 
-        // Odds Format
+        // Odds Format (desktop)
         if (oddsToggle && oddsDropdown) {
             oddsToggle.addEventListener("click", (e) => {
                 e.stopPropagation();
                 closeAllDesktopDropdowns();
                 oddsDropdown.classList.toggle("show");
             });
+
+            const oddsItems = oddsDropdown.querySelectorAll(".item");
+            const oddsLabel = oddsToggle.querySelector(".odds-label");
+
+            oddsItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    oddsItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+                    if (oddsLabel) {
+                        oddsLabel.textContent = item.textContent.replace(/\s*\(.+\)$/, "");
+                    }
+                    closeAllDesktopDropdowns();
+                });
+            });
         }
 
-        // Language
+        // Language (desktop)
         if (langToggle && langDropdown) {
             langToggle.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -52,20 +67,51 @@ document.addEventListener("DOMContentLoaded", () => {
                 const width = langToggle.offsetWidth;
                 langDropdown.style.width = width + "px";
             });
+
+            const langItems = langDropdown.querySelectorAll(".item");
+            const langCodeSpan = langToggle.querySelector(".lang-code");
+
+            langItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    langItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const label = item.textContent.trim();
+                    if (langCodeSpan) {
+                        // use the text, or you can map to code if needed
+                        langCodeSpan.textContent = label;
+                    }
+
+                    closeAllDesktopDropdowns();
+                });
+            });
         }
 
-        // Betting Tools (Row 3)
+        // Betting Tools (Row 3 - desktop)
         if (toolsToggle && toolsDropdown) {
             toolsToggle.addEventListener("click", (e) => {
                 e.stopPropagation();
                 closeAllDesktopDropdowns();
                 toolsDropdown.classList.toggle("show");
             });
+
+            const toolsItems = toolsDropdown.querySelectorAll(".item");
+            toolsItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    // future: navigate to tool
+                    closeAllDesktopDropdowns();
+                });
+            });
         }
 
-        // Outside click should close dropdown
-        document.addEventListener("click", () => {
-            closeAllDesktopDropdowns();
+        // Outside click should close dropdowns, but ignore clicks inside containers
+        document.addEventListener("click", (e) => {
+            const insideDropdownArea = e.target.closest(".odds-format, .language-selector, .sub-item-tools");
+            if (!insideDropdownArea) {
+                closeAllDesktopDropdowns();
+            }
         });
     }
 
@@ -98,63 +144,59 @@ document.addEventListener("DOMContentLoaded", () => {
     /*******************************************************
      * MOBILE HEADER — MODAL SYSTEM (Flashscore Style)
      *******************************************************/
-
     function initMobileModals() {
-        const oddsBtn = document.querySelector(".mobile-header-odds-btn");
-        const langBtn = document.querySelector(".mobile-header-lang-btn");
+        const oddsBtn = document.querySelector(".mobile-odds-toggle");
+        const langBtn = document.querySelector(".mobile-lang-toggle");
+        const toolsBtn = document.querySelector(".mobile-tools-trigger");
 
-        const modal = document.querySelector("#mobile-header-modal");
-        const modalContent = document.querySelector("#mobile-header-modal-content");
-        const modalClose = document.querySelector("#mobile-header-modal-close");
+        const overlay = document.querySelector("#mobile-header-modal");
+        if (!overlay) return;
 
-        if (!modal || !modalContent || !modalClose) return;
+        const modalTitle = overlay.querySelector(".be-modal-title");
+        const closeBtn = overlay.querySelector(".be-modal-close");
+        const sections = overlay.querySelectorAll(".be-modal-section");
+
+        const modalOdds = overlay.querySelector(".modal-odds");
+        const modalLanguage = overlay.querySelector(".modal-language");
+        const modalTools = overlay.querySelector(".modal-tools");
+
+        const mobileOddsLabel = document.querySelector(".mobile-odds-toggle .value");
+        const mobileLangLabel = document.querySelector(".mobile-lang-toggle .lang-code");
+
+        function showOverlay() {
+            overlay.classList.add("show");
+            overlay.setAttribute("aria-hidden", "false");
+            lockBodyScroll(true);
+        }
+
+        function hideOverlay() {
+            overlay.classList.remove("show");
+            overlay.setAttribute("aria-hidden", "true");
+            lockBodyScroll(false);
+        }
+
+        function activateSection(sectionEl) {
+            sections.forEach(sec => sec.classList.remove("active"));
+            if (sectionEl) {
+                sectionEl.classList.add("active");
+            }
+        }
 
         function openModal(type) {
-            modalContent.innerHTML = ""; // clear previous content
+            if (!modalTitle) return;
 
             if (type === "odds") {
-                modalContent.innerHTML = `
-                    <h2 class="modal-title">Odds Format</h2>
-                    <div class="modal-item">Decimal (1.50)</div>
-                    <div class="modal-item">Fractional (1/2)</div>
-                    <div class="modal-item">Moneyline (-200)</div>
-                    <div class="modal-item">Hong Kong (0.50)</div>
-                    <div class="modal-item">Malay (0.50)</div>
-                    <div class="modal-item">Indonesian (-2.00)</div>
-                `;
+                modalTitle.textContent = "Odds Format";
+                activateSection(modalOdds);
+            } else if (type === "lang") {
+                modalTitle.textContent = "Select Language";
+                activateSection(modalLanguage);
+            } else if (type === "tools") {
+                modalTitle.textContent = "Betting Tools";
+                activateSection(modalTools);
             }
 
-            if (type === "lang") {
-                modalContent.innerHTML = `
-                    <h2 class="modal-title">Select Language</h2>
-                    <div class="modal-item">Arabic</div>
-                    <div class="modal-item">Bulgarian</div>
-                    <div class="modal-item">Chinese</div>
-                    <div class="modal-item">Croatian</div>
-                    <div class="modal-item">Czech</div>
-                    <div class="modal-item">Danish</div>
-                    <div class="modal-item">Dutch</div>
-                    <div class="modal-item">English</div>
-                    <div class="modal-item">Finnish</div>
-                    <div class="modal-item">French</div>
-                    <div class="modal-item">German</div>
-                    <div class="modal-item">Greek</div>
-                    <div class="modal-item">Hungarian</div>
-                    <div class="modal-item">Italian</div>
-                    <div class="modal-item">Korean</div>
-                    <div class="modal-item">Norwegian</div>
-                    <div class="modal-item">Polish</div>
-                    <div class="modal-item">Portuguese</div>
-                    <div class="modal-item">Romanian</div>
-                    <div class="modal-item">Russian</div>
-                    <div class="modal-item">Spanish</div>
-                    <div class="modal-item">Swedish</div>
-                    <div class="modal-item">Turkish</div>
-                `;
-            }
-
-            modal.classList.add("show");
-            lockBodyScroll(true);
+            showOverlay();
         }
 
         if (oddsBtn) {
@@ -165,10 +207,58 @@ document.addEventListener("DOMContentLoaded", () => {
             langBtn.addEventListener("click", () => openModal("lang"));
         }
 
-        modalClose.addEventListener("click", () => {
-            modal.classList.remove("show");
-            lockBodyScroll(false);
+        if (toolsBtn) {
+            toolsBtn.addEventListener("click", () => openModal("tools"));
+        }
+
+        if (closeBtn) {
+            closeBtn.addEventListener("click", hideOverlay);
+        }
+
+        // Close when clicking outside the modal content
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+                hideOverlay();
+            }
         });
+
+        // Odds selection in modal
+        if (modalOdds) {
+            const oddsItems = modalOdds.querySelectorAll(".be-modal-item");
+            oddsItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    const label = item.textContent.replace(/\s*\(.+\)$/, "").trim();
+                    if (mobileOddsLabel) {
+                        mobileOddsLabel.textContent = label;
+                    }
+                    hideOverlay();
+                });
+            });
+        }
+
+        // Language selection in modal
+        if (modalLanguage) {
+            const langItems = modalLanguage.querySelectorAll(".be-modal-item");
+            langItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    const label = item.textContent.trim();
+                    if (mobileLangLabel) {
+                        mobileLangLabel.textContent = label;
+                    }
+                    hideOverlay();
+                });
+            });
+        }
+
+        // Tools items in modal (close after click)
+        if (modalTools) {
+            const toolItems = modalTools.querySelectorAll(".be-modal-item");
+            toolItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    hideOverlay();
+                });
+            });
+        }
     }
 
     /*******************************************************
