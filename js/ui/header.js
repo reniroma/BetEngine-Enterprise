@@ -1,559 +1,237 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL)
- * Buttons, dropdowns, chips, modal, header elements
+ * BetEngine Enterprise – HEADER JS (FINAL FIX)
+ * FIX for: Desktop dropdowns + Mobile dropdown modal
+ * No structural changes. Compatible with current HTML.
  *********************************************************/
 
-/* -------------------------------------------------------
-   GENERIC BUTTONS / CONTROLS
--------------------------------------------------------- */
-
-button {
-    font-family: inherit;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    background: none;
-}
-
-.btn-auth,
-.odds-toggle,
-.language-toggle,
-.hamburger,
-.notif-button,
-.nav-chip,
-.sub-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-}
-
-.btn-auth.login {
-    background: var(--bg-button-secondary, #222236);
-    color: var(--text-secondary, #00eaff);
-}
-
-.btn-auth.register {
-    background: var(--bg-button-primary, #ffec00);
-    color: #000;
-}
-
-.btn-auth img {
-    width: 14px;
-    height: 14px;
-}
-
-/* Notification button */
-.notif-button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--bg-panel-soft, #181824);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.notif-icon {
-    width: 18px;
-    height: 18px;
-}
-
-/* Hamburger - desktop hidden in layout.css / mobile.css */
-.hamburger {
-    font-size: 20px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-}
-
-/* -------------------------------------------------------
-   HEADER LEFT/RIGHT BLOCKS
--------------------------------------------------------- */
-
-.header-row.row-top .right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* Brand block */
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand .logo {
-    width: 34px;
-    height: 34px;
-}
-
-.brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.05;
-}
-
-.brand-text .name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary, #ffec00);
-}
-
-.brand-text .tagline {
-    font-size: 11px;
-    color: var(--text-muted, #b3b3b3);
-}
-
-/* Search box */
-.search-notify {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: var(--bg-panel-soft, #181824);
-    min-width: 220px;
-}
-
-.search-icon {
-    width: 14px;
-    height: 14px;
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-secondary, #00eaff);
-    font-size: 13px;
-}
-
-/* -------------------------------------------------------
-   MAIN NAV (DESKTOP)
--------------------------------------------------------- */
-
-.main-nav {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.main-nav .nav-item {
-    position: relative;
-    font-size: 13px;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted, #b3b3b3);
-    padding: 6px 0;
-}
-
-.main-nav .nav-item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.main-nav .nav-item.active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 100%;
-    height: 2px;
-    border-radius: 999px;
-    background: var(--text-secondary, #00eaff);
-}
-
-/* Premium link + star centered */
-.premium-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--bg-badge-premium, #ff9800);
-}
-
-.premium-link .premium-star {
-    font-size: 13px;
-    line-height: 1;
-}
-
-/* -------------------------------------------------------
-   SUBNAV (DESKTOP) + BETTING TOOLS DROPDOWN
--------------------------------------------------------- */
-
-.row-sub {
-    display: flex;
-    align-items: center;
-}
-
-.row-sub .subnav-group {
-    display: none;
-    align-items: center;
-    gap: 14px;
-}
-
-.row-sub .subnav-group.active {
-    display: flex;
-}
-
-.sub-item {
-    position: relative;
-    font-size: 12px;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted, #b3b3b3);
-    padding: 4px 0;
-    cursor: pointer;
-}
-
-.sub-item:hover {
-    color: var(--text-secondary, #00eaff);
-}
-
-/* Betting tools container */
-.sub-item-tools {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    position: relative;
-}
-
-.sub-item-tools .caret {
-    width: 10px;
-    height: 10px;
-}
-
-/* Tools dropdown */
-.tools-dropdown {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    min-width: 200px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(4px);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
-    z-index: 50;
-}
-
-.tools-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    white-space: nowrap;
-}
-
-.tools-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-}
-
-/* Visible state for all dropdowns (shared class) */
-.odds-dropdown,
-.language-dropdown,
-.tools-dropdown {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(4px);
-}
-
-.odds-dropdown.show,
-.language-dropdown.show,
-.tools-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-/* -------------------------------------------------------
-   ODDS FORMAT + LANGUAGE (DESKTOP)
--------------------------------------------------------- */
-
-.odds-format,
-.language-selector {
-    position: relative;
-}
-
-.odds-toggle,
-.language-toggle {
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.odds-toggle .label {
-    font-size: 11px;
-    text-transform: none;
-    opacity: 0.7;
-}
-
-.odds-toggle .value {
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.icon-caret {
-    width: 10px;
-    height: 10px;
-}
-
-/* Odds dropdown panel */
-.odds-dropdown {
-    position: absolute;
-    right: 0;
-    top: 120%;
-    min-width: 230px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    z-index: 50;
-}
-
-.odds-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.odds-dropdown .item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.odds-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-}
-
-/* Language dropdown panel */
-.language-dropdown {
-    position: absolute;
-    right: 0;
-    top: 120%;
-    min-width: 210px;
-    max-height: 260px;
-    overflow-y: auto;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    z-index: 50;
-}
-
-.language-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.language-dropdown .item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.language-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-}
-
-/* -------------------------------------------------------
-   MOBILE HEADER – CHIPS & ROWS
--------------------------------------------------------- */
-
-.header-mobile .mobile-row {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    gap: 8px;
-}
-
-.header-mobile .row-top {
-    justify-content: space-between;
-}
-
-.header-mobile .top-options {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.header-mobile .row-brand .logo {
-    width: 30px;
-    height: 30px;
-}
-
-.header-mobile .row-search .search-box {
-    flex: 1;
-}
-
-/* Mobile main nav chips */
-.mobile-main-nav {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px 10px;
-    overflow-x: auto;
-}
-
-.nav-chip {
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted, #b3b3b3);
-    flex-shrink: 0;
-}
-
-.nav-chip.active {
-    background: var(--bg-button-primary-soft, rgba(255, 236, 0, 0.12));
-    color: var(--text-primary, #ffec00);
-}
-
-/* Mobile subnav chips */
-.mobile-sub-nav {
-    padding: 0 12px 10px;
-}
-
-.mobile-sub-nav .subnav-group {
-    display: none;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.mobile-sub-nav .subnav-group.active {
-    display: flex;
-}
-
-.sub-chip {
-    border-radius: 999px;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted, #b3b3b3);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 5px 10px;
-}
-
-.sub-chip.tools {
-    background: var(--bg-button-secondary, #222236);
-    color: var(--text-secondary, #00eaff);
-}
-
-/* -------------------------------------------------------
-   MOBILE MODAL
--------------------------------------------------------- */
-
-.be-modal-overlay {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-}
-
-.be-modal-overlay.show {
-    display: flex;
-}
-
-.be-modal {
-    width: 90%;
-    max-width: 360px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 14px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-    overflow: hidden;
-}
-
-.be-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: var(--bg-panel-strong, #0d0d16);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.be-modal-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-secondary, #00eaff);
-}
-
-.be-modal-close {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    background: var(--bg-panel-soft, #181824);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.be-modal-close img {
-    width: 12px;
-    height: 12px;
-}
-
-.be-modal-body {
-    padding: 8px 0;
-}
-
-.be-modal-section {
-    display: none;
-}
-
-.be-modal-section.active {
-    display: block;
-}
-
-.be-modal-item {
-    width: 100%;
-    text-align: left;
-    padding: 8px 14px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    background: transparent;
-}
-
-.be-modal-item:hover {
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-}
-
-/* -------------------------------------------------------
-   RESPONSIVE HOOKS (DESKTOP vs MOBILE)
-   (Visibility itself kontrollohet në desktop.css + mobile.css)
--------------------------------------------------------- */
-
-/* No visibility rules here on purpose – only style.
-   Desktop/mobile display is controlled in desktop.css and mobile.css. */
+document.addEventListener("DOMContentLoaded", () => {
+
+    /*******************************************************
+     * UTILITY FUNCTIONS
+     *******************************************************/
+    const closeAllDesktopDropdowns = () => {
+        document.querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+            .forEach(el => el.classList.remove("show"));
+    };
+
+    const isInside = (target, selector) => target.closest(selector) !== null;
+
+    const lockBodyScroll = (state) => {
+        document.body.style.overflow = state ? "hidden" : "";
+    };
+
+    /*******************************************************
+     * DESKTOP: ODDS + LANGUAGE + TOOLS
+     *******************************************************/
+    function initDesktopDropdowns() {
+        const oddsToggle = document.querySelector(".odds-format .odds-toggle");
+        const oddsDropdown = document.querySelector(".odds-dropdown");
+        const oddsItems = oddsDropdown?.querySelectorAll(".item") || [];
+        const oddsLabel = document.querySelector(".odds-label");
+
+        const langToggle = document.querySelector(".language-toggle");
+        const langDropdown = document.querySelector(".language-dropdown");
+        const langItems = langDropdown?.querySelectorAll(".item") || [];
+        const langLabel = document.querySelector(".lang-code");
+
+        const toolsTrigger = document.querySelector(".sub-item-tools");
+        const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
+
+        /* ---------------- ODDS ---------------- */
+        if (oddsToggle && oddsDropdown) {
+            oddsToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = oddsDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) oddsDropdown.classList.add("show");
+            });
+
+            oddsItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    oddsItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const text = item.textContent;
+                    const clean = text.split("(")[0].trim();
+                    if (oddsLabel) oddsLabel.textContent = clean;
+
+                    // Sync to mobile
+                    const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
+                    if (mobileOdds) mobileOdds.textContent = clean;
+
+                    oddsDropdown.classList.remove("show");
+                });
+            });
+        }
+
+        /* ---------------- LANGUAGE ---------------- */
+        if (langToggle && langDropdown) {
+            langToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = langDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) langDropdown.classList.add("show");
+            });
+
+            langItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    langItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const label = item.textContent;
+                    const code = item.dataset.lang?.toUpperCase() || "EN";
+
+                    if (langLabel) langLabel.textContent = label;
+
+                    // Sync to mobile
+                    const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
+                    if (mobileLang) mobileLang.textContent = code;
+
+                    langDropdown.classList.remove("show");
+                });
+            });
+        }
+
+        /* ---------------- BETTING TOOLS ---------------- */
+        if (toolsTrigger && toolsDropdown) {
+            toolsTrigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = toolsDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) toolsDropdown.classList.add("show");
+            });
+        }
+
+        /* ---------------- CLOSE ON OUTSIDE CLICK ---------------- */
+        document.addEventListener("click", (e) => {
+            if (
+                !isInside(e.target, ".odds-format") &&
+                !isInside(e.target, ".language-selector") &&
+                !isInside(e.target, ".sub-item-tools")
+            ) {
+                closeAllDesktopDropdowns();
+            }
+        });
+
+        /* ---------------- CLOSE ON ESC ---------------- */
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeAllDesktopDropdowns();
+        });
+    }
+
+    /*******************************************************
+     * DESKTOP + MOBILE NAVIGATION SYNC
+     *******************************************************/
+    function initSectionNavigation() {
+        const dMain = document.querySelectorAll(".main-nav .nav-item");
+        const dSub = document.querySelectorAll(".row-sub .subnav-group");
+
+        const mMain = document.querySelectorAll(".mobile-main-nav .nav-chip");
+        const mSub = document.querySelectorAll(".mobile-sub-nav .subnav-group");
+
+        const activate = (section) => {
+            dMain.forEach(i => i.classList.toggle("active", i.dataset.section === section));
+            dSub.forEach(g => g.classList.toggle("active", g.dataset.subnav === section));
+
+            mMain.forEach(i => i.classList.toggle("active", i.dataset.section === section));
+            mSub.forEach(g => g.classList.toggle("active", g.dataset.subnav === section));
+        };
+
+        dMain.forEach(item => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                activate(item.dataset.section);
+            });
+        });
+
+        mMain.forEach(item => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                activate(item.dataset.section);
+            });
+        });
+    }
+
+    /*******************************************************
+     * MOBILE: MODAL (ODDS / LANGUAGE / TOOLS)
+     *******************************************************/
+    function initMobileModal() {
+        const modal = document.getElementById("mobile-header-modal");
+        if (!modal) return;
+
+        const title = modal.querySelector(".be-modal-title");
+        const sections = modal.querySelectorAll(".be-modal-section");
+        const closeBtn = modal.querySelector(".be-modal-close");
+
+        const mOdds = document.querySelector(".mobile-odds-toggle");
+        const mLang = document.querySelector(".mobile-lang-toggle");
+        const mTools = document.querySelector(".mobile-tools-trigger");
+
+        const showSection = (type, label) => {
+            sections.forEach(s => s.classList.remove("active"));
+            modal.querySelector(`.modal-${type}`).classList.add("active");
+            title.textContent = label;
+            modal.classList.add("show");
+            modal.dataset.current = type;
+            lockBodyScroll(true);
+        };
+
+        const closeModal = () => {
+            modal.classList.remove("show");
+            lockBodyScroll(false);
+        };
+
+        /* ---------------- OPEN TRIGGERS ---------------- */
+        mOdds?.addEventListener("click", () => showSection("odds", "Select odds format"));
+        mLang?.addEventListener("click", () => showSection("language", "Select language"));
+        mTools?.addEventListener("click", () => showSection("tools", "Betting tools"));
+
+        /* ---------------- CLOSE BUTTON ---------------- */
+        closeBtn?.addEventListener("click", closeModal);
+
+        /* ---------------- OUTSIDE CLICK ---------------- */
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        /* ---------------- ESC KEY ---------------- */
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeModal();
+        });
+
+        /* ---------------- ITEM SELECTION ---------------- */
+        sections.forEach(section => {
+            section.querySelectorAll(".be-modal-item").forEach(item => {
+                item.addEventListener("click", () => {
+                    const type = modal.dataset.current;
+
+                    if (type === "odds") {
+                        const clean = item.textContent.split("(")[0].trim();
+                        const desktopLabel = document.querySelector(".odds-label");
+                        const mobileLabel = document.querySelector(".mobile-odds-toggle .value");
+                        if (desktopLabel) desktopLabel.textContent = clean;
+                        if (mobileLabel) mobileLabel.textContent = clean;
+                    }
+
+                    if (type === "language") {
+                        const txt = item.textContent;
+                        const code = item.dataset.lang.toUpperCase();
+                        const desktopLang = document.querySelector(".language-toggle .lang-code");
+                        const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
+                        if (desktopLang) desktopLang.textContent = txt;
+                        if (mobileLang) mobileLang.textContent = code;
+                    }
+
+                    closeModal();
+                });
+            });
+        });
+    }
+
+    /*******************************************************
+     * INIT ALL MODULES
+     *******************************************************/
+    initDesktopDropdowns();
+    initSectionNavigation();
+    initMobileModal();
+});
