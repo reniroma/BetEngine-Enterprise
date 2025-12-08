@@ -199,7 +199,6 @@
 
 /* =======================================================
    OLD SEARCH BOX BEHAVIOR (REMOVED)
-   This is kept only for legacy structure compatibility.
 ======================================================= */
 
 .search-box input {
@@ -222,9 +221,7 @@
 
 .odds-dropdown,
 .language-dropdown,
-.tools-dropdown {
-    z-index: 999;
-}
+.tools-dropdown { z-index: 999; }
 
 /* =======================================================
    RESPONSIVE DESKTOP TWEAKS
@@ -250,7 +247,6 @@
 
 /*********************************************************
  * ENTERPRISE FIX PACK (ALL 9 FIXES)
- * Placed at the bottom to override earlier rules safely.
  *********************************************************/
 
 /* (1) LOGO LEFT PADDING */
@@ -334,4 +330,65 @@
 .header-desktop .row-main {
     padding-top: 8px !important;
     padding-bottom: 8px !important;
+}
+
+/*********************************************************
+ * NEW PATCH – DROPDOWN ALIGN (ODDS + LANGUAGE)
+ *********************************************************/
+
+.header-desktop .odds-format button,
+.header-desktop .language-selector button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    height: 34px;
+    border-radius: 8px;
+}
+
+.header-desktop .odds-format .icon-caret,
+.header-desktop .language-selector .icon-caret,
+.header-desktop .language-selector .icon-lang {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 0;
+}
+
+.header-desktop .odds-format button,
+.header-desktop .language-selector button {
+    min-width: 160px;
+    justify-content: space-between;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    width: 100% !important;
+    min-width: 160px !important;
+}
+
+.header-desktop .odds-format,
+.header-desktop .language-selector {
+    position: relative;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+}
+
+.header-desktop .odds-dropdown .item,
+.header-desktop .language-dropdown .item {
+    padding: 8px 12px !important;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header-desktop .odds-dropdown .item.active,
+.header-desktop .language-dropdown .item.active {
+    background: rgba(255,236,0,0.12);
+    color: var(--text-primary);
 }
