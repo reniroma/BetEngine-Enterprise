@@ -17,6 +17,9 @@
     font-size: 12px;
     background: #0a0c12;
     opacity: 0.96;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .header-desktop .row-top .left {
@@ -38,7 +41,7 @@
 /* Base toggle buttons (odds + language) */
 .odds-toggle,
 .language-toggle {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
     background: #11141d;
@@ -78,7 +81,7 @@
     border: 1px solid #222533;
     border-radius: 4px;
     padding: 4px 0;
-    z-index: 1200;
+    z-index: 2000;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
@@ -95,6 +98,13 @@
 .language-dropdown .item:hover {
     background: #1f2230;
     color: #ffec00;
+}
+
+/* Show helper class for all dropdowns */
+.odds-dropdown.show,
+.language-dropdown.show,
+.tools-dropdown.show {
+    display: block;
 }
 
 /* Auth buttons (login / register) */
@@ -280,6 +290,11 @@
     scrollbar-width: thin;
 }
 
+/* Ensure dropdown is not clipped inside row */
+.header-desktop .row-sub {
+    overflow: visible;
+}
+
 .header-desktop .row-sub .sub-item {
     color: #b8b8b8;
     text-decoration: none;
@@ -296,7 +311,7 @@
     color: #ffec00;
 }
 
-/* Betting tools dropdown inside subnav */
+/* Betting tools dropdown trigger */
 .header-desktop .sub-item.sub-item-tools {
     position: relative;
     cursor: pointer;
@@ -311,18 +326,18 @@
     opacity: 0.9;
 }
 
-/* Tools dropdown panel */
+/* Tools dropdown panel — same visual style as odds/language */
 .header-desktop .tools-dropdown {
     display: none;
     position: absolute;
-    top: 22px;
+    top: calc(100% + 4px);
     left: 0;
     background: #11141d;
     border: 1px solid #222533;
     border-radius: 4px;
-    width: 190px;
+    width: 200px;
     padding: 5px 0;
-    z-index: 900;
+    z-index: 2200;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
@@ -349,40 +364,8 @@
     display: flex;
 }
 
-/* Desktop-only visibility */
-@media only screen and (max-width: 980px) {
-    .header-desktop {
-        display: none;
-    
-}
-
 /* -----------------------------------------
-   FIX: Betting Tools dropdown positioning
------------------------------------------- */
-
-.header-desktop .sub-item.sub-item-tools {
-    position: relative;
-}
-
-.header-desktop .tools-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    background: #11141d;
-    border: 1px solid #222533;
-    border-radius: 4px;
-    width: 200px;
-    padding: 5px 0;
-    z-index: 2200;
-}
-
-/* Ensure dropdown is not clipped inside row */
-.header-desktop .row-sub {
-    overflow: visible;
-}
-
-/* -----------------------------------------
-   FIX: Language dropdown width = trigger width
+   Language dropdown width = trigger width
 ------------------------------------------ */
 
 .language-selector {
@@ -395,20 +378,22 @@
 }
 
 /* -----------------------------------------
-   FIX: Odds & Language dropdown z-index
+   z-index fixes for dropdowns vs Premium
 ------------------------------------------ */
 
 .odds-dropdown,
 .language-dropdown {
-    z-index: 9999 !important;
+    z-index: 9999;
 }
 
-.odds-dropdown {
-    top: 38px !important;
-}
-
-/* Premium link should not overlap dropdowns */
 .header-desktop .premium-link {
     position: relative;
     z-index: 1;
+}
+
+/* Desktop-only visibility */
+@media only screen and (max-width: 980px) {
+    .header-desktop {
+        display: none;
+    }
 }
