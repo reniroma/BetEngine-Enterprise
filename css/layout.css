@@ -1,6 +1,6 @@
 /************************************
  * BetEngine Enterprise
- * LAYOUT (STRUCTURE ONLY – NO UI)
+ * LAYOUT (STRUCTURE ONLY — NO UI)
 ************************************/
 
 /* Global wrappers */
@@ -8,13 +8,22 @@
 .header-mobile {
     width: 100%;
     display: block;
+    position: relative;
+    overflow: visible;
 }
 
-/* Row containers (no flex here) */
-.header-row { width: 100%; }
-.mobile-row { width: 100%; }
+/* Generic row structure */
+.header-row,
+.mobile-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: visible;
+}
 
-/* Named rows (empty) */
+/* Named rows */
 .header-row.row-top { }
 .header-row.row-main { }
 .header-row.row-sub { }
@@ -23,16 +32,40 @@
 .mobile-row.row-brand { }
 .mobile-row.row-search { }
 
-/* Separator line skeleton */
+/* Separator line */
 .row-separator {
     width: 100%;
     height: 1px;
+    position: relative;
 }
 
-/* .show left empty – behavior in components/utilities if duhet */
-.show { }
+/* Subnav structure */
+.subnav-group {
+    display: none;
+    flex-wrap: wrap;
+    position: relative;
+}
 
-/* Responsive visibility */
+.subnav-group.active {
+    display: flex;
+}
+
+/* Dropdown structure (position only) */
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: none;
+    z-index: var(--z-dropdown-top);
+}
+
+.show {
+    display: block !important;
+}
+
+/* Responsive switching */
 @media (max-width: 980px) {
     .header-desktop {
         display: none;
