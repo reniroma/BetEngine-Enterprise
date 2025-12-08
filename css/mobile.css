@@ -1,179 +1,285 @@
-/************************************
- * BetEngine Enterprise
- * MOBILE UI (FINAL CLEAN VERSION)
-************************************/
+/*********************************************************
+ * BetEngine Enterprise – MOBILE CSS (FINAL FIX)
+ * Fully compatible with index.html + components.css
+ * No structural changes. Only alignment, spacing, stacking.
+ *********************************************************/
 
-/* Mobile header hidden by default (desktop-first) */
+/* =======================================================
+   MOBILE VISIBILITY
+======================================================= */
+
 .header-mobile {
     display: none;
 }
 
-/************************************
- * MOBILE ACTIVATION BREAKPOINT
-************************************/
-@media (max-width: 980px) {
-
-    /* Enable mobile header */
-    .header-mobile {
-        display: block;
-        width: 100%;
-        background: var(--color-bg-main);
-        position: relative;
-        z-index: var(--z-header);
-    }
-
-    /* Disable desktop header */
+@media (max-width: 900px) {
     .header-desktop {
         display: none;
     }
-
-    /************************************
-     * MOBILE ROWS (STRUCTURE + SPACING)
-    ************************************/
-
-    .header-mobile .mobile-row,
-    .header-mobile .row-top,
-    .header-mobile .row-brand,
-    .header-mobile .row-search {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--space-10);
-        padding: var(--space-8) var(--space-14);
-        background: var(--color-bg-main);
-        position: relative;
-        overflow: visible;
-    }
-
-    /************************************
-     * TOP ROW (hamburger + odds/lang)
-    ************************************/
-    .header-mobile .row-top .hamburger {
-        font-size: 22px;
-        padding: var(--space-4) var(--space-10);
-        color: var(--color-text-accent);
-        background: transparent;
-        border: 1px solid var(--color-text-accent);
-        border-radius: var(--radius-md);
-    }
-
-    .header-mobile .top-options {
-        display: flex;
-        align-items: center;
-        gap: var(--space-10);
-    }
-
-    .header-mobile .top-options .odds-toggle,
-    .header-mobile .top-options .lang-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--space-6);
-        background: var(--color-bg-panel);
-        padding: var(--space-6) var(--space-10);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
-        color: var(--color-text-accent);
-        font-size: var(--font-size-sm);
-    }
-
-    .header-mobile .top-options .icon-lang,
-    .header-mobile .top-options .icon-caret {
-        width: 14px;
-        height: 14px;
-    }
-
-    /************************************
-     * BRAND ROW
-    ************************************/
-    .header-mobile .row-brand {
-        display: flex;
-        align-items: center;
-        gap: var(--space-10);
-    }
-
-    .header-mobile .row-brand .logo {
-        height: 38px;
-        width: auto;
-    }
-
-    .header-mobile .row-brand .brand-text .name {
-        font-size: var(--font-size-xl);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text-accent);
-    }
-
-    .header-mobile .row-brand .brand-text .tagline {
-        font-size: var(--font-size-xs);
-        color: var(--color-text-muted);
-    }
-
-    /************************************
-     * SEARCH ROW
-    ************************************/
-    .header-mobile .row-search .search-box {
-        width: 100%;
-    }
-
-    .header-mobile .row-search .notif-button {
-        background: var(--color-bg-panel);
-        border: 1px solid var(--color-border);
-        padding: var(--space-6);
-        border-radius: 50%;
-    }
-
-    .header-mobile .row-search .notif-button:hover {
-        background: var(--color-bg-hover);
-    }
-
-    /************************************
-     * MAIN NAVIGATION (CHIPS)
-    ************************************/
-    .header-mobile .mobile-main-nav {
-        display: flex;
-        gap: var(--space-8);
-        overflow-x: auto;
-        padding: var(--space-6) var(--space-14);
-        scrollbar-width: thin;
-        background: var(--color-bg-main);
-        white-space: nowrap;
-    }
-
-    /************************************
-     * SUBNAV (SECONDARY CHIPS)
-    ************************************/
-    .header-mobile .mobile-sub-nav {
-        padding: var(--space-4) var(--space-14) var(--space-8);
-        background: var(--color-bg-main);
-    }
-
-    .header-mobile .mobile-sub-nav .subnav-group {
-        display: none;
-        flex-wrap: wrap;
-        gap: var(--space-8);
-    }
-
-    .header-mobile .mobile-sub-nav .subnav-group.active {
+    .header-mobile {
         display: block;
     }
+}
 
-    /************************************
-     * MOBILE MODAL (FULLSCREEN)
-    ************************************/
-    .be-modal {
-        width: 100%;
-        max-width: 100%;
-        height: 100%;
-        max-height: 100%;
-        border-radius: 0;
-        background: var(--color-bg-main);
+/* =======================================================
+   GLOBAL MOBILE LAYOUT
+======================================================= */
+
+.header-mobile {
+    width: 100%;
+    background: var(--bg-header, #0a0c12);
+    position: relative;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.header-mobile .mobile-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 10px;
+}
+
+/* =======================================================
+   ROW 1 (TOP OPTIONS + HAMBURGER)
+======================================================= */
+
+.row-top {
+    justify-content: space-between;
+}
+
+.row-top .top-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Improve tap area */
+.mobile-odds-toggle,
+.mobile-lang-toggle {
+    padding: 6px 12px;
+    border-radius: 12px;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+    font-size: 13px;
+}
+
+.mobile-lang-toggle .lang-code {
+    font-weight: 600;
+}
+
+/* =======================================================
+   ROW BRAND
+======================================================= */
+
+.row-brand .logo {
+    width: 38px;
+    height: 38px;
+}
+
+.row-brand .brand-text .name {
+    font-size: 16px;
+    color: var(--text-primary, #ffec00);
+    font-weight: 700;
+}
+
+.row-brand .brand-text .tagline {
+    font-size: 12px;
+    color: var(--text-muted, #b3b3b3);
+}
+
+/* =======================================================
+   SEARCH ROW
+======================================================= */
+
+.row-search .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-panel-soft, #181824);
+    padding: 8px 12px;
+    border-radius: 12px;
+    flex: 1;
+}
+
+.row-search .search-box input {
+    flex: 1;
+    font-size: 14px;
+}
+
+.row-search .notif-button {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-panel-soft);
+}
+
+/* =======================================================
+   MAIN MOBILE NAVIGATION (CHIPS)
+======================================================= */
+
+.mobile-main-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.mobile-main-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-chip {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: .05em;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-muted, #b3b3b3);
+    flex-shrink: 0;
+}
+
+.nav-chip.active {
+    background: var(--bg-button-primary-soft, rgba(255,236,0,0.12));
+    color: var(--text-primary, #ffec00);
+}
+
+/* =======================================================
+   SUBNAV MOBILE
+======================================================= */
+
+.mobile-sub-nav {
+    padding: 0 14px 12px;
+}
+
+.mobile-sub-nav .subnav-group {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mobile-sub-nav .subnav-group.active {
+    display: flex;
+}
+
+.sub-chip {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-muted);
+}
+
+.sub-chip.tools {
+    background: var(--bg-button-secondary, #222236);
+    color: var(--text-secondary);
+}
+
+/* =======================================================
+   MOBILE MODAL FIX (ODDS / LANGUAGE / TOOLS)
+======================================================= */
+
+.be-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.be-modal-overlay.show {
+    display: flex;
+}
+
+.be-modal {
+    width: 92%;
+    max-width: 380px;
+    background: var(--bg-panel, #11141d);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.85);
+    animation: modalFade .18s ease-out;
+}
+
+@keyframes modalFade {
+    from { transform: scale(.94); opacity: .25; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+.be-modal-header {
+    padding: 14px;
+    background: var(--bg-panel-strong, #0d0d16);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.be-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.be-modal-close {
+    width: 30px;
+    height: 30px;
+    background: var(--bg-panel-soft);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.be-modal-body {
+    padding: 6px 0;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+/* Modal sections aligned */
+.be-modal-section {
+    display: none;
+    padding-bottom: 10px;
+}
+
+.be-modal-section.active {
+    display: block;
+}
+
+.be-modal-item {
+    width: 100%;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.be-modal-item:hover {
+    background: var(--bg-panel-soft);
+    color: var(--text-secondary);
+}
+
+/* =======================================================
+   RESPONSIVE HOOKS (TINY DEVICES < 360px)
+======================================================= */
+
+@media (max-width: 360px) {
+    .nav-chip {
+        padding: 7px 10px;
+        font-size: 11px;
     }
-
-    .be-modal-body {
-        overflow-y: auto;
+    .sub-chip {
+        padding: 5px 8px;
+        font-size: 10px;
     }
-
-    /* Prevent body scroll when modal is open */
-    .be-modal-open {
-        overflow: hidden !important;
+    .mobile-odds-toggle,
+    .mobile-lang-toggle {
+        padding: 5px 10px;
+        font-size: 12px;
     }
 }
