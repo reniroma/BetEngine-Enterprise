@@ -78,7 +78,7 @@
     border: 1px solid #222533;
     border-radius: 4px;
     padding: 4px 0;
-    z-index: 1000;
+    z-index: 1200;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
@@ -97,7 +97,7 @@
     color: #ffec00;
 }
 
-/* Auth buttons (login + register) */
+/* Auth buttons (login / register) */
 .btn-auth {
     background: #ffec00;
     color: #000;
@@ -118,6 +118,10 @@
     width: 14px;
 }
 
+.btn-auth.login {
+    background: #ffec00;
+}
+
 .btn-auth.register {
     background: #ffc400;
 }
@@ -127,7 +131,7 @@
 }
 
 /* ==========================================
-   Row 2 — Brand + navigation + search
+   Row 2 — Brand + main navigation + search
 ========================================== */
 
 .header-desktop .row-main {
@@ -155,14 +159,16 @@
     font-size: 18px;
     font-weight: 700;
     color: #ffec00;
+    display: block;
 }
 
 .header-desktop .brand-text .tagline {
     font-size: 11px;
     color: #8f95a3;
+    display: block;
 }
 
-/* Main navigation */
+/* Main navigation centered */
 .header-desktop .main-nav {
     display: flex;
     gap: 28px;
@@ -174,8 +180,8 @@
     color: #d7d7d7;
     font-size: 14px;
     text-decoration: none;
-    padding-bottom: 4px;
     position: relative;
+    padding-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
 }
@@ -199,7 +205,7 @@
     background: #ffec00;
 }
 
-/* Premium star */
+/* Premium star in superscript style */
 .premium-link .premium-star {
     font-size: 11px;
     color: #ffec00;
@@ -208,7 +214,7 @@
     top: -2px;
 }
 
-/* Search + Notifications */
+/* Search + notifications (right side) */
 .header-desktop .search-notify {
     display: flex;
     align-items: center;
@@ -226,22 +232,22 @@
     border-radius: 4px;
 }
 
-.header-desktop .search-box input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #ffffff;
-    font-size: 13px;
-    width: 180px;
-}
-
-.header-desktop .search-icon {
+.header-desktop .search-box .search-icon {
     height: 14px;
     width: 14px;
     opacity: 0.7;
 }
 
-/* Notification button */
+.header-desktop .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    width: 180px;
+    font-size: 13px;
+}
+
+/* Notification icon button */
 .header-desktop .notif-button {
     background: #11141d;
     border: 1px solid #222533;
@@ -253,6 +259,7 @@
 .header-desktop .notif-button .notif-icon {
     height: 16px;
     width: 16px;
+    opacity: 0.9;
 }
 
 .header-desktop .notif-button:hover {
@@ -260,23 +267,23 @@
 }
 
 /* ==========================================
-   Row 3 — Sub navigation
+   Row 3 — Subnavigation for sections
 ========================================== */
 
 .header-desktop .row-sub {
     padding: 7px 24px 10px;
     background: #0a0c12;
     display: flex;
-    gap: 26px;
     align-items: center;
+    gap: 26px;
     overflow-x: auto;
     scrollbar-width: thin;
 }
 
 .header-desktop .row-sub .sub-item {
     color: #b8b8b8;
-    font-size: 13px;
     text-decoration: none;
+    font-size: 13px;
     text-transform: uppercase;
     white-space: nowrap;
 }
@@ -289,33 +296,34 @@
     color: #ffec00;
 }
 
-/* Betting tools dropdown */
-.header-desktop .sub-item-tools {
+/* Betting tools dropdown inside subnav */
+.header-desktop .sub-item.sub-item-tools {
     position: relative;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    cursor: pointer;
 }
 
-.header-desktop .sub-item-tools .caret {
+.header-desktop .sub-item.sub-item-tools .caret {
     height: 10px;
     width: 10px;
     opacity: 0.9;
 }
 
+/* Tools dropdown panel */
 .header-desktop .tools-dropdown {
     display: none;
     position: absolute;
     top: 22px;
     left: 0;
-    width: 190px;
     background: #11141d;
     border: 1px solid #222533;
     border-radius: 4px;
+    width: 190px;
     padding: 5px 0;
     z-index: 900;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
 }
 
 .header-desktop .tools-dropdown .item {
@@ -331,7 +339,7 @@
     color: #ffec00;
 }
 
-/* Subnav groups switching */
+/* Ensure only the active subnav group is shown (desktop) */
 .header-desktop .row-sub .subnav-group {
     display: none;
     gap: 22px;
@@ -341,21 +349,9 @@
     display: flex;
 }
 
-/* Hide desktop header on mobile */
+/* Desktop-only visibility */
 @media only screen and (max-width: 980px) {
     .header-desktop {
-        display: none !important;
-    
+        display: none;
+    }
 }
-/* Prevent premium star from overlapping dropdowns */
-.premium-link {
-    position: relative;
-    z-index: 5;
-}
-
-.odds-dropdown,
-.language-dropdown {
-    z-index: 1200 !important;
-}
-    
-
