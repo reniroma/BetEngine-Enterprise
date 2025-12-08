@@ -36,7 +36,6 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Universal padding for header rows */
 .header-row {
     width: 100%;
     padding: 8px 18px;
@@ -45,7 +44,6 @@
     justify-content: space-between;
 }
 
-/* Separator line */
 .row-separator {
     width: 100%;
     height: 1px;
@@ -72,7 +70,6 @@
     gap: 12px;
 }
 
-/* Keep dropdowns ABOVE row 2 */
 .row-top {
     position: relative;
     z-index: 300;
@@ -90,7 +87,6 @@
     gap: 10px;
 }
 
-/* Brand block */
 .row-main .brand {
     display: flex;
     align-items: center;
@@ -102,7 +98,6 @@
     height: 36px;
 }
 
-/* Main nav centered */
 .row-main nav.main-nav {
     display: flex;
     align-items: center;
@@ -110,7 +105,6 @@
     gap: 22px;
 }
 
-/* Search + notif aligned right */
 .row-main .search-notify {
     display: flex;
     align-items: center;
@@ -118,7 +112,6 @@
     gap: 10px;
 }
 
-/* Keep navigation ABOVE Row 3 dropdowns */
 .row-main {
     position: relative;
     z-index: 250;
@@ -137,7 +130,6 @@
     z-index: 200;
 }
 
-/* Subnav group rows fix */
 .row-sub .subnav-group {
     display: none;
     align-items: center;
@@ -148,7 +140,6 @@
     display: flex;
 }
 
-/* Increase click area */
 .row-sub .sub-item {
     padding: 6px 2px;
     font-size: 12px;
@@ -168,7 +159,7 @@
 }
 
 /* =======================================================
-   DROPDOWN FIXES (ODDS, LANGUAGE, TOOLS)
+   DROPDOWN FIXES
 ======================================================= */
 
 .odds-dropdown,
@@ -178,19 +169,16 @@
     margin-top: 4px;
 }
 
-/* Ensure dropdowns don't shift layout */
 .odds-dropdown,
 .language-dropdown {
     right: 0;
 }
 
-/* Fix for long language list */
 .language-dropdown {
     max-height: 260px;
     overflow-y: auto;
 }
 
-/* Padding for odds dropdown */
 .odds-dropdown .item {
     padding: 8px 12px;
     display: flex;
@@ -198,7 +186,7 @@
 }
 
 /* =======================================================
-   OLD SEARCH BOX BEHAVIOR (REMOVED)
+   OLD SEARCH BOX BEHAVIOR
 ======================================================= */
 
 .search-box input {
@@ -218,7 +206,6 @@
 .row-top        { z-index: 300; }
 .row-main       { z-index: 250; }
 .row-sub        { z-index: 200; }
-
 .odds-dropdown,
 .language-dropdown,
 .tools-dropdown { z-index: 999; }
@@ -249,13 +236,11 @@
  * ENTERPRISE FIX PACK (ALL 9 FIXES)
  *********************************************************/
 
-/* (1) LOGO LEFT PADDING */
 .header-desktop .row-main {
     padding-left: 24px !important;
     padding-right: 24px !important;
 }
 
-/* (2) SEARCH BAR WIDTH + POSITION */
 .header-desktop .search-notify {
     display: flex;
     align-items: center;
@@ -271,7 +256,6 @@
     width: 100%;
 }
 
-/* (3) FIX – NOTIFICATION ICON */
 .header-desktop .notif-button {
     background: none !important;
     border: none !important;
@@ -295,12 +279,10 @@
     top: -1px;
 }
 
-/* (4) ROW 1 SPACING */
 .header-desktop .row-top .right > * {
     margin-left: 14px !important;
 }
 
-/* (5) PREMIUM STAR ALIGNMENT */
 .premium-link .premium-star {
     font-size: 14px;
     position: relative;
@@ -308,12 +290,10 @@
     margin-left: 4px;
 }
 
-/* (6) SUBNAV ITEM SPACING */
 .header-desktop .row-sub .sub-item {
     padding: 10px 18px !important;
 }
 
-/* (7) HEADER BACKGROUND GRADIENT */
 .header-desktop {
     background: linear-gradient(
         to bottom,
@@ -323,12 +303,10 @@
     ) !important;
 }
 
-/* (8) HEADER SHADOW */
 .header-desktop {
     box-shadow: 0 5px 25px rgba(0,0,0,0.55) !important;
 }
 
-/* (9) REDUCED HEADER HEIGHT */
 .header-desktop .header-row {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
@@ -400,3 +378,38 @@
     color: var(--text-primary);
 }
 
+/*********************************************************
+ * PATCH – NOTIFICATION ICON FIX (FINAL ENTERPRISE VERSION)
+ *********************************************************/
+
+.header-desktop .search-notify {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 12px !important;
+    min-width: 220px !important;
+    position: relative !important;
+    z-index: 500 !important;
+}
+
+.header-desktop .notif-button {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: var(--bg-panel-soft, #181824) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 600 !important;
+}
+
+.header-desktop .notif-icon {
+    width: 20px !important;
+    height: 20px !important;
+    display: block !important;
+    opacity: 1 !important;
+    position: relative !important;
+    top: 0 !important;
+}
