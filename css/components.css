@@ -1,10 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL)
- * Buttons, dropdowns, chips, modal, header elements
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL FIX)
+ * FIX: Dropdowns, modal, desktop spacing, premium star
+ * No structural changes. Fully compatible with index.html.
  *********************************************************/
 
 /* -------------------------------------------------------
-   GENERIC BUTTONS / CONTROLS
+   BASE BUTTONS / CONTROLS
 -------------------------------------------------------- */
 
 button {
@@ -15,6 +16,7 @@ button {
     background: none;
 }
 
+/* Shared button structure */
 .btn-auth,
 .odds-toggle,
 .language-toggle,
@@ -30,10 +32,13 @@ button {
     border-radius: 999px;
     font-size: 13px;
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
 }
+
+/* -------------------------------------------------------
+   AUTH BUTTONS
+-------------------------------------------------------- */
 
 .btn-auth.login {
     background: var(--bg-button-secondary, #222236);
@@ -50,7 +55,10 @@ button {
     height: 14px;
 }
 
-/* Notification button */
+/* -------------------------------------------------------
+   NOTIFICATION BUTTON
+-------------------------------------------------------- */
+
 .notif-button {
     width: 34px;
     height: 34px;
@@ -66,7 +74,10 @@ button {
     height: 18px;
 }
 
-/* Hamburger - desktop hidden in layout.css / mobile.css */
+/* -------------------------------------------------------
+   HAMBURGER (MOBILE)
+-------------------------------------------------------- */
+
 .hamburger {
     font-size: 20px;
     width: 34px;
@@ -77,7 +88,7 @@ button {
 }
 
 /* -------------------------------------------------------
-   HEADER LEFT/RIGHT BLOCKS
+   ROW TOP (DESKTOP)
 -------------------------------------------------------- */
 
 .header-row.row-top .right {
@@ -87,7 +98,10 @@ button {
     gap: 12px;
 }
 
-/* Brand block */
+/* -------------------------------------------------------
+   BRAND BLOCK
+-------------------------------------------------------- */
+
 .brand {
     display: flex;
     align-items: center;
@@ -116,7 +130,10 @@ button {
     color: var(--text-muted, #b3b3b3);
 }
 
-/* Search box */
+/* -------------------------------------------------------
+   SEARCH BOX
+-------------------------------------------------------- */
+
 .search-notify {
     display: flex;
     align-items: center;
@@ -181,7 +198,10 @@ button {
     background: var(--text-secondary, #00eaff);
 }
 
-/* Premium link + star centered */
+/* -------------------------------------------------------
+   PREMIUM STAR ALIGNMENT FIX
+-------------------------------------------------------- */
+
 .premium-link {
     display: inline-flex;
     align-items: center;
@@ -190,12 +210,14 @@ button {
 }
 
 .premium-link .premium-star {
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1;
+    position: relative;
+    top: -1px;
 }
 
 /* -------------------------------------------------------
-   SUBNAV (DESKTOP) + BETTING TOOLS DROPDOWN
+   DESKTOP SUB NAVIGATION (ROW 3)
 -------------------------------------------------------- */
 
 .row-sub {
@@ -228,7 +250,8 @@ button {
     color: var(--text-secondary, #00eaff);
 }
 
-/* Betting tools container */
+/* BETTING TOOLS BLOCK */
+
 .sub-item-tools {
     display: inline-flex;
     align-items: center;
@@ -241,42 +264,33 @@ button {
     height: 10px;
 }
 
-/* Tools dropdown */
-.tools-dropdown {
-    position: absolute;
-    top: 110%;
-    left: 0;
-    min-width: 200px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(4px);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
-    z-index: 50;
-}
+/* -------------------------------------------------------
+   DROPDOWNS — UNIVERSAL FIX (ODDS, LANGUAGE, TOOLS)
+-------------------------------------------------------- */
 
-.tools-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    white-space: nowrap;
-}
-
-.tools-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-}
-
-/* Visible state for all dropdowns (shared class) */
 .odds-dropdown,
 .language-dropdown,
 .tools-dropdown {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    min-width: 210px;
+    padding: 6px 0;
+    border-radius: 8px;
+    background: var(--bg-panel, #11141d);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(4px);
+    transform: translateY(6px);
+    transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
+    z-index: 300;
+}
+
+/* Only tools uses left alignment */
+.sub-item-tools .tools-dropdown {
+    left: 0;
+    right: auto;
+    min-width: 200px;
 }
 
 .odds-dropdown.show,
@@ -287,21 +301,45 @@ button {
     transform: translateY(0);
 }
 
-/* -------------------------------------------------------
-   ODDS FORMAT + LANGUAGE (DESKTOP)
--------------------------------------------------------- */
+/* Items */
 
-.odds-format,
-.language-selector {
-    position: relative;
+.odds-dropdown .item,
+.language-dropdown .item,
+.tools-dropdown .item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
+
+.odds-dropdown .item:hover,
+.language-dropdown .item:hover,
+.tools-dropdown .item:hover {
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+}
+
+.language-dropdown {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.language-dropdown .item.active,
+.odds-dropdown .item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+/* -------------------------------------------------------
+   ODDS + LANGUAGE TOGGLES (DESKTOP)
+-------------------------------------------------------- */
 
 .odds-toggle,
 .language-toggle {
     background: var(--bg-panel-soft, #181824);
     color: var(--text-secondary, #00eaff);
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 .odds-toggle .label {
@@ -320,77 +358,15 @@ button {
     height: 10px;
 }
 
-/* Odds dropdown panel */
-.odds-dropdown {
-    position: absolute;
-    right: 0;
-    top: 120%;
-    min-width: 230px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    z-index: 50;
-}
-
-.odds-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.odds-dropdown .item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.odds-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-}
-
-/* Language dropdown panel */
-.language-dropdown {
-    position: absolute;
-    right: 0;
-    top: 120%;
-    min-width: 210px;
-    max-height: 260px;
-    overflow-y: auto;
-    background: var(--bg-panel, #11141d);
-    border-radius: 8px;
-    padding: 6px 0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    z-index: 50;
-}
-
-.language-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.language-dropdown .item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.language-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-}
-
 /* -------------------------------------------------------
-   MOBILE HEADER – CHIPS & ROWS
+   MOBILE HEADER — CHIPS & ROWS
 -------------------------------------------------------- */
 
 .header-mobile .mobile-row {
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    gap: 8px;
+    gap: 10px;
 }
 
 .header-mobile .row-top {
@@ -412,7 +388,8 @@ button {
     flex: 1;
 }
 
-/* Mobile main nav chips */
+/* Chips */
+
 .mobile-main-nav {
     display: flex;
     align-items: center;
@@ -433,11 +410,10 @@ button {
 }
 
 .nav-chip.active {
-    background: var(--bg-button-primary-soft, rgba(255, 236, 0, 0.12));
+    background: var(--bg-button-primary-soft, rgba(255,236,0,0.12));
     color: var(--text-primary, #ffec00);
 }
 
-/* Mobile subnav chips */
 .mobile-sub-nav {
     padding: 0 12px 10px;
 }
@@ -457,8 +433,6 @@ button {
     background: var(--bg-panel-soft, #181824);
     color: var(--text-muted, #b3b3b3);
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     padding: 5px 10px;
 }
 
@@ -468,7 +442,7 @@ button {
 }
 
 /* -------------------------------------------------------
-   MOBILE MODAL
+   MOBILE MODAL FIX
 -------------------------------------------------------- */
 
 .be-modal-overlay {
@@ -477,8 +451,8 @@ button {
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+    background: rgba(0,0,0,0.75);
+    z-index: 999;
 }
 
 .be-modal-overlay.show {
@@ -490,7 +464,7 @@ button {
     max-width: 360px;
     background: var(--bg-panel, #11141d);
     border-radius: 14px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
     overflow: hidden;
 }
 
@@ -498,9 +472,9 @@ button {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 12px 14px;
     background: var(--bg-panel-strong, #0d0d16);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .be-modal-title {
@@ -542,18 +516,9 @@ button {
     padding: 8px 14px;
     font-size: 13px;
     color: var(--text-muted, #b3b3b3);
-    background: transparent;
 }
 
 .be-modal-item:hover {
     background: var(--bg-panel-soft, #181824);
     color: var(--text-secondary, #00eaff);
 }
-
-/* -------------------------------------------------------
-   RESPONSIVE HOOKS (DESKTOP vs MOBILE)
-   (Visibility itself kontrollohet në desktop.css + mobile.css)
--------------------------------------------------------- */
-
-/* No visibility rules here on purpose – only style.
-   Desktop/mobile display is controlled in desktop.css and mobile.css. */
