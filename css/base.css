@@ -1,95 +1,256 @@
-/************************************
- * BetEngine Enterprise
- * BASE CSS (Reset + Global Defaults)
-************************************/
+/*********************************************************
+ * BetEngine Enterprise – BASE.CSS (FINAL FIX)
+ * Global resets, typography, interactions, scroll,
+ * transitions, form controls, universal utilities.
+ *********************************************************/
 
-/* ----------------------------------
-   RESET
----------------------------------- */
+/* =======================================================
+   CSS RESET (ENTERPRISE)
+======================================================= */
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
-
-/* ----------------------------------
-   DOCUMENT DEFAULTS
----------------------------------- */
-
-html, body {
-    height: 100%;
+    box-sizing: border-box;
 }
 
 html {
-    font-size: 100%;
+    scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
 }
 
 body {
-    font-family: var(--font-family-base, Arial, sans-serif);
-    line-height: 1.4;
-    background-color: var(--color-bg-main);
-    color: var(--color-text-primary);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg-main, #0a0c12);
+    color: var(--text-secondary, #00eaff);
+    overflow-x: hidden;
 }
 
-/* ----------------------------------
-   MEDIA ELEMENTS
----------------------------------- */
-
-img,
-picture,
-video,
-canvas,
-svg {
-    display: block;
-    max-width: 100%;
+/* Remove tap highlight on mobile */
+body, button, input {
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* ----------------------------------
-   LINKS
----------------------------------- */
+/* =======================================================
+   TYPOGRAPHY
+======================================================= */
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--text-primary, #ffec00);
+    line-height: 1.2;
+}
+
+p {
+    color: var(--text-muted, #b3b3b3);
+    line-height: 1.55;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
 
 a {
-    color: inherit;
     text-decoration: none;
+    color: inherit;
 }
 
-/* ----------------------------------
-   BUTTONS
----------------------------------- */
+/* =======================================================
+   SCROLLBAR REFINEMENT
+======================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0d0d16;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2d2d3d;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3f3f55;
+}
+
+/* =======================================================
+   INPUTS / FORMS
+======================================================= */
+
+input, select, textarea {
+    background: var(--bg-panel-soft, #181824);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-secondary, #00eaff);
+    padding: 8px 10px;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--text-secondary, #00eaff);
+    box-shadow: 0 0 0 2px rgba(0,234,255,0.15);
+}
+
+/* Remove arrows for number fields */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* =======================================================
+   BUTTON BASE STYLE
+======================================================= */
 
 button {
     cursor: pointer;
-    font: inherit;
-    color: inherit;
-    background: none;
-    border: none;
-}
-
-/* ----------------------------------
-   FORM ELEMENTS
----------------------------------- */
-
-input,
-select,
-textarea {
-    font: inherit;
-    color: inherit;
-    background: none;
     border: none;
     outline: none;
+    background: none;
+    color: inherit;
+    font-family: inherit;
 }
 
-/* ----------------------------------
-   LISTS
----------------------------------- */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-ul,
-ol {
-    list-style: none;
+/* Active & focus */
+button:active {
+    transform: scale(0.97);
+}
+
+/* =======================================================
+   IMAGES / ICONS
+======================================================= */
+
+img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+}
+
+/* SVG icons crisp */
+.icon,
+.icon-caret,
+.icon-lang {
+    pointer-events: none;
+    user-select: none;
+}
+
+/* =======================================================
+   GLOBAL SELECTION COLOR
+======================================================= */
+
+::selection {
+    background: rgba(255,236,0,0.35);
+    color: #000;
+}
+
+/* =======================================================
+   TABLE STANDARDIZATION
+======================================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 10px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+th {
+    font-weight: 600;
+    color: var(--text-primary, #ffec00);
+}
+
+td {
+    color: var(--text-muted, #b3b3b3);
+}
+
+/* =======================================================
+   TRANSITIONS
+======================================================= */
+
+a, button, .nav-item, .sub-item, .nav-chip, .sub-chip {
+    transition: all 0.18s ease;
+}
+
+input, select, textarea {
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+/* =======================================================
+   UTILITY CLASSES
+======================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden !important;
+}
+
+.click-block {
+    pointer-events: none !important;
+}
+
+.rounded {
+    border-radius: 12px;
+}
+
+.shadow {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* =======================================================
+   SPACING UTILITIES
+======================================================= */
+
+.mt-4  { margin-top: 4px; }
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-32 { margin-top: 32px; }
+
+.mb-4  { margin-bottom: 4px; }
+.mb-8  { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-32 { margin-bottom: 32px; }
+
+/* =======================================================
+   RESPONSIVE POLISH
+======================================================= */
+
+@media (max-width: 900px) {
+    p {
+        font-size: 13px;
+    }
+    h1 {
+        font-size: 20px;
+    }
 }
