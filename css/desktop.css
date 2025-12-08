@@ -353,5 +353,62 @@
 @media only screen and (max-width: 980px) {
     .header-desktop {
         display: none;
-    }
+    
+}
+
+/* -----------------------------------------
+   FIX: Betting Tools dropdown positioning
+------------------------------------------ */
+
+.header-desktop .sub-item.sub-item-tools {
+    position: relative;
+}
+
+.header-desktop .tools-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: #11141d;
+    border: 1px solid #222533;
+    border-radius: 4px;
+    width: 200px;
+    padding: 5px 0;
+    z-index: 2200;
+}
+
+/* Ensure dropdown is not clipped inside row */
+.header-desktop .row-sub {
+    overflow: visible;
+}
+
+/* -----------------------------------------
+   FIX: Language dropdown width = trigger width
+------------------------------------------ */
+
+.language-selector {
+    position: relative;
+}
+
+.language-dropdown {
+    min-width: 100%;
+    width: max-content;
+}
+
+/* -----------------------------------------
+   FIX: Odds & Language dropdown z-index
+------------------------------------------ */
+
+.odds-dropdown,
+.language-dropdown {
+    z-index: 9999 !important;
+}
+
+.odds-dropdown {
+    top: 38px !important;
+}
+
+/* Premium link should not overlap dropdowns */
+.header-desktop .premium-link {
+    position: relative;
+    z-index: 1;
 }
