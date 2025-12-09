@@ -1,34 +1,59 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (FINAL)
- * Loads desktop + mobile + modal header components
- * and dispatches "headerLoaded" when ready.
+ * BetEngine Enterprise – HEADER LOADER (v5.0 FINAL)
+ * Stable path-loading for GitHub Pages + Enterprise DOM sync
+ * Loads desktop + mobile + modals and fires "headerLoaded"
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", async () => {
+
+    /*******************************************************
+     * SAFE COMPONENT FETCHER (GitHub Pages Compatible)
+     *******************************************************/
     async function loadComponent(path) {
         try {
-            const response = await fetch(path);
-            if (!response.ok) {
-                return "";
-            }
+            const response = await fetch(path + "?v=" + Date.now()); // cache-bust
+            if (!response.ok) return "";
             return await response.text();
         } catch (err) {
+            console.warn("HeaderLoader: failed to load", path, err);
             return "";
         }
     }
 
-    const [desktopHeader, mobileHeader, headerModals] = await Promise.all([
-        loadComponent("layouts/header/header-desktop.html"),
-        loadComponent("layouts/header/header-mobile.html"),
-        loadComponent("layouts/header/header-modals.html")
+    /*******************************************************
+     * REAL PATHS (AS GIVEN BY USER)
+     *******************************************************/
+    const ROOT = "BetEngine-Enterprise/layouts/header/";
+
+    const desktopPath = ROOT + "header-desktop.html";
+    const mobilePath  = ROOT + "header-mobile.html";
+    const modalsPath  = ROOT + "header-modals.html";
+
+    /*******************************************************
+     * LOAD ALL COMPONENTS IN PARALLEL
+     *******************************************************/
+    const [desktopHTML, mobileHTML, modalsHTML] = await Promise.all([
+        loadComponent(desktopPath),
+        loadComponent(mobilePath),
+        loadComponent(modalsPath)
     ]);
 
-    const fullHeader = `${desktopHeader}${mobileHeader}${headerModals}`.trim();
+    const finalHeader = `${desktopHTML}${mobileHTML}${modalsHTML}`.trim();
+
+    /*******************************************************
+     * INSERT HEADER BEFORE <main>
+     *******************************************************/
     const mainEl = document.querySelector("main");
 
-    if (mainEl && fullHeader.length > 0) {
-        mainEl.insertAdjacentHTML("beforebegin", fullHeader);
-        // Notify all UI scripts that header is ready in the DOM
+    if (finalHeader.length > 0 && mainEl) {
+        mainEl.insertAdjacentHTML("beforebegin", finalHeader);
+
+        // Dispatch only AFTER header is fully attached
         document.dispatchEvent(new Event("headerLoaded"));
+
+        console.log("%cHeaderLoader v5.0 → headerLoaded dispatched",
+            "color:#00eaff;font-weight:bold;");
+    } else {
+        console.error("HeaderLoader v5.0 → Header failed to load or <main> missing.");
     }
 });
