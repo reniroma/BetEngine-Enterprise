@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v3.0 FINAL)
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v4.0)
  * Desktop dropdowns + Mobile modal + Navigation sync
  * Stable, isolated, compatible with core.js (headerLoaded).
  *********************************************************/
@@ -7,24 +7,31 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * UTILITY FUNCTIONS
+     * BASIC UTILITIES (LOCAL TO HEADER)
      *******************************************************/
+    const hasDesktopHeader = !!document.querySelector(".header-desktop");
+    const hasMobileHeader  = !!document.querySelector(".header-mobile");
+
+    const isInside = (target, selector) => {
+        return !!(target && target.closest(selector));
+    };
+
+    const lockBodyScroll = (state) => {
+        document.body.style.overflow = state ? "hidden" : "";
+    };
+
     const closeAllDesktopDropdowns = () => {
         document
             .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
             .forEach(el => el.classList.remove("show"));
     };
 
-    const isInside = (target, selector) => target.closest(selector) !== null;
-
-    const lockBodyScroll = (state) => {
-        document.body.style.overflow = state ? "hidden" : "";
-    };
-
     /*******************************************************
-     * DESKTOP: ODDS + LANGUAGE + TOOLS
+     * DESKTOP: ODDS / LANGUAGE / TOOLS DROPDOWNS
      *******************************************************/
     function initDesktopDropdowns() {
+        if (!hasDesktopHeader) return;
+
         /* ---------------- ODDS ---------------- */
         const oddsToggle   = document.querySelector(".odds-format .odds-toggle");
         const oddsDropdown = document.querySelector(".odds-dropdown");
@@ -43,19 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
 
-                    // active state
                     oddsItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
-                    // label update
                     const clean = item.textContent.split("(")[0].trim();
                     if (oddsLabel) oddsLabel.textContent = clean;
 
-                    // sync to mobile label if exists
                     const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
                     if (mobileOdds) mobileOdds.textContent = clean;
 
-                    // close dropdown after selection
                     oddsDropdown.classList.remove("show");
                 });
             });
@@ -79,17 +82,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
 
-                    // active state
                     langItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
                     const label = item.textContent;
-                    const code  = item.dataset.lang?.toUpperCase() || "EN";
+                    const code  = (item.dataset.lang || "en").toUpperCase();
 
-                    // desktop label shows full language name
                     if (langLabel) langLabel.textContent = label;
 
-                    // sync to mobile code if exists
                     const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
                     if (mobileLang) mobileLang.textContent = code;
 
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        /* ---------------- BETTING TOOLS (STABLE) ---------------- */
+        /* ---------------- BETTING TOOLS ---------------- */
         const toolsTrigger  = document.querySelector(".sub-item-tools");
         const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
         const toolsItems    = toolsDropdown?.querySelectorAll(".item") || [];
@@ -111,17 +111,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!open) toolsDropdown.classList.add("show");
             });
 
-            // Tools items: keep dropdown open (for now no extra logic)
             toolsItems.forEach(item => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
-                    // place for future logic (e.g. navigate to tool)
-                    // dropdown intentionally stays open
+                    // Placeholder for future tool actions.
+                    // Dropdown intentionally stays open.
                 });
             });
         }
 
-        /* ---------------- CLOSE ON OUTSIDE CLICK (WHITELIST) ---------------- */
+        /* ---------------- CLOSE ON OUTSIDE CLICK ---------------- */
         document.addEventListener("click", (e) => {
             if (
                 !isInside(e.target, ".odds-format") &&
@@ -135,12 +134,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* ---------------- CLOSE ON ESC ---------------- */
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeAllDesktopDropdowns();
+            if (e.key === "Escape") {
+                closeAllDesktopDropdowns();
+            }
         });
     }
 
     /*******************************************************
-     * DESKTOP + MOBILE NAVIGATION SYNC
+     * DESKTOP + MOBILE SECTION NAVIGATION SYNC
      *******************************************************/
     function initSectionNavigation() {
         const dMain = document.querySelectorAll(".main-nav .nav-item");
@@ -149,29 +150,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const mMain = document.querySelectorAll(".mobile-main-nav .nav-chip");
         const mSub  = document.querySelectorAll(".mobile-sub-nav .subnav-group");
 
+        if (!dMain.length && !mMain.length) return;
+
         const activate = (section) => {
-            // desktop main nav
+            if (!section) return;
+
             dMain.forEach(i =>
                 i.classList.toggle("active", i.dataset.section === section)
             );
 
-            // desktop row-sub groups
             dSub.forEach(g =>
                 g.classList.toggle("active", g.dataset.subnav === section)
             );
 
-            // mobile main nav
             mMain.forEach(i =>
                 i.classList.toggle("active", i.dataset.section === section)
             );
 
-            // mobile sub nav groups
             mSub.forEach(g =>
                 g.classList.toggle("active", g.dataset.subnav === section)
             );
         };
 
-        // desktop click
         dMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -179,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // mobile click
         mMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -192,6 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
      * MOBILE: MODAL (ODDS / LANGUAGE / TOOLS)
      *******************************************************/
     function initMobileModal() {
+        if (!hasMobileHeader) return;
+
         const modal = document.getElementById("mobile-header-modal");
         if (!modal) return;
 
@@ -220,27 +221,37 @@ document.addEventListener("DOMContentLoaded", () => {
             lockBodyScroll(false);
         };
 
-        // open triggers
-        mOdds?.addEventListener("click", () => showSection("odds", "Select odds format"));
-        mLang?.addEventListener("click", () => showSection("language", "Select language"));
-        mTools?.addEventListener("click", () => showSection("tools", "Betting tools"));
-
-        // close button
-        closeBtn?.addEventListener("click", closeModal);
-
-        // outside click
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) closeModal();
+        /* Open triggers */
+        mOdds?.addEventListener("click", () => {
+            showSection("odds", "Select odds format");
         });
 
-        // ESC key
+        mLang?.addEventListener("click", () => {
+            showSection("language", "Select language");
+        });
+
+        mTools?.addEventListener("click", () => {
+            showSection("tools", "Betting tools");
+        });
+
+        /* Close button */
+        closeBtn?.addEventListener("click", closeModal);
+
+        /* Outside click */
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        /* ESC key for modal only */
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && modal.classList.contains("show")) {
                 closeModal();
             }
         });
 
-        // internal item selection (sync with desktop labels)
+        /* Item selection (sync with desktop labels) */
         sections.forEach(section => {
             section.querySelectorAll(".be-modal-item").forEach(item => {
                 item.addEventListener("click", () => {
@@ -275,6 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
      * DESKTOP AUTH MODAL (LOGIN / REGISTER)
      *******************************************************/
     function initDesktopAuth() {
+        if (!hasDesktopHeader) return;
+
         const overlay = document.querySelector(".be-auth-overlay");
         if (!overlay) return;
 
@@ -299,7 +312,9 @@ document.addEventListener("DOMContentLoaded", () => {
         closeBtn?.addEventListener("click", closeModal);
 
         overlay.addEventListener("click", (e) => {
-            if (e.target === overlay) closeModal();
+            if (e.target === overlay) {
+                closeModal();
+            }
         });
 
         document.addEventListener("keydown", (e) => {
@@ -310,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
-     * INIT AFTER HEADER LOAD (INTEGRATION WITH core.js)
+     * HEADER INIT LIFECYCLE
      *******************************************************/
     const initHeaderModules = () => {
         initDesktopDropdowns();
@@ -319,15 +334,13 @@ document.addEventListener("DOMContentLoaded", () => {
         initDesktopAuth();
     };
 
-    // Standard path: core.js fires "headerLoaded" after includes
+    /* Preferred path: core.js dispatches "headerLoaded" after includes */
     document.addEventListener("headerLoaded", () => {
         initHeaderModules();
     });
 
-    // Fallback: if for ndonjë arsye headerLoaded nuk ndizet,
-    // por DOM është gati dhe header ekziston, inicializo direkt.
-    if (document.querySelector(".header-desktop")) {
-        // small timeout to allow includes if any
+    /* Fallback: if headerLoaded is not dispatched but header exists */
+    if (hasDesktopHeader || hasMobileHeader) {
         setTimeout(() => {
             initHeaderModules();
         }, 0);
