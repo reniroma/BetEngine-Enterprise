@@ -1,71 +1,66 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH LOGIC (FINAL v1.0)
- * Login + Register tabs + modal control
+ * BetEngine Enterprise – AUTH SYSTEM (LOGIN + REGISTER)
+ * Independent from dropdowns / header / mobile modal.
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
-    const overlay = document.querySelector(".be-auth-overlay");
-    if (!overlay) return;
 
-    const title = overlay.querySelector("#auth-title");
-    const tabs = overlay.querySelectorAll(".auth-tab");
-    const panes = overlay.querySelectorAll(".auth-pane");
-    const closeBtn = overlay.querySelector(".auth-close");
+    const loginModal    = document.getElementById("auth-login");
+    const registerModal = document.getElementById("auth-register");
+    const loginBtn      = document.querySelector(".btn-auth.login");
+    const registerBtn   = document.querySelector(".btn-auth.register");
 
-    const loginBtn = document.querySelector(".btn-auth.login");
-    const registerBtn = document.querySelector(".btn-auth.register");
+    const closeBtns = document.querySelectorAll("[data-auth-close]");
+    const switchBtns = document.querySelectorAll(".auth-switch");
 
-    const switchLinks = overlay.querySelectorAll("[data-auth-switch]");
-
-    const openModal = (mode) => {
-        if (title) title.textContent = mode === "login" ? "Login" : "Create account";
-
-        tabs.forEach(tab =>
-            tab.classList.toggle("active", tab.dataset.authTab === mode)
-        );
-
-        panes.forEach(pane =>
-            pane.classList.toggle("active", pane.dataset.authPane === mode)
-        );
-
-        overlay.classList.add("show");
+    const open = (modal) => {
+        modal.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
-    const closeModal = () => {
-        overlay.classList.remove("show");
+    const close = (modal) => {
+        modal.classList.remove("show");
         document.body.style.overflow = "";
     };
 
-    /* OPEN EVENTS */
-    loginBtn?.addEventListener("click", () => openModal("login"));
-    registerBtn?.addEventListener("click", () => openModal("register"));
+    /* Open login modal */
+    loginBtn?.addEventListener("click", () => {
+        close(registerModal);
+        open(loginModal);
+    });
 
-    /* SWITCH BETWEEN TABS FROM FOOTER LINKS */
-    switchLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            const target = link.dataset.authSwitch;
-            openModal(target);
+    /* Open register modal */
+    registerBtn?.addEventListener("click", () => {
+        close(loginModal);
+        open(registerModal);
+    });
+
+    /* Close buttons */
+    closeBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            close(loginModal);
+            close(registerModal);
         });
     });
 
-    /* TABS CLICK */
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            openModal(tab.dataset.authTab);
+    /* Switch between login <-> register */
+    switchBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const target = btn.dataset.authTarget;
+            if (target === "login") {
+                close(registerModal);
+                open(loginModal);
+            } else {
+                close(loginModal);
+                open(registerModal);
+            }
         });
     });
 
-    /* CLOSE EVENTS */
-    closeBtn?.addEventListener("click", closeModal);
-
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) closeModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && overlay.classList.contains("show")) {
-            closeModal();
-        }
+    /* Close on outside click */
+    [loginModal, registerModal].forEach(modal => {
+        modal?.addEventListener("click", (e) => {
+            if (e.target === modal) close(modal);
+        });
     });
 });
