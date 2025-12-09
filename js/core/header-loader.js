@@ -1,59 +1,68 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v5.0 FINAL)
- * Stable path-loading for GitHub Pages + Enterprise DOM sync
- * Loads desktop + mobile + modals and fires "headerLoaded"
+ * BetEngine Enterprise – HEADER LOADER (v7.0 FINAL)
+ * Absolute-path loader for GitHub Pages & Enterprise builds.
+ * Injects: desktop header + mobile header + modals.
+ * Emits: "headerLoaded" when DOM is fully updated.
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * SAFE COMPONENT FETCHER (GitHub Pages Compatible)
+     * ABSOLUTE BASE PATH FOR GITHUB PAGES
      *******************************************************/
-    async function loadComponent(path) {
+    const BASE = "/BetEngine-Enterprise/layouts/header/";
+
+    const FILES = {
+        desktop: BASE + "header-desktop.html",
+        mobile:  BASE + "header-mobile.html",
+        modals:  BASE + "header-modals.html"
+    };
+
+    /*******************************************************
+     * FETCH HELPER
+     *******************************************************/
+    async function loadComponent(url) {
         try {
-            const response = await fetch(path + "?v=" + Date.now()); // cache-bust
-            if (!response.ok) return "";
-            return await response.text();
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) return "";
+            return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader: failed to load", path, err);
+            console.warn("HeaderLoader fetch error:", url, err);
             return "";
         }
     }
 
     /*******************************************************
-     * REAL PATHS (AS GIVEN BY USER)
+     * LOAD ALL COMPONENTS
      *******************************************************/
-    const ROOT = "BetEngine-Enterprise/layouts/header/";
+    async function init() {
+        const [desktop, mobile, modals] = await Promise.all([
+            loadComponent(FILES.desktop),
+            loadComponent(FILES.mobile),
+            loadComponent(FILES.modals)
+        ]);
 
-    const desktopPath = ROOT + "header-desktop.html";
-    const mobilePath  = ROOT + "header-mobile.html";
-    const modalsPath  = ROOT + "header-modals.html";
+        const finalHTML = `${desktop}\n${mobile}\n${modals}`.trim();
+        const mainEl = document.querySelector("main");
 
-    /*******************************************************
-     * LOAD ALL COMPONENTS IN PARALLEL
-     *******************************************************/
-    const [desktopHTML, mobileHTML, modalsHTML] = await Promise.all([
-        loadComponent(desktopPath),
-        loadComponent(mobilePath),
-        loadComponent(modalsPath)
-    ]);
+        if (!mainEl) {
+            console.error("HeaderLoader: <main> element not found.");
+            return;
+        }
 
-    const finalHeader = `${desktopHTML}${mobileHTML}${modalsHTML}`.trim();
+        if (finalHTML.length > 0) {
+            // Insert header block above <main>
+            mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-    /*******************************************************
-     * INSERT HEADER BEFORE <main>
-     *******************************************************/
-    const mainEl = document.querySelector("main");
-
-    if (finalHeader.length > 0 && mainEl) {
-        mainEl.insertAdjacentHTML("beforebegin", finalHeader);
-
-        // Dispatch only AFTER header is fully attached
-        document.dispatchEvent(new Event("headerLoaded"));
-
-        console.log("%cHeaderLoader v5.0 → headerLoaded dispatched",
-            "color:#00eaff;font-weight:bold;");
-    } else {
-        console.error("HeaderLoader v5.0 → Header failed to load or <main> missing.");
+            // Wait a short delay to ensure DOM attachment is stable
+            setTimeout(() => {
+                document.dispatchEvent(new Event("headerLoaded"));
+                console.log("HeaderLoader v7.0: headerLoaded event dispatched.");
+            }, 10);
+        } else {
+            console.error("HeaderLoader: No header content loaded.");
+        }
     }
+
+    init();
 });
