@@ -19,19 +19,9 @@
 <body>
 
     <!-- ====================================================
-         DESKTOP HEADER (loaded dynamically)
+         DESKTOP & MOBILE HEADER (injected by header-loader.js)
     ======================================================= -->
-    <!-- @include layouts/header/header-desktop.html -->
-
-    <!-- ====================================================
-         MOBILE HEADER (loaded dynamically)
-    ======================================================= -->
-    <!-- @include layouts/header/header-mobile.html -->
-
-    <!-- ====================================================
-         MODALS (loaded dynamically)
-    ======================================================= -->
-    <!-- @include layouts/header/header-modals.html -->
+    <!-- Nuk kemi HTML header këtu – futet dinamikisht para <main> -->
 
     <!-- ====================================================
          MAIN CONTENT
@@ -42,12 +32,16 @@
     </main>
 
     <!-- ====================================================
-         JAVASCRIPT
+         JAVASCRIPT (Enterprise, real paths)
+         NOTE: këta janë path-et reale në repo:
+         - core.js në root
+         - header-loader.js në root
+         - ui/header.js dhe ui/widgets.js në folderin ui/
     ======================================================= -->
-    <script src="js/core/core.js"></script>
-    <script src="js/core/header-loader.js"></script>
-    <script src="js/ui/header.js"></script>
-    <script src="js/ui/widgets.js"></script>
+    <script src="core.js"></script>
+    <script src="header-loader.js"></script>
+    <script src="ui/header.js"></script>
+    <script src="ui/widgets.js"></script>
 
 </body>
 </html>
