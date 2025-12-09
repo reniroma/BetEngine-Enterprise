@@ -1,15 +1,37 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v7.1 ULTRA-STABLE)
- * Safe loader for GitHub Pages project repositories.
- * Loads desktop + mobile + modals with fallback mode.
+ * BetEngine Enterprise – HEADER LOADER (v8.0 FINAL)
+ * Auto-detect base path for GitHub Pages, Vercel, localhost.
+ * Injects: desktop header + mobile header + modals.
+ * Emits: "headerLoaded" when header markup is ready.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * RELATIVE BASE PATH (FIX FOR GITHUB PAGES)
+     * BASE PATH AUTO-DETECTION
+     *
+     * Rules:
+     * - If running under GitHub Pages repository
+     *     → URL contains "/BetEngine-Enterprise/"
+     *     → base = "/BetEngine-Enterprise/layouts/header/"
+     *
+     * - Else (Vercel / localhost / any root-hosted build)
+     *     → base = "/layouts/header/"
      *******************************************************/
-    const BASE = "layouts/header/";
+    function resolveBasePath() {
+        const repoSlug = "/BetEngine-Enterprise/";
+        const path = window.location.pathname || "/";
+
+        if (path.startsWith(repoSlug)) {
+            // GitHub Pages (or any host with this prefix)
+            return repoSlug + "layouts/header/";
+        }
+
+        // Root-hosted (Vercel, localhost, etc.)
+        return "/layouts/header/";
+    }
+
+    const BASE = resolveBasePath();
 
     const FILES = {
         desktop: BASE + "header-desktop.html",
@@ -18,49 +40,57 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /*******************************************************
-     * FETCH HELPER – NEVER BREAK
+     * FETCH HELPER
      *******************************************************/
     async function loadComponent(url) {
         try {
             const res = await fetch(url, { cache: "no-store" });
-            if (!res.ok) return "";
+            if (!res.ok) {
+                console.warn("HeaderLoader v8.0: HTTP error for", url, res.status);
+                return "";
+            }
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader fetch error:", url);
+            console.warn("HeaderLoader v8.0: fetch error for", url, err);
             return "";
         }
     }
 
     /*******************************************************
-     * INIT LOADER
+     * MAIN INITIALIZER
      *******************************************************/
-    async function init() {
-        const desktop = await loadComponent(FILES.desktop);
-        const mobile  = await loadComponent(FILES.mobile);
-        const modals  = await loadComponent(FILES.modals);
-
-        // Build header – even partial load is allowed
-        const finalHTML = `
-            ${desktop || ""}
-            ${mobile  || ""}
-            ${modals  || ""}
-        `.trim();
-
+    async function initHeaderLoader() {
         const mainEl = document.querySelector("main");
         if (!mainEl) {
-            console.error("HeaderLoader: <main> not found.");
+            console.error("HeaderLoader v8.0: <main> element not found.");
             return;
         }
 
-        // Inject header ALWAYS
+        const [desktopHTML, mobileHTML, modalsHTML] = await Promise.all([
+            loadComponent(FILES.desktop),
+            loadComponent(FILES.mobile),
+            loadComponent(FILES.modals)
+        ]);
+
+        const finalHTML = `${desktopHTML}\n${mobileHTML}\n${modalsHTML}`.trim();
+
+        if (!finalHTML) {
+            console.error("HeaderLoader v8.0: no header content loaded.");
+            return;
+        }
+
+        // Inject header block just before <main>
         mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-        // Dispatch event
+        // Small delay to ensure DOM is fully attached
         setTimeout(() => {
             document.dispatchEvent(new Event("headerLoaded"));
-            console.log("HeaderLoader v7.1: headerLoaded event dispatched.");
+            console.log("HeaderLoader v8.0: headerLoaded event dispatched.", {
+                base: BASE,
+                files: FILES
+            });
         }, 10);
     }
 
-    init();
+    initHeaderLoader();
 });
