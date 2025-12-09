@@ -13,6 +13,10 @@
     <link rel="stylesheet" href="css/layout.css?v=4">
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
+
+    <!-- AUTH MODALS CSS (must be below desktop.css) -->
+    <link rel="stylesheet" href="css/auth.css?v=1">
+
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
@@ -29,7 +33,7 @@
     <!-- @include layouts/header/header-mobile.html -->
 
     <!-- ====================================================
-         MODALS (loaded dynamically)
+         MODALS (loaded dynamically: mobile modal + auth modals)
     ======================================================= -->
     <!-- @include layouts/header/header-modals.html -->
 
@@ -42,12 +46,15 @@
     </main>
 
     <!-- ====================================================
-         JAVASCRIPT
+         JAVASCRIPT ORDER (Enterprise Standard)
     ======================================================= -->
     <script src="js/core/core.js"></script>
     <script src="js/core/header-loader.js"></script>
     <script src="js/ui/header.js"></script>
     <script src="js/ui/widgets.js"></script>
+
+    <!-- AUTH MODAL LOGIC (must be last) -->
+    <script src="js/ui/header-auth.js"></script>
 
 </body>
 </html>
