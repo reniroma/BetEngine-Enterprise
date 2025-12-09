@@ -1,68 +1,75 @@
 /*********************************************************
  * BetEngine Enterprise – HEADER LOADER (v9.0 FINAL)
- * Adds support for 2 standalone auth modals:
- * login-modal.html + register-modal.html
+ * Loads:
+ *   - Desktop header
+ *   - Mobile header
+ *   - Header modals (mobile controls)
+ *   - Login modal
+ *   - Register modal
+ *
+ * Emits "headerLoaded" when all components are injected.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* -----------------------------------------------
-       BASE PATH AUTO-DETECTION
-    ------------------------------------------------ */
+    /*******************************************************
+     * BASE PATH AUTO-DETECTION
+     *******************************************************/
     function resolveBasePath() {
         const repoSlug = "/BetEngine-Enterprise/";
         const path = window.location.pathname || "/";
 
-        return path.startsWith(repoSlug)
-            ? repoSlug + "layouts/header/"
-            : "/layouts/header/";
+        if (path.startsWith(repoSlug)) {
+            return repoSlug + "layouts/header/";
+        }
+
+        return "/layouts/header/";
     }
 
     const BASE = resolveBasePath();
 
-    /* -----------------------------------------------
-       FILES TO LOAD
-    ------------------------------------------------ */
+    /*******************************************************
+     * COMPONENT FILES
+     *******************************************************/
     const FILES = {
-        desktop:        BASE + "header-desktop.html",
-        mobile:         BASE + "header-mobile.html",
-        modals:         BASE + "header-modals.html",       // mobile odds/lang/tools
-        login:          BASE + "login-modal.html",
-        register:       BASE + "register-modal.html"
+        desktop:  BASE + "header-desktop.html",
+        mobile:   BASE + "header-mobile.html",
+        modals:   BASE + "header-modals.html",
+        login:    BASE + "auth-login.html",
+        register: BASE + "auth-register.html"
     };
 
-    /* -----------------------------------------------
-       FETCH HELPER
-    ------------------------------------------------ */
+    /*******************************************************
+     * FETCH HELPER
+     *******************************************************/
     async function loadComponent(url) {
         try {
             const res = await fetch(url, { cache: "no-store" });
             if (!res.ok) {
-                console.warn("HeaderLoader v9: HTTP error", url, res.status);
+                console.warn("HeaderLoader v9.0: HTTP error", url, res.status);
                 return "";
             }
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader v9: fetch error", url, err);
+            console.warn("HeaderLoader v9.0: FETCH FAILED", url, err);
             return "";
         }
     }
 
-    /* -----------------------------------------------
-       MAIN INITIALIZER
-    ------------------------------------------------ */
+    /*******************************************************
+     * MAIN INITIALIZER
+     *******************************************************/
     async function initHeaderLoader() {
         const mainEl = document.querySelector("main");
         if (!mainEl) {
-            console.error("HeaderLoader v9: <main> not found.");
+            console.error("HeaderLoader v9.0: <main> not found.");
             return;
         }
 
-        // Load ALL 5 components
         const [
             desktopHTML,
             mobileHTML,
-            modalHTML,
+            modalsHTML,
             loginHTML,
             registerHTML
         ] = await Promise.all([
@@ -73,25 +80,24 @@ document.addEventListener("DOMContentLoaded", () => {
             loadComponent(FILES.register)
         ]);
 
-        const finalHTML = `
-${desktopHTML}
-${mobileHTML}
-${modalHTML}
-${loginHTML}
-${registerHTML}
-        `.trim();
+        const finalHTML =
+            `${desktopHTML}\n${mobileHTML}\n${modalsHTML}\n${loginHTML}\n${registerHTML}`.trim();
 
         if (!finalHTML) {
-            console.error("HeaderLoader v9: No content loaded.");
+            console.error("HeaderLoader v9.0: No content loaded.");
             return;
         }
 
+        // Insert BEFORE <main>
         mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-        // Allow DOM to settle
+        // Dispatch event when everything is ready
         setTimeout(() => {
             document.dispatchEvent(new Event("headerLoaded"));
-            console.log("HeaderLoader v9 loaded:", FILES);
+            console.log("HeaderLoader v9.0: headerLoaded dispatched", {
+                base: BASE,
+                files: FILES
+            });
         }, 10);
     }
 
