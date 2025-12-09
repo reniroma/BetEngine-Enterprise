@@ -1,7 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v5.0)
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v4.1 STABLE)
  * Desktop dropdowns + Mobile modal + Navigation sync
- * Auth modal with Login/Register tabs (responsive).
+ * Stable, loader-safe, compatible with core.js (headerLoaded).
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,9 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /*******************************************************
      * BASIC UTILITIES (LOCAL TO HEADER)
      *******************************************************/
-    const hasDesktopHeader = !!document.querySelector(".header-desktop");
-    const hasMobileHeader  = !!document.querySelector(".header-mobile");
-
     const isInside = (target, selector) => {
         return !!(target && target.closest(selector));
     };
@@ -28,15 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
      * DESKTOP: ODDS / LANGUAGE / TOOLS DROPDOWNS
+     * (Runs only if .header-desktop exists at init time)
      *******************************************************/
     function initDesktopDropdowns() {
-        if (!hasDesktopHeader) return;
+        const header = document.querySelector(".header-desktop");
+        if (!header) return;
 
         /* ---------------- ODDS ---------------- */
-        const oddsToggle   = document.querySelector(".odds-format .odds-toggle");
-        const oddsDropdown = document.querySelector(".odds-dropdown");
-        const oddsItems    = oddsDropdown?.querySelectorAll(".item") || [];
-        const oddsLabel    = document.querySelector(".odds-label");
+        const oddsToggle   = header.querySelector(".odds-format .odds-toggle");
+        const oddsDropdown = header.querySelector(".odds-dropdown");
+        const oddsItems    = oddsDropdown ? oddsDropdown.querySelectorAll(".item") : [];
+        const oddsLabel    = header.querySelector(".odds-label");
 
         if (oddsToggle && oddsDropdown) {
             oddsToggle.addEventListener("click", (e) => {
@@ -50,25 +49,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
 
+                    // active state
                     oddsItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
+                    // label update
                     const clean = item.textContent.split("(")[0].trim();
                     if (oddsLabel) oddsLabel.textContent = clean;
 
+                    // sync to mobile label if exists
                     const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
                     if (mobileOdds) mobileOdds.textContent = clean;
 
+                    // close dropdown after selection
                     oddsDropdown.classList.remove("show");
                 });
             });
         }
 
         /* ---------------- LANGUAGE ---------------- */
-        const langToggle   = document.querySelector(".language-toggle");
-        const langDropdown = document.querySelector(".language-dropdown");
-        const langItems    = langDropdown?.querySelectorAll(".item") || [];
-        const langLabel    = document.querySelector(".lang-code");
+        const langToggle   = header.querySelector(".language-toggle");
+        const langDropdown = header.querySelector(".language-dropdown");
+        const langItems    = langDropdown ? langDropdown.querySelectorAll(".item") : [];
+        const langLabel    = header.querySelector(".lang-code");
 
         if (langToggle && langDropdown) {
             langToggle.addEventListener("click", (e) => {
@@ -86,10 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     item.classList.add("active");
 
                     const label = item.textContent;
-                    const code  = (item.dataset.lang || "EN").toUpperCase();
+                    const code  = (item.dataset.lang || "en").toUpperCase();
 
+                    // desktop label shows full language name
                     if (langLabel) langLabel.textContent = label;
 
+                    // sync to mobile code if exists
                     const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
                     if (mobileLang) mobileLang.textContent = code;
 
@@ -99,9 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         /* ---------------- BETTING TOOLS ---------------- */
-        const toolsTrigger  = document.querySelector(".sub-item-tools");
-        const toolsDropdown = document.querySelector(".sub-item-tools .tools-dropdown");
-        const toolsItems    = toolsDropdown?.querySelectorAll(".item") || [];
+        const toolsTrigger  = header.querySelector(".sub-item-tools");
+        const toolsDropdown = toolsTrigger
+            ? toolsTrigger.querySelector(".tools-dropdown")
+            : null;
+        const toolsItems    = toolsDropdown ? toolsDropdown.querySelectorAll(".item") : [];
 
         if (toolsTrigger && toolsDropdown) {
             toolsTrigger.addEventListener("click", (e) => {
@@ -115,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
                     // Placeholder for future tool actions.
+                    // Dropdown intentionally stays open.
                 });
             });
         }
@@ -154,23 +162,28 @@ document.addEventListener("DOMContentLoaded", () => {
         const activate = (section) => {
             if (!section) return;
 
+            // desktop main nav
             dMain.forEach(i =>
                 i.classList.toggle("active", i.dataset.section === section)
             );
 
+            // desktop row-sub groups
             dSub.forEach(g =>
                 g.classList.toggle("active", g.dataset.subnav === section)
             );
 
+            // mobile main nav
             mMain.forEach(i =>
                 i.classList.toggle("active", i.dataset.section === section)
             );
 
+            // mobile sub nav groups
             mSub.forEach(g =>
                 g.classList.toggle("active", g.dataset.subnav === section)
             );
         };
 
+        // desktop click
         dMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -178,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        // mobile click
         mMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -190,7 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
      * MOBILE: MODAL (ODDS / LANGUAGE / TOOLS)
      *******************************************************/
     function initMobileModal() {
-        if (!hasMobileHeader) return;
+        const mobileHeader = document.querySelector(".header-mobile");
+        if (!mobileHeader) return;
 
         const modal = document.getElementById("mobile-header-modal");
         if (!modal) return;
@@ -199,9 +214,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const sections = modal.querySelectorAll(".be-modal-section");
         const closeBtn = modal.querySelector(".be-modal-close");
 
-        const mOdds  = document.querySelector(".mobile-odds-toggle");
-        const mLang  = document.querySelector(".mobile-lang-toggle");
-        const mTools = document.querySelector(".mobile-tools-trigger");
+        const mOdds  = mobileHeader.querySelector(".mobile-odds-toggle");
+        const mLang  = mobileHeader.querySelector(".mobile-lang-toggle");
+        const mTools = mobileHeader.querySelector(".mobile-tools-trigger");
 
         const showSection = (type, label) => {
             sections.forEach(s => s.classList.remove("active"));
@@ -266,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (type === "language") {
                         const txt  = item.textContent;
-                        const code = (item.dataset.lang || "EN").toUpperCase();
+                        const code = (item.dataset.lang || "en").toUpperCase();
 
                         const desktopLang = document.querySelector(".language-toggle .lang-code");
                         const mobileLang  = document.querySelector(".mobile-lang-toggle .lang-code");
@@ -282,51 +297,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
-     * DESKTOP AUTH MODAL (LOGIN / REGISTER TABS)
+     * DESKTOP AUTH MODAL (LOGIN / REGISTER)
      *******************************************************/
     function initDesktopAuth() {
-        if (!hasDesktopHeader) return;
-
         const overlay = document.querySelector(".be-auth-overlay");
         if (!overlay) return;
 
         const loginBtn    = document.querySelector(".btn-auth.login");
         const registerBtn = document.querySelector(".btn-auth.register");
         const closeBtn    = overlay.querySelector(".auth-close");
-        const titleEl     = overlay.querySelector(".auth-header span");
+        const title       = overlay.querySelector(".auth-header span");
 
-        // Tabs and panes
-        const tabs  = overlay.querySelectorAll(".auth-tab");
-        const panes = overlay.querySelectorAll(".auth-pane");
-
-        const paneLogin    = overlay.querySelector('[data-auth-pane="login"]');
-        const paneRegister = overlay.querySelector('[data-auth-pane="register"]');
-
-        // In-modal switches (links)
-        const switches = overlay.querySelectorAll("[data-auth-switch]");
-
-        const setActiveMode = (mode) => {
-            // Tabs
-            tabs.forEach(tab => {
-                const tabMode = tab.getAttribute("data-auth-tab");
-                tab.classList.toggle("active", tabMode === mode);
-            });
-
-            // Panes
-            panes.forEach(pane => {
-                const paneMode = pane.getAttribute("data-auth-pane");
-                pane.classList.toggle("active", paneMode === mode);
-            });
-
-            // Title
-            if (titleEl) {
-                titleEl.textContent = mode === "register" ? "Create account" : "Login";
-            }
-        };
-
-        const openModal = (mode) => {
-            const targetMode = mode === "register" ? "register" : "login";
-            setActiveMode(targetMode);
+        const openModal = (type) => {
+            if (title) title.textContent = type === "login" ? "Login" : "Register";
             overlay.classList.add("show");
             lockBodyScroll(true);
         };
@@ -336,45 +319,21 @@ document.addEventListener("DOMContentLoaded", () => {
             lockBodyScroll(false);
         };
 
-        // Header buttons
         loginBtn?.addEventListener("click", () => openModal("login"));
         registerBtn?.addEventListener("click", () => openModal("register"));
-
-        // Close button
         closeBtn?.addEventListener("click", closeModal);
 
-        // Overlay outside click
         overlay.addEventListener("click", (e) => {
             if (e.target === overlay) {
                 closeModal();
             }
         });
 
-        // ESC key
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && overlay.classList.contains("show")) {
                 closeModal();
             }
         });
-
-        // Tab click
-        tabs.forEach(tab => {
-            tab.addEventListener("click", () => {
-                const mode = tab.getAttribute("data-auth-tab");
-                if (mode) setActiveMode(mode);
-            });
-        });
-
-        // In-modal switches (footer links)
-        switches.forEach(btn => {
-            btn.addEventListener("click", () => {
-                const mode = btn.getAttribute("data-auth-switch");
-                if (mode) setActiveMode(mode);
-            });
-        });
-
-        // Ensure default state is login pane visible
-        setActiveMode("login");
     }
 
     /*******************************************************
@@ -387,13 +346,13 @@ document.addEventListener("DOMContentLoaded", () => {
         initDesktopAuth();
     };
 
-    // Preferred: headerLoaded event fired by header-loader.js
+    /* Preferred path: header-loader.js dispatches "headerLoaded" */
     document.addEventListener("headerLoaded", () => {
         initHeaderModules();
     });
 
-    // Fallback: if headerLoaded is not dispatched but header exists
-    if (hasDesktopHeader || hasMobileHeader) {
+    /* Fallback: if markup is already in DOM (no loader used) */
+    if (document.querySelector(".header-desktop") || document.querySelector(".header-mobile")) {
         setTimeout(() => {
             initHeaderModules();
         }, 0);
