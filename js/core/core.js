@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – CORE.JS (FINAL)
+ * BetEngine Enterprise – CORE.JS (FINAL ENTERPRISE BUILD)
  * Global helpers, UI utilities, event handling, init bus.
  * Compatible with header.js, widgets.js and all UI modules.
  *********************************************************/
@@ -34,12 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
      * GLOBAL EVENT: ESC KEY
-     * Header.js already handles dropdowns; core.js handles
-     * universal modals / global dismissible components.
      *******************************************************/
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-            // Global modal close hook
             const modalOpen = qs(".be-modal-overlay.show");
             if (modalOpen) {
                 modalOpen.classList.remove("show");
@@ -50,11 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*******************************************************
-     * GLOBAL EVENT: CLICK OUTSIDE (Safe)
-     * Does NOT interfere with header.js dropdown closing.
+     * GLOBAL CLICK-OUTSIDE HANDLER
+     * Safe – does NOT interfere with header.js dropdown logic.
      *******************************************************/
     document.addEventListener("click", (e) => {
-        // Close global UI elements if added in the future
         qa("[data-be-autoclose]").forEach(el => {
             if (!el.contains(e.target)) el.classList.remove("show");
         });
@@ -62,14 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*******************************************************
-     * GLOBAL UTILITY: Smooth scroll to top
+     * SMOOTH SCROLL TO TOP
      *******************************************************/
     const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 
     /*******************************************************
      * GLOBAL INIT BUS
-     * Each module can inject an initializer into window.BeInit
      *******************************************************/
     window.BeInit = window.BeInit || [];
 
@@ -80,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+
     /*******************************************************
      * INITIALIZE ALL REGISTERED MODULES
      *******************************************************/
@@ -88,8 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
         catch (err) { console.warn("Init error in module:", m.name, err); }
     });
 
+
     /*******************************************************
-     * EXPORTS FOR OTHER FILES (Optional Usage)
+     * ENTERPRISE EVENT DISPATCH (CRITICAL FOR HEADER.JS)
+     * This ensures header.js initializes safely and reliably.
+     *******************************************************/
+    document.dispatchEvent(new Event("headerLoaded"));
+
+
+    /*******************************************************
+     * EXPORTS (OPTIONAL)
      *******************************************************/
     window.Be = {
         qs,
