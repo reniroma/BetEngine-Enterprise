@@ -1,66 +1,86 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SYSTEM (LOGIN + REGISTER)
- * Independent from dropdowns / header / mobile modal.
+ * BetEngine Enterprise – AUTH MODAL SYSTEM (FINAL v3)
+ * Handles: open, close, switch tabs, preserve state.
+ * Works with single #auth-modal containing login/register panes.
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const loginModal    = document.getElementById("auth-login");
-    const registerModal = document.getElementById("auth-register");
-    const loginBtn      = document.querySelector(".btn-auth.login");
-    const registerBtn   = document.querySelector(".btn-auth.register");
+    /*******************************************************
+     * ELEMENTS
+     *******************************************************/
+    const authOverlay = document.getElementById("auth-modal");
+    const authBox     = authOverlay?.querySelector(".be-auth-box");
 
-    const closeBtns = document.querySelectorAll("[data-auth-close]");
-    const switchBtns = document.querySelectorAll(".auth-switch");
+    const loginBtn    = document.querySelector(".btn-auth.login");
+    const registerBtn = document.querySelector(".btn-auth.register");
 
-    const open = (modal) => {
-        modal.classList.add("show");
+    const closeBtn    = authOverlay?.querySelector(".auth-close");
+
+    const tabs  = authOverlay?.querySelectorAll(".auth-tab");
+    const panes = authOverlay?.querySelectorAll(".auth-pane");
+
+    const switchLinks = authOverlay?.querySelectorAll("[data-auth-switch]");
+
+    if (!authOverlay || !authBox) {
+        console.warn("Auth modal elements missing.");
+        return;
+    }
+
+    /*******************************************************
+     * HELPERS
+     *******************************************************/
+    function openAuth(mode) {
+        // Reset active states
+        tabs.forEach(t => t.classList.remove("active"));
+        panes.forEach(p => p.classList.remove("active"));
+
+        // Activate correct tab + pane
+        const tab  = authOverlay.querySelector(`[data-auth-tab="${mode}"]`);
+        const pane = authOverlay.querySelector(`[data-auth-pane="${mode}"]`);
+
+        if (tab)  tab.classList.add("active");
+        if (pane) pane.classList.add("active");
+
+        // Show modal
+        authOverlay.classList.add("show");
+        authBox.classList.add("show");
         document.body.style.overflow = "hidden";
-    };
+    }
 
-    const close = (modal) => {
-        modal.classList.remove("show");
+    function closeAuth() {
+        authOverlay.classList.remove("show");
+        authBox.classList.remove("show");
         document.body.style.overflow = "";
-    };
+    }
 
-    /* Open login modal */
-    loginBtn?.addEventListener("click", () => {
-        close(registerModal);
-        open(loginModal);
-    });
+    /*******************************************************
+     * OPEN FROM HEADER BUTTONS
+     *******************************************************/
+    loginBtn?.addEventListener("click", () => openAuth("login"));
+    registerBtn?.addEventListener("click", () => openAuth("register"));
 
-    /* Open register modal */
-    registerBtn?.addEventListener("click", () => {
-        close(loginModal);
-        open(registerModal);
-    });
+    /*******************************************************
+     * CLOSE BUTTON (X)
+     *******************************************************/
+    closeBtn?.addEventListener("click", () => closeAuth());
 
-    /* Close buttons */
-    closeBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            close(loginModal);
-            close(registerModal);
+    /*******************************************************
+     * SWITCH BETWEEN LOGIN <-> REGISTER
+     *******************************************************/
+    switchLinks?.forEach(link => {
+        link.addEventListener("click", () => {
+            const target = link.dataset.authSwitch; // "login" or "register"
+            openAuth(target);
         });
     });
 
-    /* Switch between login <-> register */
-    switchBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.dataset.authTarget;
-            if (target === "login") {
-                close(registerModal);
-                open(loginModal);
-            } else {
-                close(loginModal);
-                open(registerModal);
-            }
-        });
-    });
-
-    /* Close on outside click */
-    [loginModal, registerModal].forEach(modal => {
-        modal?.addEventListener("click", (e) => {
-            if (e.target === modal) close(modal);
-        });
+    /*******************************************************
+     * CLOSE WHEN CLICKING OUTSIDE MODAL BOX
+     *******************************************************/
+    authOverlay.addEventListener("click", (e) => {
+        if (e.target === authOverlay) {
+            closeAuth(); // no tab reset here
+        }
     });
 });
