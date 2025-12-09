@@ -1,8 +1,8 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v8.0 FINAL)
+ * BetEngine Enterprise – HEADER LOADER (v8.1 FINAL)
  * Auto-detects base path (GitHub Pages, Vercel, local).
- * Injects: desktop header + mobile header + modals.
- * Emits: "headerLoaded" when DOM is fully updated.
+ * Injects desktop header, mobile header, and modal blocks.
+ * Emits "headerLoaded" when DOM is fully updated.
  *********************************************************/
 
 (function () {
@@ -11,30 +11,21 @@
     document.addEventListener("DOMContentLoaded", () => {
 
         /*******************************************************
-         * BASE PATH AUTO-DETECTOR
-         *
-         * Shembuj typical:
-         * - https://reniroma.github.io/BetEngine-Enterprise/
-         *   => basePath = "/BetEngine-Enterprise/layouts/header/"
-         *
-         * - https://betengine.vercel.app/
-         *   => basePath = "/layouts/header/"
+         * BASE PATH AUTO-DETECTION
+         * - GitHub Pages example:
+         *   https://domain.github.io/RepoName/  => "/RepoName/layouts/header/"
+         * - Vercel / Local example:
+         *   https://project.vercel.app/         => "/layouts/header/"
          *******************************************************/
         function getBasePath() {
-            const path = window.location.pathname; // p.sh. "/BetEngine-Enterprise/" ose "/"
-            // Marrim vetëm pjesën e parë jo-bosh pas "/"
+            const path = window.location.pathname;
             const segments = path.split("/").filter(Boolean);
 
-            // Në GitHub Pages segmenti i parë është emri i repos
-            // Në Vercel zakonisht nuk ka segment (root)
-            let repoSegment = "";
-            if (segments.length > 0) {
-                repoSegment = "/" + segments[0];
-            }
+            // GitHub Pages → first segment is repo name
+            // Vercel / Local → no repo folder (root)
+            const repo = segments.length > 0 ? "/" + segments[0] : "";
 
-            // Nëse jemi në GitHub Pages (subpath), përdor repoSegment
-            // Nëse jemi në root (Vercel, local), repoSegment është bosh
-            return (repoSegment ? repoSegment : "") + "/layouts/header/";
+            return (repo ? repo : "") + "/layouts/header/";
         }
 
         const BASE = getBasePath();
@@ -52,18 +43,18 @@
             try {
                 const res = await fetch(url, { cache: "no-store" });
                 if (!res.ok) {
-                    console.warn("HeaderLoader: HTTP", res.status, "for", url);
+                    console.warn("HeaderLoader: HTTP error", res.status, url);
                     return "";
                 }
                 return await res.text();
             } catch (err) {
-                console.warn("HeaderLoader fetch error:", url, err);
+                console.warn("HeaderLoader fetch failed:", url, err);
                 return "";
             }
         }
 
         /*******************************************************
-         * MAIN INIT
+         * MAIN INITIALIZATION
          *******************************************************/
         async function init() {
             const [desktop, mobile, modals] = await Promise.all([
@@ -76,22 +67,21 @@
             const mainEl = document.querySelector("main");
 
             if (!mainEl) {
-                console.error("HeaderLoader: <main> element not found.");
+                console.error("HeaderLoader: <main> not found.");
                 return;
             }
 
             if (finalHTML.length === 0) {
-                console.error("HeaderLoader: No header content loaded.");
+                console.error("HeaderLoader: No header components loaded.");
                 return;
             }
 
-            // Insert header block above <main>
+            // Inject the full header block above <main>
             mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-            // Small delay to ensure DOM is attached and measurable
             setTimeout(() => {
                 document.dispatchEvent(new Event("headerLoaded"));
-                console.log("HeaderLoader v8.0: headerLoaded event dispatched.");
+                console.log("HeaderLoader v8.1: headerLoaded event dispatched.");
             }, 10);
         }
 
