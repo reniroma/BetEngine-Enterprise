@@ -1,6 +1,6 @@
 /*********************************************************
  * BetEngine Enterprise – DESKTOP CSS (ENTERPRISE v2.0)
- * Clean, refactored, conflict-free desktop header layout.
+ * Header FIX with stable Row-3 spacing and conflict isolation.
  *********************************************************/
 
 /* =======================================================
@@ -16,12 +16,8 @@
 }
 
 @media (max-width: 900px) {
-    .header-desktop {
-        display: none;
-    }
-    .header-mobile {
-        display: block;
-    }
+    .header-desktop { display: none; }
+    .header-mobile  { display: block; }
 }
 
 /* =======================================================
@@ -67,35 +63,25 @@
 
 .row-top .right {
     flex: 1;
-    justify-content: flex-end;
     display: flex;
+    justify-content: flex-end;
     gap: 12px;
 }
 
-/* Right cluster Row 1 – consistent spacing */
-.header-desktop .row-top .right > * {
-    margin-left: 14px;
-}
-
 /* =======================================================
-   ROW 2 (BRAND + MAIN NAV + SEARCH)
+   ROW 2 (BRAND + NAV + SEARCH)
 ======================================================= */
 
 .row-main {
     min-height: 58px;
     display: grid;
-    grid-template-columns: 240px 1fr 260px; /* brand – nav – search/notify */
+    grid-template-columns: 240px 1fr 260px;
     align-items: center;
-    gap: 10px;
+    gap: 18px;
     position: relative;
     z-index: 250;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 24px;
-    padding-right: 24px;
 }
 
-/* BRAND BLOCK */
 .row-main .brand {
     display: flex;
     align-items: center;
@@ -110,7 +96,6 @@
     height: 36px;
 }
 
-/* MAIN NAV BLOCK */
 .row-main nav.main-nav {
     display: flex;
     align-items: center;
@@ -119,7 +104,6 @@
     flex-wrap: nowrap;
 }
 
-/* SEARCH + NOTIFICATION CLUSTER */
 .row-main .search-notify {
     display: flex;
     align-items: center;
@@ -128,7 +112,7 @@
     width: auto;
 }
 
-/* SEARCH WIDTH – flexible, safe */
+/* SEARCH WIDTH */
 .header-desktop .search-box {
     width: 210px;
     max-width: 240px;
@@ -136,8 +120,7 @@
 }
 
 /* =======================================================
-   ROW 3 (SUB NAVIGATION)
-   – medium spacing enterprise preset
+   ROW 3 (SUB NAVIGATION) – FIXED SPACING
 ======================================================= */
 
 .row-sub {
@@ -149,48 +132,38 @@
     z-index: 200;
 }
 
-/* Only the active section group is visible */
+/* GAP FIX — THIS IS THE PATCH */
 .row-sub .subnav-group {
     display: none;
     align-items: center;
-    gap: 20px; /* medium enterprise spacing between items */
+    gap: 22px; /* FIXED, UNIFORM, CLEAN */
 }
 
 .row-sub .subnav-group.active {
     display: flex;
 }
 
-/* Sub-items – enterprise spacing */
+/* Sub-items */
 .row-sub .sub-item {
-    padding: 8px 14px;
+    padding: 6px 8px;
     font-size: 12px;
     letter-spacing: 0.05em;
     cursor: pointer;
     user-select: none;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     border-radius: 4px;
 }
 
-/* BETTING TOOLS – with dropdown */
+/* Dropdown container */
 .sub-item-tools {
     position: relative;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
+    gap: 4px;
 }
 
-/* Caret alignment in BETTING TOOLS */
-.sub-item-tools .caret {
-    width: 14px;
-    height: 14px;
-    position: relative;
-    top: 1px;
-}
-
-/* Tools dropdown positioning under BETTING TOOLS */
 .sub-item-tools .tools-dropdown {
     top: calc(100% + 8px);
     left: 0;
@@ -198,17 +171,16 @@
 }
 
 /* =======================================================
-   DROPDOWN BLOCKS (ALL)
+   DROPDOWN BLOCK
 ======================================================= */
 
 .odds-dropdown,
 .language-dropdown,
 .tools-dropdown {
-    z-index: 999;
+    z-index: 999 !important;
     margin-top: 4px;
 }
 
-/* Odds + language align to right edge of trigger */
 .odds-dropdown,
 .language-dropdown {
     right: 0;
@@ -219,25 +191,87 @@
     overflow-y: auto;
 }
 
-/* General odds dropdown items */
 .odds-dropdown .item {
     padding: 8px 12px;
     display: flex;
     justify-content: space-between;
 }
 
-/* Betting tools dropdown items – compact enterprise */
-.tools-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+/* =======================================================
+   SEARCH FOCUS EFFECT
+======================================================= */
+
+.search-box input { width: 140px; }
+
+.search-box:focus-within input {
+    width: 170px;
+    transition: width .2s ease;
 }
 
 /* =======================================================
-   DROPDOWN ALIGN (ODDS + LANGUAGE)
+   Z-INDEX MODEL
 ======================================================= */
+
+.header-desktop { z-index: 100; }
+.row-top        { z-index: 300; }
+.row-main       { z-index: 250; }
+.row-sub        { z-index: 200; }
+
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown { z-index: 999; }
+
+/* =======================================================
+   RESPONSIVE ADJUSTMENTS
+======================================================= */
+
+@media (max-width: 1200px) {
+    .row-main { grid-template-columns: 200px 1fr 240px; }
+    .main-nav { gap: 16px; }
+}
+
+@media (max-width: 1050px) {
+    .row-main { grid-template-columns: 180px 1fr 220px; }
+    .main-nav { gap: 14px; }
+}
+
+/*********************************************************
+ * VISUAL PACK
+*********************************************************/
+
+.header-desktop {
+    background: linear-gradient(to bottom,#0b0b12 0%,#101018 50%,#11141d 100%) !important;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.55) !important;
+}
+
+.header-desktop .header-row {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.header-desktop .row-main {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+
+/* Right cluster spacing */
+.header-desktop .row-top .right > * {
+    margin-left: 14px !important;
+}
+
+/* Premium star */
+.premium-link .premium-star {
+    font-size: 14px;
+    position: relative;
+    top: -1px;
+    margin-left: 4px;
+}
+
+/*********************************************************
+ * DROPDOWN ALIGN – ODDS + LANGUAGE
+*********************************************************/
 
 .header-desktop .odds-format button,
 .header-desktop .language-selector button {
@@ -247,8 +281,6 @@
     padding: 6px 12px;
     height: 34px;
     border-radius: 8px;
-    min-width: 160px;
-    justify-content: space-between;
 }
 
 .header-desktop .odds-format .icon-caret,
@@ -260,6 +292,18 @@
     top: 0;
 }
 
+.header-desktop .odds-format button,
+.header-desktop .language-selector button {
+    min-width: 160px;
+    justify-content: space-between;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    width: 100% !important;
+    min-width: 160px !important;
+}
+
 .header-desktop .odds-format,
 .header-desktop .language-selector {
     position: relative;
@@ -267,178 +311,70 @@
 
 .header-desktop .odds-dropdown,
 .header-desktop .language-dropdown {
-    width: 100%;
-    min-width: 160px;
-    top: calc(100% + 6px);
-    left: 0;
-}
-
-.header-desktop .odds-dropdown .item,
-.header-desktop .language-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.header-desktop .odds-dropdown .item.active,
-.header-desktop .language-dropdown .item.active {
-    background: rgba(255,236,0,0.12);
-    color: var(--text-primary);
-}
-
-/* =======================================================
-   SEARCH BOX BEHAVIOR (EFFECT)
-======================================================= */
-
-.search-box input {
-    width: 140px;
-}
-
-.search-box:focus-within input {
-    width: 170px;
-    transition: width .2s ease;
-}
-
-/* =======================================================
-   Z-INDEX ARCHITECTURE
-======================================================= */
-
-.header-desktop { z-index: 100; }
-.row-top        { z-index: 300; }
-.row-main       { z-index: 250; }
-.row-sub        { z-index: 200; }
-.odds-dropdown,
-.language-dropdown,
-.tools-dropdown { z-index: 999; }
-
-/* =======================================================
-   RESPONSIVE DESKTOP TWEAKS
-======================================================= */
-
-@media (max-width: 1200px) {
-    .row-main {
-        grid-template-columns: 200px 1fr 240px;
-    }
-    .main-nav {
-        gap: 16px;
-    }
-}
-
-@media (max-width: 1050px) {
-    .row-main {
-        grid-template-columns: 180px 1fr 220px;
-    }
-    .main-nav {
-        gap: 14px;
-    }
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
 }
 
 /*********************************************************
- * ENTERPRISE HEADER VISUAL PACK
- * Gradient, shadow, paddings, spacing
- *********************************************************/
-
-.header-desktop {
-    background: linear-gradient(
-        to bottom,
-        #0b0b12 0%,
-        #101018 50%,
-        #11141d 100%
-    );
-    box-shadow: 0 5px 25px rgba(0,0,0,0.55);
-}
-
-.header-desktop .header-row {
-    padding-top: 6px;
-    padding-bottom: 6px;
-}
-
-/* Premium star alignment */
-.premium-link .premium-star {
-    font-size: 14px;
-    position: relative;
-    top: -1px;
-    margin-left: 4px;
-}
-
-/*********************************************************
- * NOTIFICATION ICON + CLUSTER (STABLE)
- *********************************************************/
-
-.header-desktop .search-notify {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-}
+ * NOTIFICATION ICON
+*********************************************************/
 
 .header-desktop .notif-button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--bg-panel-soft, #181824);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    position: relative;
-    z-index: 600;
-    border: none;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: var(--bg-panel-soft, #181824) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border: none !important;
 }
 
 .header-desktop .notif-icon {
-    width: 20px;
-    height: 20px;
-    display: block;
-    opacity: 1;
-    position: relative;
-    top: 0;
+    width: 20px !important;
+    height: 20px !important;
+    display: block !important;
+    opacity: 1 !important;
     object-fit: contain;
 }
 
 /*********************************************************
- * ENTERPRISE HOVER ENHANCEMENT PACK
- * Main nav + subnav + dropdowns
- *********************************************************/
+ * HOVER STATES (NAV + SUBNAV)
+*********************************************************/
 
-/* MAIN NAV – hover */
 .header-desktop .main-nav .nav-item {
     transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .header-desktop .main-nav .nav-item:hover {
-    color: #ffffff;
+    color: #ffffff !important;
     opacity: 0.85;
 }
 
-/* ACTIVE item always strong */
 .header-desktop .main-nav .nav-item.active {
-    color: #00eaff;
-    opacity: 1;
+    color: #00eaff !important;
+    opacity: 1 !important;
 }
 
-/* SUBNAV – hover */
 .header-desktop .row-sub .sub-item {
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .header-desktop .row-sub .sub-item:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background-color: rgba(255,255,255,0.08);
+    color: #ffffff !important;
 }
 
-/* SUBNAV ACTIVE */
 .header-desktop .row-sub .subnav-group.active .sub-item.active {
-    color: #00eaff;
+    color: #00eaff !important;
 }
 
-/* DROPDOWN ITEM HOVER */
+/* DROPDOWN ITEMS HOVER */
 .header-desktop .odds-dropdown .item:hover,
 .header-desktop .language-dropdown .item:hover,
 .header-desktop .tools-dropdown .item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: rgba(255,255,255,0.08) !important;
+    color: #ffffff !important;
     cursor: pointer;
 }
