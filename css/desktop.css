@@ -1,5 +1,358 @@
 /*********************************************************
- * ENTERPRISE PATCH C – FLEX-SAFE SEARCH + NOTIFY CLUSTER
+ * BetEngine Enterprise – DESKTOP CSS (ENTERPRISE v1.0)
+ * Clean, layered, conflict-free desktop header layout.
+ *********************************************************/
+
+/* =======================================================
+   DESKTOP VISIBILITY
+======================================================= */
+
+.header-desktop {
+    display: block;
+}
+
+.header-mobile {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .header-desktop {
+        display: none;
+    }
+    .header-mobile {
+        display: block;
+    }
+}
+
+/* =======================================================
+   GLOBAL DESKTOP LAYOUT
+======================================================= */
+
+.header-desktop {
+    width: 100%;
+    background: var(--bg-header, #0b0b12);
+    position: relative;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.header-row {
+    width: 100%;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.row-separator {
+    width: 100%;
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 0;
+}
+
+/* =======================================================
+   ROW 1 (TOP BAR)
+======================================================= */
+
+.row-top {
+    min-height: 42px;
+    position: relative;
+    z-index: 300;
+}
+
+.row-top .left {
+    flex: 1;
+}
+
+.row-top .right {
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+    gap: 12px;
+}
+
+/* =======================================================
+   ROW 2 (BRAND + MAIN NAV + SEARCH)
+======================================================= */
+
+.row-main {
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: 240px 1fr 260px; /* brand – nav – search/notify */
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 250;
+}
+
+/* BRAND BLOCK */
+.row-main .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    max-width: 240px;
+    overflow: hidden;
+}
+
+.row-main .brand .logo {
+    width: 36px;
+    height: 36px;
+}
+
+/* MAIN NAV BLOCK */
+.row-main nav.main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: nowrap;
+}
+
+/* SEARCH + NOTIFICATION CLUSTER */
+.row-main .search-notify {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    width: auto;
+}
+
+/* SEARCH WIDTH – fleksibël, jo destruktiv për layout */
+.header-desktop .search-box {
+    width: 210px;
+    max-width: 240px;
+    min-width: 180px;
+}
+
+/* =======================================================
+   ROW 3 (SUB NAVIGATION)
+======================================================= */
+
+.row-sub {
+    padding: 6px 18px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 200;
+}
+
+.row-sub .subnav-group {
+    display: none;
+    align-items: center;
+    gap: 22px;
+}
+
+.row-sub .subnav-group.active {
+    display: flex;
+}
+
+/* Sub-items – bazë */
+.row-sub .sub-item {
+    padding: 6px 6px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 4px;
+}
+
+/* BETTING TOOLS – me dropdown */
+.sub-item-tools {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sub-item-tools .tools-dropdown {
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 500;
+}
+
+/* =======================================================
+   DROPDOWN FIXES (ALL)
+======================================================= */
+
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown {
+    z-index: 999 !important;
+    margin-top: 4px;
+}
+
+.odds-dropdown,
+.language-dropdown {
+    right: 0;
+}
+
+.language-dropdown {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.odds-dropdown .item {
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* =======================================================
+   OLD SEARCH BOX BEHAVIOR (E RUAJMË SI EFFECT)
+======================================================= */
+
+.search-box input {
+    width: 140px;
+}
+
+.search-box:focus-within input {
+    width: 170px;
+    transition: width .2s ease;
+}
+
+/* =======================================================
+   Z-INDEX ARCHITECTURE
+======================================================= */
+
+.header-desktop { z-index: 100; }
+.row-top        { z-index: 300; }
+.row-main       { z-index: 250; }
+.row-sub        { z-index: 200; }
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown { z-index: 999; }
+
+/* =======================================================
+   RESPONSIVE DESKTOP TWEAKS
+======================================================= */
+
+@media (max-width: 1200px) {
+    .row-main {
+        grid-template-columns: 200px 1fr 240px;
+    }
+    .main-nav {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 1050px) {
+    .row-main {
+        grid-template-columns: 180px 1fr 220px;
+    }
+    .main-nav {
+        gap: 14px;
+    }
+}
+
+/*********************************************************
+ * ENTERPRISE HEADER VISUAL PACK
+ * (gradient, shadow, paddings, spacing)
+ *********************************************************/
+
+.header-desktop {
+    background: linear-gradient(
+        to bottom,
+        #0b0b12 0%,
+        #101018 50%,
+        #11141d 100%
+    ) !important;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.55) !important;
+}
+
+.header-desktop .header-row {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.header-desktop .row-main {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
+
+/* Right cluster Row 1 – spacing */
+.header-desktop .row-top .right > * {
+    margin-left: 14px !important;
+}
+
+/* Premium star alignment */
+.premium-link .premium-star {
+    font-size: 14px;
+    position: relative;
+    top: -1px;
+    margin-left: 4px;
+}
+
+/*********************************************************
+ * DROPDOWN ALIGN (ODDS + LANGUAGE)
+ *********************************************************/
+
+.header-desktop .odds-format button,
+.header-desktop .language-selector button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    height: 34px;
+    border-radius: 8px;
+}
+
+.header-desktop .odds-format .icon-caret,
+.header-desktop .language-selector .icon-caret,
+.header-desktop .language-selector .icon-lang {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 0;
+}
+
+.header-desktop .odds-format button,
+.header-desktop .language-selector button {
+    min-width: 160px;
+    justify-content: space-between;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    width: 100% !important;
+    min-width: 160px !important;
+}
+
+.header-desktop .odds-format,
+.header-desktop .language-selector {
+    position: relative;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+}
+
+.header-desktop .odds-dropdown .item,
+.header-desktop .language-dropdown .item {
+    padding: 8px 12px !important;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header-desktop .odds-dropdown .item.active,
+.header-desktop .language-dropdown .item.active {
+    background: rgba(255,236,0,0.12);
+    color: var(--text-primary);
+}
+
+/*********************************************************
+ * NOTIFICATION ICON + CLUSTER (STABLE)
  *********************************************************/
 
 .header-desktop .search-notify {
@@ -7,76 +360,72 @@
     align-items: center !important;
     justify-content: flex-end !important;
     gap: 12px !important;
-
-    /* Ky është thelbi i patch-it */
-    width: auto !important;
-    min-width: fit-content !important;
-    flex-shrink: 0 !important;
-}
-
-.header-desktop .search-box {
-    /* E bëjmë fleksibël që të mos shtyjë notification jashtë grid-it */
-    width: 220px !important;
-    min-width: 180px !important;
-    max-width: 260px !important;
-    flex: 1 1 auto !important;
 }
 
 .header-desktop .notif-button {
-    /* Garantojmë që butoni nuk kompresohet kurrë */
-    flex-shrink: 0 !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 50% !important;
+    background: var(--bg-panel-soft, #181824) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    position: relative !important;
+    z-index: 600 !important;
+    border: none !important;
+}
+
+.header-desktop .notif-icon {
+    width: 20px !important;
+    height: 20px !important;
+    display: block !important;
+    opacity: 1 !important;
+    position: relative !important;
+    top: 0 !important;
+    object-fit: contain;
 }
 
 /*********************************************************
- * ROW-MAIN ENTERPRISE FIX (FINAL)
+ * ENTERPRISE HOVER ENHANCEMENT PACK (MAIN NAV + SUBNAV)
  *********************************************************/
 
-/* Ruaj grid klasik: brand – nav – search */
-.header-desktop .row-main {
-    display: grid !important;
-    grid-template-columns: 240px 1fr auto !important;
-    align-items: center !important;
-    gap: 22px !important;
+/* MAIN NAV – HOVER */
+.header-desktop .main-nav .nav-item {
+    transition: color 0.15s ease, opacity 0.15s ease;
 }
 
-/* BRAND – mos e lejove të zgjerohet më shumë se kolonës së vet */
-.header-desktop .brand {
-    min-width: 0 !important;
-    max-width: 240px !important;
-    overflow: hidden !important;
+.header-desktop .main-nav .nav-item:hover {
+    color: #ffffff !important;
+    opacity: 0.85;
 }
 
-/* MAIN NAV – qëndron në qendër pa u shtyrë nga search box */
-.header-desktop .main-nav {
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
+/* ACTIVE ITEM ALWAYS STRONG */
+.header-desktop .main-nav .nav-item.active {
+    color: #00eaff !important;
+    opacity: 1 !important;
 }
 
-/* SEARCH + NOTIF – hiq min-width që e prishi grid-in */
-.header-desktop .search-notify {
-    min-width: auto !important;
-    width: auto !important;
-    gap: 10px !important;
-    justify-content: flex-end !important;
+/* SUBNAV – HOVER */
+.header-desktop .row-sub .sub-item {
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* SEARCH BOX – mos vendos width të fiksuar */
-.header-desktop .search-box {
-    width: 200px !important;
-    max-width: 240px !important;
+.header-desktop .row-sub .sub-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff !important;
 }
 
-/* INPUT – width fleksibël por jo 100% e kolonës */
-.header-desktop .search-box input {
-    width: 100% !important;
+/* SUBNAV ACTIVE */
+.header-desktop .row-sub .subnav-group.active .sub-item.active {
+    color: #00eaff !important;
 }
 
-/* NOTIFICATION – qendro vertikalisht */
-.header-desktop .notif-button {
-    flex-shrink: 0 !important;
-}
-
-/* Ikona e notif të duket mbi background */
-.header-desktop .notif-icon {
-    filter: brightness(1.2) !important;
+/* DROPDOWN ITEM HOVER */
+.header-desktop .odds-dropdown .item:hover,
+.header-desktop .language-dropdown .item:hover,
+.header-desktop .tools-dropdown .item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    cursor: pointer;
 }
