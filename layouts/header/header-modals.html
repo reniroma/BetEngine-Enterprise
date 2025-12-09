@@ -1,5 +1,5 @@
 <!-- ====================================================
-     MOBILE MODAL (Odds / Language / Tools)
+     MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
 ======================================================= -->
 <div class="be-modal-overlay" id="mobile-header-modal">
     <div class="be-modal">
@@ -62,23 +62,180 @@
 </div>
 
 <!-- ====================================================
-     DESKTOP AUTH MODAL (Login / Register)
+     AUTH MODAL (LOGIN + REGISTER TABS)
 ======================================================= -->
 <div class="be-auth-overlay" id="auth-modal">
     <div class="be-auth-box">
 
+        <!-- HEADER (TITLE + CLOSE) -->
         <div class="auth-header">
             <span id="auth-title">Login</span>
-            <button class="auth-close" type="button">
+            <button class="auth-close" type="button" aria-label="Close">
                 <img src="assets/icons/close.svg" alt="">
             </button>
         </div>
 
-        <div class="auth-body">
-            <input type="email" placeholder="Email">
-            <input type="password" placeholder="Password">
-            <button class="auth-submit">Continue</button>
+        <!-- TABS -->
+        <div class="auth-tabs">
+            <button
+                class="auth-tab active"
+                type="button"
+                data-auth-tab="login">
+                Login
+            </button>
+
+            <button
+                class="auth-tab"
+                type="button"
+                data-auth-tab="register">
+                Create account
+            </button>
         </div>
 
+        <!-- BODY -->
+        <div class="auth-body">
+
+            <!-- =========================
+                 LOGIN PANE
+            ========================== -->
+            <div class="auth-pane auth-pane-login active" data-auth-pane="login">
+
+                <!-- Social login buttons -->
+                <div class="auth-social">
+                    <button class="auth-social-btn auth-social-facebook" type="button">
+                        <span>Sign in with Facebook</span>
+                    </button>
+                    <button class="auth-social-btn auth-social-google" type="button">
+                        <span>Sign in with Google</span>
+                    </button>
+                    <button class="auth-social-btn auth-social-apple" type="button">
+                        <span>Sign in with Apple</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>OR</span>
+                </div>
+
+                <!-- Login form -->
+                <form class="auth-form auth-form-login" autocomplete="on">
+                    <label class="auth-field">
+                        <span class="auth-label">Username</span>
+                        <input type="text" name="username" autocomplete="username">
+                    </label>
+
+                    <label class="auth-field">
+                        <span class="auth-label">Password</span>
+                        <input type="password" name="password" autocomplete="current-password">
+                    </label>
+
+                    <label class="auth-checkbox">
+                        <input type="checkbox" name="remember">
+                        <span>Remember me</span>
+                    </label>
+
+                    <button class="auth-submit primary" type="submit">
+                        Login
+                    </button>
+
+                    <div class="auth-footer-text">
+                        <span>Don't have an account?</span>
+                        <button
+                            type="button"
+                            class="auth-link"
+                            data-auth-switch="register">
+                            Create one for free
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="auth-link auth-forgot-link">
+                        Forgot password?
+                    </button>
+                </form>
+            </div>
+
+            <!-- =========================
+                 REGISTER PANE
+            ========================== -->
+            <div class="auth-pane auth-pane-register" data-auth-pane="register">
+
+                <!-- Social signup buttons -->
+                <div class="auth-social">
+                    <button class="auth-social-btn auth-social-facebook" type="button">
+                        <span>Sign up with Facebook</span>
+                    </button>
+                    <button class="auth-social-btn auth-social-google" type="button">
+                        <span>Sign up with Google</span>
+                    </button>
+                    <button class="auth-social-btn auth-social-apple" type="button">
+                        <span>Sign up with Apple</span>
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="auth-divider">
+                    <span>OR</span>
+                </div>
+
+                <!-- Register form -->
+                <form class="auth-form auth-form-register" autocomplete="on">
+                    <label class="auth-field">
+                        <span class="auth-label">Username</span>
+                        <input type="text" name="username" autocomplete="username">
+                    </label>
+
+                    <label class="auth-field">
+                        <span class="auth-label">Email</span>
+                        <input type="email" name="email" autocomplete="email">
+                    </label>
+
+                    <label class="auth-field">
+                        <span class="auth-label">Password</span>
+                        <input type="password" name="password" autocomplete="new-password">
+                    </label>
+
+                    <label class="auth-field">
+                        <span class="auth-label">Country</span>
+                        <select name="country">
+                            <option value="">Select country</option>
+                            <option value="al">Albania</option>
+                            <option value="be">Belgium</option>
+                            <option value="de">Germany</option>
+                            <option value="fr">France</option>
+                            <option value="it">Italy</option>
+                            <option value="es">Spain</option>
+                            <option value="gb">United Kingdom</option>
+                            <option value="us">United States</option>
+                            <!-- More countries can be added later -->
+                        </select>
+                    </label>
+
+                    <label class="auth-checkbox">
+                        <input type="checkbox" name="marketing">
+                        <span>
+                            I agree to the Terms of Use and want to receive news and special offers.
+                        </span>
+                    </label>
+
+                    <button class="auth-submit primary" type="submit">
+                        Create my account
+                    </button>
+
+                    <div class="auth-footer-text">
+                        <span>Already have an account?</span>
+                        <button
+                            type="button"
+                            class="auth-link"
+                            data-auth-switch="login">
+                            Login here
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>
