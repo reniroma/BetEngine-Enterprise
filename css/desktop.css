@@ -26,3 +26,57 @@
     /* Garantojmë që butoni nuk kompresohet kurrë */
     flex-shrink: 0 !important;
 }
+
+/*********************************************************
+ * ROW-MAIN ENTERPRISE FIX (FINAL)
+ *********************************************************/
+
+/* Ruaj grid klasik: brand – nav – search */
+.header-desktop .row-main {
+    display: grid !important;
+    grid-template-columns: 240px 1fr auto !important;
+    align-items: center !important;
+    gap: 22px !important;
+}
+
+/* BRAND – mos e lejove të zgjerohet më shumë se kolonës së vet */
+.header-desktop .brand {
+    min-width: 0 !important;
+    max-width: 240px !important;
+    overflow: hidden !important;
+}
+
+/* MAIN NAV – qëndron në qendër pa u shtyrë nga search box */
+.header-desktop .main-nav {
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+}
+
+/* SEARCH + NOTIF – hiq min-width që e prishi grid-in */
+.header-desktop .search-notify {
+    min-width: auto !important;
+    width: auto !important;
+    gap: 10px !important;
+    justify-content: flex-end !important;
+}
+
+/* SEARCH BOX – mos vendos width të fiksuar */
+.header-desktop .search-box {
+    width: 200px !important;
+    max-width: 240px !important;
+}
+
+/* INPUT – width fleksibël por jo 100% e kolonës */
+.header-desktop .search-box input {
+    width: 100% !important;
+}
+
+/* NOTIFICATION – qendro vertikalisht */
+.header-desktop .notif-button {
+    flex-shrink: 0 !important;
+}
+
+/* Ikona e notif të duket mbi background */
+.header-desktop .notif-icon {
+    filter: brightness(1.2) !important;
+}
