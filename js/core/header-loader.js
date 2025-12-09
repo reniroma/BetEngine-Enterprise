@@ -1,16 +1,15 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v7.0 FINAL)
- * Absolute-path loader for GitHub Pages & Enterprise builds.
- * Injects: desktop header + mobile header + modals.
- * Emits: "headerLoaded" when DOM is fully updated.
+ * BetEngine Enterprise – HEADER LOADER (v7.1 ULTRA-STABLE)
+ * Safe loader for GitHub Pages project repositories.
+ * Loads desktop + mobile + modals with fallback mode.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * ABSOLUTE BASE PATH FOR GITHUB PAGES
+     * RELATIVE BASE PATH (FIX FOR GITHUB PAGES)
      *******************************************************/
-    const BASE = "/BetEngine-Enterprise/layouts/header/";
+    const BASE = "layouts/header/";
 
     const FILES = {
         desktop: BASE + "header-desktop.html",
@@ -19,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /*******************************************************
-     * FETCH HELPER
+     * FETCH HELPER – NEVER BREAK
      *******************************************************/
     async function loadComponent(url) {
         try {
@@ -27,41 +26,40 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) return "";
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader fetch error:", url, err);
+            console.warn("HeaderLoader fetch error:", url);
             return "";
         }
     }
 
     /*******************************************************
-     * LOAD ALL COMPONENTS
+     * INIT LOADER
      *******************************************************/
     async function init() {
-        const [desktop, mobile, modals] = await Promise.all([
-            loadComponent(FILES.desktop),
-            loadComponent(FILES.mobile),
-            loadComponent(FILES.modals)
-        ]);
+        const desktop = await loadComponent(FILES.desktop);
+        const mobile  = await loadComponent(FILES.mobile);
+        const modals  = await loadComponent(FILES.modals);
 
-        const finalHTML = `${desktop}\n${mobile}\n${modals}`.trim();
+        // Build header – even partial load is allowed
+        const finalHTML = `
+            ${desktop || ""}
+            ${mobile  || ""}
+            ${modals  || ""}
+        `.trim();
+
         const mainEl = document.querySelector("main");
-
         if (!mainEl) {
-            console.error("HeaderLoader: <main> element not found.");
+            console.error("HeaderLoader: <main> not found.");
             return;
         }
 
-        if (finalHTML.length > 0) {
-            // Insert header block above <main>
-            mainEl.insertAdjacentHTML("beforebegin", finalHTML);
+        // Inject header ALWAYS
+        mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-            // Wait a short delay to ensure DOM attachment is stable
-            setTimeout(() => {
-                document.dispatchEvent(new Event("headerLoaded"));
-                console.log("HeaderLoader v7.0: headerLoaded event dispatched.");
-            }, 10);
-        } else {
-            console.error("HeaderLoader: No header content loaded.");
-        }
+        // Dispatch event
+        setTimeout(() => {
+            document.dispatchEvent(new Event("headerLoaded"));
+            console.log("HeaderLoader v7.1: headerLoaded event dispatched.");
+        }, 10);
     }
 
     init();
