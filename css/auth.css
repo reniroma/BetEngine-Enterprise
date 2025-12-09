@@ -1,0 +1,125 @@
+.be-auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.be-auth-overlay.show {
+    display: flex;
+}
+
+.be-auth-box {
+    width: 420px;
+    max-width: 92%;
+    background: #0f0f16;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.55);
+    color: #fff;
+}
+
+.auth-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.auth-header .auth-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.auth-close img {
+    width: 20px;
+    height: 20px;
+}
+
+.auth-social {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-social-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    color: #fff;
+}
+
+.auth-social-btn.facebook { background: #1877f2; }
+.auth-social-btn.google   { background: #db4437; }
+.auth-social-btn.apple    { background: #000; }
+
+.auth-divider {
+    text-align: center;
+    margin: 16px 0;
+    opacity: 0.7;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-field input,
+.auth-field select {
+    background: #14141f;
+    border: 1px solid #2b2b36;
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: #e0e0e0;
+}
+
+.auth-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+    opacity: 0.85;
+}
+
+.auth-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-submit.primary {
+    background: #ffec00;
+    color: #0f0f16;
+    font-weight: 600;
+    padding: 11px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.auth-footer-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.auth-link {
+    background: none;
+    border: none;
+    color: #00eaff;
+    cursor: pointer;
+    font-size: 13px;
+}
