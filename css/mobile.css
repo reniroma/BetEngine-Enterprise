@@ -1,11 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL FIX)
- * Fully compatible with index.html + components.css
- * No structural changes. Only alignment, spacing, stacking.
+ * BetEngine Enterprise – MOBILE CSS (v1.0)
+ * Clean, isolated mobile header & navigation.
  *********************************************************/
 
 /* =======================================================
-   MOBILE VISIBILITY
+   BASE MOBILE VISIBILITY
+   (Desktop already controls its own visibility)
 ======================================================= */
 
 .header-mobile {
@@ -16,270 +16,272 @@
     .header-desktop {
         display: none;
     }
+
     .header-mobile {
         display: block;
     }
 }
 
 /* =======================================================
-   GLOBAL MOBILE LAYOUT
+   MOBILE HEADER WRAPPER
 ======================================================= */
 
 .header-mobile {
     width: 100%;
-    background: var(--bg-header, #0a0c12);
-    position: relative;
-    z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.header-mobile .mobile-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    gap: 10px;
-}
-
-/* =======================================================
-   ROW 1 (TOP OPTIONS + HAMBURGER)
-======================================================= */
-
-.row-top {
-    justify-content: space-between;
-}
-
-.row-top .top-options {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Improve tap area */
-.mobile-odds-toggle,
-.mobile-lang-toggle {
-    padding: 6px 12px;
-    border-radius: 12px;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
+    background: linear-gradient(
+        to bottom,
+        #0b0b12 0%,
+        #101018 50%,
+        #11141d 100%
+    );
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 120;
     font-size: 13px;
 }
 
-.mobile-lang-toggle .lang-code {
+/* =======================================================
+   ROW 1 – TOP BAR
+======================================================= */
+
+.header-mobile .mobile-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+}
+
+/* Left: menu toggle */
+.header-mobile .mobile-menu-toggle {
+    margin-right: 6px;
+}
+
+/* Brand */
+.header-mobile .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.header-mobile .mobile-brand .logo {
+    width: 28px;
+    height: 28px;
+}
+
+.header-mobile .mobile-brand .brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.header-mobile .mobile-brand .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffec00;
+    white-space: nowrap;
+}
+
+.header-mobile .mobile-brand .tagline {
+    font-size: 11px;
+    color: #b3b3b3;
+    white-space: nowrap;
+}
+
+/* Right icons (search + notif) */
+.header-mobile .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Generic icon button */
+.header-mobile .mobile-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(24, 24, 36, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.header-mobile .mobile-icon-btn img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+/* =======================================================
+   ROW 2 – QUICK CONTROLS (ODDS / LANG / TOOLS)
+======================================================= */
+
+.header-mobile .mobile-quick-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 10px;
+    background: #101018;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.header-mobile .mobile-quick-row::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .mobile-quick-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(15, 17, 25, 0.95);
+    color: #e0e0e0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.header-mobile .mobile-quick-btn .label {
+    font-weight: 500;
+}
+
+.header-mobile .mobile-quick-btn .value,
+.header-mobile .mobile-quick-btn .lang-code {
+    color: #ffec00;
     font-weight: 600;
 }
 
 /* =======================================================
-   ROW BRAND
+   ROW 3 – MAIN NAV (CHIPS)
 ======================================================= */
 
-.row-brand .logo {
-    width: 38px;
-    height: 38px;
-}
-
-.row-brand .brand-text .name {
-    font-size: 16px;
-    color: var(--text-primary, #ffec00);
-    font-weight: 700;
-}
-
-.row-brand .brand-text .tagline {
-    font-size: 12px;
-    color: var(--text-muted, #b3b3b3);
-}
-
-/* =======================================================
-   SEARCH ROW
-======================================================= */
-
-.row-search .search-box {
+.header-mobile .mobile-main-nav {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: var(--bg-panel-soft, #181824);
-    padding: 8px 12px;
-    border-radius: 12px;
-    flex: 1;
-}
-
-.row-search .search-box input {
-    flex: 1;
-    font-size: 14px;
-}
-
-.row-search .notif-button {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-panel-soft);
-}
-
-/* =======================================================
-   MAIN MOBILE NAVIGATION (CHIPS)
-======================================================= */
-
-.mobile-main-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px 10px;
+    padding: 8px 10px;
+    background: #11141d;
     overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
-.mobile-main-nav::-webkit-scrollbar {
+.header-mobile .mobile-main-nav::-webkit-scrollbar {
     display: none;
 }
 
-.nav-chip {
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    letter-spacing: .05em;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted, #b3b3b3);
-    flex-shrink: 0;
-}
-
-.nav-chip.active {
-    background: var(--bg-button-primary-soft, rgba(255,236,0,0.12));
-    color: var(--text-primary, #ffec00);
-}
-
-/* =======================================================
-   SUBNAV MOBILE
-======================================================= */
-
-.mobile-sub-nav {
-    padding: 0 14px 12px;
-}
-
-.mobile-sub-nav .subnav-group {
-    display: none;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.mobile-sub-nav .subnav-group.active {
-    display: flex;
-}
-
-.sub-chip {
+.header-mobile .nav-chip {
+    flex: 0 0 auto;
     padding: 6px 12px;
     border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: #141623;
+    color: #e0e0e0;
     font-size: 11px;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.sub-chip.tools {
-    background: var(--bg-button-secondary, #222236);
-    color: var(--text-secondary);
+.header-mobile .nav-chip:hover {
+    background: #1d2030;
+    border-color: rgba(255, 255, 255, 0.35);
 }
 
-/* =======================================================
-   MOBILE MODAL FIX (ODDS / LANGUAGE / TOOLS)
-======================================================= */
-
-.be-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.be-modal-overlay.show {
-    display: flex;
-}
-
-.be-modal {
-    width: 92%;
-    max-width: 380px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.85);
-    animation: modalFade .18s ease-out;
-}
-
-@keyframes modalFade {
-    from { transform: scale(.94); opacity: .25; }
-    to   { transform: scale(1);    opacity: 1; }
-}
-
-.be-modal-header {
-    padding: 14px;
-    background: var(--bg-panel-strong, #0d0d16);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.be-modal-title {
-    font-size: 15px;
+.header-mobile .nav-chip.active {
+    background: #ffec00;
+    color: #11141d;
+    border-color: #ffec00;
     font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.be-modal-close {
-    width: 30px;
-    height: 30px;
-    background: var(--bg-panel-soft);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.be-modal-body {
-    padding: 6px 0;
-    max-height: 380px;
-    overflow-y: auto;
-}
-
-/* Modal sections aligned */
-.be-modal-section {
-    display: none;
-    padding-bottom: 10px;
-}
-
-.be-modal-section.active {
-    display: block;
-}
-
-.be-modal-item {
-    width: 100%;
-    padding: 10px 16px;
-    text-align: left;
-    font-size: 14px;
-    color: var(--text-muted);
-}
-
-.be-modal-item:hover {
-    background: var(--bg-panel-soft);
-    color: var(--text-secondary);
 }
 
 /* =======================================================
-   RESPONSIVE HOOKS (TINY DEVICES < 360px)
+   ROW 4 – SUB NAV (GROUPS + ITEMS)
 ======================================================= */
 
-@media (max-width: 360px) {
-    .nav-chip {
-        padding: 7px 10px;
-        font-size: 11px;
+.header-mobile .mobile-sub-nav {
+    padding: 6px 8px 10px 8px;
+    background: #101018;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-mobile .mobile-sub-nav .subnav-group {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.header-mobile .mobile-sub-nav .subnav-group.active {
+    display: flex;
+}
+
+.header-mobile .mobile-sub-nav .subnav-group::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .mobile-sub-nav .sub-item {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: none;
+    background: #181a26;
+    color: #d0d0d0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Hover / active behavior (aligned me desktop feel) */
+.header-mobile .mobile-sub-nav .sub-item:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.header-mobile .mobile-sub-nav .sub-item.active {
+    background-color: #00eaff;
+    color: #11141d;
+}
+
+/* =======================================================
+   SMALL DEVICES FINE TUNING
+======================================================= */
+
+@media (max-width: 480px) {
+    .header-mobile .mobile-top-bar {
+        padding: 8px 8px;
     }
-    .sub-chip {
-        padding: 5px 8px;
-        font-size: 10px;
+
+    .header-mobile .mobile-quick-row {
+        padding-left: 8px;
+        padding-right: 8px;
     }
-    .mobile-odds-toggle,
-    .mobile-lang-toggle {
-        padding: 5px 10px;
-        font-size: 12px;
+
+    .header-mobile .mobile-main-nav {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .header-mobile .mobile-sub-nav {
+        padding-left: 6px;
+        padding-right: 6px;
     }
 }
