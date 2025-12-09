@@ -1,69 +1,71 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH MODULE (v2.0)
- * Handles login + register modals (separate files)
+ * BetEngine Enterprise – AUTH LOGIC (FINAL v1.0)
+ * Login + Register tabs + modal control
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
+    const overlay = document.querySelector(".be-auth-overlay");
+    if (!overlay) return;
 
-    const loginBtn    = document.querySelector(".btn-auth.login");
+    const title = overlay.querySelector("#auth-title");
+    const tabs = overlay.querySelectorAll(".auth-tab");
+    const panes = overlay.querySelectorAll(".auth-pane");
+    const closeBtn = overlay.querySelector(".auth-close");
+
+    const loginBtn = document.querySelector(".btn-auth.login");
     const registerBtn = document.querySelector(".btn-auth.register");
 
-    const loginModal    = document.getElementById("login-modal");
-    const registerModal = document.getElementById("register-modal");
+    const switchLinks = overlay.querySelectorAll("[data-auth-switch]");
 
-    if (!loginModal || !registerModal) return;
+    const openModal = (mode) => {
+        if (title) title.textContent = mode === "login" ? "Login" : "Create account";
 
-    /* Open / Close helpers */
-    const open = (modal) => {
-        modal.classList.add("show");
+        tabs.forEach(tab =>
+            tab.classList.toggle("active", tab.dataset.authTab === mode)
+        );
+
+        panes.forEach(pane =>
+            pane.classList.toggle("active", pane.dataset.authPane === mode)
+        );
+
+        overlay.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
-    const close = (modal) => {
-        modal.classList.remove("show");
+    const closeModal = () => {
+        overlay.classList.remove("show");
         document.body.style.overflow = "";
     };
 
-    /* LOGIN BUTTON */
-    loginBtn?.addEventListener("click", () => open(loginModal));
+    /* OPEN EVENTS */
+    loginBtn?.addEventListener("click", () => openModal("login"));
+    registerBtn?.addEventListener("click", () => openModal("register"));
 
-    /* REGISTER BUTTON */
-    registerBtn?.addEventListener("click", () => open(registerModal));
-
-    /* Close buttons */
-    loginModal.querySelector(".auth-close")?.addEventListener("click", () => close(loginModal));
-    registerModal.querySelector(".auth-close")?.addEventListener("click", () => close(registerModal));
-
-    /* Click outside */
-    loginModal.addEventListener("click", (e) => {
-        if (e.target === loginModal) close(loginModal);
+    /* SWITCH BETWEEN TABS FROM FOOTER LINKS */
+    switchLinks.forEach(link => {
+        link.addEventListener("click", () => {
+            const target = link.dataset.authSwitch;
+            openModal(target);
+        });
     });
 
-    registerModal.addEventListener("click", (e) => {
-        if (e.target === registerModal) close(registerModal);
+    /* TABS CLICK */
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            openModal(tab.dataset.authTab);
+        });
     });
 
-    /* ESC key */
+    /* CLOSE EVENTS */
+    closeBtn?.addEventListener("click", closeModal);
+
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeModal();
+    });
+
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            close(loginModal);
-            close(registerModal);
+        if (e.key === "Escape" && overlay.classList.contains("show")) {
+            closeModal();
         }
     });
-
-    /* SWITCHES BETWEEN LOGIN & REGISTER */
-    document.querySelectorAll("[data-open-register]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            close(loginModal);
-            open(registerModal);
-        });
-    });
-
-    document.querySelectorAll("[data-open-login]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            close(registerModal);
-            open(loginModal);
-        });
-    });
-
 });
