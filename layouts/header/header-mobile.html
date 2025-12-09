@@ -1,67 +1,108 @@
 <!-- ====================================================
-     MOBILE HEADER
+     MOBILE HEADER (BetEngine Enterprise)
 ======================================================= -->
 <header class="header-mobile">
 
-    <!-- TOP ROW -->
-    <div class="mobile-row row-top">
-        <button class="hamburger" type="button">☰</button>
+    <!-- ROW 1: TOP BAR (LOGO + ICONS) -->
+    <div class="mobile-top-bar">
 
-        <div class="top-options">
+        <!-- Menu toggle (for future drawer, currently visual only) -->
+        <button class="mobile-icon-btn mobile-menu-toggle" type="button" aria-label="Open menu">
+            <img src="assets/icons/menu.svg" alt="">
+        </button>
 
-            <button class="odds-toggle mobile-odds-toggle" type="button">
-                <span class="value">Decimal Odds</span>
-                <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
+        <!-- Brand -->
+        <div class="mobile-brand">
+            <img src="assets/logos/logo.svg" alt="BetEngine logo" class="logo">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+        </div>
+
+        <!-- Right icons: search + notifications -->
+        <div class="mobile-actions">
+            <button class="mobile-icon-btn mobile-search-btn" type="button" aria-label="Search">
+                <img src="assets/icons/search.svg" alt="">
             </button>
 
-            <button class="lang-toggle mobile-lang-toggle" type="button">
-                <img src="assets/icons/language.svg" class="icon-lang" alt="">
-                <span class="lang-code">EN</span>
-                <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
+            <button class="mobile-icon-btn mobile-notif-btn" type="button" aria-label="Notifications">
+                <img src="assets/icons/notification.svg" alt="">
             </button>
-
         </div>
     </div>
 
-    <!-- BRAND -->
-    <div class="mobile-row row-brand">
-        <img src="assets/logos/logo.svg" class="logo" alt="BetEngine logo">
-        <div class="brand-text">
-            <span class="name">BetEngine</span>
-            <span class="tagline">Smart betting tools</span>
-        </div>
-    </div>
+    <!-- ROW 2: QUICK CONTROLS (ODDS / LANGUAGE / TOOLS) -->
+    <div class="mobile-quick-row">
+        <button class="mobile-quick-btn mobile-odds-toggle" type="button">
+            <span class="label">Odds</span>
+            <span class="value">Decimal Odds</span>
+        </button>
 
-    <!-- SEARCH -->
-    <div class="mobile-row row-search">
-        <div class="search-box">
-            <img src="assets/icons/search.svg" class="search-icon" alt="">
-            <input type="search" placeholder="Search (team / player)">
-        </div>
+        <button class="mobile-quick-btn mobile-lang-toggle" type="button">
+            <span class="label">Lang</span>
+            <span class="lang-code">EN</span>
+        </button>
 
-        <button class="notif-button">
-            <img src="assets/icons/notification.svg" class="notif-icon" alt="">
+        <button class="mobile-quick-btn mobile-tools-trigger" type="button">
+            <span class="label">Tools</span>
         </button>
     </div>
 
-    <!-- NAV CHIPS -->
-    <nav class="mobile-main-nav">
+    <!-- ROW 3: MAIN NAV (CHIPS) -->
+    <nav class="mobile-main-nav" aria-label="Main navigation">
         <button class="nav-chip active" data-section="odds">ODDS</button>
         <button class="nav-chip" data-section="community">COMMUNITY</button>
         <button class="nav-chip" data-section="bookmakers">BOOKMAKERS</button>
-        <button class="nav-chip" data-section="premium">PREMIUM ★</button>
+        <button class="nav-chip" data-section="premium">PREMIUM</button>
     </nav>
 
-    <!-- SUBNAV -->
-    <nav class="mobile-sub-nav">
+    <!-- ROW 4: SUB NAV (SYNC WITH DESKTOP – SAME DATA ATTRIBUTES) -->
+    <nav class="mobile-sub-nav" aria-label="Secondary navigation">
+
+        <!-- ODDS SUBNAV -->
         <div class="subnav-group active" data-subnav="odds">
-            <button class="sub-chip">HOME</button>
-            <button class="sub-chip">NEXT MATCHES</button>
-            <button class="sub-chip">DROPPING ODDS</button>
-            <button class="sub-chip">SURE BETS</button>
-            <button class="sub-chip">IN PLAY ODDS</button>
-            <button class="sub-chip">ALL EVENTS</button>
-            <button class="sub-chip tools mobile-tools-trigger">BETTING TOOLS ▾</button>
+            <button class="sub-item" type="button">HOME</button>
+            <button class="sub-item" type="button">NEXT MATCHES</button>
+            <button class="sub-item" type="button">DROPPING ODDS</button>
+            <button class="sub-item" type="button">SURE BETS</button>
+            <button class="sub-item" type="button">IN PLAY ODDS</button>
+            <button class="sub-item" type="button">ALL EVENTS</button>
         </div>
+
+        <!-- COMMUNITY SUBNAV -->
+        <div class="subnav-group" data-subnav="community">
+            <button class="sub-item" type="button">HOME</button>
+            <button class="sub-item" type="button">FEED</button>
+            <button class="sub-item" type="button">USERS</button>
+            <button class="sub-item" type="button">TOP PREDICTIONS</button>
+            <button class="sub-item" type="button">MY STATISTICS</button>
+            <button class="sub-item" type="button">MY PROFILE</button>
+            <button class="sub-item" type="button">MY PREDICTIONS</button>
+            <button class="sub-item" type="button">MY COUPONS</button>
+        </div>
+
+        <!-- BOOKMAKERS SUBNAV -->
+        <div class="subnav-group" data-subnav="bookmakers">
+            <button class="sub-item" type="button">BOOKIE INFO</button>
+            <button class="sub-item" type="button">BONUS OFFERS</button>
+            <button class="sub-item" type="button">ODDS QUALITY</button>
+            <button class="sub-item" type="button">BETTING APPS</button>
+        </div>
+
+        <!-- PREMIUM SUBNAV -->
+        <div class="subnav-group" data-subnav="premium">
+            <button class="sub-item" type="button">Premium Dashboard</button>
+            <button class="sub-item" type="button">Market Insights</button>
+            <button class="sub-item" type="button">Fair Odds Engine</button>
+            <button class="sub-item" type="button">AI Predictions</button>
+            <button class="sub-item" type="button">Smart H2H Insights</button>
+            <button class="sub-item" type="button">Value Finder</button>
+            <button class="sub-item" type="button">Sharp vs Public Money</button>
+            <button class="sub-item" type="button">Shock Alerts</button>
+            <button class="sub-item" type="button">AI Live Momentum</button>
+            <button class="sub-item" type="button">Fake Trend Detector</button>
+        </div>
+
     </nav>
 </header>
