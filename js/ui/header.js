@@ -1,20 +1,20 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v5 FINAL)
- * Unified Auth Modal + Desktop/Mobile Integration
- * Removes legacy .be-auth-overlay system entirely
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v4.1 STABLE)
+ * Desktop dropdowns + Mobile modal + Navigation sync
+ * Stable, loader-safe, compatible with core.js (headerLoaded).
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * HELPERS
+     * BASIC UTILITIES (LOCAL TO HEADER)
      *******************************************************/
-    const lockBodyScroll = (state) => {
-        document.body.style.overflow = state ? "hidden" : "";
-    };
-
     const isInside = (target, selector) => {
         return !!(target && target.closest(selector));
+    };
+
+    const lockBodyScroll = (state) => {
+        document.body.style.overflow = state ? "hidden" : "";
     };
 
     const closeAllDesktopDropdowns = () => {
@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /*******************************************************
-     * DESKTOP DROPDOWNS (SAME AS BEFORE)
+     * DESKTOP: ODDS / LANGUAGE / TOOLS DROPDOWNS
+     * (Runs only if .header-desktop exists at init time)
      *******************************************************/
     function initDesktopDropdowns() {
         const header = document.querySelector(".header-desktop");
@@ -48,15 +49,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
 
+                    // active state
                     oddsItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
+                    // label update
                     const clean = item.textContent.split("(")[0].trim();
                     if (oddsLabel) oddsLabel.textContent = clean;
 
+                    // sync to mobile label if exists
                     const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
                     if (mobileOdds) mobileOdds.textContent = clean;
 
+                    // close dropdown after selection
                     oddsDropdown.classList.remove("show");
                 });
             });
@@ -79,13 +84,19 @@ document.addEventListener("DOMContentLoaded", () => {
             langItems.forEach(item => {
                 item.addEventListener("click", (e) => {
                     e.stopPropagation();
+
                     langItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
-                    if (langLabel) langLabel.textContent = item.textContent;
+                    const label = item.textContent;
+                    const code  = (item.dataset.lang || "en").toUpperCase();
 
+                    // desktop label shows full language name
+                    if (langLabel) langLabel.textContent = label;
+
+                    // sync to mobile code if exists
                     const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
-                    if (mobileLang) mobileLang.textContent = (item.dataset.lang || "en").toUpperCase();
+                    if (mobileLang) mobileLang.textContent = code;
 
                     langDropdown.classList.remove("show");
                 });
@@ -94,7 +105,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* ---------------- BETTING TOOLS ---------------- */
         const toolsTrigger  = header.querySelector(".sub-item-tools");
-        const toolsDropdown = toolsTrigger ? toolsTrigger.querySelector(".tools-dropdown") : null;
+        const toolsDropdown = toolsTrigger
+            ? toolsTrigger.querySelector(".tools-dropdown")
+            : null;
+        const toolsItems    = toolsDropdown ? toolsDropdown.querySelectorAll(".item") : [];
 
         if (toolsTrigger && toolsDropdown) {
             toolsTrigger.addEventListener("click", (e) => {
@@ -103,26 +117,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 closeAllDesktopDropdowns();
                 if (!open) toolsDropdown.classList.add("show");
             });
+
+            toolsItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    // Placeholder for future tool actions.
+                    // Dropdown intentionally stays open.
+                });
+            });
         }
 
-        /* ---------------- CLOSERS ---------------- */
+        /* ---------------- CLOSE ON OUTSIDE CLICK ---------------- */
         document.addEventListener("click", (e) => {
             if (
                 !isInside(e.target, ".odds-format") &&
                 !isInside(e.target, ".language-selector") &&
-                !isInside(e.target, ".sub-item-tools")
+                !isInside(e.target, ".sub-item-tools") &&
+                !isInside(e.target, ".tools-dropdown")
             ) {
                 closeAllDesktopDropdowns();
             }
         });
 
+        /* ---------------- CLOSE ON ESC ---------------- */
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeAllDesktopDropdowns();
+            if (e.key === "Escape") {
+                closeAllDesktopDropdowns();
+            }
         });
     }
 
     /*******************************************************
-     * SECTION NAVIGATION SYNC
+     * DESKTOP + MOBILE SECTION NAVIGATION SYNC
      *******************************************************/
     function initSectionNavigation() {
         const dMain = document.querySelectorAll(".main-nav .nav-item");
@@ -131,14 +157,33 @@ document.addEventListener("DOMContentLoaded", () => {
         const mMain = document.querySelectorAll(".mobile-main-nav .nav-chip");
         const mSub  = document.querySelectorAll(".mobile-sub-nav .subnav-group");
 
-        const activate = (section) => {
-            dMain.forEach(i => i.classList.toggle("active", i.dataset.section === section));
-            dSub.forEach(g => g.classList.toggle("active", g.dataset.subnav === section));
+        if (!dMain.length && !mMain.length) return;
 
-            mMain.forEach(i => i.classList.toggle("active", i.dataset.section === section));
-            mSub.forEach(g => g.classList.toggle("active", g.dataset.subnav === section));
+        const activate = (section) => {
+            if (!section) return;
+
+            // desktop main nav
+            dMain.forEach(i =>
+                i.classList.toggle("active", i.dataset.section === section)
+            );
+
+            // desktop row-sub groups
+            dSub.forEach(g =>
+                g.classList.toggle("active", g.dataset.subnav === section)
+            );
+
+            // mobile main nav
+            mMain.forEach(i =>
+                i.classList.toggle("active", i.dataset.section === section)
+            );
+
+            // mobile sub nav groups
+            mSub.forEach(g =>
+                g.classList.toggle("active", g.dataset.subnav === section)
+            );
         };
 
+        // desktop click
         dMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -146,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+        // mobile click
         mMain.forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -155,9 +201,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /*******************************************************
-     * MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
+     * MOBILE: MODAL (ODDS / LANGUAGE / TOOLS)
      *******************************************************/
     function initMobileModal() {
+        const mobileHeader = document.querySelector(".header-mobile");
+        if (!mobileHeader) return;
+
         const modal = document.getElementById("mobile-header-modal");
         if (!modal) return;
 
@@ -165,14 +214,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const sections = modal.querySelectorAll(".be-modal-section");
         const closeBtn = modal.querySelector(".be-modal-close");
 
+        const mOdds  = mobileHeader.querySelector(".mobile-odds-toggle");
+        const mLang  = mobileHeader.querySelector(".mobile-lang-toggle");
+        const mTools = mobileHeader.querySelector(".mobile-tools-trigger");
+
         const showSection = (type, label) => {
             sections.forEach(s => s.classList.remove("active"));
-            const active = modal.querySelector(`.modal-${type}`);
-            if (active) active.classList.add("active");
+            const activeSection = modal.querySelector(`.modal-${type}`);
+            if (activeSection) activeSection.classList.add("active");
 
             if (title) title.textContent = label;
 
             modal.classList.add("show");
+            modal.dataset.current = type;
             lockBodyScroll(true);
         };
 
@@ -181,119 +235,127 @@ document.addEventListener("DOMContentLoaded", () => {
             lockBodyScroll(false);
         };
 
-        document.querySelector(".mobile-odds-toggle")?.addEventListener("click", () => {
+        /* Open triggers */
+        mOdds?.addEventListener("click", () => {
             showSection("odds", "Select odds format");
         });
 
-        document.querySelector(".mobile-lang-toggle")?.addEventListener("click", () => {
+        mLang?.addEventListener("click", () => {
             showSection("language", "Select language");
         });
 
-        document.querySelector(".mobile-tools-trigger")?.addEventListener("click", () => {
+        mTools?.addEventListener("click", () => {
             showSection("tools", "Betting tools");
         });
 
+        /* Close button */
         closeBtn?.addEventListener("click", closeModal);
 
+        /* Outside click */
         modal.addEventListener("click", (e) => {
-            if (e.target === modal) closeModal();
+            if (e.target === modal) {
+                closeModal();
+            }
         });
 
+        /* ESC key for modal only */
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && modal.classList.contains("show")) closeModal();
+            if (e.key === "Escape" && modal.classList.contains("show")) {
+                closeModal();
+            }
+        });
+
+        /* Item selection (sync with desktop labels) */
+        sections.forEach(section => {
+            section.querySelectorAll(".be-modal-item").forEach(item => {
+                item.addEventListener("click", () => {
+                    const type = modal.dataset.current;
+
+                    if (type === "odds") {
+                        const clean = item.textContent.split("(")[0].trim();
+                        const desktopLabel = document.querySelector(".odds-label");
+                        const mobileLabel  = document.querySelector(".mobile-odds-toggle .value");
+                        if (desktopLabel) desktopLabel.textContent = clean;
+                        if (mobileLabel)  mobileLabel.textContent  = clean;
+                    }
+
+                    if (type === "language") {
+                        const txt  = item.textContent;
+                        const code = (item.dataset.lang || "en").toUpperCase();
+
+                        const desktopLang = document.querySelector(".language-toggle .lang-code");
+                        const mobileLang  = document.querySelector(".mobile-lang-toggle .lang-code");
+
+                        if (desktopLang) desktopLang.textContent = txt;
+                        if (mobileLang)  mobileLang.textContent  = code;
+                    }
+
+                    closeModal();
+                });
+            });
         });
     }
 
     /*******************************************************
-     * AUTH MODAL (UNIFIED LOGIN + REGISTER)
+     * DESKTOP AUTH MODAL (LOGIN / REGISTER)
      *******************************************************/
-    function initUnifiedAuthModal() {
-        const modal     = document.getElementById("auth-modal");
-        if (!modal) return;
+    function initDesktopAuth() {
+        const overlay = document.querySelector(".be-auth-overlay");
+        if (!overlay) return;
 
-        const closeBtn  = modal.querySelector("[data-auth-close]");
-        const title     = modal.querySelector(".auth-header-title");
+        const loginBtn    = document.querySelector(".btn-auth.login");
+        const registerBtn = document.querySelector(".btn-auth.register");
+        const closeBtn    = overlay.querySelector(".auth-close");
+        const title       = overlay.querySelector(".auth-header span");
 
-        const loginForm    = modal.querySelector("#auth-login-form");
-        const registerForm = modal.querySelector("#auth-register-form");
-
-        const socialLoginText  = modal.querySelectorAll("#auth-social-text-login, #auth-social-text2-login, #auth-social-text3-login");
-        const socialRegisterText = modal.querySelectorAll("#auth-social-text-register, #auth-social-text2-register, #auth-social-text3-register");
-
-        /* Unified open method */
-        const openAuth = (type) => {
-            if (type === "login") {
-                title.textContent = "Login";
-                loginForm.style.display = "";
-                registerForm.style.display = "none";
-
-                socialLoginText.forEach(el => el.style.display = "inline");
-                socialRegisterText.forEach(el => el.style.display = "none");
-            } else {
-                title.textContent = "Create account";
-                loginForm.style.display = "none";
-                registerForm.style.display = "";
-
-                socialLoginText.forEach(el => el.style.display = "none");
-                socialRegisterText.forEach(el => el.style.display = "inline");
-            }
-
-            modal.classList.add("show");
+        const openModal = (type) => {
+            if (title) title.textContent = type === "login" ? "Login" : "Register";
+            overlay.classList.add("show");
             lockBodyScroll(true);
         };
 
-        /* Unified close method */
-        const closeAuth = () => {
-            modal.classList.remove("show");
+        const closeModal = () => {
+            overlay.classList.remove("show");
             lockBodyScroll(false);
         };
 
-        /* CLOSE HANDLERS */
-        closeBtn?.addEventListener("click", closeAuth);
+        loginBtn?.addEventListener("click", () => openModal("login"));
+        registerBtn?.addEventListener("click", () => openModal("register"));
+        closeBtn?.addEventListener("click", closeModal);
 
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) closeAuth();
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+                closeModal();
+            }
         });
 
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && modal.classList.contains("show")) closeAuth();
+            if (e.key === "Escape" && overlay.classList.contains("show")) {
+                closeModal();
+            }
         });
-
-        /* SWITCH BETWEEN LOGIN / REGISTER */
-        modal.querySelectorAll(".auth-switch").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const target = btn.dataset.authTarget;
-                openAuth(target);
-            });
-        });
-
-        /* GLOBAL TRIGGERS (desktop + mobile) */
-        document.querySelectorAll(".btn-auth.login").forEach(btn => {
-            btn.addEventListener("click", () => openAuth("login"));
-        });
-
-        document.querySelectorAll(".btn-auth.register").forEach(btn => {
-            btn.addEventListener("click", () => openAuth("register"));
-        });
-
-        /* Make openAuth public for future modules */
-        window.openAuth = openAuth;
-        window.closeAuth = closeAuth;
     }
 
     /*******************************************************
-     * INIT ALL MODULES
+     * HEADER INIT LIFECYCLE
      *******************************************************/
     const initHeaderModules = () => {
         initDesktopDropdowns();
         initSectionNavigation();
         initMobileModal();
-        initUnifiedAuthModal();
+        initDesktopAuth();
     };
 
-    document.addEventListener("headerLoaded", initHeaderModules);
+    /* Preferred path: header-loader.js dispatches "headerLoaded" */
+    document.addEventListener("headerLoaded", () => {
+        initHeaderModules();
+    });
 
+    /* Fallback: if markup is already in DOM (no loader used) */
     if (document.querySelector(".header-desktop") || document.querySelector(".header-mobile")) {
-        setTimeout(initHeaderModules, 0);
+        setTimeout(() => {
+            initHeaderModules();
+        }, 0);
     }
+
 });
