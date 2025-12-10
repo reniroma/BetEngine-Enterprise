@@ -538,6 +538,7 @@ button {
 
 .be-auth-overlay.show {
     display: flex;
+    overflow: hidden !important; /* PATCH */
 }
 
 .be-auth-box {
@@ -546,6 +547,7 @@ button {
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    position: relative; /* PATCH */
 }
 
 .auth-header {
