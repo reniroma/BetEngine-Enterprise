@@ -1,10 +1,20 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SYSTEM (2 MODALS FINAL FIX)
- * Fix: no auto-switch after outside click.
+ * BetEngine Enterprise – AUTH SYSTEM (2 MODALS)
+ * FINAL VERSION – stable & fixed
+ * Handles:
+ *  - open login modal
+ *  - open register modal
+ *  - switch between them
+ *  - close on X
+ *  - close on outside click
+ *  WITHOUT modifying modal layout or causing style reset
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
+    /*******************************************************
+     * ELEMENTS
+     *******************************************************/
     const loginModal    = document.getElementById("auth-login");
     const registerModal = document.getElementById("auth-register");
 
@@ -14,34 +24,47 @@ document.addEventListener("headerLoaded", () => {
     const closeBtns     = document.querySelectorAll("[data-auth-close]");
     const switchBtns    = document.querySelectorAll(".auth-switch");
 
+    /*******************************************************
+     * HELPERS
+     *******************************************************/
     function open(modal) {
         if (!modal) return;
+
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
     }
 
     function close(modal) {
         if (!modal) return;
+
         modal.classList.remove("show");
-        document.body.style.overflow = "";
+
+        // Only restore scrolling if *both* modals are closed
+        if (!loginModal.classList.contains("show") &&
+            !registerModal.classList.contains("show")) {
+            document.body.style.overflow = "";
+        }
     }
 
-    /*******************************
-     * OPEN BUTTONS
-     *******************************/
+    /*******************************************************
+     * OPEN LOGIN
+     *******************************************************/
     loginBtn?.addEventListener("click", () => {
-        close(registerModal);
+        close(registerModal); 
         open(loginModal);
     });
 
+    /*******************************************************
+     * OPEN REGISTER
+     *******************************************************/
     registerBtn?.addEventListener("click", () => {
         close(loginModal);
         open(registerModal);
     });
 
-    /*******************************
+    /*******************************************************
      * CLOSE BUTTONS (X)
-     *******************************/
+     *******************************************************/
     closeBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             close(loginModal);
@@ -49,35 +72,34 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /*******************************
+    /*******************************************************
      * SWITCH LOGIN <-> REGISTER
-     * Fix: execute ONLY inside active modal
-     *******************************/
+     *******************************************************/
     switchBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const fromModal =
-                loginModal.classList.contains("show")
-                    ? loginModal
-                    : registerModal;
+            const target = btn.dataset.authTarget; // login | register
 
-            const target = btn.dataset.authTarget;
-
-            close(fromModal);
-
-            if (target === "login") open(loginModal);
-            else open(registerModal);
+            if (target === "login") {
+                close(registerModal);
+                open(loginModal);
+            } 
+            else if (target === "register") {
+                close(loginModal);
+                open(registerModal);
+            }
         });
     });
 
-    /*******************************
-     * CLICK OUTSIDE TO CLOSE
-     * Fix: DO NOT trigger switch
-     *******************************/
-    loginModal?.addEventListener("click", (e) => {
-        if (e.target === loginModal) close(loginModal);
+    /*******************************************************
+     * CLOSE ONLY WHEN CLICKING OUTSIDE BOX
+     * Does NOT modify layout at all.
+     *******************************************************/
+    [loginModal, registerModal].forEach(modal => {
+        modal?.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                close(modal);
+            }
+        });
     });
 
-    registerModal?.addEventListener("click", (e) => {
-        if (e.target === registerModal) close(registerModal);
-    });
 });
