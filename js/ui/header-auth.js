@@ -1,22 +1,19 @@
 /*********************************************************
  * BetEngine Enterprise – AUTH SYSTEM (2 MODALS)
- * FINAL VERSION – stable & fixed
- * Handles:
- *  - open login modal
- *  - open register modal
- *  - switch between them
- *  - close on X
- *  - close on outside click
- *  WITHOUT modifying modal layout or causing style reset
+ * Login + Register (separate overlays)
+ * FINAL VERSION – WITH FIX FOR REGISTER OVERLAY BUG
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
     /*******************************************************
-     * ELEMENTS
+     * ELEMENT REFERENCES
      *******************************************************/
     const loginModal    = document.getElementById("auth-login");
     const registerModal = document.getElementById("auth-register");
+
+    const loginBox      = loginModal?.querySelector(".be-auth-box");
+    const registerBox   = registerModal?.querySelector(".be-auth-box");
 
     const loginBtn      = document.querySelector(".btn-auth.login");
     const registerBtn   = document.querySelector(".btn-auth.register");
@@ -25,38 +22,28 @@ document.addEventListener("headerLoaded", () => {
     const switchBtns    = document.querySelectorAll(".auth-switch");
 
     /*******************************************************
-     * HELPERS
+     * HELPERS: OPEN / CLOSE
      *******************************************************/
-    function open(modal) {
+    const open = (modal) => {
         if (!modal) return;
-
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
-    }
+    };
 
-    function close(modal) {
+    const close = (modal) => {
         if (!modal) return;
-
         modal.classList.remove("show");
-
-        // Only restore scrolling if *both* modals are closed
-        if (!loginModal.classList.contains("show") &&
-            !registerModal.classList.contains("show")) {
-            document.body.style.overflow = "";
-        }
-    }
+        document.body.style.overflow = "";
+    };
 
     /*******************************************************
-     * OPEN LOGIN
+     * OPEN BUTTONS
      *******************************************************/
     loginBtn?.addEventListener("click", () => {
-        close(registerModal); 
+        close(registerModal);
         open(loginModal);
     });
 
-    /*******************************************************
-     * OPEN REGISTER
-     *******************************************************/
     registerBtn?.addEventListener("click", () => {
         close(loginModal);
         open(registerModal);
@@ -77,12 +64,12 @@ document.addEventListener("headerLoaded", () => {
      *******************************************************/
     switchBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const target = btn.dataset.authTarget; // login | register
+            const target = btn.dataset.authTarget;
 
             if (target === "login") {
                 close(registerModal);
                 open(loginModal);
-            } 
+            }
             else if (target === "register") {
                 close(loginModal);
                 open(registerModal);
@@ -91,15 +78,29 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /*******************************************************
-     * CLOSE ONLY WHEN CLICKING OUTSIDE BOX
-     * Does NOT modify layout at all.
+     * FIX KRITIK:
+     * Prevent clicks inside modal box from closing overlay
+     *******************************************************/
+    loginBox?.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    registerBox?.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    /*******************************************************
+     * CLOSE ONLY WHEN CLICKING STRICTLY ON THE OVERLAY
      *******************************************************/
     [loginModal, registerModal].forEach(modal => {
         modal?.addEventListener("click", (e) => {
-            if (e.target === modal) {
+
+            // click MUST be exactly on the overlay background
+            const isOverlay = e.target === modal;
+
+            if (isOverlay) {
                 close(modal);
             }
         });
     });
-
 });
