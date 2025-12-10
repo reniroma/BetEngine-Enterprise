@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BetEngine Enterprise</title>
 
-    <!-- CSS ORDER (Enterprise Standard) -->
+    <!-- ====================================================
+         CSS ORDER (Enterprise Standard)
+         1) Core variable + base layers
+         2) Layout + Components + Desktop
+         3) AUTH (must be below desktop.css)
+         4) Mobile CSS always last
+    ======================================================= -->
     <link rel="stylesheet" href="css/variables.css?v=4">
     <link rel="stylesheet" href="css/base.css?v=4">
     <link rel="stylesheet" href="css/utilities.css?v=4">
@@ -14,9 +20,10 @@
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
 
-    <!-- AUTH MODALS CSS (must be below desktop.css) -->
+    <!-- AUTH MODALS CSS (required for login + register) -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
+    <!-- MOBILE CSS MUST ALWAYS BE LAST -->
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
@@ -33,7 +40,8 @@
     <!-- @include layouts/header/header-mobile.html -->
 
     <!-- ====================================================
-         MODALS (loaded dynamically: mobile modal + auth modals)
+         MODALS (mobile modal + login + register)
+         loaded dynamically via header-loader.js
     ======================================================= -->
     <!-- @include layouts/header/header-modals.html -->
 
@@ -47,13 +55,16 @@
 
     <!-- ====================================================
          JAVASCRIPT ORDER (Enterprise Standard)
+         1) core.js          → system boot
+         2) header-loader.js → loads all modals + headers
+         3) header.js        → dropdowns + mobile interactions
+         4) widgets.js       → UI widgets
+         5) header-auth.js   → login/register logic (must be last)
     ======================================================= -->
     <script src="js/core/core.js"></script>
     <script src="js/core/header-loader.js"></script>
     <script src="js/ui/header.js"></script>
     <script src="js/ui/widgets.js"></script>
-
-    <!-- AUTH MODAL LOGIC (must be last) -->
     <script src="js/ui/header-auth.js"></script>
 
 </body>
