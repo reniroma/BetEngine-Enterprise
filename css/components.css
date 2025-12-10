@@ -1,7 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL FIX)
- * FIX: Dropdowns, modal, desktop spacing, premium star
- * No structural changes. Fully compatible with index.html.
+ * BetEngine Enterprise – COMPONENTS CSS (ENTERPRISE UI)
+ * Buttons, dropdowns, mobile header, modals, auth windows
+ * Fully compatible with existing HTML + JS structure.
  *********************************************************/
 
 /* -------------------------------------------------------
@@ -37,7 +37,7 @@ button {
 }
 
 /* -------------------------------------------------------
-   AUTH BUTTONS
+   AUTH BUTTONS (HEADER)
 -------------------------------------------------------- */
 
 .btn-auth.login {
@@ -441,7 +441,7 @@ button {
 }
 
 /* -------------------------------------------------------
-   MOBILE MODAL
+   MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
 -------------------------------------------------------- */
 
 .be-modal-overlay {
@@ -523,68 +523,295 @@ button {
 }
 
 /* -------------------------------------------------------
-   DESKTOP AUTH MODAL (ADDED)
+   DESKTOP AUTH MODAL – ENTERPRISE REDESIGN
+   Targets: #login-modal, #register-modal
 -------------------------------------------------------- */
 
 .be-auth-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.65);
+    background: rgba(0,0,0,0.70);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    padding: 16px;
 }
 
 .be-auth-overlay.show {
     display: flex;
-    overflow: hidden !important; /* PATCH */
 }
 
+/* Main auth box */
 .be-auth-box {
-    width: 360px;
-    background: #0e0e16;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    position: relative; /* PATCH */
+    width: 420px;
+    max-width: 100%;
+    background:
+        radial-gradient(circle at top, rgba(0,234,255,0.15), transparent 60%),
+        radial-gradient(circle at bottom, rgba(255,236,0,0.12), transparent 60%),
+        #111320;
+    border-radius: 16px;
+    box-shadow: 0 26px 70px rgba(0,0,0,0.9);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 22px 24px 20px;
+    position: relative;
+    color: #e6e9f5;
 }
 
+/* Header */
 .auth-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
 }
 
-.auth-header span {
-    font-size: 16px;
-    color: var(--text-secondary, #00eaff);
+.auth-header .auth-title,
+.auth-header .auth-header-title {
+    font-size: 18px;
     font-weight: 600;
+    color: var(--text-secondary, #00eaff);
+}
+
+.auth-close {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(24,24,36,0.95);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: background 0.15s ease, transform 0.1s ease;
 }
 
 .auth-close img {
+    width: 14px;
+    height: 14px;
+}
+
+.auth-close:hover {
+    background: rgba(36,36,54,0.98);
+    transform: scale(1.02);
+}
+
+/* Body + scroll */
+.auth-body {
+    padding-top: 2px;
+}
+
+.auth-scroll {
+    max-height: calc(80vh - 90px);
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-right: -4px;
+}
+
+/* Custom scrollbar (subtle) */
+.auth-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.auth-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.auth-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.18);
+    border-radius: 999px;
+}
+
+/* Social section */
+.auth-social {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.auth-social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #181b26, #10121a);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+    color: #eef3ff;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+}
+
+.auth-social-btn .auth-social-icon {
     width: 18px;
     height: 18px;
 }
 
-.auth-body input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #181824;
-    border: 1px solid rgba(255,255,255,0.12);
-    color: #eee;
-    border-radius: 8px;
+/* Subtle brand accents */
+.auth-social-btn.facebook {
+    border-color: rgba(24,119,242,0.45);
 }
 
+.auth-social-btn.google {
+    border-color: rgba(234,67,53,0.45);
+}
+
+.auth-social-btn.apple {
+    border-color: rgba(255,255,255,0.24);
+}
+
+.auth-social-btn:hover {
+    background: linear-gradient(135deg, #1f2332, #141724);
+    border-color: rgba(0,234,255,0.6);
+    transform: translateY(-1px);
+}
+
+/* Divider "OR" */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 12px 0 16px;
+    color: var(--text-muted, #b3b3b3);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.18));
+}
+
+.auth-divider::after {
+    background: linear-gradient(to left, transparent, rgba(255,255,255,0.18));
+}
+
+/* Form fields */
+.auth-form {
+    margin: 0;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.auth-label {
+    font-size: 12px;
+    color: var(--text-muted, #a9acbe);
+}
+
+.auth-field input,
+.auth-field select {
+    width: 100%;
+    padding: 10px 11px;
+    border-radius: 9px;
+    background: #151827;
+    border: 1px solid #24273a;
+    color: #f1f4ff;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    appearance: none;
+}
+
+.auth-field select {
+    cursor: pointer;
+}
+
+.auth-field input::placeholder {
+    color: rgba(255,255,255,0.35);
+}
+
+.auth-field input:focus,
+.auth-field select:focus {
+    border-color: var(--text-secondary, #00eaff);
+    box-shadow: 0 0 0 1px rgba(0,234,255,0.35);
+    background: #171a2b;
+}
+
+/* Checkbox */
+.auth-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted, #b3b3b3);
+    margin: 8px 0 14px;
+}
+
+.auth-checkbox input[type="checkbox"] {
+    margin-top: 2px;
+    width: 14px;
+    height: 14px;
+    accent-color: #ffec00;
+}
+
+/* Submit button */
 .auth-submit {
     width: 100%;
-    padding: 10px;
+    padding: 11px 10px;
     background: var(--bg-button-primary, #ffec00);
-    border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     font-weight: 600;
     cursor: pointer;
     color: #000;
+    font-size: 14px;
+    border: none;
+    box-shadow: 0 12px 26px rgba(255,236,0,0.26);
+    transition: box-shadow 0.12s ease, transform 0.08s ease, background 0.12s ease;
 }
+
+.auth-submit:hover {
+    background: #ffe933;
+    box-shadow: 0 14px 32px rgba(255,236,0,0.32);
+    transform: translateY(-1px);
+}
+
+/* Footer links */
+.auth-footer-text {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted, #b3b3b3);
+    margin-top: 12px;
+}
+
+.auth-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    color: var(--text-secondary, #00eaff);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+.auth-forgot-link {
+    display: block;
+    margin: 8px auto 0;
+    text-align: center;
+}
+
+/* Small adjustment for remember-me row in login */
+.auth-form .auth-checkbox span {
+    line-height: 1.4;
+}
+
+/* -------------------------------------------------------
+   END OF COMPONENTS
+-------------------------------------------------------- */
