@@ -1,43 +1,47 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SYSTEM (2 MODALS)
- * auth-login + auth-register – open, close, switch.
+ * BetEngine Enterprise – AUTH SYSTEM (2 MODALS FINAL FIX)
+ * Fix: no auto-switch after outside click.
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
     const loginModal    = document.getElementById("auth-login");
     const registerModal = document.getElementById("auth-register");
+
     const loginBtn      = document.querySelector(".btn-auth.login");
     const registerBtn   = document.querySelector(".btn-auth.register");
 
-    const closeBtns   = document.querySelectorAll("[data-auth-close]");
-    const switchBtns  = document.querySelectorAll(".auth-switch");
+    const closeBtns     = document.querySelectorAll("[data-auth-close]");
+    const switchBtns    = document.querySelectorAll(".auth-switch");
 
-    const open = (modal) => {
+    function open(modal) {
         if (!modal) return;
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
-    };
+    }
 
-    const close = (modal) => {
+    function close(modal) {
         if (!modal) return;
         modal.classList.remove("show");
         document.body.style.overflow = "";
-    };
+    }
 
-    /* Open login modal */
+    /*******************************
+     * OPEN BUTTONS
+     *******************************/
     loginBtn?.addEventListener("click", () => {
         close(registerModal);
         open(loginModal);
     });
 
-    /* Open register modal */
     registerBtn?.addEventListener("click", () => {
         close(loginModal);
         open(registerModal);
     });
 
-    /* Close buttons (X) */
+    /*******************************
+     * CLOSE BUTTONS (X)
+     *******************************/
     closeBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             close(loginModal);
@@ -45,26 +49,35 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* Switch between login <-> register */
+    /*******************************
+     * SWITCH LOGIN <-> REGISTER
+     * Fix: execute ONLY inside active modal
+     *******************************/
     switchBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const target = btn.dataset.authTarget; // "login" or "register"
-            if (target === "login") {
-                close(registerModal);
-                open(loginModal);
-            } else if (target === "register") {
-                close(loginModal);
-                open(registerModal);
-            }
+            const fromModal =
+                loginModal.classList.contains("show")
+                    ? loginModal
+                    : registerModal;
+
+            const target = btn.dataset.authTarget;
+
+            close(fromModal);
+
+            if (target === "login") open(loginModal);
+            else open(registerModal);
         });
     });
 
-    /* Close on outside click (each overlay vetëm veten) */
-    [loginModal, registerModal].forEach(modal => {
-        modal?.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                close(modal);
-            }
-        });
+    /*******************************
+     * CLICK OUTSIDE TO CLOSE
+     * Fix: DO NOT trigger switch
+     *******************************/
+    loginModal?.addEventListener("click", (e) => {
+        if (e.target === loginModal) close(loginModal);
+    });
+
+    registerModal?.addEventListener("click", (e) => {
+        if (e.target === registerModal) close(registerModal);
     });
 });
