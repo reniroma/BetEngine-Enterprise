@@ -6,33 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BetEngine Enterprise</title>
 
-    <!-- ====================================================
-         ENTERPRISE CSS ORDER (DO NOT CHANGE ORDER)
-    ======================================================= -->
+    <!-- ENTERPRISE CSS ORDER (DO NOT CHANGE) -->
     <link rel="stylesheet" href="css/variables.css?v=4">
     <link rel="stylesheet" href="css/base.css?v=4">
     <link rel="stylesheet" href="css/utilities.css?v=4">
     <link rel="stylesheet" href="css/layout.css?v=4">
-    <link rel="stylesheet" href="css/components.css?v=4">
-    <link rel="stylesheet" href="css/desktop.css?v=4">
+    <link rel="stylesheet" href="css/components.css?v=5">
+    <link rel="stylesheet" href="css/desktop.css?v=5">
 
-    <!-- AUTH MODALS CSS (must be after desktop.css) -->
+    <!-- AUTH CSS -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
-    <!-- MOBILE CSS (always loaded last) -->
-    <link rel="stylesheet" href="css/mobile.css?v=4">
+    <!-- MOBILE CSS LAST -->
+    <link rel="stylesheet" href="css/mobile.css?v=5">
 </head>
 
 <body>
 
     <!-- ====================================================
-         HEADERS (Loaded dynamically by header-loader.js)
-         DO NOT PLACE RAW HTML HERE.
+         DESKTOP HEADER WRAPPER (ONLY VISIBLE ON DESKTOP)
     ======================================================= -->
+    <div class="header-desktop-wrapper">
+        {% include "header/header-desktop.html" %}
+    </div>
 
-    <!-- @include layouts/header/header-desktop.html -->
-    <!-- @include layouts/header/header-mobile.html -->
-    <!-- @include layouts/header/header-modals.html -->
+    <!-- ====================================================
+         MOBILE HEADER WRAPPER (ONLY VISIBLE ON MOBILE)
+    ======================================================= -->
+    <div class="header-mobile-wrapper">
+        {% include "header/header-mobile.html" %}
+        {% include "header/header-modals.html" %}
+    </div>
 
     <!-- ====================================================
          MAIN CONTENT
@@ -42,26 +46,11 @@
         <p>Enterprise-ready skeleton layout.</p>
     </main>
 
-    <!-- ====================================================
-         JAVASCRIPT ORDER (STRICT ENTERPRISE STANDARD)
-    ======================================================= -->
-
-    <!-- CORE ENGINE -->
+    <!-- JS ORDER -->
     <script src="js/core/core.js?v=4"></script>
-
-    <!-- HEADER LOADER (injects header-desktop, header-mobile, header-modals) -->
-    <script src="js/core/header-loader.js?v=4"></script>
-
-    <!-- DESKTOP HEADER LOGIC -->
-    <script src="js/ui/header.js?v=6"></script>
-
-    <!-- MOBILE HEADER LOGIC (NEW, REQUIRED) -->
-    <script src="js/ui/header-mobile.js?v=3"></script>
-
-    <!-- WIDGETS / UI HELPERS -->
+    <script src="js/ui/header.js?v=7"></script>
+    <script src="js/ui/header-mobile.js?v=4"></script>
     <script src="js/ui/widgets.js?v=4"></script>
-
-    <!-- AUTH MODAL LOGIC (must always be last) -->
     <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
