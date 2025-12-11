@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v3.0)
+ * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v3.1)
  *********************************************************/
 
 /* =======================================================
@@ -28,9 +28,10 @@ body {
 }
 
 /* =======================================================
-   HEADER SPACING FLOW (DESKTOP ONLY)
+   HEADER SPACING FLOW
 ======================================================= */
 
+/* Desktop wrapper */
 .header-desktop {
     width: 100%;
     position: relative;
@@ -38,17 +39,23 @@ body {
     z-index: 100;
 }
 
-/* Never style header-mobile here */
+/* Mobile wrapper — NEVER styled here */
 .header-mobile {
-    /* intentionally left empty */
+    /* intentionally empty */
 }
 
-/* Header rows (DESKTOP ONLY) */
+/* ----------------------------------------------
+   BASE HEADER ROW (used by both desktop & mobile)
+---------------------------------------------- */
+.header-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Desktop version of header-row */
 @media (min-width: 901px) {
     .header-row {
-        display: flex;
-        align-items: center;
-        width: 100%;
         padding: 8px 18px;
         background: var(--bg-header, #0a0c12);
     }
@@ -57,6 +64,14 @@ body {
     .row-main,
     .row-sub {
         background: var(--bg-header, #0a0c12);
+    }
+}
+
+/* Mobile version of header-row */
+@media (max-width: 900px) {
+    .header-row {
+        padding: 0;
+        background: none;
     }
 }
 
@@ -111,11 +126,11 @@ footer {
 }
 
 .col-12 { grid-column: span 12; }
-.col-9  { grid-column: span 9;  }
-.col-8  { grid-column: span 8;  }
-.col-6  { grid-column: span 6;  }
-.col-4  { grid-column: span 4;  }
-.col-3  { grid-column: span 3;  }
+.col-9  { grid-column: span 9; }
+.col-8  { grid-column: span 8; }
+.col-6  { grid-column: span 6; }
+.col-4  { grid-column: span 4; }
+.col-3  { grid-column: span 3; }
 
 /* =======================================================
    FLEX HELPERS
