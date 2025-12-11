@@ -1,40 +1,65 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (v3.0)
- * Scope: ONLY mobile header + hamburger menu behaviour.
- *
- * - Open / close hamburger (overlay + panel)
- * - Handle menu links + submenus (Odds / Community / Bookmakers / Premium)
- * - Sync section with existing mobile chips (nav-chip) + desktop logic
- * - Trigger existing desktop LOGIN / REGISTER modals from hamburger
- *
- * This file does NOT touch desktop header behaviour and
- * does NOT depend on header.js internals.
+ * BetEngine Enterprise – HEADER MOBILE JS (v3.1 FINAL)
+ * Handles hamburger menu open/close + auth buttons
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+function initMobileMenu() {
 
-    /*******************************************************
-     * SAFE LOOKUP HELPERS (MOBILE ONLY)
-     *******************************************************/
-    const mobileHeader = document.querySelector(".header-mobile");
+    const mobileHeader      = document.querySelector(".header-mobile");
     if (!mobileHeader) return;
 
-    const menuToggle  = mobileHeader.querySelector(".mobile-menu-toggle");
-    const overlay     = mobileHeader.querySelector(".mobile-menu-overlay");
-    const panel       = mobileHeader.querySelector(".mobile-menu-panel");
-    const closeButton = mobileHeader.querySelector(".mobile-menu-close");
+    const btnToggle         = mobileHeader.querySelector(".mobile-menu-toggle");
+    const menuPanel         = document.querySelector(".mobile-menu-panel");
+    const menuOverlay       = document.querySelector(".mobile-menu-overlay");
+    const btnClose          = document.querySelector(".mobile-menu-close");
 
-    const menuLinks = mobileHeader.querySelectorAll(".mobile-menu-panel .menu-link");
-    const subMenus  = mobileHeader.querySelectorAll(".mobile-menu-panel .submenu");
+    /* Auth buttons inside menu */
+    const authLogin         = document.querySelector(".menu-auth .login");
+    const authRegister      = document.querySelector(".menu-auth .register");
 
-    // Optional (if i shton më vonë):
-    const menuLogin    = mobileHeader.querySelector(".mobile-menu-panel .menu-auth-login");
-    const menuRegister = mobileHeader.querySelector(".mobile-menu-panel .menu-auth-register");
-
-    /*******************************************************
-     * HAMBURGER OPEN / CLOSE
-     *******************************************************/
     const openMenu = () => {
+        menuPanel.classList.add("show");
+        menuOverlay.classList.add("show");
+        document.body.style.overflow = "hidden";
+    };
+
+    const closeMenu = () => {
+        menuPanel.classList.remove("show");
+        menuOverlay.classList.remove("show");
+        document.body.style.overflow = "";
+    };
+
+    /* Toggle open */
+    btnToggle?.addEventListener("click", openMenu);
+
+    /* Close by X button */
+    btnClose?.addEventListener("click", closeMenu);
+
+    /* Close by clicking overlay */
+    menuOverlay?.addEventListener("click", closeMenu);
+
+    /* Close on Escape */
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+    });
+
+    /* AUTH BUTTONS (trigger desktop modals) */
+    authLogin?.addEventListener("click", () => {
+        closeMenu();
+        document.querySelector(".btn-auth.login")?.click();
+    });
+
+    authRegister?.addEventListener("click", () => {
+        closeMenu();
+        document.querySelector(".btn-auth.register")?.click();
+    });
+
+    console.log("Mobile menu initialized");
+}
+
+
+/* Wait until header HTML is injected */
+document.addEventListener("headerLoaded", initMobileMenu);    const openMenu = () => {
         if (!panel || !overlay) return;
 
         panel.classList.add("open");
