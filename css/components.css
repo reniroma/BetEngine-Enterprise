@@ -1,12 +1,14 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v4.0)
- * Desktop-only components + shared styles.
- * NO MOBILE RULES INSIDE THIS FILE.
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.0)
+ * Desktop-only components + shared base buttons.
+ * ZERO mobile rules. 100% isolation using min-width:901px
  *********************************************************/
 
-/* -------------------------------------------------------
-   BASE BUTTONS / CONTROLS
--------------------------------------------------------- */
+
+/* =======================================================
+   BASE BUTTONS / CONTROLS (SHARED, SAFE)
+   (allowed globally — these do NOT conflict with mobile)
+======================================================= */
 
 button {
     font-family: inherit;
@@ -19,9 +21,7 @@ button {
 .btn-auth,
 .odds-toggle,
 .language-toggle,
-.notif-button,
-.nav-chip,
-.sub-chip {
+.notif-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -34,283 +34,290 @@ button {
     white-space: nowrap;
 }
 
-/* -------------------------------------------------------
-   AUTH BUTTONS (DESKTOP)
--------------------------------------------------------- */
 
-.btn-auth.login {
-    background: var(--bg-button-secondary, #222236);
-    color: var(--text-secondary, #00eaff);
+/* =======================================================
+   DESKTOP-ONLY SCOPE
+   Everything inside this block is ignored by mobile.css
+======================================================= */
+@media (min-width: 901px) {
+
+    /*******************************************************
+     * AUTH BUTTONS (DESKTOP)
+     *******************************************************/
+    .btn-auth.login {
+        background: var(--bg-button-secondary, #222236);
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .btn-auth.register {
+        background: var(--bg-button-primary, #ffec00);
+        color: #000;
+    }
+
+    .btn-auth img {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    /*******************************************************
+     * NOTIFICATION BUTTON
+     *******************************************************/
+    .notif-button {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--bg-panel-soft, #181824);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .notif-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    /*******************************************************
+     * DESKTOP ROW TOP
+     *******************************************************/
+    .header-row.row-top .right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+
+    /*******************************************************
+     * BRAND BLOCK (DESKTOP)
+     *******************************************************/
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .brand .logo {
+        width: 34px;
+        height: 34px;
+    }
+
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.05;
+    }
+
+    .brand-text .name {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary, #ffec00);
+    }
+
+    .brand-text .tagline {
+        font-size: 11px;
+        color: var(--text-muted, #b3b3b3);
+    }
+
+
+    /*******************************************************
+     * DESKTOP SEARCH BOX
+     *******************************************************/
+    .search-notify {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--bg-panel-soft, #181824);
+        min-width: 220px;
+    }
+
+    .search-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .search-box input {
+        border: none;
+        outline: none;
+        background: transparent;
+        color: var(--text-secondary, #00eaff);
+        font-size: 13px;
+    }
+
+
+    /*******************************************************
+     * MAIN NAV (DESKTOP)
+     *******************************************************/
+    .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .main-nav .nav-item {
+        position: relative;
+        font-size: 13px;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted, #b3b3b3);
+        padding: 6px 0;
+    }
+
+    .main-nav .nav-item.active {
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .main-nav .nav-item.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 100%;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--text-secondary, #00eaff);
+    }
+
+
+    /*******************************************************
+     * PREMIUM STAR – Desktop alignment
+     *******************************************************/
+    .premium-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--bg-badge-premium, #ff9800);
+    }
+
+    .premium-link .premium-star {
+        font-size: 14px;
+        position: relative;
+        top: -1px;
+    }
+
+
+    /*******************************************************
+     * DESKTOP SUB NAVIGATION
+     *******************************************************/
+    .row-sub {
+        display: flex;
+        align-items: center;
+    }
+
+    .row-sub .subnav-group {
+        display: none;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .row-sub .subnav-group.active {
+        display: flex;
+    }
+
+    .sub-item {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted, #b3b3b3);
+        padding: 4px 0;
+        cursor: pointer;
+    }
+
+    .sub-item:hover {
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .sub-item-tools {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+    }
+
+    .sub-item-tools .caret {
+        width: 10px;
+        height: 10px;
+    }
+
+
+    /*******************************************************
+     * DESKTOP DROPDOWNS
+     *******************************************************/
+    .odds-dropdown,
+    .language-dropdown,
+    .tools-dropdown {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        min-width: 210px;
+        padding: 6px 0;
+        border-radius: 8px;
+        background: var(--bg-panel, #11141d);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(6px);
+        transition: all 0.15s ease;
+        z-index: 300;
+    }
+
+    .sub-item-tools .tools-dropdown {
+        left: 0;
+        right: auto;
+    }
+
+    .odds-dropdown.show,
+    .language-dropdown.show,
+    .tools-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .odds-dropdown .item,
+    .language-dropdown .item,
+    .tools-dropdown .item {
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--text-muted, #b3b3b3);
+    }
+
+    .odds-dropdown .item:hover,
+    .language-dropdown .item:hover,
+    .tools-dropdown .item:hover {
+        background: var(--bg-panel-soft, #181824);
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .language-dropdown {
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .language-dropdown .item.active,
+    .odds-dropdown .item.active {
+        color: var(--text-secondary, #00eaff);
+    }
+
+
+    /*******************************************************
+     * AUTH MODALS (DESKTOP)
+     * (left untouched — no mobile conflicts)
+     *******************************************************/
+    .be-auth-overlay {
+        /* Entire auth modal system left unchanged */
+    }
 }
 
-.btn-auth.register {
-    background: var(--bg-button-primary, #ffec00);
-    color: #000;
-}
-
-.btn-auth img {
-    width: 14px;
-    height: 14px;
-}
-
-/* -------------------------------------------------------
-   NOTIFICATION BUTTON
--------------------------------------------------------- */
-
-.notif-button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--bg-panel-soft, #181824);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.notif-icon {
-    width: 18px;
-    height: 18px;
-}
-
-/* -------------------------------------------------------
-   DESKTOP: ROW TOP
--------------------------------------------------------- */
-
-.header-row.row-top .right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* -------------------------------------------------------
-   BRAND BLOCK (DESKTOP)
--------------------------------------------------------- */
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.brand .logo {
-    width: 34px;
-    height: 34px;
-}
-
-.brand-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.05;
-}
-
-.brand-text .name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary, #ffec00);
-}
-
-.brand-text .tagline {
-    font-size: 11px;
-    color: var(--text-muted, #b3b3b3);
-}
-
-/* -------------------------------------------------------
-   DESKTOP SEARCH BOX
--------------------------------------------------------- */
-
-.search-notify {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: var(--bg-panel-soft, #181824);
-    min-width: 220px;
-}
-
-.search-icon {
-    width: 14px;
-    height: 14px;
-}
-
-.search-box input {
-    border: none;
-    outline: none;
-    background: transparent;
-    color: var(--text-secondary, #00eaff);
-    font-size: 13px;
-}
-
-/* -------------------------------------------------------
-   MAIN NAV (DESKTOP)
--------------------------------------------------------- */
-
-.main-nav {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.main-nav .nav-item {
-    position: relative;
-    font-size: 13px;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-muted, #b3b3b3);
-    padding: 6px 0;
-}
-
-.main-nav .nav-item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-.main-nav .nav-item.active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 100%;
-    height: 2px;
-    border-radius: 999px;
-    background: var(--text-secondary, #00eaff);
-}
-
-/* -------------------------------------------------------
-   PREMIUM STAR – Desktop Fix
--------------------------------------------------------- */
-
-.premium-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--bg-badge-premium, #ff9800);
-}
-
-.premium-link .premium-star {
-    font-size: 14px;
-    position: relative;
-    top: -1px;
-}
-
-/* -------------------------------------------------------
-   DESKTOP SUB NAVIGATION
--------------------------------------------------------- */
-
-.row-sub {
-    display: flex;
-    align-items: center;
-}
-
-.row-sub .subnav-group {
-    display: none;
-    align-items: center;
-    gap: 14px;
-}
-
-.row-sub .subnav-group.active {
-    display: flex;
-}
-
-.sub-item {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted, #b3b3b3);
-    padding: 4px 0;
-    cursor: pointer;
-}
-
-.sub-item:hover {
-    color: var(--text-secondary, #00eaff);
-}
-
-/* TOOLS label */
-.sub-item-tools {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    position: relative;
-}
-
-.sub-item-tools .caret {
-    width: 10px;
-    height: 10px;
-}
-
-/* -------------------------------------------------------
-   DROPDOWNS (DESKTOP)
--------------------------------------------------------- */
-
-.odds-dropdown,
-.language-dropdown,
-.tools-dropdown {
-    position: absolute;
-    top: 110%;
-    right: 0;
-    min-width: 210px;
-    padding: 6px 0;
-    border-radius: 8px;
-    background: var(--bg-panel, #11141d);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(6px);
-    transition: all 0.15s ease;
-    z-index: 300;
-}
-
-.sub-item-tools .tools-dropdown {
-    left: 0;
-    right: auto;
-}
-
-.odds-dropdown.show,
-.language-dropdown.show,
-.tools-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.odds-dropdown .item,
-.language-dropdown .item,
-.tools-dropdown .item {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--text-muted, #b3b3b3);
-}
-
-.odds-dropdown .item:hover,
-.language-dropdown .item:hover,
-.tools-dropdown .item:hover {
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-}
-
-.language-dropdown {
-    max-height: 260px;
-    overflow-y: auto;
-}
-
-.language-dropdown .item.active,
-.odds-dropdown .item.active {
-    color: var(--text-secondary, #00eaff);
-}
-
-/* -------------------------------------------------------
-   AUTH MODALS (DESKTOP) — UNTOUCHED (SAFE)
--------------------------------------------------------- */
-
-.be-auth-overlay { ... } /* (i njëjti kod, nuk ndryshohet) */
-
-/* -------------------------------------------------------
-   END OF COMPONENTS (NO MOBILE RULES)
--------------------------------------------------------- */
+/* =============== END OF FILE =============== */
