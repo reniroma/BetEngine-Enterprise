@@ -1,255 +1,185 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH CSS (FINAL v4)
+ * BetEngine Enterprise – AUTH MODALS CSS (FINAL v3.0)
+ * Login + Register overlays for desktop only.
+ * Clean, conflict-free, compatible with all CSS layers.
  *********************************************************/
 
+
 /* =======================================================
-   OVERLAY
+   OVERLAY WRAPPER
 ======================================================= */
 
-.be-auth-overlay {
+.auth-overlay {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.65);
-    padding: 20px;
+    z-index: 9000;
 }
 
-.be-auth-overlay.show {
+.auth-overlay.show {
     display: flex;
 }
 
+
 /* =======================================================
-   MODAL BOX
+   AUTH MODAL BOX
 ======================================================= */
 
-.be-auth-box {
+.auth-modal {
     width: 100%;
-    max-width: 460px;
+    max-width: 380px;
     background: #11141d;
-    border-radius: 14px;
-    box-shadow: 0 22px 70px rgba(0,0,0,0.85);
-    border: 1px solid rgba(255,255,255,0.05);
-    color: #f5f5f5;
+    border-radius: 12px;
+    padding: 22px 26px 28px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.5);
     position: relative;
-    display: flex;
-    flex-direction: column;
+    animation: auth-fade .25s ease-out;
 }
+
+@keyframes auth-fade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 
 /* =======================================================
-   SCROLL WRAPPER (FIX)
+   CLOSE BUTTON
 ======================================================= */
-.auth-scroll {
-    max-height: calc(100vh - 200px);
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-/* =======================================================
-   HEADER
-======================================================= */
-
-.auth-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px 10px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-
-.auth-header-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #10d4ff;
-}
 
 .auth-close {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     border: none;
-    background: transparent;
+    background: #1a1d27;
+    color: #fff;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    padding: 0;
 }
 
-.auth-close img {
-    width: 16px;
-    height: 16px;
-    opacity: 0.7;
+.auth-close:hover {
+    background: #232635;
 }
 
-.auth-close:hover img {
-    opacity: 1;
-}
 
 /* =======================================================
-   BODY
+   MODAL TITLE
 ======================================================= */
 
-.auth-body {
-    padding: 18px 20px 20px 20px;
-}
-
-/* =======================================================
-   SOCIAL BUTTONS
-======================================================= */
-
-.auth-social {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.auth-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffec00;
     margin-bottom: 16px;
+    text-align: center;
 }
 
-.auth-social-btn {
-    width: 100%;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    background: #171a26;
-    color: #f5f5f5;
-}
-
-.auth-social-btn img.auth-social-icon {
-    width: 16px;
-    height: 16px;
-}
-
-/* NEW: subtle brand color tint */
-.auth-social-btn.facebook { background: #1c2333; }
-.auth-social-btn.google   { background: #181a22; }
-.auth-social-btn.apple    { background: #14151c; }
 
 /* =======================================================
-   DIVIDER
-======================================================= */
-
-.auth-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 8px 0 16px 0;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: #9ca3b5;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: rgba(255,255,255,0.08);
-}
-
-/* =======================================================
-   FORM
+   FORM BLOCK
 ======================================================= */
 
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 14px;
 }
 
-.auth-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.auth-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #d9dde8;
-}
-
-.auth-field input,
-.auth-field select {
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #2b3040;
-    background: #151827;
-    color: #f5f5f5;
-    padding: 0 10px;
+.auth-form label {
     font-size: 13px;
+    color: #e0e0e0;
+    margin-bottom: 4px;
 }
 
-.auth-field select {
-    padding-right: 28px;
-}
-
-/* =======================================================
-   CHECKBOX
-======================================================= */
-
-.auth-checkbox {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    font-size: 12px;
-    color: #c4c8d4;
-}
-
-/* =======================================================
-   PRIMARY BUTTON
-======================================================= */
-
-.auth-submit.primary {
-    margin-top: 8px;
+.auth-form input {
     width: 100%;
-    height: 40px;
-    border-radius: 999px;
-    border: none;
-    background: #ffec00;
-    color: #11141d;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-/* =======================================================
-   FOOTER
-======================================================= */
-
-.auth-footer-text {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #a3a8b8;
-    display: flex;
-    gap: 4px;
-}
-
-.auth-link {
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 12px;
+    padding: 10px 12px;
+    background: #181824;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
     color: #00eaff;
+    outline: none;
+    font-size: 14px;
+}
+
+.auth-form input:focus {
+    border-color: #00eaff;
+    box-shadow: 0 0 0 2px rgba(0,234,255,0.15);
+}
+
+
+/* =======================================================
+   SUBMIT BUTTON
+======================================================= */
+
+.auth-submit {
+    width: 100%;
+    padding: 10px 14px;
+    background: #ffec00;
+    color: #000;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.auth-submit:hover {
+    background: #fffb66;
+}
+
+
+/* =======================================================
+   SWITCH LINK (Login <-> Register)
+======================================================= */
+
+.auth-switch-box {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.auth-switch {
+    color: #00eaff;
+    font-size: 13px;
     cursor: pointer;
 }
 
+.auth-switch:hover {
+    text-decoration: underline;
+}
+
+
 /* =======================================================
-   RESPONSIVE
+   STATUS / ERRORS
 ======================================================= */
 
-@media (max-width: 520px) {
-    .be-auth-box {
-        max-width: 100%;
+.auth-error {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-top: -4px;
+}
+
+.auth-success {
+    color: #00ffa6;
+    font-size: 12px;
+    margin-top: -4px;
+}
+
+
+/* =======================================================
+   MOBILE BLOCKER (Auth only for desktop now)
+======================================================= */
+
+@media (max-width: 900px) {
+    .auth-overlay {
+        display: none !important;
     }
 }
