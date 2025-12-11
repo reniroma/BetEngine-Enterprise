@@ -1,13 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v6.0)
+ * BetEngine Enterprise – MOBILE CSS (FINAL v7.1)
  * Mobile-only header + hamburger (OddsPortal-style)
  * Desktop UI remains 100% untouched.
  *********************************************************/
 
 /* =======================================================
-   MOBILE VISIBILITY CONTROL
-   - Desktop header hidden only under 900px
-   - Mobile header never shown on desktop
+   GLOBAL MOBILE VISIBILITY CONTROL
 ======================================================= */
 
 .header-mobile {
@@ -21,6 +19,17 @@
 
     .header-mobile {
         display: block !important;
+    }
+}
+
+/* HARD DESKTOP ISOLATION — must hide mobile menu entirely */
+@media (min-width: 901px) {
+    .mobile-menu-overlay,
+    .mobile-menu-panel,
+    .mobile-only {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
 }
 
@@ -50,7 +59,7 @@
 }
 
 /* =======================================================
-   ROW 1 — TOP BAR (MENU + BRAND + ICONS)
+   TOP BAR (Hamburger + Brand + Actions)
 ======================================================= */
 
 .mobile-top-bar {
@@ -97,7 +106,7 @@
     gap: 6px;
 }
 
-/* Icon buttons (menu / search / notif) */
+/* Icon buttons */
 
 .mobile-icon-btn {
     width: 30px;
@@ -116,44 +125,15 @@
 }
 
 /* =======================================================
-   ROW 2 — QUICK CONTROLS (Odds / Lang / Tools)
+   LEGACY QUICK ROW (HIDDEN, preserved for modal triggers)
 ======================================================= */
 
 .mobile-quick-row {
-    display: flex;
-    gap: 8px;
-    padding: 6px 10px;
-    overflow-x: auto;
-    background: #101018;
-}
-
-.mobile-quick-row::-webkit-scrollbar {
-    display: none;
-}
-
-.mobile-quick-btn {
-    flex: 0 0 auto;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(15, 17, 25, 0.95);
-    color: #e0e0e0;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.mobile-quick-btn .value,
-.mobile-quick-btn .lang-code {
-    color: #ffec00;
-    font-weight: 600;
+    display: none !important;
 }
 
 /* =======================================================
-   ROW 3 & ROW 4 – OLD MOBILE NAVIGATION (HIDDEN)
-   We keep the HTML for future use, but NEVER show it
-   on mobile. All navigation now lives inside hamburger.
+   HIDE OLD NAVIGATION (chips + subnav)
 ======================================================= */
 
 @media (max-width: 900px) {
@@ -164,12 +144,10 @@
 }
 
 /* =======================================================
-   MOBILE HAMBURGER MENU (SLIDE PANEL)
-   Uses classes: .mobile-menu-overlay, .mobile-menu-panel,
-   .mobile-menu-close, .menu-section, .menu-link, .submenu.
+   MOBILE HAMBURGER MENU (OVERLAY + PANEL)
 ======================================================= */
 
-/* Overlay (dark background behind panel) */
+/* Dark background behind panel */
 .mobile-menu-overlay {
     position: fixed;
     inset: 0;
@@ -192,29 +170,32 @@
     height: 100vh;
     background: #0c0c14;
     z-index: 10000;
-    padding: 16px 16px 24px;
+    padding: 16px 16px 28px;
     box-shadow: 4px 0 18px rgba(0, 0, 0, 0.55);
     transform: translateX(-100%);
     transition: transform 0.25s ease;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .mobile-menu-panel.open {
     transform: translateX(0);
 }
 
-/* Panel header (close + brand) */
+/* Panel close button */
 .mobile-menu-close {
     background: transparent;
     border: none;
     padding: 0;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .mobile-menu-close img {
     width: 24px;
     height: 24px;
 }
+
+/* Brand block inside panel */
 
 .menu-brand {
     display: flex;
@@ -247,19 +228,21 @@
 /* Sections inside panel */
 
 .menu-section {
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
-.menu-section h4 {
+.menu-section h4,
+.menu-title {
     font-size: 13px;
     font-weight: 600;
     color: #ffec00;
-    margin: 0 0 8px;
+    margin-bottom: 8px;
 }
 
-/* Top-level links (e.g. “Odds Comparison”, “Community”) */
+/* Top-level links */
 
-.menu-link {
+.menu-link,
+.menu-item {
     width: 100%;
     text-align: left;
     padding: 10px 10px;
@@ -267,14 +250,14 @@
     background: #161822;
     color: #f2f2f2;
     font-size: 13px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
-/* Submenu under each section */
+/* Submenu */
 
 .submenu {
     display: none;
-    padding-left: 10px;
+    padding-left: 12px;
     margin-bottom: 6px;
 }
 
@@ -293,22 +276,8 @@
     margin-bottom: 4px;
 }
 
-/* “Quick Controls” area inside menu (if used) */
-
-.menu-item {
-    width: 100%;
-    text-align: left;
-    padding: 10px 10px;
-    border-radius: 6px;
-    background: #161822;
-    color: #e0e0e0;
-    font-size: 13px;
-    margin-bottom: 6px;
-}
-
 /* =======================================================
-   MOBILE MODAL "SELECT OPTION" – PERMANENTLY HIDDEN
-   (be-modal-overlay used only for old odds/lang/tools)
+   MOBILE MODAL (OLD SYSTEM — ALWAYS HIDDEN)
 ======================================================= */
 
 .be-modal-overlay {
@@ -316,15 +285,11 @@
 }
 
 /* =======================================================
-   SMALL DEVICES TWEAKS (<480px)
+   EXTRA SMALL DEVICES (<480px)
 ======================================================= */
 
 @media (max-width: 480px) {
     .mobile-top-bar {
-        padding: 6px 8px;
-    }
-
-    .mobile-quick-row {
         padding: 6px 8px;
     }
 }
