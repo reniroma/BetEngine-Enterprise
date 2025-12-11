@@ -1,17 +1,17 @@
 <!-- ====================================================
-     MOBILE HEADER (BetEngine Enterprise)
+     MOBILE HEADER (BetEngine Enterprise – OddsPortal Style)
 ======================================================= -->
 <header class="header-mobile">
 
-    <!-- ROW 1: TOP BAR (LOGO + ICONS) -->
+    <!-- ROW 1: BRAND BAR (HAMBURGER + LOGO + ICONS) -->
     <div class="mobile-top-bar">
 
-        <!-- Menu toggle (for future drawer, currently visual only) -->
+        <!-- Left: menu toggle -->
         <button class="mobile-icon-btn mobile-menu-toggle" type="button" aria-label="Open menu">
             <img src="assets/icons/menu.svg" alt="">
         </button>
 
-        <!-- Brand -->
+        <!-- Center: brand -->
         <div class="mobile-brand">
             <img src="assets/logos/logo.svg" alt="BetEngine logo" class="logo">
             <div class="brand-text">
@@ -20,10 +20,18 @@
             </div>
         </div>
 
-        <!-- Right icons: search + notifications -->
+        <!-- Right: icon cluster (search + bonus + favorites + notifications) -->
         <div class="mobile-actions">
             <button class="mobile-icon-btn mobile-search-btn" type="button" aria-label="Search">
                 <img src="assets/icons/search.svg" alt="">
+            </button>
+
+            <button class="mobile-icon-btn mobile-bonus-btn mobile-tools-trigger" type="button" aria-label="Bonuses / Tools">
+                <img src="assets/icons/gift.svg" alt="">
+            </button>
+
+            <button class="mobile-icon-btn mobile-fav-btn" type="button" aria-label="Favorites">
+                <img src="assets/icons/star.svg" alt="">
             </button>
 
             <button class="mobile-icon-btn mobile-notif-btn" type="button" aria-label="Notifications">
@@ -32,7 +40,40 @@
         </div>
     </div>
 
-    <!-- ROW 2: QUICK CONTROLS (ODDS / LANGUAGE / TOOLS) -->
+    <!-- ROW 2: SPORTS NAVIGATION (FOOTBALL, BASKETBALL, ...) -->
+    <nav class="mobile-sports-nav" aria-label="Sports navigation">
+        <button class="sport-tab active" type="button" data-sport="football">
+            <img src="assets/icons/football.svg" class="sport-icon" alt="">
+            <span>FOOTBALL</span>
+        </button>
+
+        <button class="sport-tab" type="button" data-sport="basketball">
+            <img src="assets/icons/basketball.svg" class="sport-icon" alt="">
+            <span>BASKETBALL</span>
+        </button>
+
+        <button class="sport-tab" type="button" data-sport="tennis">
+            <img src="assets/icons/tennis.svg" class="sport-icon" alt="">
+            <span>TENNIS</span>
+        </button>
+
+        <button class="sport-tab" type="button" data-sport="baseball">
+            <img src="assets/icons/baseball.svg" class="sport-icon" alt="">
+            <span>BASEBALL</span>
+        </button>
+
+        <button class="sport-tab" type="button" data-sport="hockey">
+            <img src="assets/icons/hockey.svg" class="sport-icon" alt="">
+            <span>HOCKEY</span>
+        </button>
+
+        <button class="sport-tab" type="button" data-sport="more">
+            <img src="assets/icons/more.svg" class="sport-icon" alt="">
+            <span>MORE</span>
+        </button>
+    </nav>
+
+    <!-- ROW 3: QUICK CONTROLS (ODDS / LANG / TOOLS) -->
     <div class="mobile-quick-row">
         <button class="mobile-quick-btn mobile-odds-toggle" type="button">
             <span class="label">Odds</span>
@@ -49,7 +90,7 @@
         </button>
     </div>
 
-    <!-- ROW 3: MAIN NAV (CHIPS) -->
+    <!-- ROW 4: MAIN NAV (CHIPS) -->
     <nav class="mobile-main-nav" aria-label="Main navigation">
         <button class="nav-chip active" data-section="odds">ODDS</button>
         <button class="nav-chip" data-section="community">COMMUNITY</button>
@@ -57,7 +98,7 @@
         <button class="nav-chip" data-section="premium">PREMIUM</button>
     </nav>
 
-    <!-- ROW 4: SUB NAV (SYNC WITH DESKTOP – SAME DATA ATTRIBUTES) -->
+    <!-- ROW 5: SUB NAV (SYNC WITH DESKTOP – SAME DATA ATTRIBUTES) -->
     <nav class="mobile-sub-nav" aria-label="Secondary navigation">
 
         <!-- ODDS SUBNAV -->
