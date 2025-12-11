@@ -1,44 +1,46 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v4.0)
- * System B — Uses `.show` for mobile menu + overlay
- * 100% compatible with current mobile.css
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.0)
+ * FIXED: full compatibility with mobile.css
+ * - Panel now uses .open (NOT .show)
+ * - Overlay uses .show (correct)
+ * - Stable scroll lock / unlock
  *********************************************************/
 
-/* ======================================================
-   INIT MOBILE MENU
-======================================================= */
 function initMobileMenu() {
 
     const mobileHeader = document.querySelector(".header-mobile");
     if (!mobileHeader) return;
 
     /* Elements */
-    const btnToggle   = mobileHeader.querySelector(".mobile-menu-toggle");
-    const menuPanel   = document.querySelector(".mobile-menu-panel");
-    const menuOverlay = document.querySelector(".mobile-menu-overlay");
-    const btnClose    = document.querySelector(".mobile-menu-close");
+    const btnToggle     = mobileHeader.querySelector(".mobile-menu-toggle");
+    const menuPanel     = document.querySelector(".mobile-menu-panel");
+    const menuOverlay   = document.querySelector(".mobile-menu-overlay");
+    const btnClose      = document.querySelector(".mobile-menu-close");
 
-    /* Auth in panel (optional) */
-    const menuAuthLogin    = document.querySelector(".menu-auth-login");
-    const menuAuthRegister = document.querySelector(".menu-auth-register");
+    /* Auth triggers inside panel */
+    const menuAuthLogin      = document.querySelector(".menu-auth-login");
+    const menuAuthRegister   = document.querySelector(".menu-auth-register");
     const desktopLoginBtn    = document.querySelector(".btn-auth.login");
     const desktopRegisterBtn = document.querySelector(".btn-auth.register");
 
     /* -------------------------
-       OPEN / CLOSE MENU
+       OPEN MENU
     ------------------------- */
     const openMenu = () => {
         if (!menuPanel || !menuOverlay) return;
 
-        menuPanel.classList.add("show");
-        menuOverlay.classList.add("show");
+        menuPanel.classList.add("open");   // FIXED
+        menuOverlay.classList.add("show"); // correct
         document.body.style.overflow = "hidden";
     };
 
+    /* -------------------------
+       CLOSE MENU
+    ------------------------- */
     const closeMenu = () => {
         if (!menuPanel || !menuOverlay) return;
 
-        menuPanel.classList.remove("show");
+        menuPanel.classList.remove("open");  // FIXED
         menuOverlay.classList.remove("show");
         document.body.style.overflow = "";
     };
@@ -46,32 +48,26 @@ function initMobileMenu() {
     /* -------------------------
        EVENTS
     ------------------------- */
-
-    // Open
     btnToggle?.addEventListener("click", (e) => {
         e.preventDefault();
         openMenu();
     });
 
-    // Close by X button
     btnClose?.addEventListener("click", (e) => {
         e.preventDefault();
         closeMenu();
     });
 
-    // Close by overlay click
-    menuOverlay?.addEventListener("click", (e) => {
-        e.preventDefault();
+    menuOverlay?.addEventListener("click", () => {
         closeMenu();
     });
 
-    // Close by ESC
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
     });
 
     /* -------------------------
-       LOGIN / REGISTER
+       AUTH
     ------------------------- */
     menuAuthLogin?.addEventListener("click", () => {
         closeMenu();
@@ -83,8 +79,8 @@ function initMobileMenu() {
         desktopRegisterBtn?.click();
     });
 
-    console.log("Mobile menu (SHOW system) initialized");
+    console.log("Mobile menu initialized (v5.0)");
 }
 
-/* Wait until header HTML is injected */
+/* Wait for header injection */
 document.addEventListener("headerLoaded", initMobileMenu);
