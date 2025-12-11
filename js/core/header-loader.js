@@ -1,5 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (FINAL v4.0)
+ * BetEngine Enterprise – HEADER LOADER (v10 FINAL)
+ * Universal Relative Path Version
  * Loads:
  *   - Desktop header
  *   - Mobile header
@@ -7,15 +8,13 @@
  *   - Login modal
  *   - Register modal
  *
- * - Zero HTML in index.html
- * - Fully safe for GitHub Pages, Vercel, Local
- * - Emits "headerLoaded" only after injection completes
+ * Emits "headerLoaded" after successful insertion.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * RELATIVE BASE PATH (Safe in all environments)
+     * RELATIVE BASE PATH (Always safe)
      *******************************************************/
     const BASE = "./layouts/header/";
 
@@ -31,18 +30,18 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     /*******************************************************
-     * FETCH HELPER (Stable — no caching issues)
+     * FETCH HELPER
      *******************************************************/
     async function loadComponent(url) {
         try {
             const res = await fetch(url, { cache: "no-store" });
             if (!res.ok) {
-                console.warn("HeaderLoader: HTTP error", url, res.status);
+                console.warn("HeaderLoader v10: HTTP error", url, res.status);
                 return "";
             }
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader: FETCH FAILED", url, err);
+            console.warn("HeaderLoader v10: FETCH FAILED", url, err);
             return "";
         }
     }
@@ -52,13 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
      *******************************************************/
     async function initHeaderLoader() {
         const mainEl = document.querySelector("main");
-
         if (!mainEl) {
-            console.error("HeaderLoader: <main> not found.");
+            console.error("HeaderLoader v10: <main> not found.");
             return;
         }
 
-        // Promise.all ensures EVERYTHING is loaded
         const [
             desktopHTML,
             mobileHTML,
@@ -76,19 +73,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const finalHTML =
             `${desktopHTML}\n${mobileHTML}\n${modalsHTML}\n${loginHTML}\n${registerHTML}`.trim();
 
-        if (!finalHTML.length) {
-            console.error("HeaderLoader: No header content loaded.");
+        if (!finalHTML) {
+            console.error("HeaderLoader v10: No content loaded.");
             return;
         }
 
         // Insert BEFORE <main>
         mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-        // Wait one frame then notify system that header is ready
-        requestAnimationFrame(() => {
+        // Dispatch event after DOM is updated
+        setTimeout(() => {
             document.dispatchEvent(new Event("headerLoaded"));
-            console.log("HeaderLoader: headerLoaded dispatched");
-        });
+            console.log("HeaderLoader v10: headerLoaded dispatched");
+        }, 20);
     }
 
     initHeaderLoader();
