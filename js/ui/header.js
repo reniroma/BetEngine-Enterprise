@@ -1,15 +1,20 @@
+/*********************************************************
+ * BetEngine Enterprise – HEADER.JS (FINAL v10)
+ * Fokus: vetëm DESKTOP header
+ * - Odds / Language / Tools dropdowns
+ * - Section navigation (desktop main + subnav)
+ * - Zero logjikë për mobile menu / mobile modal
+ * - Zero logjikë për auth (auth është në header-auth.js)
+ *********************************************************/
+
 /*******************************************************
  * UTILS
  *******************************************************/
-const isInside = (target, selector) => {
+const BE_isInside = (target, selector) => {
     return !!(target && target.closest(selector));
 };
 
-const lockBodyScroll = (state) => {
-    document.body.style.overflow = state ? "hidden" : "";
-};
-
-const closeAllDesktopDropdowns = () => {
+const BE_closeAllDesktopDropdowns = () => {
     document
         .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
         .forEach(el => el.classList.remove("show"));
@@ -32,7 +37,7 @@ function initDesktopDropdowns() {
         oddsToggle.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = oddsDropdown.classList.contains("show");
-            closeAllDesktopDropdowns();
+            BE_closeAllDesktopDropdowns();
             if (!open) oddsDropdown.classList.add("show");
         });
 
@@ -46,6 +51,7 @@ function initDesktopDropdowns() {
                 const clean = item.textContent.split("(")[0].trim();
                 if (oddsLabel) oddsLabel.textContent = clean;
 
+                // Optional sync me mobile (nëse ekziston markup-i i vjetër)
                 const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
                 if (mobileOdds) mobileOdds.textContent = clean;
 
@@ -64,7 +70,7 @@ function initDesktopDropdowns() {
         langToggle.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = langDropdown.classList.contains("show");
-            closeAllDesktopDropdowns();
+            BE_closeAllDesktopDropdowns();
             if (!open) langDropdown.classList.add("show");
         });
 
@@ -75,11 +81,12 @@ function initDesktopDropdowns() {
                 langItems.forEach(i => i.classList.remove("active"));
                 item.classList.add("active");
 
-                const label = item.textContent;
+                const label = item.textContent || "";
                 const code  = (item.dataset.lang || "EN").toUpperCase();
 
                 if (langLabel) langLabel.textContent = label;
 
+                // Optional sync me mobile (nëse ekziston markup-i i vjetër)
                 const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
                 if (mobileLang) mobileLang.textContent = code;
 
@@ -98,39 +105,35 @@ function initDesktopDropdowns() {
         toolsTrigger.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = toolsDropdown.classList.contains("show");
-            closeAllDesktopDropdowns();
+            BE_closeAllDesktopDropdowns();
             if (!open) toolsDropdown.classList.add("show");
         });
     }
 
-    /* ---------------- CLOSE ON OUTSIDE ---------------- */
+    /* ---------------- CLOSE ON OUTSIDE (DESKTOP VETËM) ---------------- */
     document.addEventListener("click", (e) => {
         if (
-            !isInside(e.target, ".odds-format") &&
-            !isInside(e.target, ".language-selector") &&
-            !isInside(e.target, ".sub-item-tools") &&
-            !isInside(e.target, ".tools-dropdown")
+            !BE_isInside(e.target, ".odds-format") &&
+            !BE_isInside(e.target, ".language-selector") &&
+            !BE_isInside(e.target, ".sub-item-tools") &&
+            !BE_isInside(e.target, ".tools-dropdown")
         ) {
-            closeAllDesktopDropdowns();
+            BE_closeAllDesktopDropdowns();
         }
     });
 
     /* ---------------- CLOSE ON ESC ---------------- */
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAllDesktopDropdowns();
+        if (e.key === "Escape") BE_closeAllDesktopDropdowns();
     });
 }
 
-
 /*******************************************************
- * NAVIGATION SYNC (Desktop <-> Mobile)
+ * NAVIGATION SYNC (Desktop Only + hook për mobile menu)
  *******************************************************/
 function initSectionNavigation() {
     const dMain = document.querySelectorAll(".main-nav .nav-item");
     const dSub  = document.querySelectorAll(".row-sub .subnav-group");
-
-    const mMain = document.querySelectorAll(".mobile-main-nav .nav-chip");
-    const mSub  = document.querySelectorAll(".mobile-sub-nav .subnav-group");
 
     const activate = (section) => {
         if (!section) return;
@@ -142,17 +145,9 @@ function initSectionNavigation() {
         dSub.forEach(g =>
             g.classList.toggle("active", g.dataset.subnav === section)
         );
-
-        mMain.forEach(i =>
-            i.classList.toggle("active", i.dataset.section === section)
-        );
-
-        mSub.forEach(g =>
-            g.classList.toggle("active", g.dataset.subnav === section)
-        );
     };
 
-    // Expose for mobile hamburger navigation
+    // Ekspozuar për mobile menu (menu-link data-section)
     window.BE_activateSection = activate;
 
     dMain.forEach(item => {
@@ -161,294 +156,24 @@ function initSectionNavigation() {
             activate(item.dataset.section);
         });
     });
-
-    mMain.forEach(item => {
-        item.addEventListener("click", (e) => {
-            e.preventDefault();
-            activate(item.dataset.section);
-        });
-    });
 }
 
-
 /*******************************************************
- * MOBILE MODAL (Odds / Lang / Tools)
+ * INIT ALL HEADER MODULES (DESKTOP ONLY)
  *******************************************************/
-function initMobileModal() {
-    const mobileHeader = document.querySelector(".header-mobile");
-    if (!mobileHeader) return;
+function initHeaderModules() {
+    if (window.__BE_HEADER_INITED__) return;
+    window.__BE_HEADER_INITED__ = true;
 
-    const modal = document.getElementById("mobile-header-modal");
-    if (!modal) return;
-
-    const title    = modal.querySelector(".be-modal-title");
-    const sections = modal.querySelectorAll(".be-modal-section");
-    const closeBtn = modal.querySelector(".be-modal-close");
-
-    const mOdds  = mobileHeader.querySelector(".mobile-odds-toggle");
-    const mLang  = mobileHeader.querySelector(".mobile-lang-toggle");
-    const mTools = mobileHeader.querySelector(".mobile-tools-trigger");
-
-    const showSection = (type, label) => {
-        sections.forEach(s => s.classList.remove("active"));
-        const activeSection = modal.querySelector(`.modal-${type}`);
-        if (activeSection) activeSection.classList.add("active");
-
-        if (title) title.textContent = label;
-
-        modal.classList.add("show");
-        lockBodyScroll(true);
-    };
-
-    const closeModal = () => {
-        modal.classList.remove("show");
-        lockBodyScroll(false);
-    };
-
-    // Old quick-row triggers (if they still exist)
-    mOdds?.addEventListener("click", () => showSection("odds", "Select odds format"));
-    mLang?.addEventListener("click", () => showSection("language", "Select language"));
-    mTools?.addEventListener("click", () => showSection("tools", "Betting tools"));
-
-    // Quick controls inside hamburger panel
-    const menuOdds = document.querySelector(".menu-item.menu-odds");
-    const menuLang = document.querySelector(".menu-item.menu-lang");
-
-    menuOdds?.addEventListener("click", () => showSection("odds", "Select odds format"));
-    menuLang?.addEventListener("click", () => showSection("language", "Select language"));
-
-    closeBtn?.addEventListener("click", closeModal);
-
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.classList.contains("show")) closeModal();
-    });
-
-    /* ----- ODDS SELECTION (MOBILE MODAL) ----- */
-    const oddsItems = modal.querySelectorAll(".modal-odds .be-modal-item");
-    oddsItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const text = item.textContent || "";
-            const clean = text.split("(")[0].trim();
-
-            const mobileValue = document.querySelector(".mobile-odds-toggle .value");
-            if (mobileValue) mobileValue.textContent = clean;
-
-            const desktopDropdown = document.querySelector(".header-desktop .odds-dropdown");
-            const desktopItems = desktopDropdown ? desktopDropdown.querySelectorAll(".item") : [];
-            const desktopLabel = document.querySelector(".header-desktop .odds-label");
-
-            desktopItems.forEach(i => i.classList.remove("active"));
-
-            const matchAttr = item.dataset.odds;
-            desktopItems.forEach(i => {
-                if (i.dataset.odds === matchAttr) {
-                    i.classList.add("active");
-                }
-            });
-
-            if (desktopLabel) desktopLabel.textContent = clean;
-
-            closeModal();
-        });
-    });
-
-    /* ----- LANGUAGE SELECTION (MOBILE MODAL) ----- */
-    const langItems = modal.querySelectorAll(".modal-language .be-modal-item");
-    langItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const label = item.textContent || "";
-            const code  = (item.dataset.lang || "EN").toUpperCase();
-
-            const mobileCode = document.querySelector(".mobile-lang-toggle .lang-code");
-            if (mobileCode) mobileCode.textContent = code;
-
-            const desktopDropdown = document.querySelector(".header-desktop .language-dropdown");
-            const desktopItems = desktopDropdown ? desktopDropdown.querySelectorAll(".item") : [];
-            const desktopLabel = document.querySelector(".header-desktop .language-selector .lang-code");
-
-            desktopItems.forEach(i => i.classList.remove("active"));
-
-            const desktopMatch = Array.from(desktopItems).find(i => i.dataset.lang === item.dataset.lang);
-            if (desktopMatch) {
-                desktopMatch.classList.add("active");
-            }
-
-            if (desktopLabel) desktopLabel.textContent = label;
-
-            closeModal();
-        });
-    });
-
-    /* ----- TOOLS CLICK (MOBILE MODAL) ----- */
-    const toolItems = modal.querySelectorAll(".modal-tools .be-modal-item");
-    toolItems.forEach(item => {
-        item.addEventListener("click", () => {
-            // Later we can hook tools here
-            closeModal();
-        });
-    });
-}
-
-
-/*******************************************************
- * MOBILE HAMBURGER MENU (v7.1)
- *******************************************************/
-function initMobileMenu() {
-
-    const toggle   = document.querySelector(".mobile-menu-toggle");
-    const overlay  = document.querySelector(".mobile-menu-overlay");
-    const panel    = document.querySelector(".mobile-menu-panel");
-    const closeBtn = document.querySelector(".mobile-menu-close");
-
-    if (!toggle || !overlay || !panel) return;
-
-    const openMenu = () => {
-        overlay.classList.add("show");
-        panel.classList.add("open");
-        lockBodyScroll(true);
-    };
-
-    const closeMenu = () => {
-        overlay.classList.remove("show");
-        panel.classList.remove("open");
-        lockBodyScroll(false);
-    };
-
-    toggle.addEventListener("click", openMenu);
-    closeBtn?.addEventListener("click", closeMenu);
-    overlay.addEventListener("click", closeMenu);
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && panel.classList.contains("open")) {
-            closeMenu();
-        }
-    });
-
-    /* ---------- SECTION NAVIGATION FROM PANEL ---------- */
-    const menuLinks  = panel.querySelectorAll(".menu-link");
-    const allSubmenus = panel.querySelectorAll(".submenu");
-
-    menuLinks.forEach(link => {
-        link.addEventListener("click", () => {
-            const section = link.dataset.section;
-
-            // Sync section with desktop/mobile nav (Odds / Community / Bookmakers / Premium)
-            if (section && typeof window.BE_activateSection === "function") {
-                window.BE_activateSection(section);
-            }
-
-            // Handle submenus (Odds Comparison, Community, etc.)
-            const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
-
-            if (submenu) {
-                allSubmenus.forEach(sub => {
-                    if (sub === submenu) {
-                        sub.classList.toggle("open");
-                    } else {
-                        sub.classList.remove("open");
-                    }
-                });
-            } else {
-                // If there is no submenu (e.g. Bookmakers, Premium),
-                // we simply close the menu after activating the section.
-                closeMenu();
-            }
-        });
-    });
-}
-
-
-/*******************************************************
- * DESKTOP AUTH MODALS (LOGIN + REGISTER)
- *******************************************************/
-function initDesktopAuth() {
-
-    const loginOverlay    = document.getElementById("login-modal");
-    const registerOverlay = document.getElementById("register-modal");
-
-    if (!loginOverlay && !registerOverlay) return;
-
-    const loginBtn    = document.querySelector(".btn-auth.login");
-    const registerBtn = document.querySelector(".btn-auth.register");
-
-    const loginClose    = loginOverlay?.querySelector(".auth-close");
-    const registerClose = registerOverlay?.querySelector(".auth-close");
-
-    const authSwitches  = document.querySelectorAll(".auth-switch");
-
-    const open = (overlay) => {
-        if (!overlay) return;
-        overlay.classList.add("show");
-        lockBodyScroll(true);
-    };
-
-    const close = (overlay) => {
-        if (!overlay) return;
-        overlay.classList.remove("show");
-        lockBodyScroll(false);
-    };
-
-    loginBtn?.addEventListener("click", () => {
-        close(registerOverlay);
-        open(loginOverlay);
-    });
-
-    registerBtn?.addEventListener("click", () => {
-        close(loginOverlay);
-        open(registerOverlay);
-    });
-
-    loginClose?.addEventListener("click", () => close(loginOverlay));
-    registerClose?.addEventListener("click", () => close(registerOverlay));
-
-    authSwitches.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.dataset.authTarget;
-
-            if (target === "login") {
-                close(registerOverlay);
-                open(loginOverlay);
-            } else if (target === "register") {
-                close(loginOverlay);
-                open(registerOverlay);
-            }
-        });
-    });
-
-    [loginOverlay, registerOverlay].forEach(overlay => {
-        overlay?.addEventListener("click", (e) => {
-            if (e.target === overlay) {
-                close(overlay);
-            }
-        });
-    });
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (loginOverlay?.classList.contains("show")) close(loginOverlay);
-            if (registerOverlay?.classList.contains("show")) close(registerOverlay);
-        }
-    });
-}
-
-
-/*******************************************************
- * INIT ALL HEADER MODULES
- *******************************************************/
-const initHeaderModules = () => {
     initDesktopDropdowns();
     initSectionNavigation();
-    initMobileModal();
-    initMobileMenu();
-    initDesktopAuth();
-};
 
-document.addEventListener("headerLoaded", () => initHeaderModules());
-
-if (document.querySelector(".header-desktop") || document.querySelector(".header-mobile")) {
-    setTimeout(() => initHeaderModules(), 0);
+    console.log("BetEngine Header (desktop) initialized v10");
 }
+
+/*******************************************************
+ * LISTENER – HEADER READY
+ *******************************************************/
+document.addEventListener("headerLoaded", () => {
+    initHeaderModules();
+});
