@@ -1,9 +1,5 @@
 <!-- ====================================================
-     BetEngine Enterprise – HEADER MODALS (FINAL)
-     Loads 3 modal systems:
-       1) Mobile Controls Modal (Odds / Language / Tools)
-       2) Login Modal (standalone include)
-       3) Register Modal (standalone include)
+     BetEngine Enterprise – HEADER MODALS (FINAL v3.0)
 ======================================================== -->
 
 <!-- ============================
@@ -71,19 +67,68 @@
 </div>
 
 
-<!-- ============================
-     LOGIN MODAL (Standalone include)
-============================= -->
-<div id="auth-login-container">
-    <!-- AUTO-INCLUDED by loader -->
-    <!-- File path: layouts/header/auth-login.html -->
+<!-- ====================================================
+     MOBILE MENU MODAL (HAMBURGER MENU)
+======================================================== -->
+<div class="mobile-menu-overlay"></div>
+
+<div class="mobile-menu-panel">
+
+    <button class="mobile-menu-close" type="button">
+        <img src="assets/icons/close.svg" alt="">
+    </button>
+
+    <!-- Brand -->
+    <div class="menu-brand">
+        <img src="assets/logos/logo.svg" class="logo" alt="">
+        <div class="brand-text">
+            <span class="name">BetEngine</span>
+            <span class="tagline">Smart betting tools</span>
+        </div>
+    </div>
+
+    <!-- Quick Controls -->
+    <div class="menu-section">
+        <h4>Quick Controls</h4>
+        <button class="menu-item menu-odds">Odds Format: <span>Decimal Odds</span></button>
+        <button class="menu-item menu-lang">Language: <span>English</span></button>
+    </div>
+
+    <!-- Navigation -->
+    <div class="menu-section">
+        <h4>Navigation</h4>
+
+        <button class="menu-link" data-section="odds">Odds Comparison</button>
+        <div class="submenu" data-subnav="odds">
+            <button class="submenu-item">Home</button>
+            <button class="submenu-item">Next Matches</button>
+            <button class="submenu-item">Dropping Odds</button>
+            <button class="submenu-item">Sure Bets</button>
+            <button class="submenu-item">In-Play Odds</button>
+            <button class="submenu-item">All Events</button>
+            <button class="submenu-item">Betting Tools</button>
+        </div>
+
+        <button class="menu-link" data-section="community">Community</button>
+        <div class="submenu" data-subnav="community">
+            <button class="submenu-item">Home</button>
+            <button class="submenu-item">Feed</button>
+            <button class="submenu-item">Users</button>
+            <button class="submenu-item">Top Predictions</button>
+            <button class="submenu-item">My Statistics</button>
+            <button class="submenu-item">My Profile</button>
+            <button class="submenu-item">My Predictions</button>
+            <button class="submenu-item">My Coupons</button>
+        </div>
+
+        <button class="menu-link" data-section="bookmakers">Bookmakers</button>
+
+        <button class="menu-link" data-section="premium">Premium</button>
+    </div>
+
 </div>
 
 
-<!-- ============================
-     REGISTER MODAL (Standalone include)
-============================= -->
-<div id="auth-register-container">
-    <!-- AUTO-INCLUDED by loader -->
-    <!-- File path: layouts/header/auth-register.html -->
-</div>
+<!-- LOGIN & REGISTER MODALS -->
+<div id="auth-login-container"></div>
+<div id="auth-register-container"></div>
