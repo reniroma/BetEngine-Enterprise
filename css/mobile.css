@@ -1,11 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (v1.0)
- * Clean, isolated mobile header & navigation.
+ * BetEngine Enterprise – MOBILE CSS (v2.0 OddsPortal Style)
+ * Clean, layered mobile header & navigation (brand + sports
+ * + quick controls + main nav + sub nav).
  *********************************************************/
 
 /* =======================================================
    BASE MOBILE VISIBILITY
-   (Desktop already controls its own visibility)
 ======================================================= */
 
 .header-mobile {
@@ -43,14 +43,14 @@
 }
 
 /* =======================================================
-   ROW 1 – TOP BAR
+   ROW 1 – BRAND BAR (TOP)
 ======================================================= */
 
 .header-mobile .mobile-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: 8px 10px;
 }
 
 /* Left: menu toggle */
@@ -58,7 +58,7 @@
     margin-right: 6px;
 }
 
-/* Brand */
+/* Brand center */
 .header-mobile .mobile-brand {
     display: flex;
     align-items: center;
@@ -68,8 +68,8 @@
 }
 
 .header-mobile .mobile-brand .logo {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
 }
 
 .header-mobile .mobile-brand .brand-text {
@@ -91,7 +91,7 @@
     white-space: nowrap;
 }
 
-/* Right icons (search + notif) */
+/* Right icons cluster */
 .header-mobile .mobile-actions {
     display: flex;
     align-items: center;
@@ -100,8 +100,8 @@
 
 /* Generic icon button */
 .header-mobile .mobile-icon-btn {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     border: none;
     background: rgba(24, 24, 36, 0.95);
@@ -113,14 +113,63 @@
 }
 
 .header-mobile .mobile-icon-btn img {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     display: block;
     object-fit: contain;
 }
 
 /* =======================================================
-   ROW 2 – QUICK CONTROLS (ODDS / LANG / TOOLS)
+   ROW 2 – SPORTS NAVIGATION (TABS)
+======================================================= */
+
+.header-mobile .mobile-sports-nav {
+    display: flex;
+    align-items: stretch;
+    padding: 6px 4px 4px 4px;
+    background: #101018;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-mobile .mobile-sports-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .sport-tab {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    margin: 0 4px;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid transparent;
+    background: #171926;
+    color: #e0e0e0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.header-mobile .sport-tab .sport-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.header-mobile .sport-tab.active {
+    background: #ffec00;
+    color: #11141d;
+    border-color: #ffec00;
+    font-weight: 600;
+}
+
+/* =======================================================
+   ROW 3 – QUICK CONTROLS (ODDS / LANG / TOOLS)
 ======================================================= */
 
 .header-mobile .mobile-quick-row {
@@ -165,7 +214,7 @@
 }
 
 /* =======================================================
-   ROW 3 – MAIN NAV (CHIPS)
+   ROW 4 – MAIN NAV (CHIPS)
 ======================================================= */
 
 .header-mobile .mobile-main-nav {
@@ -210,7 +259,7 @@
 }
 
 /* =======================================================
-   ROW 4 – SUB NAV (GROUPS + ITEMS)
+   ROW 5 – SUB NAV (GROUPS + ITEMS)
 ======================================================= */
 
 .header-mobile .mobile-sub-nav {
@@ -250,7 +299,7 @@
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Hover / active behavior (aligned me desktop feel) */
+/* Hover / active behavior (aligned with desktop) */
 .header-mobile .mobile-sub-nav .sub-item:hover {
     background-color: rgba(255, 255, 255, 0.10);
     color: #ffffff;
@@ -267,21 +316,26 @@
 
 @media (max-width: 480px) {
     .header-mobile .mobile-top-bar {
-        padding: 8px 8px;
+        padding: 8px 6px;
+    }
+
+    .header-mobile .mobile-sports-nav {
+        padding-left: 2px;
+        padding-right: 2px;
     }
 
     .header-mobile .mobile-quick-row {
-        padding-left: 8px;
-        padding-right: 8px;
+        padding-left: 6px;
+        padding-right: 6px;
     }
 
     .header-mobile .mobile-main-nav {
-        padding-left: 8px;
-        padding-right: 8px;
+        padding-left: 6px;
+        padding-right: 6px;
     }
 
     .header-mobile .mobile-sub-nav {
-        padding-left: 6px;
-        padding-right: 6px;
+        padding-left: 4px;
+        padding-right: 4px;
     }
 }
