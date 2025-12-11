@@ -1,44 +1,33 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v4.0)
- * Pure mobile layout – OddsPortal-style architecture
- * Fully isolated from Desktop UI
+ * BetEngine Enterprise – MOBILE CSS (FINAL v5.0)
+ * Fully isolated mobile-only styling.
+ * No desktop conflicts. No shared classes.
  *********************************************************/
 
 /* =======================================================
-   MOBILE VISIBILITY CONTROL
+   0. MOBILE VISIBILITY CONTROL
 ======================================================= */
 
-/* Fshi mobile header në desktop */
-.header-mobile { display: none; }
-
-/* Wrapper për modals mobile-only */
-.mobile-only { display: none; }
+.header-mobile {
+    display: none;
+}
 
 @media (max-width: 900px) {
-
-    /* Fshi komplet header desktop në mobile */
     .header-desktop {
         display: none !important;
     }
-
-    /* Shfaq vetëm header-mobile + modals mobile-only */
     .header-mobile {
-        display: block !important;
-    }
-
-    .mobile-only {
         display: block !important;
     }
 }
 
 /* =======================================================
-   MOBILE HEADER WRAPPER
+   1. MOBILE HEADER WRAPPER
 ======================================================= */
 
 .header-mobile {
     width: 100%;
-    background: linear-gradient(
-        to bottom,
+    background: linear-gradient(to bottom,
         #0b0b12 0%,
         #101018 50%,
         #11141d 100%
@@ -47,18 +36,17 @@
     position: sticky;
     top: 0;
     z-index: 5000;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.55);
     font-size: 13px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.55);
 }
 
-/* Shkëputje totale nga desktop CSS */
 .header-mobile * {
     box-sizing: border-box;
     font-family: inherit;
 }
 
 /* =======================================================
-   ROW 1 — BRAND + MENU + ICONS
+   2. ROW 1 — TOP BAR
 ======================================================= */
 
 .mobile-top-bar {
@@ -68,62 +56,9 @@
     padding: 8px 10px;
 }
 
-.mobile-menu-toggle {
+.mobile-icon-btn {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(24,24,36,0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mobile-menu-toggle img {
-    width: 18px;
-    height: 18px;
-}
-
-.mobile-brand {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-}
-
-.mobile-brand .logo {
-    width: 26px;
-    height: 26px;
-}
-
-.mobile-brand .brand-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-brand .name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ffec00;
-    white-space: nowrap;
-}
-
-.mobile-brand .tagline {
-    font-size: 11px;
-    color: #b3b3b3;
-    white-space: nowrap;
-}
-
-.mobile-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.mobile-icon-btn {
-    width: 30px;
-    height: 30px;
     border-radius: 50%;
     border: none;
     background: rgba(24,24,36,0.95);
@@ -137,16 +72,47 @@
     height: 17px;
 }
 
+.mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.mobile-brand .logo {
+    width: 28px;
+    height: 28px;
+}
+
+.mobile-brand .name {
+    color: #ffec00;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.mobile-brand .tagline {
+    color: #b3b3b3;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 /* =======================================================
-   ROW 2 — QUICK CONTROLS (ODDS / LANG / TOOLS)
+   3. ROW 2 — QUICK CONTROLS
 ======================================================= */
 
 .mobile-quick-row {
     display: flex;
     gap: 8px;
     padding: 6px 10px;
-    overflow-x: auto;
     background: #101018;
+    overflow-x: auto;
 }
 
 .mobile-quick-row::-webkit-scrollbar {
@@ -157,14 +123,13 @@
     flex: 0 0 auto;
     padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.14);
-    background: rgba(15,17,25,0.95);
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(20,20,30,0.95);
     color: #e0e0e0;
     font-size: 11px;
     display: flex;
     align-items: center;
     gap: 6px;
-    white-space: nowrap;
 }
 
 .mobile-quick-btn .value,
@@ -174,7 +139,7 @@
 }
 
 /* =======================================================
-   ROW 3 — MAIN NAVIGATION (TABS)
+   4. ROW 3 — MAIN NAV CHIPS
 ======================================================= */
 
 .mobile-main-nav {
@@ -189,29 +154,32 @@
     display: none;
 }
 
-.nav-chip {
+.mobile-nav-chip {
     flex: 0 0 auto;
     padding: 6px 12px;
     border-radius: 999px;
-    background: #141623;
-    border: 1px solid rgba(255,255,255,0.20);
-    color: #e0e0e0;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    cursor: pointer;
-    white-space: nowrap;
+    background: #141623;
+    border: 1px solid rgba(255,255,255,0.20);
+    color: #e0e0e0;
 }
 
-.nav-chip.active {
+.mobile-nav-chip.active {
     background: #ffec00;
     color: #11141d;
     border-color: #ffec00;
     font-weight: 600;
 }
 
+/* Force isolation from desktop .nav-chip */
+@media (min-width: 901px) {
+    .mobile-nav-chip { display: none !important; }
+}
+
 /* =======================================================
-   ROW 4 — SUB NAVIGATION
+   5. ROW 4 — SUB NAV
 ======================================================= */
 
 .mobile-sub-nav {
@@ -219,21 +187,17 @@
     background: #101018;
 }
 
-.mobile-sub-nav .subnav-group {
+.mobile-sub-group {
     display: none;
     gap: 10px;
     overflow-x: auto;
 }
 
-.mobile-sub-nav .subnav-group.active {
+.mobile-sub-group.active {
     display: flex;
 }
 
-.mobile-sub-nav .subnav-group::-webkit-scrollbar {
-    display: none;
-}
-
-.sub-item {
+.mobile-sub-item {
     flex: 0 0 auto;
     padding: 6px 10px;
     border-radius: 999px;
@@ -243,92 +207,21 @@
     white-space: nowrap;
 }
 
-.sub-item.active {
+.mobile-sub-item.active {
     background: #00eaff;
     color: #11141d;
 }
 
-/* =======================================================
-   MOBILE MODAL (ODDS / LANG / TOOLS)
-======================================================= */
-
-.be-modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    z-index: 9500;
-    align-items: center;
-    justify-content: center;
-}
-
-.be-modal-overlay.show {
-    display: flex;
-}
-
-.be-modal {
-    width: 92vw;
-    max-width: 420px;
-    background: #101018;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    overflow: hidden;
-}
-
-.be-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.be-modal-title {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.be-modal-close {
-    border: none;
-    background: transparent;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.be-modal-close img {
-    width: 18px;
-    height: 18px;
-}
-
-.be-modal-body {
-    padding: 8px 10px 10px;
-}
-
-.be-modal-section {
-    display: none;
-}
-
-.be-modal-section.active {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.be-modal-item {
-    width: 100%;
-    text-align: left;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border: none;
-    background: #181a26;
-    color: #e0e0e0;
-    font-size: 13px;
+/* BLOCK desktop subnav from appearing */
+@media (max-width: 900px) {
+    .row-sub,
+    .header-desktop .row-sub {
+        display: none !important;
+    }
 }
 
 /* =======================================================
-   MOBILE SLIDE MENU (HAMBURGER PANEL)
+   6. MOBILE SLIDE MENU
 ======================================================= */
 
 .mobile-menu-overlay {
@@ -346,54 +239,28 @@
 .mobile-menu-panel {
     position: fixed;
     top: 0;
-    left: -82vw;
-    width: 82vw;
-    max-width: 320px;
+    left: -300px;
+    width: 260px;
     height: 100vh;
     background: #0c0c14;
     z-index: 10000;
     padding: 16px;
-    box-shadow: 4px 0 18px rgba(0,0,0,0.55);
-    transition: left .25s ease;
     overflow-y: auto;
+    box-shadow: 4px 0 18px rgba(0,0,0,0.55);
+    transition: left 0.25s ease;
 }
 
-.mobile-menu-panel.open {
+.mobile-menu-panel.show {
     left: 0;
 }
 
-/* Brand në panel */
-.menu-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
+.mobile-menu-close img {
+    width: 24px;
 }
 
-.menu-brand .logo {
-    width: 32px;
-    height: 32px;
-}
-
-.menu-brand .brand-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-brand .name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ffec00;
-}
-
-.menu-brand .tagline {
-    font-size: 11px;
-    color: #b3b3b3;
-}
-
-/* Seksionet në panel */
+/* Menu sections */
 .menu-section {
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .menu-section h4 {
@@ -407,17 +274,15 @@
 .menu-link,
 .submenu-item {
     width: 100%;
-    text-align: left;
     padding: 10px 8px;
     border-radius: 6px;
-    border: none;
     background: #161822;
     color: #e0e0e0;
     font-size: 13px;
     margin-bottom: 6px;
+    text-align: left;
 }
 
-/* Submenu */
 .submenu {
     display: none;
     padding-left: 8px;
@@ -427,25 +292,23 @@
     display: block;
 }
 
-/* Close button në panel */
-.mobile-menu-close {
-    border: none;
-    background: transparent;
-    padding: 4px;
-    margin-bottom: 8px;
-}
+/* =======================================================
+   7. MOBILE BLOCKER FOR DESKTOP NAV
+======================================================= */
 
-.mobile-menu-close img {
-    width: 22px;
+@media (max-width: 900px) {
+    .main-nav,
+    .header-desktop .main-nav {
+        display: none !important;
+    }
 }
 
 /* =======================================================
-   SMALL DEVICES (<480px)
+   8. SMALL DEVICES
 ======================================================= */
 
 @media (max-width: 480px) {
     .mobile-top-bar { padding: 6px 8px; }
-    .mobile-quick-row { padding: 6px 8px; }
     .mobile-main-nav { padding: 6px 8px; }
-    .mobile-sub-nav { padding: 6px 8px 8px; }
+    .mobile-quick-row { padding: 6px 8px; }
 }
