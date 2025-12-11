@@ -1,18 +1,34 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v5.0)
- * Clean build – ZERO conflicts with desktop
- * Mobile navigation only, desktop untouched
+ * BetEngine Enterprise – MOBILE CSS (FINAL v4.0)
+ * Pure mobile layout – OddsPortal-style architecture
+ * Fully isolated from Desktop UI
  *********************************************************/
 
 /* =======================================================
    MOBILE VISIBILITY CONTROL
 ======================================================= */
 
+/* Fshi mobile header në desktop */
 .header-mobile { display: none; }
 
+/* Wrapper për modals mobile-only */
+.mobile-only { display: none; }
+
 @media (max-width: 900px) {
-    .header-desktop { display: none !important; }
-    .header-mobile { display: block !important; }
+
+    /* Fshi komplet header desktop në mobile */
+    .header-desktop {
+        display: none !important;
+    }
+
+    /* Shfaq vetëm header-mobile + modals mobile-only */
+    .header-mobile {
+        display: block !important;
+    }
+
+    .mobile-only {
+        display: block !important;
+    }
 }
 
 /* =======================================================
@@ -35,13 +51,14 @@
     font-size: 13px;
 }
 
+/* Shkëputje totale nga desktop CSS */
 .header-mobile * {
     box-sizing: border-box;
     font-family: inherit;
 }
 
 /* =======================================================
-   ROW 1 — TOP BAR
+   ROW 1 — BRAND + MENU + ICONS
 ======================================================= */
 
 .mobile-top-bar {
@@ -62,16 +79,22 @@
     justify-content: center;
 }
 
+.mobile-menu-toggle img {
+    width: 18px;
+    height: 18px;
+}
+
 .mobile-brand {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 
 .mobile-brand .logo {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
 }
 
 .mobile-brand .brand-text {
@@ -83,11 +106,13 @@
     font-size: 13px;
     font-weight: 600;
     color: #ffec00;
+    white-space: nowrap;
 }
 
 .mobile-brand .tagline {
     font-size: 11px;
     color: #b3b3b3;
+    white-space: nowrap;
 }
 
 .mobile-actions {
@@ -113,7 +138,7 @@
 }
 
 /* =======================================================
-   ROW 2 — QUICK CONTROLS
+   ROW 2 — QUICK CONTROLS (ODDS / LANG / TOOLS)
 ======================================================= */
 
 .mobile-quick-row {
@@ -124,7 +149,9 @@
     background: #101018;
 }
 
-.mobile-quick-row::-webkit-scrollbar { display: none; }
+.mobile-quick-row::-webkit-scrollbar {
+    display: none;
+}
 
 .mobile-quick-btn {
     flex: 0 0 auto;
@@ -137,6 +164,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .mobile-quick-btn .value,
@@ -146,7 +174,7 @@
 }
 
 /* =======================================================
-   ROW 3 — MAIN NAV (CHIPS)
+   ROW 3 — MAIN NAVIGATION (TABS)
 ======================================================= */
 
 .mobile-main-nav {
@@ -157,7 +185,9 @@
     overflow-x: auto;
 }
 
-.mobile-main-nav::-webkit-scrollbar { display: none; }
+.mobile-main-nav::-webkit-scrollbar {
+    display: none;
+}
 
 .nav-chip {
     flex: 0 0 auto;
@@ -169,6 +199,7 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    cursor: pointer;
     white-space: nowrap;
 }
 
@@ -180,7 +211,7 @@
 }
 
 /* =======================================================
-   ROW 4 — SUB NAV
+   ROW 4 — SUB NAVIGATION
 ======================================================= */
 
 .mobile-sub-nav {
@@ -196,6 +227,10 @@
 
 .mobile-sub-nav .subnav-group.active {
     display: flex;
+}
+
+.mobile-sub-nav .subnav-group::-webkit-scrollbar {
+    display: none;
 }
 
 .sub-item {
@@ -214,7 +249,86 @@
 }
 
 /* =======================================================
-   MOBILE SLIDE MENU
+   MOBILE MODAL (ODDS / LANG / TOOLS)
+======================================================= */
+
+.be-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 9500;
+    align-items: center;
+    justify-content: center;
+}
+
+.be-modal-overlay.show {
+    display: flex;
+}
+
+.be-modal {
+    width: 92vw;
+    max-width: 420px;
+    background: #101018;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    overflow: hidden;
+}
+
+.be-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.be-modal-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.be-modal-close {
+    border: none;
+    background: transparent;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.be-modal-close img {
+    width: 18px;
+    height: 18px;
+}
+
+.be-modal-body {
+    padding: 8px 10px 10px;
+}
+
+.be-modal-section {
+    display: none;
+}
+
+.be-modal-section.active {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.be-modal-item {
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    background: #181a26;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+/* =======================================================
+   MOBILE SLIDE MENU (HAMBURGER PANEL)
 ======================================================= */
 
 .mobile-menu-overlay {
@@ -225,11 +339,16 @@
     z-index: 9000;
 }
 
+.mobile-menu-overlay.show {
+    display: block;
+}
+
 .mobile-menu-panel {
     position: fixed;
     top: 0;
-    left: -300px;
-    width: 260px;
+    left: -82vw;
+    width: 82vw;
+    max-width: 320px;
     height: 100vh;
     background: #0c0c14;
     z-index: 10000;
@@ -239,16 +358,42 @@
     overflow-y: auto;
 }
 
-.mobile-menu-panel.show {
+.mobile-menu-panel.open {
     left: 0;
 }
 
-.mobile-menu-overlay.show {
-    display: block;
+/* Brand në panel */
+.menu-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
+.menu-brand .logo {
+    width: 32px;
+    height: 32px;
+}
+
+.menu-brand .brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-brand .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffec00;
+}
+
+.menu-brand .tagline {
+    font-size: 11px;
+    color: #b3b3b3;
+}
+
+/* Seksionet në panel */
 .menu-section {
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .menu-section h4 {
@@ -265,12 +410,14 @@
     text-align: left;
     padding: 10px 8px;
     border-radius: 6px;
+    border: none;
     background: #161822;
     color: #e0e0e0;
     font-size: 13px;
     margin-bottom: 6px;
 }
 
+/* Submenu */
 .submenu {
     display: none;
     padding-left: 8px;
@@ -280,25 +427,16 @@
     display: block;
 }
 
-.mobile-menu-close img {
-    width: 24px;
+/* Close button në panel */
+.mobile-menu-close {
+    border: none;
+    background: transparent;
+    padding: 4px;
+    margin-bottom: 8px;
 }
 
-/* =======================================================
-   IMPORTANT: HIDE DESKTOP NAV ONLY INSIDE HEADER-DESKTOP
-======================================================= */
-
-@media (max-width: 900px) {
-
-    /* Desktop main nav → hide only inside the desktop header */
-    .header-desktop .main-nav {
-        display: none !important;
-    }
-
-    /* Desktop subnav → hide only inside the desktop header */
-    .header-desktop .row-sub {
-        display: none !important;
-    }
+.mobile-menu-close img {
+    width: 22px;
 }
 
 /* =======================================================
@@ -309,4 +447,5 @@
     .mobile-top-bar { padding: 6px 8px; }
     .mobile-quick-row { padding: 6px 8px; }
     .mobile-main-nav { padding: 6px 8px; }
+    .mobile-sub-nav { padding: 6px 8px 8px; }
 }
