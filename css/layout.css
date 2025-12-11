@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v2.1)
+ * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v3.0)
  *********************************************************/
 
 /* =======================================================
@@ -40,23 +40,24 @@ body {
 
 /* Never style header-mobile here */
 .header-mobile {
-    /* intentionally EMPTY */
+    /* intentionally left empty */
 }
 
-/* Header rows */
-.header-row {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 8px 18px;
-    background: var(--bg-header, #0a0c12);
-}
+/* Header rows (DESKTOP ONLY) */
+@media (min-width: 901px) {
+    .header-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding: 8px 18px;
+        background: var(--bg-header, #0a0c12);
+    }
 
-/* row-specific backgrounds */
-.row-top,
-.row-main,
-.row-sub {
-    background: var(--bg-header, #0a0c12);
+    .row-top,
+    .row-main,
+    .row-sub {
+        background: var(--bg-header, #0a0c12);
+    }
 }
 
 /* =======================================================
