@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BetEngine Enterprise</title>
 
-    <!-- CSS ORDER (Enterprise Standard) -->
+    <!-- ====================================================
+         ENTERPRISE CSS ORDER (DO NOT CHANGE ORDER)
+    ======================================================= -->
     <link rel="stylesheet" href="css/variables.css?v=4">
     <link rel="stylesheet" href="css/base.css?v=4">
     <link rel="stylesheet" href="css/utilities.css?v=4">
@@ -14,27 +16,22 @@
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
 
-    <!-- AUTH MODALS CSS (must be below desktop.css) -->
+    <!-- AUTH MODALS CSS (must be after desktop.css) -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
+    <!-- MOBILE CSS (always loaded last) -->
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
 <body>
 
     <!-- ====================================================
-         DESKTOP HEADER (loaded dynamically)
+         HEADERS (Loaded dynamically by header-loader.js)
+         DO NOT PLACE RAW HTML HERE.
     ======================================================= -->
+
     <!-- @include layouts/header/header-desktop.html -->
-
-    <!-- ====================================================
-         MOBILE HEADER (loaded dynamically)
-    ======================================================= -->
     <!-- @include layouts/header/header-mobile.html -->
-
-    <!-- ====================================================
-         MODALS (loaded dynamically: mobile modal + auth modals)
-    ======================================================= -->
     <!-- @include layouts/header/header-modals.html -->
 
     <!-- ====================================================
@@ -46,15 +43,26 @@
     </main>
 
     <!-- ====================================================
-         JAVASCRIPT ORDER (Enterprise Standard)
+         JAVASCRIPT ORDER (STRICT ENTERPRISE STANDARD)
     ======================================================= -->
-    <script src="js/core/core.js"></script>
-    <script src="js/core/header-loader.js"></script>
-    <script src="js/ui/header.js"></script>
-    <script src="js/ui/widgets.js"></script>
 
-    <!-- AUTH MODAL LOGIC (must be last) -->
-    <script src="js/ui/header-auth.js"></script>
+    <!-- CORE ENGINE -->
+    <script src="js/core/core.js?v=4"></script>
+
+    <!-- HEADER LOADER (injects header-desktop, header-mobile, header-modals) -->
+    <script src="js/core/header-loader.js?v=4"></script>
+
+    <!-- DESKTOP HEADER LOGIC -->
+    <script src="js/ui/header.js?v=6"></script>
+
+    <!-- MOBILE HEADER LOGIC (NEW, REQUIRED) -->
+    <script src="js/ui/header-mobile.js?v=3"></script>
+
+    <!-- WIDGETS / UI HELPERS -->
+    <script src="js/ui/widgets.js?v=4"></script>
+
+    <!-- AUTH MODAL LOGIC (must always be last) -->
+    <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
 </html>
