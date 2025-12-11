@@ -1,32 +1,22 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v9.0 FINAL)
+ * BetEngine Enterprise – HEADER LOADER (v10 FINAL)
+ * Universal Relative Path Version
  * Loads:
  *   - Desktop header
  *   - Mobile header
- *   - Header modals (mobile controls)
+ *   - Header modals
  *   - Login modal
  *   - Register modal
  *
- * Emits "headerLoaded" when all components are injected.
+ * Emits "headerLoaded" after successful insertion.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
-     * BASE PATH AUTO-DETECTION
+     * RELATIVE BASE PATH (Always safe)
      *******************************************************/
-    function resolveBasePath() {
-        const repoSlug = "/BetEngine-Enterprise/";
-        const path = window.location.pathname || "/";
-
-        if (path.startsWith(repoSlug)) {
-            return repoSlug + "layouts/header/";
-        }
-
-        return "/layouts/header/";
-    }
-
-    const BASE = resolveBasePath();
+    const BASE = "./layouts/header/";
 
     /*******************************************************
      * COMPONENT FILES
@@ -46,23 +36,23 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const res = await fetch(url, { cache: "no-store" });
             if (!res.ok) {
-                console.warn("HeaderLoader v9.0: HTTP error", url, res.status);
+                console.warn("HeaderLoader v10: HTTP error", url, res.status);
                 return "";
             }
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader v9.0: FETCH FAILED", url, err);
+            console.warn("HeaderLoader v10: FETCH FAILED", url, err);
             return "";
         }
     }
 
     /*******************************************************
-     * MAIN INITIALIZER
+     * MAIN LOADER
      *******************************************************/
     async function initHeaderLoader() {
         const mainEl = document.querySelector("main");
         if (!mainEl) {
-            console.error("HeaderLoader v9.0: <main> not found.");
+            console.error("HeaderLoader v10: <main> not found.");
             return;
         }
 
@@ -84,21 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
             `${desktopHTML}\n${mobileHTML}\n${modalsHTML}\n${loginHTML}\n${registerHTML}`.trim();
 
         if (!finalHTML) {
-            console.error("HeaderLoader v9.0: No content loaded.");
+            console.error("HeaderLoader v10: No content loaded.");
             return;
         }
 
         // Insert BEFORE <main>
         mainEl.insertAdjacentHTML("beforebegin", finalHTML);
 
-        // Dispatch event when everything is ready
+        // Dispatch event after DOM is updated
         setTimeout(() => {
             document.dispatchEvent(new Event("headerLoaded"));
-            console.log("HeaderLoader v9.0: headerLoaded dispatched", {
-                base: BASE,
-                files: FILES
-            });
-        }, 10);
+            console.log("HeaderLoader v10: headerLoaded dispatched");
+        }, 20);
     }
 
     initHeaderLoader();
