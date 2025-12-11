@@ -1,15 +1,124 @@
 <!-- ====================================================
-     MOBILE HAMBURGER MENU (BetEngine Enterprise)
+     MOBILE HEADER (BetEngine Enterprise)
 ======================================================= -->
+<header class="header-mobile">
 
-<!-- OVERLAY -->
-<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+    <!-- ROW 1: TOP BAR -->
+    <div class="mobile-top-bar">
 
-<!-- SLIDE MENU -->
-<div class="mobile-menu-panel" id="mobile-menu-panel">
+        <!-- Menu toggle -->
+        <button class="mobile-icon-btn mobile-menu-toggle" type="button" aria-label="Open menu">
+            <img src="assets/icons/menu.svg" alt="">
+        </button>
 
-    <!-- MENU HEADER -->
-    <div class="mobile-menu-header">
+        <!-- Brand -->
+        <div class="mobile-brand">
+            <img src="assets/logos/logo.svg" alt="BetEngine logo" class="logo">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+        </div>
+
+        <!-- Right icons -->
+        <div class="mobile-actions">
+            <button class="mobile-icon-btn mobile-search-btn" type="button" aria-label="Search">
+                <img src="assets/icons/search.svg" alt="">
+            </button>
+
+            <button class="mobile-icon-btn mobile-notif-btn" type="button" aria-label="Notifications">
+                <img src="assets/icons/notification.svg" alt="">
+            </button>
+        </div>
+    </div>
+
+    <!-- ROW 2: QUICK CONTROLS -->
+    <div class="mobile-quick-row">
+        <button class="mobile-quick-btn mobile-odds-toggle" type="button">
+            <span class="label">Odds</span>
+            <span class="value">Decimal Odds</span>
+        </button>
+
+        <button class="mobile-quick-btn mobile-lang-toggle" type="button">
+            <span class="label">Lang</span>
+            <span class="lang-code">EN</span>
+        </button>
+
+        <button class="mobile-quick-btn mobile-tools-trigger" type="button">
+            <span class="label">Tools</span>
+        </button>
+    </div>
+
+    <!-- ROW 3: MAIN NAV -->
+    <nav class="mobile-main-nav" aria-label="Main navigation">
+        <button class="nav-chip active" data-section="odds">ODDS</button>
+        <button class="nav-chip" data-section="community">COMMUNITY</button>
+        <button class="nav-chip" data-section="bookmakers">BOOKMAKERS</button>
+        <button class="nav-chip" data-section="premium">PREMIUM</button>
+    </nav>
+
+    <!-- ROW 4: SUB NAV -->
+    <nav class="mobile-sub-nav" aria-label="Secondary navigation">
+
+        <!-- ODDS -->
+        <div class="subnav-group active" data-subnav="odds">
+            <button class="sub-item">HOME</button>
+            <button class="sub-item">NEXT MATCHES</button>
+            <button class="sub-item">DROPPING ODDS</button>
+            <button class="sub-item">SURE BETS</button>
+            <button class="sub-item">IN PLAY ODDS</button>
+            <button class="sub-item">ALL EVENTS</button>
+        </div>
+
+        <!-- COMMUNITY -->
+        <div class="subnav-group" data-subnav="community">
+            <button class="sub-item">HOME</button>
+            <button class="sub-item">FEED</button>
+            <button class="sub-item">USERS</button>
+            <button class="sub-item">TOP PREDICTIONS</button>
+            <button class="sub-item">MY STATISTICS</button>
+            <button class="sub-item">MY PROFILE</button>
+            <button class="sub-item">MY PREDICTIONS</button>
+            <button class="sub-item">MY COUPONS</button>
+        </div>
+
+        <!-- BOOKMAKERS -->
+        <div class="subnav-group" data-subnav="bookmakers">
+            <button class="sub-item">BOOKIE INFO</button>
+            <button class="sub-item">BONUS OFFERS</button>
+            <button class="sub-item">ODDS QUALITY</button>
+            <button class="sub-item">BETTING APPS</button>
+        </div>
+
+        <!-- PREMIUM -->
+        <div class="subnav-group" data-subnav="premium">
+            <button class="sub-item">Premium Dashboard</button>
+            <button class="sub-item">Market Insights</button>
+            <button class="sub-item">Fair Odds Engine</button>
+            <button class="sub-item">AI Predictions</button>
+            <button class="sub-item">Smart H2H Insights</button>
+            <button class="sub-item">Value Finder</button>
+            <button class="sub-item">Sharp vs Public Money</button>
+            <button class="sub-item">Shock Alerts</button>
+            <button class="sub-item">AI Live Momentum</button>
+            <button class="sub-item">Fake Trend Detector</button>
+        </div>
+
+    </nav>
+
+    <!-- ====================================================
+         MOBILE SLIDE MENU (Hamburger Menu)
+    ======================================================= -->
+    <div class="mobile-menu-overlay"></div>
+
+    <div class="mobile-menu-panel">
+
+        <!-- Close Button -->
+        <button class="mobile-menu-close" type="button">
+            <img src="assets/icons/close.svg" alt="">
+        </button>
+
+        <!-- Brand -->
         <div class="menu-brand">
             <img src="assets/logos/logo.svg" class="logo" alt="">
             <div class="brand-text">
@@ -18,115 +127,45 @@
             </div>
         </div>
 
-        <button class="menu-close-btn" id="mobile-menu-close" type="button">
-            <img src="assets/icons/close.svg" alt="">
-        </button>
-    </div>
-
-    <!-- AUTH BLOCK -->
-    <div class="menu-auth-block">
-        <button class="menu-auth-btn login" type="button">
-            <img src="assets/icons/login.svg" alt="">
-            <span>Login</span>
-        </button>
-
-        <button class="menu-auth-btn register" type="button">
-            <img src="assets/icons/register.svg" alt="">
-            <span>Create Account</span>
-        </button>
-    </div>
-
-    <!-- QUICK CONTROLS -->
-    <div class="menu-section">
-        <h3 class="menu-title">Quick Controls</h3>
-
-        <button class="menu-control" id="menu-odds-control">
-            <span>Odds Format</span>
-            <span class="value">Decimal Odds</span>
-        </button>
-
-        <button class="menu-control" id="menu-lang-control">
-            <span>Language</span>
-            <span class="value">English</span>
-        </button>
-    </div>
-
-    <!-- MAIN NAVIGATION (COLLAPSIBLE) -->
-    <div class="menu-section">
-        <h3 class="menu-title">Navigation</h3>
-
-        <!-- Section: Odds Comparison -->
-        <div class="menu-group">
-            <button class="menu-group-header" data-target="odds-group">
-                Odds Comparison
-                <img src="assets/icons/caret-down.svg" class="caret" alt="">
-            </button>
-
-            <div class="menu-group-body" id="odds-group">
-                <a class="menu-item">Home</a>
-                <a class="menu-item">Next Matches</a>
-                <a class="menu-item">Dropping Odds</a>
-                <a class="menu-item">Sure Bets</a>
-                <a class="menu-item">In-Play Odds</a>
-                <a class="menu-item">All Events</a>
-                <a class="menu-item">Betting Tools</a>
-            </div>
+        <!-- Quick Controls -->
+        <div class="menu-section">
+            <h4>Quick Controls</h4>
+            <button class="menu-item menu-odds">Odds Format: <span>Decimal Odds</span></button>
+            <button class="menu-item menu-lang">Language: <span>English</span></button>
         </div>
 
-        <!-- Section: Community -->
-        <div class="menu-group">
-            <button class="menu-group-header" data-target="community-group">
-                Community
-                <img src="assets/icons/caret-down.svg" class="caret" alt="">
-            </button>
+        <!-- Navigation -->
+        <div class="menu-section">
+            <h4>Navigation</h4>
 
-            <div class="menu-group-body" id="community-group">
-                <a class="menu-item">Home</a>
-                <a class="menu-item">Feed</a>
-                <a class="menu-item">Users</a>
-                <a class="menu-item">Top Predictions</a>
-                <a class="menu-item">My Statistics</a>
-                <a class="menu-item">My Profile</a>
-                <a class="menu-item">My Coupons</a>
-                <a class="menu-item">My Predictions</a>
+            <button class="menu-link" data-section="odds">Odds Comparison</button>
+            <div class="submenu" data-subnav="odds">
+                <button class="submenu-item">Home</button>
+                <button class="submenu-item">Next Matches</button>
+                <button class="submenu-item">Dropping Odds</button>
+                <button class="submenu-item">Sure Bets</button>
+                <button class="submenu-item">In-Play Odds</button>
+                <button class="submenu-item">All Events</button>
+                <button class="submenu-item">Betting Tools</button>
             </div>
+
+            <button class="menu-link" data-section="community">Community</button>
+            <div class="submenu" data-subnav="community">
+                <button class="submenu-item">Home</button>
+                <button class="submenu-item">Feed</button>
+                <button class="submenu-item">Users</button>
+                <button class="submenu-item">Top Predictions</button>
+                <button class="submenu-item">My Statistics</button>
+                <button class="submenu-item">My Profile</button>
+                <button class="submenu-item">My Predictions</button>
+                <button class="submenu-item">My Coupons</button>
+            </div>
+
+            <button class="menu-link" data-section="bookmakers">Bookmakers</button>
+
+            <button class="menu-link" data-section="premium">Premium</button>
         </div>
 
-        <!-- Section: Bookmakers -->
-        <div class="menu-group">
-            <button class="menu-group-header" data-target="bookmakers-group">
-                Bookmakers
-                <img src="assets/icons/caret-down.svg" class="caret" alt="">
-            </button>
-
-            <div class="menu-group-body" id="bookmakers-group">
-                <a class="menu-item">Bookie Info</a>
-                <a class="menu-item">Bonus Offers</a>
-                <a class="menu-item">Odds Quality</a>
-                <a class="menu-item">Betting Apps</a>
-            </div>
-        </div>
-
-        <!-- Section: Premium -->
-        <div class="menu-group">
-            <button class="menu-group-header" data-target="premium-group">
-                Premium
-                <img src="assets/icons/caret-down.svg" class="caret" alt="">
-            </button>
-
-            <div class="menu-group-body" id="premium-group">
-                <a class="menu-item">Premium Dashboard</a>
-                <a class="menu-item">Market Insights</a>
-                <a class="menu-item">Fair Odds Engine</a>
-                <a class="menu-item">AI Predictions</a>
-                <a class="menu-item">Smart H2H Insights</a>
-                <a class="menu-item">Value Finder</a>
-                <a class="menu-item">Sharp vs Public Money</a>
-                <a class="menu-item">Shock Alerts</a>
-                <a class="menu-item">AI Live Momentum</a>
-                <a class="menu-item">Fake Trend Detector</a>
-            </div>
-        </div>
     </div>
 
-</div>
+</header>
