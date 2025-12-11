@@ -5,6 +5,24 @@
  *********************************************************/
 
 /* =======================================================
+   HARD PROTECTION FIX — Prevent mobile UI from appearing on desktop
+======================================================= */
+
+.header-mobile * {
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+}
+
+@media (max-width: 900px) {
+    .header-mobile * {
+        pointer-events: auto;
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+/* =======================================================
    BASE MOBILE VISIBILITY
 ======================================================= */
 
@@ -53,12 +71,10 @@
     padding: 8px 10px;
 }
 
-/* Left: menu toggle */
 .header-mobile .mobile-menu-toggle {
     margin-right: 6px;
 }
 
-/* Brand center */
 .header-mobile .mobile-brand {
     display: flex;
     align-items: center;
@@ -91,14 +107,12 @@
     white-space: nowrap;
 }
 
-/* Right icons cluster */
 .header-mobile .mobile-actions {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-/* Generic icon button */
 .header-mobile .mobile-icon-btn {
     width: 30px;
     height: 30px;
@@ -259,7 +273,7 @@
 }
 
 /* =======================================================
-   ROW 5 – SUB NAV (GROUPS + ITEMS)
+   ROW 5 – SUB NAV
 ======================================================= */
 
 .header-mobile .mobile-sub-nav {
@@ -299,7 +313,6 @@
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Hover / active behavior (aligned with desktop) */
 .header-mobile .mobile-sub-nav .sub-item:hover {
     background-color: rgba(255, 255, 255, 0.10);
     color: #ffffff;
@@ -311,7 +324,7 @@
 }
 
 /* =======================================================
-   SMALL DEVICES FINE TUNING
+   SMALL SCREEN TUNING
 ======================================================= */
 
 @media (max-width: 480px) {
