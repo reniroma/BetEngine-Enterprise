@@ -1,7 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise - HEADER JS (FINAL v6.0)
- * Desktop + Mobile header behaviour, dropdowns, modals.
- * Syncs odds/language/tools across desktop & mobile.
+ * BetEngine Enterprise - HEADER JS (FINAL v7.0)
+ * Desktop + Mobile header behaviour, dropdowns, modals,
+ * mobile menu panel (hamburger), full sync system.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -229,11 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const text = item.textContent || "";
                 const clean = text.split("(")[0].trim();
 
-                // Update mobile label
                 const mobileValue = document.querySelector(".mobile-odds-toggle .value");
                 if (mobileValue) mobileValue.textContent = clean;
 
-                // Sync desktop odds dropdown state (if present)
                 const desktopDropdown = document.querySelector(".header-desktop .odds-dropdown");
                 const desktopItems = desktopDropdown ? desktopDropdown.querySelectorAll(".item") : [];
                 const desktopLabel = document.querySelector(".header-desktop .odds-label");
@@ -260,11 +258,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const label = item.textContent || "";
                 const code  = (item.dataset.lang || "EN").toUpperCase();
 
-                // Update mobile label
                 const mobileCode = document.querySelector(".mobile-lang-toggle .lang-code");
                 if (mobileCode) mobileCode.textContent = code;
 
-                // Sync desktop dropdown
                 const desktopDropdown = document.querySelector(".header-desktop .language-dropdown");
                 const desktopItems = desktopDropdown ? desktopDropdown.querySelectorAll(".item") : [];
                 const desktopLabel = document.querySelector(".header-desktop .language-selector .lang-code");
@@ -286,8 +282,55 @@ document.addEventListener("DOMContentLoaded", () => {
         const toolItems = modal.querySelectorAll(".modal-tools .be-modal-item");
         toolItems.forEach(item => {
             item.addEventListener("click", () => {
-                // Placeholder: hook into tools routing later
                 closeModal();
+            });
+        });
+    }
+
+
+    /*******************************************************
+     * MOBILE HAMBURGER MENU — (NEW v7.0)
+     *******************************************************/
+    function initMobileMenu() {
+
+        const toggle = document.querySelector(".mobile-menu-toggle");
+        const overlay = document.querySelector(".mobile-menu-overlay");
+        const panel = document.querySelector(".mobile-menu-panel");
+        const closeBtn = document.querySelector(".mobile-menu-close");
+
+        if (!toggle || !overlay || !panel) return;
+
+        const openMenu = () => {
+            overlay.classList.add("show");
+            panel.classList.add("open");
+            lockBodyScroll(true);
+        };
+
+        const closeMenu = () => {
+            overlay.classList.remove("show");
+            panel.classList.remove("open");
+            lockBodyScroll(false);
+        };
+
+        toggle.addEventListener("click", openMenu);
+        closeBtn?.addEventListener("click", closeMenu);
+        overlay.addEventListener("click", closeMenu);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && panel.classList.contains("open")) {
+                closeMenu();
+            }
+        });
+
+        /* ---------- SUBMENU EXPAND/COLLAPSE ---------- */
+        const menuLinks = document.querySelectorAll(".menu-link");
+        menuLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                const section = link.dataset.section;
+                const submenu = document.querySelector(`.submenu[data-subnav="${section}"]`);
+                if (!submenu) return;
+
+                submenu.classList.toggle("open");
             });
         });
     }
@@ -323,23 +366,19 @@ document.addEventListener("DOMContentLoaded", () => {
             lockBodyScroll(false);
         };
 
-        /* ----- OPEN LOGIN ----- */
         loginBtn?.addEventListener("click", () => {
             close(registerOverlay);
             open(loginOverlay);
         });
 
-        /* ----- OPEN REGISTER ----- */
         registerBtn?.addEventListener("click", () => {
             close(loginOverlay);
             open(registerOverlay);
         });
 
-        /* ----- CLOSE BUTTONS ----- */
         loginClose?.addEventListener("click", () => close(loginOverlay));
         registerClose?.addEventListener("click", () => close(registerOverlay));
 
-        /* ----- SWITCH LOGIN <-> REGISTER ----- */
         authSwitches.forEach(btn => {
             btn.addEventListener("click", () => {
                 const target = btn.dataset.authTarget;
@@ -354,7 +393,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        /* ----- OUTSIDE CLICK ON OVERLAY ----- */
         [loginOverlay, registerOverlay].forEach(overlay => {
             overlay?.addEventListener("click", (e) => {
                 if (e.target === overlay) {
@@ -363,15 +401,10 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        /* ----- ESCAPE KEY ----- */
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
-                if (loginOverlay?.classList.contains("show")) {
-                    close(loginOverlay);
-                }
-                if (registerOverlay?.classList.contains("show")) {
-                    close(registerOverlay);
-                }
+                if (loginOverlay?.classList.contains("show")) close(loginOverlay);
+                if (registerOverlay?.classList.contains("show")) close(registerOverlay);
             }
         });
     }
@@ -384,13 +417,12 @@ document.addEventListener("DOMContentLoaded", () => {
         initDesktopDropdowns();
         initSectionNavigation();
         initMobileModal();
+        initMobileMenu();        // <-- ADDED HERE
         initDesktopAuth();
     };
 
-    // Initialize when header-loader signals ready
     document.addEventListener("headerLoaded", () => initHeaderModules());
 
-    // Fallback: if header is already in DOM (no loader)
     if (document.querySelector(".header-desktop") || document.querySelector(".header-mobile")) {
         setTimeout(() => initHeaderModules(), 0);
     }
