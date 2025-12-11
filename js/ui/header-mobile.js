@@ -1,9 +1,10 @@
 /*********************************************************
  * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.0)
  * FIXED: full compatibility with mobile.css
- * - Panel now uses .open (NOT .show)
- * - Overlay uses .show (correct)
- * - Stable scroll lock / unlock
+ * - Panel uses .open  (CSS expects .open)
+ * - Overlay uses .show
+ * - Full scroll lock/unlock
+ * - Safe event handling
  *********************************************************/
 
 function initMobileMenu() {
@@ -17,7 +18,7 @@ function initMobileMenu() {
     const menuOverlay   = document.querySelector(".mobile-menu-overlay");
     const btnClose      = document.querySelector(".mobile-menu-close");
 
-    /* Auth triggers inside panel */
+    /* Auth triggers inside mobile menu */
     const menuAuthLogin      = document.querySelector(".menu-auth-login");
     const menuAuthRegister   = document.querySelector(".menu-auth-register");
     const desktopLoginBtn    = document.querySelector(".btn-auth.login");
@@ -29,8 +30,8 @@ function initMobileMenu() {
     const openMenu = () => {
         if (!menuPanel || !menuOverlay) return;
 
-        menuPanel.classList.add("open");   // FIXED
-        menuOverlay.classList.add("show"); // correct
+        menuPanel.classList.add("open");     // FIXED
+        menuOverlay.classList.add("show");   // correct
         document.body.style.overflow = "hidden";
     };
 
@@ -48,26 +49,31 @@ function initMobileMenu() {
     /* -------------------------
        EVENTS
     ------------------------- */
+
+    // Toggle button (hamburger)
     btnToggle?.addEventListener("click", (e) => {
         e.preventDefault();
         openMenu();
     });
 
+    // Close button (X)
     btnClose?.addEventListener("click", (e) => {
         e.preventDefault();
         closeMenu();
     });
 
+    // Click on overlay closes menu
     menuOverlay?.addEventListener("click", () => {
         closeMenu();
     });
 
+    // ESC key closes menu
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeMenu();
     });
 
     /* -------------------------
-       AUTH
+       AUTH (Login / Register)
     ------------------------- */
     menuAuthLogin?.addEventListener("click", () => {
         closeMenu();
@@ -82,5 +88,5 @@ function initMobileMenu() {
     console.log("Mobile menu initialized (v5.0)");
 }
 
-/* Wait for header injection */
+/* Initialize after headers are injected */
 document.addEventListener("headerLoaded", initMobileMenu);
