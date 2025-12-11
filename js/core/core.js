@@ -1,7 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – CORE.JS (FINAL v4.0)
+ * BetEngine Enterprise – CORE.JS (FINAL v5.0)
  * Global utility helpers, safe init bus,
  * scroll lock, event handlers, module registration.
+ * NOTE:
+ *   - Does NOT dispatch "headerLoaded"
+ *   - "headerLoaded" must only come from header-loader.js
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -37,6 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
      * ESC KEY GLOBAL HANDLER
+     * Closes only .be-modal-overlay (old mobile modal)
+     * Auth overlays are handled in header-auth.js
      *******************************************************/
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
@@ -50,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /*******************************************************
      * CLICK OUTSIDE (GENERIC AUTOCLOSE)
+     * For elements marked with [data-be-autoclose]
      *******************************************************/
     document.addEventListener("click", (e) => {
         qa("[data-be-autoclose]").forEach(el => {
@@ -73,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.BeInit.push({
         name: "core",
         init: () => {
-            console.log("BetEngine Core Initialized");
+            console.log("BetEngine Core initialized");
         }
     });
 
@@ -82,16 +88,13 @@ document.addEventListener("DOMContentLoaded", () => {
      *******************************************************/
     window.BeInit.forEach(mod => {
         try {
-            mod.init();
+            if (typeof mod.init === "function") {
+                mod.init();
+            }
         } catch (err) {
             console.warn("Init error in module:", mod.name, err);
         }
     });
-
-    /*******************************************************
-     * HEADER READY EVENT (CRITICAL)
-     *******************************************************/
-    document.dispatchEvent(new Event("headerLoaded"));
 
     /*******************************************************
      * EXPORT HELPERS TO WINDOW
