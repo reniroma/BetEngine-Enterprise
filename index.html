@@ -27,12 +27,73 @@
 
     <!-- ====================================================
          HEADERS (Loaded dynamically by header-loader.js)
-         DO NOT PLACE RAW HTML HERE.
+         DO NOT PLACE RAW HEADER HTML HERE.
     ======================================================= -->
 
     <!-- @include layouts/header/header-desktop.html -->
     <!-- @include layouts/header/header-mobile.html -->
     <!-- @include layouts/header/header-modals.html -->
+
+
+    <!-- ====================================================
+         MOBILE MENU PANEL (REQUIRED BY header-mobile.js)
+         MUST BE PRESENT IN INDEX.HTML (NOT LOADED BY LOADER)
+    ======================================================= -->
+
+    <!-- OVERLAY -->
+    <div class="mobile-menu-overlay"></div>
+
+    <!-- SLIDE-IN MENU PANEL -->
+    <div class="mobile-menu-panel">
+
+        <!-- CLOSE BUTTON -->
+        <button class="mobile-menu-close" aria-label="Close menu">×</button>
+
+        <!-- BRAND -->
+        <div class="menu-brand">
+            <img src="assets/logos/logo.svg" class="logo" alt="BetEngine">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+        </div>
+
+        <!-- QUICK CONTROLS -->
+        <div class="menu-section">
+            <div class="menu-title">Quick Controls</div>
+
+            <button class="menu-item odds-format">
+                Odds Format: <span class="value">Decimal Odds</span>
+            </button>
+
+            <button class="menu-item language-select">
+                Language: <span class="value">English</span>
+            </button>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="menu-section">
+            <div class="menu-title">Navigation</div>
+
+            <button class="menu-item menu-link" data-section="odds">
+                Odds Comparison
+            </button>
+
+            <button class="menu-item menu-link" data-section="community">
+                Community
+            </button>
+
+            <button class="menu-item menu-link" data-section="bookmakers">
+                Bookmakers
+            </button>
+
+            <button class="menu-item menu-link" data-section="premium">
+                Premium
+            </button>
+        </div>
+
+    </div>
+
 
     <!-- ====================================================
          MAIN CONTENT
@@ -55,13 +116,13 @@
     <!-- DESKTOP HEADER LOGIC -->
     <script src="js/ui/header.js?v=6"></script>
 
-    <!-- MOBILE HEADER LOGIC (NEW, REQUIRED) -->
+    <!-- MOBILE HEADER LOGIC -->
     <script src="js/ui/header-mobile.js?v=3"></script>
 
     <!-- WIDGETS / UI HELPERS -->
     <script src="js/ui/widgets.js?v=4"></script>
 
-    <!-- AUTH MODAL LOGIC (must always be last) -->
+    <!-- AUTH MODAL LOGIC -->
     <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
