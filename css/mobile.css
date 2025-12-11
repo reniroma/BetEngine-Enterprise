@@ -1,41 +1,18 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v2.1)
- * Clean, layered mobile header & navigation (OddsPortal-like)
+ * BetEngine Enterprise – MOBILE CSS (FINAL v3.0)
+ * Pure mobile layout – OddsPortal-style architecture
+ * Fully isolated from Desktop UI
  *********************************************************/
 
 /* =======================================================
-   BASE MOBILE VISIBILITY
+   MOBILE VISIBILITY CONTROL
 ======================================================= */
 
-.header-mobile {
-    display: none;
-}
+.header-mobile { display: none; }
 
-/* Desktop by default */
-.header-desktop {
-    display: block;
-}
-
-/* On mobile: hide desktop header, show mobile header */
 @media (max-width: 900px) {
-    .header-desktop {
-        display: none !important;
-    }
-
-    .header-mobile {
-        display: block !important;
-    }
-}
-
-/* Extra safety: on desktop, force-hide mobile header + mobile modal */
-@media (min-width: 901px) {
-    .header-mobile {
-        display: none !important;
-    }
-
-    #mobile-header-modal {
-        display: none !important;
-    }
+    .header-desktop { display: none !important; }
+    .header-mobile { display: block !important; }
 }
 
 /* =======================================================
@@ -50,225 +27,157 @@
         #101018 50%,
         #11141d 100%
     );
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
     color: #ffffff;
     position: sticky;
     top: 0;
-    z-index: 120;
+    z-index: 5000;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.55);
     font-size: 13px;
 }
 
+/* Remove ANY inherited desktop layout */
+.header-mobile * {
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
 /* =======================================================
-   ROW 1 – BRAND BAR (TOP)
+   ROW 1 — BRAND + MENU + ICONS
 ======================================================= */
 
-.header-mobile .mobile-top-bar {
+.mobile-top-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 8px 10px;
 }
 
-/* Left: menu toggle */
-.header-mobile .mobile-menu-toggle {
-    margin-right: 6px;
+.mobile-menu-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(24,24,36,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Brand center */
-.header-mobile .mobile-brand {
+.mobile-brand {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 8px;
     min-width: 0;
-    flex: 1 1 auto;
 }
 
-.header-mobile .mobile-brand .logo {
-    width: 26px;
-    height: 26px;
+.mobile-brand .logo {
+    width: 28px;
+    height: 28px;
 }
 
-.header-mobile .mobile-brand .brand-text {
+.mobile-brand .brand-text {
     display: flex;
     flex-direction: column;
-    min-width: 0;
 }
 
-.header-mobile .mobile-brand .name {
+.mobile-brand .name {
     font-size: 13px;
     font-weight: 600;
     color: #ffec00;
     white-space: nowrap;
 }
 
-.header-mobile .mobile-brand .tagline {
+.mobile-brand .tagline {
     font-size: 11px;
     color: #b3b3b3;
     white-space: nowrap;
 }
 
-/* Right icons cluster */
-.header-mobile .mobile-actions {
+.mobile-actions {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-/* Generic icon button */
-.header-mobile .mobile-icon-btn {
+.mobile-icon-btn {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     border: none;
-    background: rgba(24, 24, 36, 0.95);
+    background: rgba(24,24,36,0.95);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0;
-    cursor: pointer;
 }
 
-.header-mobile .mobile-icon-btn img {
+.mobile-icon-btn img {
     width: 17px;
     height: 17px;
-    display: block;
-    object-fit: contain;
 }
 
 /* =======================================================
-   ROW 2 – SPORTS NAVIGATION (TABS)
-   (HTML mund të shtohet më vonë, CSS gati)
+   ROW 2 — QUICK CONTROLS (ODDS / LANG / TOOLS)
 ======================================================= */
 
-.header-mobile .mobile-sports-nav {
+.mobile-quick-row {
     display: flex;
-    align-items: stretch;
-    padding: 6px 4px 4px 4px;
-    background: #101018;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.header-mobile .mobile-sports-nav::-webkit-scrollbar {
-    display: none;
-}
-
-.header-mobile .sport-tab {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 6px 10px;
-    margin: 0 4px;
-    border-radius: 6px 6px 0 0;
-    border: 1px solid transparent;
-    background: #171926;
-    color: #e0e0e0;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.header-mobile .sport-tab .sport-icon {
-    width: 16px;
-    height: 16px;
-}
-
-.header-mobile .sport-tab.active {
-    background: #ffec00;
-    color: #11141d;
-    border-color: #ffec00;
-    font-weight: 600;
-}
-
-/* =======================================================
-   ROW 3 – QUICK CONTROLS (ODDS / LANG / TOOLS)
-======================================================= */
-
-.header-mobile .mobile-quick-row {
-    display: flex;
-    align-items: center;
     gap: 8px;
-    padding: 6px 10px 6px 10px;
-    background: #101018;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.header-mobile .mobile-quick-row::-webkit-scrollbar {
-    display: none;
-}
-
-.header-mobile .mobile-quick-btn {
-    flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
     padding: 6px 10px;
+    overflow-x: auto;
+    background: #101018;
+}
+
+.mobile-quick-row::-webkit-scrollbar { display: none; }
+
+.mobile-quick-btn {
+    flex: 0 0 auto;
+    padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(15, 17, 25, 0.95);
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(15,17,25,0.95);
     color: #e0e0e0;
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.header-mobile .mobile-quick-btn .label {
-    font-weight: 500;
-}
-
-.header-mobile .mobile-quick-btn .value,
-.header-mobile .mobile-quick-btn .lang-code {
+.mobile-quick-btn .value,
+.mobile-quick-btn .lang-code {
     color: #ffec00;
     font-weight: 600;
 }
 
 /* =======================================================
-   ROW 4 – MAIN NAV (CHIPS)
+   ROW 3 — MAIN NAVIGATION (TABS)
 ======================================================= */
 
-.header-mobile .mobile-main-nav {
+.mobile-main-nav {
     display: flex;
-    align-items: center;
     gap: 8px;
     padding: 8px 10px;
     background: #11141d;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
-.header-mobile .mobile-main-nav::-webkit-scrollbar {
-    display: none;
-}
+.mobile-main-nav::-webkit-scrollbar { display: none; }
 
-.header-mobile .nav-chip {
+.nav-chip {
     flex: 0 0 auto;
     padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.20);
     background: #141623;
+    border: 1px solid rgba(255,255,255,0.20);
     color: #e0e0e0;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.header-mobile .nav-chip:hover {
-    background: #1d2030;
-    border-color: rgba(255, 255, 255, 0.35);
-}
-
-.header-mobile .nav-chip.active {
+.nav-chip.active {
     background: #ffec00;
     color: #11141d;
     border-color: #ffec00;
@@ -276,261 +185,120 @@
 }
 
 /* =======================================================
-   ROW 5 – SUB NAV (GROUPS + ITEMS)
+   ROW 4 — SUB NAVIGATION
 ======================================================= */
 
-.header-mobile .mobile-sub-nav {
-    padding: 6px 8px 10px 8px;
+.mobile-sub-nav {
+    padding: 6px 10px 10px;
     background: #101018;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.header-mobile .mobile-sub-nav .subnav-group {
+.mobile-sub-nav .subnav-group {
     display: none;
-    align-items: center;
-    gap: 14px;
+    gap: 10px;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
-.header-mobile .mobile-sub-nav .subnav-group.active {
+.mobile-sub-nav .subnav-group.active {
     display: flex;
 }
 
-.header-mobile .mobile-sub-nav .subnav-group::-webkit-scrollbar {
-    display: none;
-}
-
-.header-mobile .mobile-sub-nav .sub-item {
+.sub-item {
     flex: 0 0 auto;
     padding: 6px 10px;
     border-radius: 999px;
-    border: none;
     background: #181a26;
     color: #d0d0d0;
     font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Hover / active behavior (aligned with desktop) */
-.header-mobile .mobile-sub-nav .sub-item:hover {
-    background-color: rgba(255, 255, 255, 0.10);
-    color: #ffffff;
-}
-
-.header-mobile .mobile-sub-nav .sub-item.active {
-    background-color: #00eaff;
+.sub-item.active {
+    background: #00eaff;
     color: #11141d;
 }
 
 /* =======================================================
-   MOBILE HEADER MODAL (Quick Controls / Navigation)
+   MOBILE SLIDE MENU (HAMBURGER PANEL)
 ======================================================= */
 
-.be-modal-overlay {
+.mobile-menu-overlay {
+    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.78);
-    display: none;
-    z-index: 9999;
+    background: rgba(0,0,0,0.55);
+    z-index: 9000;
+}
+
+.mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 260px;
+    height: 100vh;
+    background: #0c0c14;
+    z-index: 10000;
+    padding: 16px;
+    box-shadow: 4px 0 18px rgba(0,0,0,0.55);
+    transition: left .25s ease;
     overflow-y: auto;
 }
 
-.be-modal-overlay.show {
+.mobile-menu-panel.open {
+    left: 0;
+}
+
+.mobile-menu-overlay.show {
     display: block;
 }
 
-.be-modal {
-    width: 100%;
-    max-width: 460px;
-    margin: 0 auto;
-    background: #11141d;
-    min-height: 100%;
-    padding: 14px 16px 20px;
-    color: #ffffff;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+/* Menu items */
+.menu-section {
+    margin-top: 20px;
 }
 
-/* Modal header */
-.be-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.be-modal-title {
-    font-size: 15px;
+.menu-section h4 {
+    font-size: 13px;
     font-weight: 600;
     color: #ffec00;
+    margin-bottom: 8px;
 }
 
-.be-modal-close {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
+.menu-item,
+.menu-link,
+.submenu-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 8px;
+    border-radius: 6px;
     border: none;
-    background: #181a26;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+    background: #161822;
+    color: #e0e0e0;
+    font-size: 13px;
+    margin-bottom: 6px;
 }
 
-.be-modal-close img {
-    width: 16px;
-    height: 16px;
-}
-
-/* Modal sections */
-.be-modal-section {
+/* Submenu */
+.submenu {
     display: none;
+    padding-left: 8px;
 }
 
-.be-modal-section.active {
+.submenu.show {
     display: block;
 }
 
-/* Modal items (odds / language / tools) */
-.be-modal-item {
-    width: 100%;
-    text-align: left;
-    padding: 10px 12px;
-    margin-bottom: 6px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background: #181a26;
-    color: #e0e0e0;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.be-modal-item:hover {
-    background-color: rgba(255, 255, 255, 0.10);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+/* Close button */
+.mobile-menu-close img {
+    width: 24px;
 }
 
 /* =======================================================
-   SMALL DEVICES FINE TUNING
+   SMALL DEVICES (<480px)
 ======================================================= */
 
 @media (max-width: 480px) {
-    .header-mobile .mobile-top-bar {
-        padding: 8px 6px;
-    }
-
-    .header-mobile .mobile-sports-nav {
-        padding-left: 2px;
-        padding-right: 2px;
-    }
-
-    .header-mobile .mobile-quick-row {
-        padding-left: 6px;
-        padding-right: 6px;
-    }
-
-    .header-mobile .mobile-main-nav {
-        padding-left: 6px;
-        padding-right: 6px;
-    }
-
-    .header-mobile .mobile-sub-nav {
-        padding-left: 4px;
-        padding-right: 4px;
-    }
-
-    .be-modal {
-        max-width: 100%;
-        border-radius: 0;
-    }
-
-/*********************************************************
- * MOBILE MENU MODAL FIX (Hamburger Menu)
-*********************************************************/
-
-.mobile-menu-overlay,
-.mobile-menu-panel {
-    display: none;
+    .mobile-top-bar { padding: 6px 8px; }
+    .mobile-quick-row { padding: 6px 8px; }
+    .mobile-main-nav { padding: 6px 8px; }
 }
-
-.mobile-menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.55);
-    z-index: 900;
-}
-
-.mobile-menu-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 82%;
-    max-width: 320px;
-    height: 100%;
-    background: #0b0b12;
-    padding: 16px;
-    overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 4px 0 18px rgba(0,0,0,0.55);
-}
-
-.mobile-menu-panel .menu-section h4 {
-    color: #ffec00;
-    margin-bottom: 10px;
-}
-
-.mobile-menu-panel .menu-link,
-.mobile-menu-panel .menu-item,
-.mobile-menu-panel .submenu-item {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 8px 0;
-    color: #ffffff;
-    background: none;
-    border: none;
-    font-size: 14px;
-}
-
-.mobile-menu-close {
-    background: none;
-    border: none;
-    padding: 0;
-    margin-bottom: 12px;
-}
-
-/*********************************************************
- * HARD DESKTOP GUARD (prevents mobile UI leaking into desktop)
- *********************************************************/
-@media (min-width: 901px) {
-
-    /* Hide ALL mobile-only components */
-    .mobile-menu-overlay,
-    .mobile-menu-panel,
-    #mobile-header-modal,
-    .mobile-top-bar,
-    .mobile-quick-row,
-    .mobile-main-nav,
-    .mobile-sub-nav {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        height: 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* Ensure desktop header fully controls layout */
-    .header-mobile {
-        display: none !important;
-    }
-}
-
