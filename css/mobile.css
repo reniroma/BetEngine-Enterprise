@@ -449,4 +449,61 @@
         max-width: 100%;
         border-radius: 0;
     }
+
+/*********************************************************
+ * MOBILE MENU MODAL FIX (Hamburger Menu)
+*********************************************************/
+
+.mobile-menu-overlay,
+.mobile-menu-panel {
+    display: none;
+}
+
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    z-index: 900;
+}
+
+.mobile-menu-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 82%;
+    max-width: 320px;
+    height: 100%;
+    background: #0b0b12;
+    padding: 16px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 4px 0 18px rgba(0,0,0,0.55);
+}
+
+.mobile-menu-panel .menu-section h4 {
+    color: #ffec00;
+    margin-bottom: 10px;
+}
+
+.mobile-menu-panel .menu-link,
+.mobile-menu-panel .menu-item,
+.mobile-menu-panel .submenu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 0;
+    color: #ffffff;
+    background: none;
+    border: none;
+    font-size: 14px;
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 12px;
 }
