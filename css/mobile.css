@@ -1,147 +1,341 @@
 /*********************************************************
- * MOBILE HAMBURGER MENU – ODDSPORTAL STYLE
- * BetEngine Enterprise – FINAL PATCH v1
+ * BetEngine Enterprise – MOBILE CSS (v2.0 OddsPortal Style)
+ * Clean, layered mobile header & navigation (brand + sports
+ * + quick controls + main nav + sub nav).
  *********************************************************/
 
 /* =======================================================
-   OVERLAY (hidden by default)
+   BASE MOBILE VISIBILITY
 ======================================================= */
+
+.header-mobile {
+    display: none;
+}
+
 @media (max-width: 900px) {
-
-    .mobile-menu-overlay {
+    .header-desktop {
         display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.55);
-        z-index: 9998;
-        opacity: 0;
-        transition: opacity 0.25s ease;
     }
 
-    .mobile-menu-overlay.show {
-        display: block;
-        opacity: 1;
-    }
-
-    /* =======================================================
-       SLIDE PANEL (right side drawer)
-    ======================================================== */
-    .mobile-menu-panel {
-        position: fixed;
-        top: 0;
-        right: -320px; /* hidden off-screen */
-        width: 300px;
-        height: 100vh;
-        background: #0d0d16;
-        z-index: 9999;
-        padding: 18px;
-        overflow-y: auto;
-        transition: right 0.28s ease;
-        box-shadow: -4px 0 16px rgba(0, 0, 0, 0.45);
-    }
-
-    .mobile-menu-panel.show {
-        right: 0; /* slide in */
-    }
-
-    /* Close button */
-    .mobile-menu-close {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.06);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        margin-bottom: 14px;
-    }
-
-    /* Brand inside menu */
-    .menu-brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        margin-bottom: 16px;
-    }
-
-    .menu-brand .logo {
-        width: 34px;
-        height: 34px;
-    }
-
-    .menu-brand .name {
-        font-size: 15px;
-        font-weight: 600;
-        color: #ffec00;
-    }
-
-    .menu-brand .tagline {
-        font-size: 11px;
-        color: #b3b3b3;
-    }
-
-    /* Sections */
-    .menu-section {
-        margin-bottom: 22px;
-    }
-
-    .menu-section h4 {
-        font-size: 13px;
-        color: #ffec00;
-        margin-bottom: 10px;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-    }
-
-    .menu-item,
-    .menu-link {
-        width: 100%;
-        background: none;
-        border: none;
-        padding: 10px 0;
-        font-size: 14px;
-        color: #e0e0e0;
-        text-align: left;
-        cursor: pointer;
-        display: block;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .menu-item span,
-    .menu-link span {
-        color: #ffec00;
-        font-weight: 600;
-    }
-
-    /* SUBMENU */
-    .submenu {
-        display: none;
-        padding-left: 8px;
-        margin-bottom: 10px;
-    }
-
-    .submenu.show {
+    .header-mobile {
         display: block;
     }
+}
 
-    .submenu-item {
-        display: block;
-        width: 100%;
-        padding: 8px 0 8px 10px;
-        font-size: 13px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        color: #cfcfcf;
-        background: none;
-        text-align: left;
-        border-radius: 0;
-        cursor: pointer;
+/* =======================================================
+   MOBILE HEADER WRAPPER
+======================================================= */
+
+.header-mobile {
+    width: 100%;
+    background: linear-gradient(
+        to bottom,
+        #0b0b12 0%,
+        #101018 50%,
+        #11141d 100%
+    );
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    font-size: 13px;
+}
+
+/* =======================================================
+   ROW 1 – BRAND BAR (TOP)
+======================================================= */
+
+.header-mobile .mobile-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+}
+
+/* Left: menu toggle */
+.header-mobile .mobile-menu-toggle {
+    margin-right: 6px;
+}
+
+/* Brand center */
+.header-mobile .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.header-mobile .mobile-brand .logo {
+    width: 26px;
+    height: 26px;
+}
+
+.header-mobile .mobile-brand .brand-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.header-mobile .mobile-brand .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffec00;
+    white-space: nowrap;
+}
+
+.header-mobile .mobile-brand .tagline {
+    font-size: 11px;
+    color: #b3b3b3;
+    white-space: nowrap;
+}
+
+/* Right icons cluster */
+.header-mobile .mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Generic icon button */
+.header-mobile .mobile-icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(24, 24, 36, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.header-mobile .mobile-icon-btn img {
+    width: 17px;
+    height: 17px;
+    display: block;
+    object-fit: contain;
+}
+
+/* =======================================================
+   ROW 2 – SPORTS NAVIGATION (TABS)
+======================================================= */
+
+.header-mobile .mobile-sports-nav {
+    display: flex;
+    align-items: stretch;
+    padding: 6px 4px 4px 4px;
+    background: #101018;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-mobile .mobile-sports-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .sport-tab {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    margin: 0 4px;
+    border-radius: 6px 6px 0 0;
+    border: 1px solid transparent;
+    background: #171926;
+    color: #e0e0e0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.header-mobile .sport-tab .sport-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.header-mobile .sport-tab.active {
+    background: #ffec00;
+    color: #11141d;
+    border-color: #ffec00;
+    font-weight: 600;
+}
+
+/* =======================================================
+   ROW 3 – QUICK CONTROLS (ODDS / LANG / TOOLS)
+======================================================= */
+
+.header-mobile .mobile-quick-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 10px;
+    background: #101018;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.header-mobile .mobile-quick-row::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .mobile-quick-btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(15, 17, 25, 0.95);
+    color: #e0e0e0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.header-mobile .mobile-quick-btn .label {
+    font-weight: 500;
+}
+
+.header-mobile .mobile-quick-btn .value,
+.header-mobile .mobile-quick-btn .lang-code {
+    color: #ffec00;
+    font-weight: 600;
+}
+
+/* =======================================================
+   ROW 4 – MAIN NAV (CHIPS)
+======================================================= */
+
+.header-mobile .mobile-main-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #11141d;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.header-mobile .mobile-main-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .nav-chip {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: #141623;
+    color: #e0e0e0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.header-mobile .nav-chip:hover {
+    background: #1d2030;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.header-mobile .nav-chip.active {
+    background: #ffec00;
+    color: #11141d;
+    border-color: #ffec00;
+    font-weight: 600;
+}
+
+/* =======================================================
+   ROW 5 – SUB NAV (GROUPS + ITEMS)
+======================================================= */
+
+.header-mobile .mobile-sub-nav {
+    padding: 6px 8px 10px 8px;
+    background: #101018;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header-mobile .mobile-sub-nav .subnav-group {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.header-mobile .mobile-sub-nav .subnav-group.active {
+    display: flex;
+}
+
+.header-mobile .mobile-sub-nav .subnav-group::-webkit-scrollbar {
+    display: none;
+}
+
+.header-mobile .mobile-sub-nav .sub-item {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: none;
+    background: #181a26;
+    color: #d0d0d0;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Hover / active behavior (aligned with desktop) */
+.header-mobile .mobile-sub-nav .sub-item:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+}
+
+.header-mobile .mobile-sub-nav .sub-item.active {
+    background-color: #00eaff;
+    color: #11141d;
+}
+
+/* =======================================================
+   SMALL DEVICES FINE TUNING
+======================================================= */
+
+@media (max-width: 480px) {
+    .header-mobile .mobile-top-bar {
+        padding: 8px 6px;
     }
 
-    .submenu-item:last-child {
-        border-bottom: none;
+    .header-mobile .mobile-sports-nav {
+        padding-left: 2px;
+        padding-right: 2px;
     }
 
+    .header-mobile .mobile-quick-row {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .header-mobile .mobile-main-nav {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .header-mobile .mobile-sub-nav {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
 }
