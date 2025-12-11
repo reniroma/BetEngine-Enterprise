@@ -1,26 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (v2.0 OddsPortal Style)
- * Clean, layered mobile header & navigation (brand + sports
- * + quick controls + main nav + sub nav).
+ * BetEngine Enterprise – MOBILE CSS (FINAL v2.1)
+ * Clean, layered mobile header & navigation (OddsPortal-like)
  *********************************************************/
-
-/* =======================================================
-   HARD PROTECTION FIX — Prevent mobile UI from appearing on desktop
-======================================================= */
-
-.header-mobile * {
-    pointer-events: none;
-    visibility: hidden;
-    opacity: 0;
-}
-
-@media (max-width: 900px) {
-    .header-mobile * {
-        pointer-events: auto;
-        visibility: visible;
-        opacity: 1;
-    }
-}
 
 /* =======================================================
    BASE MOBILE VISIBILITY
@@ -30,13 +11,30 @@
     display: none;
 }
 
+/* Desktop by default */
+.header-desktop {
+    display: block;
+}
+
+/* On mobile: hide desktop header, show mobile header */
 @media (max-width: 900px) {
     .header-desktop {
-        display: none;
+        display: none !important;
     }
 
     .header-mobile {
-        display: block;
+        display: block !important;
+    }
+}
+
+/* Extra safety: on desktop, force-hide mobile header + mobile modal */
+@media (min-width: 901px) {
+    .header-mobile {
+        display: none !important;
+    }
+
+    #mobile-header-modal {
+        display: none !important;
     }
 }
 
@@ -71,10 +69,12 @@
     padding: 8px 10px;
 }
 
+/* Left: menu toggle */
 .header-mobile .mobile-menu-toggle {
     margin-right: 6px;
 }
 
+/* Brand center */
 .header-mobile .mobile-brand {
     display: flex;
     align-items: center;
@@ -107,12 +107,14 @@
     white-space: nowrap;
 }
 
+/* Right icons cluster */
 .header-mobile .mobile-actions {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
+/* Generic icon button */
 .header-mobile .mobile-icon-btn {
     width: 30px;
     height: 30px;
@@ -135,6 +137,7 @@
 
 /* =======================================================
    ROW 2 – SPORTS NAVIGATION (TABS)
+   (HTML mund të shtohet më vonë, CSS gati)
 ======================================================= */
 
 .header-mobile .mobile-sports-nav {
@@ -273,7 +276,7 @@
 }
 
 /* =======================================================
-   ROW 5 – SUB NAV
+   ROW 5 – SUB NAV (GROUPS + ITEMS)
 ======================================================= */
 
 .header-mobile .mobile-sub-nav {
@@ -313,6 +316,7 @@
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+/* Hover / active behavior (aligned with desktop) */
 .header-mobile .mobile-sub-nav .sub-item:hover {
     background-color: rgba(255, 255, 255, 0.10);
     color: #ffffff;
@@ -324,7 +328,96 @@
 }
 
 /* =======================================================
-   SMALL SCREEN TUNING
+   MOBILE HEADER MODAL (Quick Controls / Navigation)
+======================================================= */
+
+.be-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    display: none;
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+.be-modal-overlay.show {
+    display: block;
+}
+
+.be-modal {
+    width: 100%;
+    max-width: 460px;
+    margin: 0 auto;
+    background: #11141d;
+    min-height: 100%;
+    padding: 14px 16px 20px;
+    color: #ffffff;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+}
+
+/* Modal header */
+.be-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.be-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffec00;
+}
+
+.be-modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: #181a26;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.be-modal-close img {
+    width: 16px;
+    height: 16px;
+}
+
+/* Modal sections */
+.be-modal-section {
+    display: none;
+}
+
+.be-modal-section.active {
+    display: block;
+}
+
+/* Modal items (odds / language / tools) */
+.be-modal-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: #181a26;
+    color: #e0e0e0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.be-modal-item:hover {
+    background-color: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+/* =======================================================
+   SMALL DEVICES FINE TUNING
 ======================================================= */
 
 @media (max-width: 480px) {
@@ -350,5 +443,10 @@
     .header-mobile .mobile-sub-nav {
         padding-left: 4px;
         padding-right: 4px;
+    }
+
+    .be-modal {
+        max-width: 100%;
+        border-radius: 0;
     }
 }
