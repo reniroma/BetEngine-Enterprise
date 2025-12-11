@@ -507,3 +507,30 @@
     padding: 0;
     margin-bottom: 12px;
 }
+
+/*********************************************************
+ * HARD DESKTOP GUARD (prevents mobile UI leaking into desktop)
+ *********************************************************/
+@media (min-width: 901px) {
+
+    /* Hide ALL mobile-only components */
+    .mobile-menu-overlay,
+    .mobile-menu-panel,
+    #mobile-header-modal,
+    .mobile-top-bar,
+    .mobile-quick-row,
+    .mobile-main-nav,
+    .mobile-sub-nav {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Ensure desktop header fully controls layout */
+    .header-mobile {
+        display: none !important;
+    }
+}
+
