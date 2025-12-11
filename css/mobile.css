@@ -1,7 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v4.0)
- * Clean build – matches header-mobile.html v3.0
- * Completely isolated from desktop
+ * BetEngine Enterprise – MOBILE CSS (FINAL v5.0)
+ * Clean build – ZERO conflicts with desktop
+ * Mobile navigation only, desktop untouched
  *********************************************************/
 
 /* =======================================================
@@ -247,8 +247,6 @@
     display: block;
 }
 
-/* Menu sections */
-
 .menu-section {
     margin-top: 20px;
 }
@@ -282,27 +280,23 @@
     display: block;
 }
 
-/* Close button */
-
 .mobile-menu-close img {
     width: 24px;
 }
 
 /* =======================================================
-   MOBILE-ONLY PATCH: REMOVE DESKTOP NAV IN MOBILE
+   IMPORTANT: HIDE DESKTOP NAV ONLY INSIDE HEADER-DESKTOP
 ======================================================= */
 
 @media (max-width: 900px) {
 
-    /* Hide desktop main nav completely */
-    .header-desktop .main-nav,
-    .main-nav {
+    /* Desktop main nav → hide only inside the desktop header */
+    .header-desktop .main-nav {
         display: none !important;
     }
 
-    /* Hide desktop subnav */
-    .header-desktop .row-sub,
-    .row-sub {
+    /* Desktop subnav → hide only inside the desktop header */
+    .header-desktop .row-sub {
         display: none !important;
     }
 }
