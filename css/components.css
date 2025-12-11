@@ -1,13 +1,13 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v6.0)
- * Desktop header, dropdowns, shared buttons, auth modals,
- * mobile header modal overlay (structure only).
- * NO mobile layout rules here.
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v7.0)
+ * Desktop header, dropdowns, shared buttons, auth modals.
+ * NO mobile layout rules here (handled in mobile.css).
  *********************************************************/
 
-/* -------------------------------------------------------
+
+/* =======================================================
    BASE BUTTONS / CONTROLS
--------------------------------------------------------- */
+======================================================= */
 
 button {
     font-family: inherit;
@@ -33,9 +33,10 @@ button {
     white-space: nowrap;
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    AUTH BUTTONS (DESKTOP)
--------------------------------------------------------- */
+======================================================= */
 
 .btn-auth.login {
     background: var(--bg-button-secondary, #222236);
@@ -52,9 +53,10 @@ button {
     height: 14px;
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    NOTIFICATION BUTTON (DESKTOP)
--------------------------------------------------------- */
+======================================================= */
 
 .notif-button {
     width: 34px;
@@ -71,20 +73,10 @@ button {
     height: 18px;
 }
 
-/* -------------------------------------------------------
-   DESKTOP: ROW TOP
--------------------------------------------------------- */
 
-.header-row.row-top .right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-/* -------------------------------------------------------
+/* =======================================================
    BRAND BLOCK (DESKTOP)
--------------------------------------------------------- */
+======================================================= */
 
 .brand {
     display: flex;
@@ -114,9 +106,10 @@ button {
     color: var(--text-muted, #b3b3b3);
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    DESKTOP SEARCH BOX
--------------------------------------------------------- */
+======================================================= */
 
 .search-notify {
     display: flex;
@@ -132,6 +125,7 @@ button {
     border-radius: 999px;
     background: var(--bg-panel-soft, #181824);
     min-width: 220px;
+    max-width: 320px;
 }
 
 .search-icon {
@@ -145,11 +139,13 @@ button {
     background: transparent;
     color: var(--text-secondary, #00eaff);
     font-size: 13px;
+    width: 100%;
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    MAIN NAV (DESKTOP)
--------------------------------------------------------- */
+======================================================= */
 
 .main-nav {
     display: flex;
@@ -167,6 +163,10 @@ button {
     padding: 6px 0;
 }
 
+.main-nav .nav-item:hover {
+    color: var(--text-secondary, #00eaff);
+}
+
 .main-nav .nav-item.active {
     color: var(--text-secondary, #00eaff);
 }
@@ -182,9 +182,10 @@ button {
     background: var(--text-secondary, #00eaff);
 }
 
-/* -------------------------------------------------------
-   PREMIUM STAR – Desktop Fix
--------------------------------------------------------- */
+
+/* =======================================================
+   PREMIUM STAR – Desktop
+======================================================= */
 
 .premium-link {
     display: inline-flex;
@@ -199,9 +200,10 @@ button {
     top: -1px;
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    DESKTOP SUB NAVIGATION
--------------------------------------------------------- */
+======================================================= */
 
 .row-sub {
     display: flex;
@@ -231,7 +233,8 @@ button {
     color: var(--text-secondary, #00eaff);
 }
 
-/* TOOLS label */
+
+/* Tools parent item */
 .sub-item-tools {
     display: inline-flex;
     align-items: center;
@@ -244,9 +247,10 @@ button {
     height: 10px;
 }
 
-/* -------------------------------------------------------
+
+/* =======================================================
    DROPDOWNS (DESKTOP)
--------------------------------------------------------- */
+======================================================= */
 
 .odds-dropdown,
 .language-dropdown,
@@ -296,4 +300,84 @@ button {
 .language-dropdown .item:hover,
 .tools-dropdown .item:hover {
     background: var(--bg-panel-soft, #181824);
-    color
+    color: var(--text-secondary, #00eaff);
+}
+
+.odds-dropdown .item.active,
+.language-dropdown .item.active,
+.tools-dropdown .item.active {
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+}
+
+
+/* =======================================================
+   AUTH MODALS (DESKTOP)
+======================================================= */
+
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 9990;
+    display: none;
+}
+
+.auth-overlay.show {
+    display: block;
+}
+
+.auth-modal {
+    width: 380px;
+    max-width: 94%;
+    background: #0d0d16;
+    padding: 22px 20px 28px;
+    border-radius: 12px;
+    margin: 80px auto;
+    box-shadow: 0 10px 42px rgba(0,0,0,0.45);
+}
+
+.auth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auth-title {
+    color: var(--text-primary, #ffec00);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.auth-close img {
+    width: 22px;
+    height: 22px;
+}
+
+.auth-body {
+    margin-top: 16px;
+}
+
+.auth-body input {
+    width: 100%;
+    margin-bottom: 14px;
+}
+
+.auth-footer {
+    margin-top: 18px;
+    text-align: center;
+}
+
+.auth-switch {
+    color: var(--text-secondary, #00eaff);
+    cursor: pointer;
+}
+
+
+/* =======================================================
+   SAFE ISOLATION FOR MOBILE-MODALS
+======================================================= */
+
+.mobile-only .be-modal-overlay {
+    display: none !important;
+}
