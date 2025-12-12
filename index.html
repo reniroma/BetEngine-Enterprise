@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BetEngine Enterprise</title>
 
     <!-- ====================================================
-         ENTERPRISE CSS ORDER (DO NOT CHANGE ORDER)
+         ENTERPRISE CSS ORDER (DO NOT CHANGE)
     ======================================================= -->
     <link rel="stylesheet" href="css/variables.css?v=4">
     <link rel="stylesheet" href="css/base.css?v=4">
@@ -16,19 +15,18 @@
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
 
-    <!-- AUTH MODALS CSS (after desktop.css) -->
+    <!-- AUTH MODALS CSS (AFTER desktop.css) -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
-    <!-- MOBILE CSS (always last) -->
+    <!-- MOBILE CSS (ALWAYS LAST) -->
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
 <body>
 
     <!-- ====================================================
-         HEADERS
-         Loaded dynamically by header-loader.js
-         (desktop + mobile + modals + mobile menu)
+         HEADER AREA
+         ALL HEADER HTML IS INJECTED BY header-loader.js
          DO NOT PLACE ANY HEADER HTML HERE
     ======================================================= -->
 
@@ -47,7 +45,7 @@
     <!-- CORE -->
     <script src="js/core/core.js?v=4"></script>
 
-    <!-- HEADER LOADER (injects all header HTML) -->
+    <!-- HEADER LOADER (injects desktop + mobile + modals) -->
     <script src="js/core/header-loader.js?v=4"></script>
 
     <!-- DESKTOP HEADER LOGIC -->
@@ -59,7 +57,7 @@
     <!-- UI WIDGETS -->
     <script src="js/ui/widgets.js?v=4"></script>
 
-    <!-- AUTH MODALS -->
+    <!-- AUTH MODALS LOGIC -->
     <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
