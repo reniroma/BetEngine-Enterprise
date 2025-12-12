@@ -1,149 +1,95 @@
 <!-- ====================================================
-     BetEngine Enterprise – HEADER MODALS (FINAL PATCH)
-     - Mobile Odds / Language modal
-     - Mobile Hamburger Menu
-     - Mobile Login / Register triggers (PATCH)
-======================================================== -->
+     BetEngine Enterprise – HEADER MODALS (PATCHED MINIMAL)
+     Mobile-only: odds/lang modal + hamburger menu
+==================================================== -->
 
-<!-- ============================
-     MOBILE CONTROLS MODAL
-============================= -->
-<div class="be-modal-overlay" id="mobile-header-modal">
-    <div class="be-modal">
+<div class="mobile-only">
 
-        <div class="be-modal-header">
-            <span class="be-modal-title">Select option</span>
-            <button class="be-modal-close" type="button">
-                <img src="assets/icons/close.svg" alt="Close">
-            </button>
-        </div>
+    <!-- ============================
+         MOBILE ODDS / LANGUAGE MODAL
+    ============================== -->
+    <div class="be-modal-overlay" id="mobile-header-modal">
+        <div class="be-modal">
 
-        <div class="be-modal-body">
-
-            <!-- ODDS -->
-            <div class="be-modal-section modal-odds active">
-                <button class="be-modal-item" data-odds="decimal">Decimal Odds (1.50)</button>
-                <button class="be-modal-item" data-odds="fractional">Fractional Odds (1/2)</button>
-                <button class="be-modal-item" data-odds="moneyline">Moneyline Odds (-200)</button>
-                <button class="be-modal-item" data-odds="hongkong">Hong Kong Odds (0.50)</button>
-                <button class="be-modal-item" data-odds="malay">Malay Odds (0.50)</button>
-                <button class="be-modal-item" data-odds="indonesian">Indonesian Odds (-2.00)</button>
+            <div class="be-modal-header">
+                <span class="be-modal-title">Select option</span>
+                <button class="be-modal-close" type="button">
+                    <img src="assets/icons/close.svg" alt="">
+                </button>
             </div>
 
-            <!-- LANGUAGE -->
-            <div class="be-modal-section modal-language">
-                <button class="be-modal-item" data-lang="sq">Albanian</button>
-                <button class="be-modal-item" data-lang="ar">Arabic</button>
-                <button class="be-modal-item" data-lang="zh">Chinese</button>
-                <button class="be-modal-item" data-lang="nl">Dutch</button>
-                <button class="be-modal-item" data-lang="en">English</button>
-                <button class="be-modal-item" data-lang="fr">French</button>
-                <button class="be-modal-item" data-lang="de">German</button>
-                <button class="be-modal-item" data-lang="el">Greek</button>
-                <button class="be-modal-item" data-lang="hi">Hindi</button>
-                <button class="be-modal-item" data-lang="id">Indonesian</button>
-                <button class="be-modal-item" data-lang="it">Italian</button>
-                <button class="be-modal-item" data-lang="ja">Japanese</button>
-                <button class="be-modal-item" data-lang="ko">Korean</button>
-                <button class="be-modal-item" data-lang="pl">Polish</button>
-                <button class="be-modal-item" data-lang="pt">Portuguese</button>
-                <button class="be-modal-item" data-lang="ro">Romanian</button>
-                <button class="be-modal-item" data-lang="ru">Russian</button>
-                <button class="be-modal-item" data-lang="sr">Serbian</button>
-                <button class="be-modal-item" data-lang="es">Spanish</button>
-                <button class="be-modal-item" data-lang="tr">Turkish</button>
-                <button class="be-modal-item" data-lang="uk">Ukrainian</button>
+            <div class="be-modal-body">
+
+                <!-- ODDS -->
+                <div class="be-modal-section modal-odds active">
+                    <button class="be-modal-item" data-odds="decimal">Decimal Odds (1.50)</button>
+                    <button class="be-modal-item" data-odds="fractional">Fractional Odds (1/2)</button>
+                    <button class="be-modal-item" data-odds="moneyline">Moneyline Odds (-200)</button>
+                    <button class="be-modal-item" data-odds="hongkong">Hong Kong Odds (0.50)</button>
+                    <button class="be-modal-item" data-odds="malay">Malay Odds (0.50)</button>
+                    <button class="be-modal-item" data-odds="indonesian">Indonesian Odds (-2.00)</button>
+                </div>
+
+                <!-- LANGUAGE -->
+                <div class="be-modal-section modal-language">
+                    <button class="be-modal-item" data-lang="en">English</button>
+                    <button class="be-modal-item" data-lang="nl">Dutch</button>
+                    <button class="be-modal-item" data-lang="fr">French</button>
+                    <button class="be-modal-item" data-lang="de">German</button>
+                    <button class="be-modal-item" data-lang="it">Italian</button>
+                    <button class="be-modal-item" data-lang="es">Spanish</button>
+                </div>
+
             </div>
-
-            <!-- TOOLS -->
-            <div class="be-modal-section modal-tools">
-                <button class="be-modal-item">Blocked Odds</button>
-                <button class="be-modal-item">Value Bets</button>
-                <button class="be-modal-item">Hot Matches</button>
-                <button class="be-modal-item">Archived Results</button>
-                <button class="be-modal-item">Standings</button>
-                <button class="be-modal-item">Bet Calculator</button>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- ====================================================
-     MOBILE MENU MODAL (HAMBURGER MENU)
-======================================================== -->
-<div class="mobile-menu-overlay"></div>
-
-<div class="mobile-menu-panel">
-
-    <button class="mobile-menu-close" type="button">
-        <img src="assets/icons/close.svg" alt="Close">
-    </button>
-
-    <!-- Brand -->
-    <div class="menu-brand">
-        <img src="assets/logos/logo.svg" class="logo" alt="BetEngine">
-        <div class="brand-text">
-            <span class="name">BetEngine</span>
-            <span class="tagline">Smart betting tools</span>
         </div>
     </div>
 
     <!-- ============================
-         AUTH (MOBILE) — PATCH
-    ============================= -->
-    <div class="menu-section">
-        <h4>Account</h4>
-        <button class="menu-item menu-auth-login">Login</button>
-        <button class="menu-item menu-auth-register">Register</button>
-    </div>
+         MOBILE HAMBURGER OVERLAY
+    ============================== -->
+    <div class="mobile-menu-overlay"></div>
 
-    <!-- Quick Controls -->
-    <div class="menu-section">
-        <h4>Quick Controls</h4>
-        <button class="menu-item menu-odds">
-            Odds Format: <span>Decimal Odds</span>
+    <!-- ============================
+         MOBILE HAMBURGER PANEL
+    ============================== -->
+    <div class="mobile-menu-panel">
+
+        <!-- Close -->
+        <button class="mobile-menu-close" type="button">
+            <img src="assets/icons/close.svg" alt="">
         </button>
-        <button class="menu-item menu-lang">
-            Language: <span>English</span>
-        </button>
-    </div>
 
-    <!-- Navigation -->
-    <div class="menu-section">
-        <h4>Navigation</h4>
-
-        <button class="menu-link" data-section="odds">Odds Comparison</button>
-        <div class="submenu" data-subnav="odds">
-            <button class="submenu-item">Home</button>
-            <button class="submenu-item">Next Matches</button>
-            <button class="submenu-item">Dropping Odds</button>
-            <button class="submenu-item">Sure Bets</button>
-            <button class="submenu-item">In-Play Odds</button>
-            <button class="submenu-item">All Events</button>
-            <button class="submenu-item">Betting Tools</button>
+        <!-- Brand -->
+        <div class="menu-brand">
+            <img src="assets/logos/logo.svg" class="logo" alt="">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
         </div>
 
-        <button class="menu-link" data-section="community">Community</button>
-        <div class="submenu" data-subnav="community">
-            <button class="submenu-item">Home</button>
-            <button class="submenu-item">Feed</button>
-            <button class="submenu-item">Users</button>
-            <button class="submenu-item">Top Predictions</button>
-            <button class="submenu-item">My Statistics</button>
-            <button class="submenu-item">My Profile</button>
-            <button class="submenu-item">My Predictions</button>
-            <button class="submenu-item">My Coupons</button>
+        <!-- AUTH (MOBILE) -->
+        <div class="menu-section">
+            <button class="menu-item menu-auth-login">Login</button>
+            <button class="menu-item menu-auth-register">Register</button>
         </div>
 
-        <button class="menu-link" data-section="bookmakers">Bookmakers</button>
-        <button class="menu-link" data-section="premium">Premium</button>
-    </div>
+        <!-- QUICK CONTROLS -->
+        <div class="menu-section">
+            <h4>Quick Controls</h4>
+            <button class="menu-item menu-odds">Odds Format</button>
+            <button class="menu-item menu-lang">Language</button>
+        </div>
 
+        <!-- NAVIGATION -->
+        <div class="menu-section">
+            <h4>Navigation</h4>
+
+            <button class="menu-link" data-section="odds">Odds Comparison</button>
+            <button class="menu-link" data-section="community">Community</button>
+            <button class="menu-link" data-section="bookmakers">Bookmakers</button>
+            <button class="menu-link" data-section="premium">Premium</button>
+        </div>
+
+    </div>
 </div>
-
-<!-- ====================================================
-     AUTH CONTAINERS (DESKTOP)
-======================================================== -->
-<div id="auth-login"></div>
-<div id="auth-register"></div>
