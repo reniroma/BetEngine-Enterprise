@@ -1,92 +1,80 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (v10 FINAL)
- * Universal Relative Path Version
- * Loads:
- *   - Desktop header
- *   - Mobile header
- *   - Header modals
- *   - Login modal
- *   - Register modal
- *
- * Emits "headerLoaded" after successful insertion.
+ * BetEngine Enterprise – HEADER LOADER (FINAL, STABLE)
+ * - Injects: desktop header, mobile header, header modals,
+ *   auth login + auth register
+ * - SINGLE source of header HTML
+ * - Emits "headerLoaded" ONCE, only after DOM injection
+ * - Compatible with:
+ *   header.js
+ *   header-mobile.js
+ *   header-auth.js
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
-    /*******************************************************
-     * RELATIVE BASE PATH (Always safe)
-     *******************************************************/
-    const BASE = "./layouts/header/";
+    /* ====================================================
+       CONFIG
+    ==================================================== */
+    const BASE_PATH = "layouts/header/";
 
-    /*******************************************************
-     * COMPONENT FILES
-     *******************************************************/
-    const FILES = {
-        desktop:  BASE + "header-desktop.html",
-        mobile:   BASE + "header-mobile.html",
-        modals:   BASE + "header-modals.html",
-        login:    BASE + "auth-login.html",
-        register: BASE + "auth-register.html"
-    };
+    const FILES = [
+        "header-desktop.html",
+        "header-mobile.html",
+        "header-modals.html",
+        "auth-login.html",
+        "auth-register.html"
+    ];
 
-    /*******************************************************
-     * FETCH HELPER
-     *******************************************************/
-    async function loadComponent(url) {
+    /* ====================================================
+       SAFE FETCH
+    ==================================================== */
+    async function fetchHTML(path) {
         try {
-            const res = await fetch(url, { cache: "no-store" });
+            const res = await fetch(path, { cache: "no-store" });
             if (!res.ok) {
-                console.warn("HeaderLoader v10: HTTP error", url, res.status);
+                console.error("[HeaderLoader] Failed:", path, res.status);
                 return "";
             }
             return await res.text();
         } catch (err) {
-            console.warn("HeaderLoader v10: FETCH FAILED", url, err);
+            console.error("[HeaderLoader] Fetch error:", path, err);
             return "";
         }
     }
 
-    /*******************************************************
-     * MAIN LOADER
-     *******************************************************/
-    async function initHeaderLoader() {
-        const mainEl = document.querySelector("main");
-        if (!mainEl) {
-            console.error("HeaderLoader v10: <main> not found.");
-            return;
-        }
+    /* ====================================================
+       LOAD & INJECT
+    ==================================================== */
+    const mainEl = document.querySelector("main");
 
-        const [
-            desktopHTML,
-            mobileHTML,
-            modalsHTML,
-            loginHTML,
-            registerHTML
-        ] = await Promise.all([
-            loadComponent(FILES.desktop),
-            loadComponent(FILES.mobile),
-            loadComponent(FILES.modals),
-            loadComponent(FILES.login),
-            loadComponent(FILES.register)
-        ]);
-
-        const finalHTML =
-            `${desktopHTML}\n${mobileHTML}\n${modalsHTML}\n${loginHTML}\n${registerHTML}`.trim();
-
-        if (!finalHTML) {
-            console.error("HeaderLoader v10: No content loaded.");
-            return;
-        }
-
-        // Insert BEFORE <main>
-        mainEl.insertAdjacentHTML("beforebegin", finalHTML);
-
-        // Dispatch event after DOM is updated
-        setTimeout(() => {
-            document.dispatchEvent(new Event("headerLoaded"));
-            console.log("HeaderLoader v10: headerLoaded dispatched");
-        }, 20);
+    if (!mainEl) {
+        console.error("[HeaderLoader] <main> not found. Abort.");
+        return;
     }
 
-    initHeaderLoader();
+    const htmlParts = [];
+
+    for (const file of FILES) {
+        const html = await fetchHTML(BASE_PATH + file);
+        if (html.trim().length) {
+            htmlParts.push(html.trim());
+        }
+    }
+
+    if (!htmlParts.length) {
+        console.error("[HeaderLoader] No header HTML loaded.");
+        return;
+    }
+
+    // Inject everything BEFORE <main>
+    mainEl.insertAdjacentHTML("beforebegin", htmlParts.join("\n"));
+
+    /* ====================================================
+       FINALIZE
+    ==================================================== */
+    requestAnimationFrame(() => {
+        document.dispatchEvent(new Event("headerLoaded"));
+        console.log("[HeaderLoader] headerLoaded dispatched");
+    });
+
 });
