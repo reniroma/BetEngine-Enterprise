@@ -1,27 +1,23 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.4)
- * FIXED (FULLY VERIFIED):
- * - Login / Register open auth modals correctly
- * - Odds / Language close hamburger and open modal
- * - Bookmakers / Premium KEEP hamburger open (submenu UX)
- * - No event conflicts, no click leaks
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.0)
+ * Phase 3 – STRICT UX RULES APPLIED
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const headerMobile = document.querySelector(".header-mobile");
+    const header  = document.querySelector(".header-mobile");
     const panel   = document.querySelector(".mobile-menu-panel");
     const overlay = document.querySelector(".mobile-menu-overlay");
     const modal   = document.getElementById("mobile-header-modal");
 
-    if (!headerMobile || !panel || !overlay) return;
+    if (!header || !panel || !overlay) return;
 
-    const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
-    const closeBtn  = panel.querySelector(".mobile-menu-close");
+    const btnOpen  = header.querySelector(".mobile-menu-toggle");
+    const btnClose = panel.querySelector(".mobile-menu-close");
 
-    /* ----------------------------------
-       SAFETY: prevent click leakage
-    ---------------------------------- */
+    /* ====================================================
+       HARD ISOLATION – NOTHING INSIDE CLOSES MENU
+    ==================================================== */
     panel.addEventListener("click", e => e.stopPropagation());
 
     const openMenu = () => {
@@ -36,18 +32,25 @@ document.addEventListener("headerLoaded", () => {
         document.body.style.overflow = "";
     };
 
-    toggleBtn?.addEventListener("click", e => {
+    /* ====================================================
+       OPEN / CLOSE CONTROLS
+    ==================================================== */
+    btnOpen?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
         openMenu();
     });
 
-    closeBtn?.addEventListener("click", closeMenu);
+    btnClose?.addEventListener("click", closeMenu);
     overlay.addEventListener("click", closeMenu);
 
-    /* ----------------------------------
-       NAVIGATION LINKS (hamburger stays)
-    ---------------------------------- */
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeMenu();
+    });
+
+    /* ====================================================
+       NAVIGATION (NO AUTO-CLOSE)
+    ==================================================== */
     panel.querySelectorAll(".menu-link").forEach(link => {
         link.addEventListener("click", e => {
             e.preventDefault();
@@ -70,55 +73,48 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* ----------------------------------
-       QUICK CONTROLS → OPEN MODAL
-       (hamburger MUST close)
-    ---------------------------------- */
+    /* ====================================================
+       ODDS / LANGUAGE → OPEN MODAL (KEEP MENU OPEN)
+    ==================================================== */
     panel.querySelector(".menu-odds")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
-        closeMenu();
-
-        modal?.classList.add("show");
-        document.body.style.overflow = "hidden";
-
-        modal?.querySelectorAll(".be-modal-section")
-            .forEach(s => s.classList.remove("active"));
-
-        modal?.querySelector(".modal-odds")?.classList.add("active");
+        openModal("odds");
     });
 
     panel.querySelector(".menu-lang")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
-        closeMenu();
-
-        modal?.classList.add("show");
-        document.body.style.overflow = "hidden";
-
-        modal?.querySelectorAll(".be-modal-section")
-            .forEach(s => s.classList.remove("active"));
-
-        modal?.querySelector(".modal-language")?.classList.add("active");
+        openModal("language");
     });
 
-    /* ----------------------------------
-       AUTH (LOGIN / REGISTER) – MOBILE
-       REAL EVENT, NOT FAKE CLICK
-    ---------------------------------- */
+    function openModal(type) {
+        if (!modal) return;
+
+        modal.classList.add("show");
+
+        modal.querySelectorAll(".be-modal-section")
+            .forEach(s => s.classList.remove("active"));
+
+        modal.querySelector(`.modal-${type}`)?.classList.add("active");
+    }
+
+    /* ====================================================
+       LOGIN / REGISTER (CLOSE MENU AFTER OPEN)
+    ==================================================== */
     panel.querySelector(".menu-auth-login")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
         closeMenu();
-        document.dispatchEvent(new CustomEvent("openAuth", { detail: "login" }));
+        document.querySelector(".btn-auth.login")?.click();
     });
 
     panel.querySelector(".menu-auth-register")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
         closeMenu();
-        document.dispatchEvent(new CustomEvent("openAuth", { detail: "register" }));
+        document.querySelector(".btn-auth.register")?.click();
     });
 
-    console.log("header-mobile.js v5.4 READY");
+    console.log("[header-mobile] Phase 3 READY");
 });
