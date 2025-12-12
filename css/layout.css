@@ -1,9 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – LAYOUT.CSS (FINAL v4.0)
- * Global page layout, containers, header spacing,
- * grid system, wrappers, spacing rules.
+ * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v2.1)
  *********************************************************/
-
 
 /* =======================================================
    GLOBAL PAGE LAYOUT
@@ -17,15 +14,12 @@ html, body {
     background: var(--bg-main, #0a0c12);
 }
 
+/* Prevent horizontal scroll */
 body {
     overflow-x: hidden;
 }
 
-
-/* =======================================================
-   GLOBAL CONTAINER
-======================================================= */
-
+/* Global container */
 .be-container {
     width: 100%;
     max-width: 1440px;
@@ -33,12 +27,10 @@ body {
     padding: 0 18px;
 }
 
-
 /* =======================================================
-   HEADER WRAPPERS
+   HEADER SPACING FLOW (DESKTOP ONLY)
 ======================================================= */
 
-/* Desktop header */
 .header-desktop {
     width: 100%;
     position: relative;
@@ -46,46 +38,26 @@ body {
     z-index: 100;
 }
 
-/* Mobile header — left intentionally empty */
+/* Never style header-mobile here */
 .header-mobile {
-    /* styling handled in mobile.css */
+    /* intentionally EMPTY */
 }
 
-
-/* =======================================================
-   HEADER ROW BASE
-======================================================= */
-
+/* Header rows */
 .header-row {
-    width: 100%;
     display: flex;
     align-items: center;
+    width: 100%;
+    padding: 8px 18px;
+    background: var(--bg-header, #0a0c12);
 }
 
-
-/* Desktop row spacing */
-@media (min-width: 901px) {
-    .header-row {
-        padding: 8px 18px;
-        background: var(--bg-header, #0a0c12);
-    }
-
-    .row-top,
-    .row-main,
-    .row-sub {
-        background: var(--bg-header, #0a0c12);
-    }
+/* row-specific backgrounds */
+.row-top,
+.row-main,
+.row-sub {
+    background: var(--bg-header, #0a0c12);
 }
-
-
-/* Mobile row (no padding here — defined in mobile.css) */
-@media (max-width: 900px) {
-    .header-row {
-        padding: 0;
-        background: none;
-    }
-}
-
 
 /* =======================================================
    MAIN CONTENT AREA
@@ -95,8 +67,8 @@ main {
     width: 100%;
     padding: 20px 18px;
     margin: 0 auto;
-    min-height: calc(100vh - 200px);
     color: var(--text-secondary, #00eaff);
+    min-height: calc(100vh - 200px);
 }
 
 main h1 {
@@ -109,7 +81,6 @@ main p {
     font-size: 14px;
     color: var(--text-muted, #b3b3b3);
 }
-
 
 /* =======================================================
    FOOTER
@@ -126,9 +97,8 @@ footer {
     font-size: 12px;
 }
 
-
 /* =======================================================
-   GRID SYSTEM (ENTERPRISE)
+   GRID SYSTEM
 ======================================================= */
 
 .be-grid {
@@ -140,25 +110,23 @@ footer {
 }
 
 .col-12 { grid-column: span 12; }
-.col-9  { grid-column: span 9; }
-.col-8  { grid-column: span 8; }
-.col-6  { grid-column: span 6; }
-.col-4  { grid-column: span 4; }
-.col-3  { grid-column: span 3; }
-
+.col-9  { grid-column: span 9;  }
+.col-8  { grid-column: span 8;  }
+.col-6  { grid-column: span 6;  }
+.col-4  { grid-column: span 4;  }
+.col-3  { grid-column: span 3;  }
 
 /* =======================================================
-   FLEX HELPERS (layout-level only)
+   FLEX HELPERS
 ======================================================= */
 
-.be-flex      { display: flex; }
-.be-center    { display: flex; justify-content: center; align-items: center; }
-.be-between   { display: flex; justify-content: space-between; align-items: center; }
-.be-vcenter   { display: flex; align-items: center; }
-
+.be-flex { display: flex; }
+.be-center { display: flex; justify-content: center; align-items: center; }
+.be-between { display: flex; justify-content: space-between; align-items: center; }
+.be-vcenter { display: flex; align-items: center; }
 
 /* =======================================================
-   SPACERS (layout-level only)
+   SPACERS
 ======================================================= */
 
 .sp-4  { height: 4px; }
@@ -168,9 +136,8 @@ footer {
 .sp-24 { height: 24px; }
 .sp-32 { height: 32px; }
 
-
 /* =======================================================
-   PAGE WRAPPER MODULE
+   PAGE WRAPPER
 ======================================================= */
 
 .page-wrapper {
@@ -188,9 +155,8 @@ footer {
     box-shadow: 0 0 18px rgba(0,0,0,0.18);
 }
 
-
 /* =======================================================
-   RESPONSIVE REFINEMENT
+   RESPONSIVE
 ======================================================= */
 
 @media (max-width: 1100px) {
@@ -203,6 +169,7 @@ footer {
     main {
         padding: 18px 14px;
     }
+
     .module-box {
         padding: 14px 14px;
     }
@@ -212,6 +179,7 @@ footer {
     main {
         padding: 16px 10px;
     }
+
     .module-box {
         padding: 12px 12px;
     }
