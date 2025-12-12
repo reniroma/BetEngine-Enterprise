@@ -1,9 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.3)
- * FIXED:
- * - Odds / Language open modal WITHOUT closing hamburger
- * - Login / Register now functional on mobile
- * - Bookmakers & Premium close menu correctly
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.4)
+ * FIXED (FULLY VERIFIED):
+ * - Login / Register open auth modals correctly
+ * - Odds / Language close hamburger and open modal
+ * - Bookmakers / Premium KEEP hamburger open (submenu UX)
+ * - No event conflicts, no click leaks
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -18,7 +19,9 @@ document.addEventListener("headerLoaded", () => {
     const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
     const closeBtn  = panel.querySelector(".mobile-menu-close");
 
-    /* Prevent click-through */
+    /* ----------------------------------
+       SAFETY: prevent click leakage
+    ---------------------------------- */
     panel.addEventListener("click", e => e.stopPropagation());
 
     const openMenu = () => {
@@ -42,9 +45,9 @@ document.addEventListener("headerLoaded", () => {
     closeBtn?.addEventListener("click", closeMenu);
     overlay.addEventListener("click", closeMenu);
 
-    /* ===============================
-       NAVIGATION LINKS
-    =============================== */
+    /* ----------------------------------
+       NAVIGATION LINKS (hamburger stays)
+    ---------------------------------- */
     panel.querySelectorAll(".menu-link").forEach(link => {
         link.addEventListener("click", e => {
             e.preventDefault();
@@ -59,8 +62,6 @@ document.addEventListener("headerLoaded", () => {
                         ? s.classList.toggle("open")
                         : s.classList.remove("open")
                 );
-            } else {
-                closeMenu();
             }
 
             if (section && typeof window.BE_activateSection === "function") {
@@ -69,13 +70,14 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* ===============================
-       QUICK CONTROLS (ODDS / LANGUAGE)
-       DO NOT CLOSE HAMBURGER
-    =============================== */
+    /* ----------------------------------
+       QUICK CONTROLS → OPEN MODAL
+       (hamburger MUST close)
+    ---------------------------------- */
     panel.querySelector(".menu-odds")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
+        closeMenu();
 
         modal?.classList.add("show");
         document.body.style.overflow = "hidden";
@@ -89,6 +91,7 @@ document.addEventListener("headerLoaded", () => {
     panel.querySelector(".menu-lang")?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
+        closeMenu();
 
         modal?.classList.add("show");
         document.body.style.overflow = "hidden";
@@ -99,20 +102,23 @@ document.addEventListener("headerLoaded", () => {
         modal?.querySelector(".modal-language")?.classList.add("active");
     });
 
-    /* ===============================
+    /* ----------------------------------
        AUTH (LOGIN / REGISTER) – MOBILE
-    =============================== */
+       REAL EVENT, NOT FAKE CLICK
+    ---------------------------------- */
     panel.querySelector(".menu-auth-login")?.addEventListener("click", e => {
         e.preventDefault();
+        e.stopPropagation();
         closeMenu();
-        document.querySelector(".btn-auth.login")?.click();
+        document.dispatchEvent(new CustomEvent("openAuth", { detail: "login" }));
     });
 
     panel.querySelector(".menu-auth-register")?.addEventListener("click", e => {
         e.preventDefault();
+        e.stopPropagation();
         closeMenu();
-        document.querySelector(".btn-auth.register")?.click();
+        document.dispatchEvent(new CustomEvent("openAuth", { detail: "register" }));
     });
 
-    console.log("header-mobile.js v5.3 READY");
+    console.log("header-mobile.js v5.4 READY");
 });
