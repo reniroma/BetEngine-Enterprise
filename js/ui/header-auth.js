@@ -1,10 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v3.0)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.0)
  * Single source of truth for Login / Register modals
- * SAFE:
- * - No global document click killers
- * - Works with header-loader.js
- * - Works on desktop & mobile
+ * FIXED:
+ * - Correct modal IDs
+ * - Desktop & Mobile compatible
+ * - No hamburger interference
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -16,42 +16,42 @@ document.addEventListener("headerLoaded", () => {
     const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
     /* ==================================================
-       ELEMENTS
+       ELEMENTS (CORRECT IDS)
     ================================================== */
     const loginBtn    = qs(".btn-auth.login");
     const registerBtn = qs(".btn-auth.register");
 
-    const loginWrap   = qs("#auth-login-container");
-    const registerWrap = qs("#auth-register-container");
+    const loginModal    = qs("#login-modal");
+    const registerModal = qs("#register-modal");
 
-    if (!loginWrap || !registerWrap) {
-        console.warn("[AUTH] Containers missing");
+    if (!loginModal || !registerModal) {
+        console.error("[AUTH] Login/Register modals not found in DOM");
         return;
     }
 
     /* ==================================================
-       STATE
+       STATE CONTROL
     ================================================== */
     const closeAll = () => {
-        loginWrap.classList.remove("show");
-        registerWrap.classList.remove("show");
+        loginModal.classList.remove("show");
+        registerModal.classList.remove("show");
         document.body.style.overflow = "";
     };
 
     const openLogin = () => {
         closeAll();
-        loginWrap.classList.add("show");
+        loginModal.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
     const openRegister = () => {
         closeAll();
-        registerWrap.classList.add("show");
+        registerModal.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
     /* ==================================================
-       BUTTON TRIGGERS (DESKTOP + MOBILE)
+       TRIGGERS (DESKTOP + MOBILE)
     ================================================== */
     on(loginBtn, "click", (e) => {
         e.preventDefault();
@@ -66,18 +66,18 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       CLOSE BUTTONS INSIDE MODALS
+       CLOSE HANDLERS
     ================================================== */
-    [loginWrap, registerWrap].forEach(modal => {
+    [loginModal, registerModal].forEach(modal => {
 
-        // Close icon
+        // Close button
         on(modal.querySelector(".auth-close"), "click", (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeAll();
         });
 
-        // Click on overlay only
+        // Click outside modal box
         on(modal, "click", (e) => {
             if (e.target === modal) closeAll();
         });
@@ -91,10 +91,10 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       EXPOSE API (for mobile if needed)
+       PUBLIC API (USED BY MOBILE MENU)
     ================================================== */
     window.BE_openLogin = openLogin;
     window.BE_openRegister = openRegister;
 
-    console.log("header-auth.js v3.0 READY");
+    console.log("header-auth.js v4.0 READY");
 });
