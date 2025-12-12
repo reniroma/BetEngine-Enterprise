@@ -1,26 +1,25 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.1)
- * FIX: Stop event bubbling inside mobile menu panel
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.2)
+ * FIX:
+ * - Bookmakers & Premium activate correctly
+ * - Odds / Language open mobile modal
+ * - Safe event handling
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
     const headerMobile = document.querySelector(".header-mobile");
-    if (!headerMobile) return;
+    const panel  = document.querySelector(".mobile-menu-panel");
+    const overlay = document.querySelector(".mobile-menu-overlay");
+
+    if (!headerMobile || !panel || !overlay) return;
 
     const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
-    const overlay   = document.querySelector(".mobile-menu-overlay");
-    const panel     = document.querySelector(".mobile-menu-panel");
-    const closeBtn  = panel?.querySelector(".mobile-menu-close");
+    const closeBtn  = panel.querySelector(".mobile-menu-close");
 
-    if (!toggleBtn || !overlay || !panel) return;
+    /* PREVENT GLOBAL CLICK KILL */
+    panel.addEventListener("click", e => e.stopPropagation());
 
-    /* STOP GLOBAL CLICK KILL */
-    panel.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
-
-    /* OPEN / CLOSE */
     const openMenu = () => {
         overlay.classList.add("show");
         panel.classList.add("open");
@@ -33,40 +32,31 @@ document.addEventListener("headerLoaded", () => {
         document.body.style.overflow = "";
     };
 
-    toggleBtn.addEventListener("click", (e) => {
+    toggleBtn?.addEventListener("click", e => {
         e.preventDefault();
         e.stopPropagation();
         openMenu();
     });
 
-    closeBtn?.addEventListener("click", (e) => {
-        e.preventDefault();
-        closeMenu();
-    });
-
+    closeBtn?.addEventListener("click", closeMenu);
     overlay.addEventListener("click", closeMenu);
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && panel.classList.contains("open")) {
-            closeMenu();
-        }
-    });
-
-    /* MENU LINKS */
+    /* NAVIGATION LINKS */
     panel.querySelectorAll(".menu-link").forEach(link => {
-        link.addEventListener("click", (e) => {
+        link.addEventListener("click", e => {
             e.stopPropagation();
 
             const section = link.dataset.section;
             const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
 
             if (submenu) {
-                panel.querySelectorAll(".submenu").forEach(s => {
+                panel.querySelectorAll(".submenu").forEach(s =>
                     s === submenu
                         ? s.classList.toggle("open")
-                        : s.classList.remove("open");
-                });
+                        : s.classList.remove("open")
+                );
             } else {
+                // Bookmakers / Premium
                 closeMenu();
             }
 
@@ -76,18 +66,22 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* QUICK CONTROLS */
-    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
+    /* QUICK CONTROLS → OPEN MOBILE MODAL */
+    panel.querySelector(".menu-odds")?.addEventListener("click", e => {
         e.stopPropagation();
         closeMenu();
-        document.querySelector(".mobile-odds-toggle")?.click();
+        document.getElementById("mobile-header-modal")?.classList.add("show");
+        document.body.style.overflow = "hidden";
+        document.querySelector(".modal-odds")?.classList.add("active");
     });
 
-    panel.querySelector(".menu-lang")?.addEventListener("click", (e) => {
+    panel.querySelector(".menu-lang")?.addEventListener("click", e => {
         e.stopPropagation();
         closeMenu();
-        document.querySelector(".mobile-lang-toggle")?.click();
+        document.getElementById("mobile-header-modal")?.classList.add("show");
+        document.body.style.overflow = "hidden";
+        document.querySelector(".modal-language")?.classList.add("active");
     });
 
-    console.log("header-mobile.js v5.1 FIXED");
+    console.log("header-mobile.js v5.2 READY");
 });
