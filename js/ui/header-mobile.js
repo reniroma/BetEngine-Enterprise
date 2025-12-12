@@ -1,23 +1,24 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.2)
- * FIX:
- * - Bookmakers & Premium activate correctly
- * - Odds / Language open mobile modal
- * - Safe event handling
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.3)
+ * FIXED:
+ * - Odds / Language open modal WITHOUT closing hamburger
+ * - Login / Register now functional on mobile
+ * - Bookmakers & Premium close menu correctly
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
     const headerMobile = document.querySelector(".header-mobile");
-    const panel  = document.querySelector(".mobile-menu-panel");
+    const panel   = document.querySelector(".mobile-menu-panel");
     const overlay = document.querySelector(".mobile-menu-overlay");
+    const modal   = document.getElementById("mobile-header-modal");
 
     if (!headerMobile || !panel || !overlay) return;
 
     const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
     const closeBtn  = panel.querySelector(".mobile-menu-close");
 
-    /* PREVENT GLOBAL CLICK KILL */
+    /* Prevent click-through */
     panel.addEventListener("click", e => e.stopPropagation());
 
     const openMenu = () => {
@@ -41,9 +42,12 @@ document.addEventListener("headerLoaded", () => {
     closeBtn?.addEventListener("click", closeMenu);
     overlay.addEventListener("click", closeMenu);
 
-    /* NAVIGATION LINKS */
+    /* ===============================
+       NAVIGATION LINKS
+    =============================== */
     panel.querySelectorAll(".menu-link").forEach(link => {
         link.addEventListener("click", e => {
+            e.preventDefault();
             e.stopPropagation();
 
             const section = link.dataset.section;
@@ -56,7 +60,6 @@ document.addEventListener("headerLoaded", () => {
                         : s.classList.remove("open")
                 );
             } else {
-                // Bookmakers / Premium
                 closeMenu();
             }
 
@@ -66,22 +69,50 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* QUICK CONTROLS → OPEN MOBILE MODAL */
+    /* ===============================
+       QUICK CONTROLS (ODDS / LANGUAGE)
+       DO NOT CLOSE HAMBURGER
+    =============================== */
     panel.querySelector(".menu-odds")?.addEventListener("click", e => {
+        e.preventDefault();
         e.stopPropagation();
-        closeMenu();
-        document.getElementById("mobile-header-modal")?.classList.add("show");
+
+        modal?.classList.add("show");
         document.body.style.overflow = "hidden";
-        document.querySelector(".modal-odds")?.classList.add("active");
+
+        modal?.querySelectorAll(".be-modal-section")
+            .forEach(s => s.classList.remove("active"));
+
+        modal?.querySelector(".modal-odds")?.classList.add("active");
     });
 
     panel.querySelector(".menu-lang")?.addEventListener("click", e => {
+        e.preventDefault();
         e.stopPropagation();
-        closeMenu();
-        document.getElementById("mobile-header-modal")?.classList.add("show");
+
+        modal?.classList.add("show");
         document.body.style.overflow = "hidden";
-        document.querySelector(".modal-language")?.classList.add("active");
+
+        modal?.querySelectorAll(".be-modal-section")
+            .forEach(s => s.classList.remove("active"));
+
+        modal?.querySelector(".modal-language")?.classList.add("active");
     });
 
-    console.log("header-mobile.js v5.2 READY");
+    /* ===============================
+       AUTH (LOGIN / REGISTER) – MOBILE
+    =============================== */
+    panel.querySelector(".menu-auth-login")?.addEventListener("click", e => {
+        e.preventDefault();
+        closeMenu();
+        document.querySelector(".btn-auth.login")?.click();
+    });
+
+    panel.querySelector(".menu-auth-register")?.addEventListener("click", e => {
+        e.preventDefault();
+        closeMenu();
+        document.querySelector(".btn-auth.register")?.click();
+    });
+
+    console.log("header-mobile.js v5.3 READY");
 });
