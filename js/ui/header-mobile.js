@@ -1,145 +1,149 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.4)
- * Rules implemented:
- * - Clicking Odds/Community/Bookmakers/Premium NEVER closes hamburger
- * - They only toggle their submenu inside hamburger
- * - Odds/Language open the mobile modal WITHOUT closing hamburger
- * - Login/Register trigger auth modals (do not get killed by global click capture)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL – PHASE 3)
+ * RULES APPLIED:
+ * - Hamburger controls ONLY hamburger
+ * - Odds / Language open mobile modal WITHOUT closing hamburger
+ * - Login / Register close hamburger and open auth via public API
+ * - Navigation toggles submenus, hamburger stays open
+ * - NO global click killers
+ * - NO desktop interference
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const headerMobile = document.querySelector(".header-mobile");
-    const panel = document.querySelector(".mobile-menu-panel");
-    const overlay = document.querySelector(".mobile-menu-overlay");
-    const modal = document.getElementById("mobile-header-modal");
+    /* ==================================================
+       SAFE HELPERS
+    ================================================== */
+    const qs = (sel, scope = document) => scope.querySelector(sel);
+    const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-    if (!headerMobile || !panel || !overlay) return;
+    /* ==================================================
+       CORE ELEMENTS
+    ================================================== */
+    const headerMobile = qs(".header-mobile");
+    const panel   = qs(".mobile-menu-panel");
+    const overlay = qs(".mobile-menu-overlay");
+    const modal   = qs("#mobile-header-modal");
 
-    const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
-    const closeBtn = panel.querySelector(".mobile-menu-close");
-
-    /* ====================================================
-       HARD STOP: prevent any document-level CAPTURE closers
-    ==================================================== */
-    const stopAll = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") {
-            e.stopImmediatePropagation();
-        }
-    };
-
-    panel.addEventListener("click", (e) => e.stopPropagation(), true);
-    panel.addEventListener("click", (e) => e.stopPropagation(), false);
-
-    /* Keep modal clicks from closing panel */
-    if (modal) {
-        modal.addEventListener("click", (e) => e.stopPropagation(), true);
-        modal.addEventListener("click", (e) => e.stopPropagation(), false);
+    if (!headerMobile || !panel || !overlay) {
+        console.warn("[header-mobile] Required elements missing");
+        return;
     }
 
+    const toggleBtn = qs(".mobile-menu-toggle", headerMobile);
+    const closeBtn  = qs(".mobile-menu-close", panel);
+
+    /* ==================================================
+       HAMBURGER OPEN / CLOSE (ONLY THIS)
+    ================================================== */
     const openMenu = () => {
-        overlay.classList.add("show");
         panel.classList.add("open");
-        panel.setAttribute("aria-hidden", "false");
-        overlay.setAttribute("aria-hidden", "false");
-        document.body.style.overflow = "hidden";
+        overlay.classList.add("show");
     };
 
     const closeMenu = () => {
-        overlay.classList.remove("show");
         panel.classList.remove("open");
-        panel.setAttribute("aria-hidden", "true");
-        overlay.setAttribute("aria-hidden", "true");
-        document.body.style.overflow = "";
+        overlay.classList.remove("show");
     };
 
-    toggleBtn?.addEventListener("click", (e) => {
+    on(toggleBtn, "click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         openMenu();
     });
 
-    closeBtn?.addEventListener("click", (e) => {
+    on(closeBtn, "click", (e) => {
         e.preventDefault();
-        e.stopPropagation();
         closeMenu();
     });
 
-    overlay.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeMenu();
-    });
+    on(overlay, "click", closeMenu);
 
-    /* ====================================================
-       SECTION LINKS: toggle submenus only (never close)
-    ==================================================== */
-    panel.querySelectorAll(".menu-link").forEach((link) => {
-        link.addEventListener("click", (e) => {
+    /* Prevent click-through closing */
+    on(panel, "click", (e) => e.stopPropagation());
+
+    /* ==================================================
+       NAVIGATION (SUBMENUS – DO NOT CLOSE HAMBURGER)
+    ================================================== */
+    qa(".menu-link", panel).forEach(link => {
+        on(link, "click", (e) => {
             e.preventDefault();
             e.stopPropagation();
 
             const section = link.dataset.section;
-            if (!section) return;
-
-            const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
+            const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
 
             if (submenu) {
-                panel.querySelectorAll(".submenu").forEach((s) => {
-                    if (s === submenu) s.classList.toggle("open");
-                    else s.classList.remove("open");
-                });
+                qa(".submenu", panel).forEach(s =>
+                    s === submenu
+                        ? s.classList.toggle("open")
+                        : s.classList.remove("open")
+                );
             }
 
-            if (typeof window.BE_activateSection === "function") {
+            if (section && typeof window.BE_activateSection === "function") {
                 window.BE_activateSection(section);
             }
         });
     });
 
-    /* ====================================================
-       QUICK CONTROLS: open modal WITHOUT closing hamburger
-    ==================================================== */
-    const openMobileModal = (type, titleText) => {
+    /* ==================================================
+       MOBILE MODAL (ODDS / LANGUAGE)
+       - Hamburger MUST stay open
+    ================================================== */
+    const openMobileModal = (type) => {
         if (!modal) return;
 
+        qa(".be-modal-section", modal).forEach(s =>
+            s.classList.remove("active")
+        );
+
+        qs(`.modal-${type}`, modal)?.classList.add("active");
         modal.classList.add("show");
-        modal.setAttribute("aria-hidden", "false");
-
-        const title = modal.querySelector(".be-modal-title");
-        if (title && titleText) title.textContent = titleText;
-
-        modal.querySelectorAll(".be-modal-section").forEach((s) => s.classList.remove("active"));
-        modal.querySelector(`.modal-${type}`)?.classList.add("active");
+        document.body.style.overflow = "hidden";
     };
 
-    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
+    on(qs(".menu-odds", panel), "click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openMobileModal("odds", "Odds format");
+        openMobileModal("odds");
     });
 
-    panel.querySelector(".menu-lang")?.addEventListener("click", (e) => {
+    on(qs(".menu-lang", panel), "click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openMobileModal("language", "Language");
+        openMobileModal("language");
     });
 
-    /* ====================================================
-       AUTH: trigger desktop auth buttons (header-auth.js listens there)
-       IMPORTANT: do NOT allow click to bubble to any global closers
-    ==================================================== */
-    panel.querySelector(".menu-auth-login")?.addEventListener("click", (e) => {
-        stopAll(e);
-        document.querySelector(".btn-auth.login")?.click();
+    /* ==================================================
+       AUTH (LOGIN / REGISTER)
+       - Close hamburger
+       - Open auth via PUBLIC API ONLY
+    ================================================== */
+    on(qs(".menu-auth-login", panel), "click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+        modal?.classList.remove("show");
+        document.body.style.overflow = "hidden";
+
+        if (typeof window.BE_openLogin === "function") {
+            window.BE_openLogin();
+        }
     });
 
-    panel.querySelector(".menu-auth-register")?.addEventListener("click", (e) => {
-        stopAll(e);
-        document.querySelector(".btn-auth.register")?.click();
+    on(qs(".menu-auth-register", panel), "click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+        modal?.classList.remove("show");
+        document.body.style.overflow = "hidden";
+
+        if (typeof window.BE_openRegister === "function") {
+            window.BE_openRegister();
+        }
     });
 
-    console.log("header-mobile.js v5.4 READY");
+    console.log("header-mobile.js – PHASE 3 READY");
 });
