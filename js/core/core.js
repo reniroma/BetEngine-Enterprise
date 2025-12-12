@@ -1,69 +1,45 @@
 /*********************************************************
- * BetEngine Enterprise – CORE.JS (FINAL v5.0)
- * Pure utility layer
- * NO UI logic
- * NO global side-effects
+ * BetEngine Enterprise – CORE.JS (FINAL)
+ * Global helpers + safe init bus.
+ * IMPORTANT: Does NOT dispatch "headerLoaded".
+ * That event is dispatched ONLY by header-loader.js.
  *********************************************************/
 
-(function () {
-    "use strict";
+document.addEventListener("DOMContentLoaded", () => {
 
-    if (window.Be) return; // prevent double init
+    const qs = (sel, scope = document) => scope.querySelector(sel);
+    const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
-    const Be = {};
+    const on  = (el, event, handler) => el?.addEventListener(event, handler);
+    const off = (el, event, handler) => el?.removeEventListener(event, handler);
 
-    /* ====================================================
-       DOM HELPERS
-    ==================================================== */
-    Be.qs = (selector, scope = document) =>
-        scope.querySelector(selector);
+    const addClass    = (el, cls) => el?.classList.add(cls);
+    const removeClass = (el, cls) => el?.classList.remove(cls);
+    const toggleClass = (el, cls) => el?.classList.toggle(cls);
+    const hasClass    = (el, cls) => el?.classList.contains(cls);
 
-    Be.qa = (selector, scope = document) =>
-        Array.from(scope.querySelectorAll(selector));
+    const lockScroll   = () => { document.body.style.overflow = "hidden"; };
+    const unlockScroll = () => { document.body.style.overflow = ""; };
 
-    Be.on = (el, event, handler, options) => {
-        if (!el) return;
-        el.addEventListener(event, handler, options || false);
+    const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    window.Be = {
+        qs, qa, on, off,
+        addClass, removeClass, toggleClass, hasClass,
+        lockScroll, unlockScroll,
+        scrollTop
     };
 
-    /* ====================================================
-       CLASS HELPERS
-    ==================================================== */
-    Be.addClass = (el, cls) => el && el.classList.add(cls);
-    Be.removeClass = (el, cls) => el && el.classList.remove(cls);
-    Be.toggleClass = (el, cls, force) =>
-        el && el.classList.toggle(cls, force);
-
-    /* ====================================================
-       STATE (READ-ONLY FOR UI)
-    ==================================================== */
-    Be.state = Object.freeze({
-        isMobile: window.matchMedia("(max-width: 900px)").matches
+    // Optional init bus
+    window.BeInit = window.BeInit || [];
+    window.BeInit.push({
+        name: "core",
+        init: () => console.log("[Core] Initialized")
     });
 
-    /* ====================================================
-       SAFE UTILITIES
-    ==================================================== */
-    Be.noop = () => {};
-
-    Be.once = (fn) => {
-        let done = false;
-        return function (...args) {
-            if (done) return;
-            done = true;
-            fn.apply(this, args);
-        };
-    };
-
-    /* ====================================================
-       EXPORT
-    ==================================================== */
-    Object.defineProperty(window, "Be", {
-        value: Be,
-        writable: false,
-        configurable: false
+    // Run what is already registered at this point
+    window.BeInit.forEach(mod => {
+        try { mod.init(); }
+        catch (err) { console.warn("[Core] Init error:", mod.name, err); }
     });
-
-    console.log("[Core] Be utilities ready");
-
-})();
+});
