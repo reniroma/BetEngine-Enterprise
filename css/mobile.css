@@ -1,9 +1,31 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE.CSS (FINAL v6.0)
- * Enterprise mobile UX layer
+ * BetEngine Enterprise – MOBILE.CSS
+ * Desktop-safe mobile layer:
+ * - Mobile UI is hidden by default (desktop)
+ * - Enabled only under @media (max-width: 900px)
  *********************************************************/
 
+/* ==================================================
+   DEFAULT (DESKTOP): HIDE MOBILE UI ALWAYS
+================================================== */
+.header-mobile,
+.mobile-only,
+.mobile-menu-overlay,
+.mobile-menu-panel,
+.be-modal-overlay {
+    display: none;
+}
+
+/* ==================================================
+   MOBILE BREAKPOINT
+================================================== */
 @media (max-width: 900px) {
+
+    /* Show mobile containers */
+    .header-mobile,
+    .mobile-only {
+        display: block;
+    }
 
     /* ==================================================
        MOBILE HEADER
@@ -13,7 +35,7 @@
         top: 0;
         z-index: 1000;
         background: var(--bg-header, #0b0b12);
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .mobile-top-bar {
@@ -21,6 +43,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px 14px;
+        gap: 10px;
     }
 
     .mobile-icon-btn {
@@ -34,9 +57,10 @@
        HAMBURGER OVERLAY
     ================================================== */
     .mobile-menu-overlay {
+        display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0, 0, 0, 0.6);
         opacity: 0;
         pointer-events: none;
         transition: opacity .2s ease;
@@ -52,18 +76,21 @@
        HAMBURGER PANEL
     ================================================== */
     .mobile-menu-panel {
+        display: block;
         position: fixed;
         top: 0;
         left: 0;
         width: 86%;
-        max-width: 320px;
+        max-width: 340px;
         height: 100vh;
         background: #0f121b;
         transform: translateX(-100%);
         transition: transform .25s ease;
         z-index: 2000;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         pointer-events: auto;
+        padding-bottom: 18px;
     }
 
     .mobile-menu-panel.open {
@@ -82,11 +109,12 @@
     ================================================== */
     .menu-brand {
         padding: 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .menu-section {
         padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .menu-link,
@@ -102,21 +130,25 @@
     }
 
     /* ==================================================
-       SUBMENUS
+       SUBMENUS (SCROLL-FRIENDLY)
     ================================================== */
     .submenu {
-        display: none;
+        max-height: 0;
+        overflow: hidden;
         padding-left: 12px;
-        margin-top: 6px;
+        transition: max-height .25s ease;
     }
 
     .submenu.open {
-        display: block;
+        max-height: 520px; /* allows "dropdown inside hamburger" without closing */
+        overflow: auto;
+        padding-top: 6px;
+        margin-top: 6px;
     }
 
     .submenu-item {
         display: block;
-        padding: 6px 0;
+        padding: 8px 0;
         font-size: 13px;
         color: #ccc;
         background: none;
@@ -129,30 +161,30 @@
        MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
     ================================================== */
     .be-modal-overlay {
+        display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.65);
-        display: none;
+        background: rgba(0, 0, 0, 0.65);
         align-items: center;
         justify-content: center;
         z-index: 3000;
+        pointer-events: none;
     }
 
     .be-modal-overlay.show {
         display: flex;
+        pointer-events: auto;
     }
 
     .be-modal {
-        width: 90%;
+        width: 92%;
         max-width: 360px;
         background: #11141d;
         border-radius: 12px;
         overflow: hidden;
     }
 
-    /* ==================================================
-       AUTH MODALS (DESKTOP ONLY)
-    ================================================== */
+    /* Keep auth overlays above everything if used on mobile */
     .be-auth-overlay {
         z-index: 4000;
     }
