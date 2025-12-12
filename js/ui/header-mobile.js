@@ -1,25 +1,27 @@
 /*********************************************************
  * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.0)
- * Phase 3 – STRICT UX RULES APPLIED
+ * Enterprise rules:
+ * - Hamburger NEVER closes on internal clicks
+ * - Odds / Language open mobile modal
+ * - Navigation opens submenus
+ * - Login / Register open auth modals
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const header  = document.querySelector(".header-mobile");
-    const panel   = document.querySelector(".mobile-menu-panel");
-    const overlay = document.querySelector(".mobile-menu-overlay");
-    const modal   = document.getElementById("mobile-header-modal");
+    const header   = document.querySelector(".header-mobile");
+    const panel    = document.querySelector(".mobile-menu-panel");
+    const overlay  = document.querySelector(".mobile-menu-overlay");
+    const modal    = document.getElementById("mobile-header-modal");
 
     if (!header || !panel || !overlay) return;
 
-    const btnOpen  = header.querySelector(".mobile-menu-toggle");
-    const btnClose = panel.querySelector(".mobile-menu-close");
+    const toggleBtn = header.querySelector(".mobile-menu-toggle");
+    const closeBtn  = panel.querySelector(".mobile-menu-close");
 
-    /* ====================================================
-       HARD ISOLATION – NOTHING INSIDE CLOSES MENU
-    ==================================================== */
-    panel.addEventListener("click", e => e.stopPropagation());
-
+    /* ==================================================
+       CORE OPEN / CLOSE (ONLY THESE CAN CLOSE MENU)
+    ================================================== */
     const openMenu = () => {
         overlay.classList.add("show");
         panel.classList.add("open");
@@ -32,27 +34,27 @@ document.addEventListener("headerLoaded", () => {
         document.body.style.overflow = "";
     };
 
-    /* ====================================================
-       OPEN / CLOSE CONTROLS
-    ==================================================== */
-    btnOpen?.addEventListener("click", e => {
+    toggleBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         openMenu();
     });
 
-    btnClose?.addEventListener("click", closeMenu);
-    overlay.addEventListener("click", closeMenu);
+    closeBtn?.addEventListener("click", closeMenu);
+    overlay?.addEventListener("click", closeMenu);
 
-    document.addEventListener("keydown", e => {
-        if (e.key === "Escape") closeMenu();
+    /* ==================================================
+       PREVENT CLICK-THROUGH
+    ================================================== */
+    panel.addEventListener("click", (e) => {
+        e.stopPropagation();
     });
 
-    /* ====================================================
-       NAVIGATION (NO AUTO-CLOSE)
-    ==================================================== */
+    /* ==================================================
+       NAVIGATION (SUBMENUS)
+    ================================================== */
     panel.querySelectorAll(".menu-link").forEach(link => {
-        link.addEventListener("click", e => {
+        link.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
 
@@ -60,11 +62,11 @@ document.addEventListener("headerLoaded", () => {
             const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
 
             if (submenu) {
-                panel.querySelectorAll(".submenu").forEach(s =>
+                panel.querySelectorAll(".submenu").forEach(s => {
                     s === submenu
                         ? s.classList.toggle("open")
-                        : s.classList.remove("open")
-                );
+                        : s.classList.remove("open");
+                });
             }
 
             if (section && typeof window.BE_activateSection === "function") {
@@ -73,48 +75,53 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* ====================================================
-       ODDS / LANGUAGE → OPEN MODAL (KEEP MENU OPEN)
-    ==================================================== */
-    panel.querySelector(".menu-odds")?.addEventListener("click", e => {
+    /* ==================================================
+       QUICK CONTROLS (ODDS / LANGUAGE)
+    ================================================== */
+    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        openModal("odds");
-    });
 
-    panel.querySelector(".menu-lang")?.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-        openModal("language");
-    });
-
-    function openModal(type) {
         if (!modal) return;
 
         modal.classList.add("show");
+        document.body.style.overflow = "hidden";
 
         modal.querySelectorAll(".be-modal-section")
             .forEach(s => s.classList.remove("active"));
 
-        modal.querySelector(`.modal-${type}`)?.classList.add("active");
-    }
+        modal.querySelector(".modal-odds")?.classList.add("active");
+    });
 
-    /* ====================================================
-       LOGIN / REGISTER (CLOSE MENU AFTER OPEN)
-    ==================================================== */
-    panel.querySelector(".menu-auth-login")?.addEventListener("click", e => {
+    panel.querySelector(".menu-lang")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        closeMenu();
+
+        if (!modal) return;
+
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+
+        modal.querySelectorAll(".be-modal-section")
+            .forEach(s => s.classList.remove("active"));
+
+        modal.querySelector(".modal-language")?.classList.add("active");
+    });
+
+    /* ==================================================
+       AUTH (LOGIN / REGISTER)
+    ================================================== */
+    panel.querySelector(".menu-auth-login")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         document.querySelector(".btn-auth.login")?.click();
     });
 
-    panel.querySelector(".menu-auth-register")?.addEventListener("click", e => {
+    panel.querySelector(".menu-auth-register")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        closeMenu();
         document.querySelector(".btn-auth.register")?.click();
     });
 
-    console.log("[header-mobile] Phase 3 READY");
+    console.log("[BetEngine] header-mobile.js v6.0 initialized");
 });
