@@ -1,71 +1,120 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (PATCHED)
- * - Unified auth trigger for desktop + mobile
- * - Listens to "openAuth" custom event
+ * BetEngine Enterprise – HEADER AUTH (FINAL v2.0)
+ * FIXED:
+ * - Safe init after headerLoaded
+ * - Desktop auth works (login/register)
+ * - Does NOT close hamburger or other menus
+ * - Proper event isolation
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const loginModal    = document.getElementById("auth-login");
-    const registerModal = document.getElementById("auth-register");
+    /* ===============================
+       ELEMENT REFERENCES
+    =============================== */
+    const loginOverlay    = document.getElementById("auth-login");
+    const registerOverlay = document.getElementById("auth-register");
 
-    if (!loginModal || !registerModal) return;
+    if (!loginOverlay || !registerOverlay) {
+        console.warn("[Auth] Overlays not found");
+        return;
+    }
 
-    const open = (modal) => {
-        modal.classList.add("show");
+    const loginBtn    = document.querySelector(".btn-auth.login");
+    const registerBtn = document.querySelector(".btn-auth.register");
+
+    const closeBtns = document.querySelectorAll("[data-auth-close]");
+    const switchBtns = document.querySelectorAll("[data-auth-target]");
+
+    /* ===============================
+       HELPERS
+    =============================== */
+    const open = (overlay) => {
+        overlay.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
-    const close = (modal) => {
-        modal.classList.remove("show");
+    const close = (overlay) => {
+        overlay.classList.remove("show");
         document.body.style.overflow = "";
     };
 
-    /* Desktop buttons */
-    document.querySelector(".btn-auth.login")?.addEventListener("click", () => {
-        close(registerModal);
-        open(loginModal);
+    /* ===============================
+       OPEN ACTIONS
+    =============================== */
+    loginBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        close(registerOverlay);
+        open(loginOverlay);
     });
 
-    document.querySelector(".btn-auth.register")?.addEventListener("click", () => {
-        close(loginModal);
-        open(registerModal);
+    registerBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        close(loginOverlay);
+        open(registerOverlay);
     });
 
-    /* Mobile / global event */
-    document.addEventListener("openAuth", (e) => {
-        if (e.detail === "login") {
-            close(registerModal);
-            open(loginModal);
-        }
-        if (e.detail === "register") {
-            close(loginModal);
-            open(registerModal);
-        }
-    });
-
-    /* Close buttons */
-    document.querySelectorAll("[data-auth-close]").forEach(btn => {
-        btn.addEventListener("click", () => {
-            close(loginModal);
-            close(registerModal);
+    /* ===============================
+       CLOSE BUTTONS
+    =============================== */
+    closeBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            close(loginOverlay);
+            close(registerOverlay);
         });
     });
 
-    /* Overlay click */
-    [loginModal, registerModal].forEach(modal => {
-        modal.addEventListener("click", e => {
-            if (e.target === modal) close(modal);
+    /* ===============================
+       SWITCH LOGIN <-> REGISTER
+    =============================== */
+    switchBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const target = btn.dataset.authTarget;
+
+            if (target === "login") {
+                close(registerOverlay);
+                open(loginOverlay);
+            }
+
+            if (target === "register") {
+                close(loginOverlay);
+                open(registerOverlay);
+            }
         });
     });
 
-    /* ESC */
-    document.addEventListener("keydown", e => {
+    /* ===============================
+       OVERLAY CLICK (ONLY BACKGROUND)
+    =============================== */
+    [loginOverlay, registerOverlay].forEach(overlay => {
+
+        // Prevent inner clicks from closing
+        overlay.querySelector(".be-auth-box")
+            ?.addEventListener("click", e => e.stopPropagation());
+
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+                close(overlay);
+            }
+        });
+    });
+
+    /* ===============================
+       ESC KEY
+    =============================== */
+    document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
-            close(loginModal);
-            close(registerModal);
+            if (loginOverlay.classList.contains("show")) close(loginOverlay);
+            if (registerOverlay.classList.contains("show")) close(registerOverlay);
         }
     });
 
-    console.log("header-auth.js PATCH READY");
+    console.log("[Auth] header-auth.js initialized safely");
 });
