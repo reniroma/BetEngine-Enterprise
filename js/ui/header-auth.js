@@ -1,120 +1,86 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH (FINAL v2.0)
- * FIXED:
- * - Safe init after headerLoaded
- * - Desktop auth works (login/register)
- * - Does NOT close hamburger or other menus
- * - Proper event isolation
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v3.0)
+ * Scope: Login & Register ONLY
+ * No mobile menu control
+ * No global click handlers
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    /* ===============================
-       ELEMENT REFERENCES
-    =============================== */
-    const loginOverlay    = document.getElementById("auth-login");
-    const registerOverlay = document.getElementById("auth-register");
-
-    if (!loginOverlay || !registerOverlay) {
-        console.warn("[Auth] Overlays not found");
-        return;
-    }
+    const loginModal    = document.getElementById("auth-login");
+    const registerModal = document.getElementById("auth-register");
 
     const loginBtn    = document.querySelector(".btn-auth.login");
     const registerBtn = document.querySelector(".btn-auth.register");
 
-    const closeBtns = document.querySelectorAll("[data-auth-close]");
-    const switchBtns = document.querySelectorAll("[data-auth-target]");
+    if (!loginModal || !registerModal) {
+        console.warn("[Auth] Modals not found");
+        return;
+    }
 
-    /* ===============================
+    /* ====================================================
        HELPERS
-    =============================== */
-    const open = (overlay) => {
-        overlay.classList.add("show");
+    ==================================================== */
+    const openModal = (modal) => {
+        modal.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
-    const close = (overlay) => {
-        overlay.classList.remove("show");
+    const closeModal = (modal) => {
+        modal.classList.remove("show");
         document.body.style.overflow = "";
     };
 
-    /* ===============================
-       OPEN ACTIONS
-    =============================== */
+    const closeAll = () => {
+        closeModal(loginModal);
+        closeModal(registerModal);
+    };
+
+    /* ====================================================
+       OPEN BUTTONS
+    ==================================================== */
     loginBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        close(registerOverlay);
-        open(loginOverlay);
+        closeModal(registerModal);
+        openModal(loginModal);
     });
 
     registerBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        close(loginOverlay);
-        open(registerOverlay);
+        closeModal(loginModal);
+        openModal(registerModal);
     });
 
-    /* ===============================
-       CLOSE BUTTONS
-    =============================== */
-    closeBtns.forEach(btn => {
+    /* ====================================================
+       CLOSE BUTTONS INSIDE MODALS
+    ==================================================== */
+    document.querySelectorAll("[data-auth-close]").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            close(loginOverlay);
-            close(registerOverlay);
+            closeAll();
         });
     });
 
-    /* ===============================
-       SWITCH LOGIN <-> REGISTER
-    =============================== */
-    switchBtns.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const target = btn.dataset.authTarget;
-
-            if (target === "login") {
-                close(registerOverlay);
-                open(loginOverlay);
-            }
-
-            if (target === "register") {
-                close(loginOverlay);
-                open(registerOverlay);
+    /* ====================================================
+       CLICK ON OVERLAY CLOSES MODAL
+    ==================================================== */
+    [loginModal, registerModal].forEach(modal => {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                closeModal(modal);
             }
         });
     });
 
-    /* ===============================
-       OVERLAY CLICK (ONLY BACKGROUND)
-    =============================== */
-    [loginOverlay, registerOverlay].forEach(overlay => {
-
-        // Prevent inner clicks from closing
-        overlay.querySelector(".be-auth-box")
-            ?.addEventListener("click", e => e.stopPropagation());
-
-        overlay.addEventListener("click", (e) => {
-            if (e.target === overlay) {
-                close(overlay);
-            }
-        });
-    });
-
-    /* ===============================
+    /* ====================================================
        ESC KEY
-    =============================== */
+    ==================================================== */
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (loginOverlay.classList.contains("show")) close(loginOverlay);
-            if (registerOverlay.classList.contains("show")) close(registerOverlay);
-        }
+        if (e.key === "Escape") closeAll();
     });
 
-    console.log("[Auth] header-auth.js initialized safely");
+    console.log("[Auth] Login/Register ready");
+
 });
