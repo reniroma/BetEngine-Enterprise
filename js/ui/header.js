@@ -1,20 +1,24 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER.JS (FINAL v10)
- * Fokus: vetëm DESKTOP header
- * - Odds / Language / Tools dropdowns
- * - Section navigation (desktop main + subnav)
- * - Zero logjikë për mobile menu / mobile modal
- * - Zero logjikë për auth (auth është në header-auth.js)
+ * BetEngine Enterprise – HEADER JS (FINAL v10)
+ * Scope:
+ *  - Desktop odds / language / tools dropdowns
+ *  - Desktop main nav <-> row-sub sync
+ *  - Sync odds/lang into mobile "Quick Controls" panel
+ *
+ * Excludes:
+ *  - Mobile hamburger logic (header-mobile.js)
+ *  - Mobile modal (header-modals.html)
+ *  - Auth modals (header-auth.js)
  *********************************************************/
 
 /*******************************************************
  * UTILS
  *******************************************************/
-const BE_isInside = (target, selector) => {
+const beIsInside = (target, selector) => {
     return !!(target && target.closest(selector));
 };
 
-const BE_closeAllDesktopDropdowns = () => {
+const beCloseAllDesktopDropdowns = () => {
     document
         .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
         .forEach(el => el.classList.remove("show"));
@@ -23,9 +27,14 @@ const BE_closeAllDesktopDropdowns = () => {
 /*******************************************************
  * DESKTOP DROPDOWNS
  *******************************************************/
+let beDesktopDropdownsInitialized = false;
+
 function initDesktopDropdowns() {
     const header = document.querySelector(".header-desktop");
     if (!header) return;
+
+    if (beDesktopDropdownsInitialized) return;
+    beDesktopDropdownsInitialized = true;
 
     /* ---------------- ODDS ---------------- */
     const oddsToggle   = header.querySelector(".odds-format .odds-toggle");
@@ -33,11 +42,14 @@ function initDesktopDropdowns() {
     const oddsItems    = oddsDropdown ? oddsDropdown.querySelectorAll(".item") : [];
     const oddsLabel    = header.querySelector(".odds-label");
 
+    // Mobile "Quick Controls" mirror (inside slide menu)
+    const mobileOddsQuick = document.querySelector(".menu-item.menu-odds span");
+
     if (oddsToggle && oddsDropdown) {
         oddsToggle.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = oddsDropdown.classList.contains("show");
-            BE_closeAllDesktopDropdowns();
+            beCloseAllDesktopDropdowns();
             if (!open) oddsDropdown.classList.add("show");
         });
 
@@ -48,12 +60,10 @@ function initDesktopDropdowns() {
                 oddsItems.forEach(i => i.classList.remove("active"));
                 item.classList.add("active");
 
-                const clean = item.textContent.split("(")[0].trim();
-                if (oddsLabel) oddsLabel.textContent = clean;
+                const clean = (item.textContent || "").split("(")[0].trim();
 
-                // Optional sync me mobile (nëse ekziston markup-i i vjetër)
-                const mobileOdds = document.querySelector(".mobile-odds-toggle .value");
-                if (mobileOdds) mobileOdds.textContent = clean;
+                if (oddsLabel) oddsLabel.textContent = clean;
+                if (mobileOddsQuick) mobileOddsQuick.textContent = clean;
 
                 oddsDropdown.classList.remove("show");
             });
@@ -66,11 +76,14 @@ function initDesktopDropdowns() {
     const langItems    = langDropdown ? langDropdown.querySelectorAll(".item") : [];
     const langLabel    = header.querySelector(".language-selector .lang-code");
 
+    // Mobile "Quick Controls" mirror
+    const mobileLangQuick = document.querySelector(".menu-item.menu-lang span");
+
     if (langToggle && langDropdown) {
         langToggle.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = langDropdown.classList.contains("show");
-            BE_closeAllDesktopDropdowns();
+            beCloseAllDesktopDropdowns();
             if (!open) langDropdown.classList.add("show");
         });
 
@@ -82,13 +95,9 @@ function initDesktopDropdowns() {
                 item.classList.add("active");
 
                 const label = item.textContent || "";
-                const code  = (item.dataset.lang || "EN").toUpperCase();
 
                 if (langLabel) langLabel.textContent = label;
-
-                // Optional sync me mobile (nëse ekziston markup-i i vjetër)
-                const mobileLang = document.querySelector(".mobile-lang-toggle .lang-code");
-                if (mobileLang) mobileLang.textContent = code;
+                if (mobileLangQuick) mobileLangQuick.textContent = label;
 
                 langDropdown.classList.remove("show");
             });
@@ -105,35 +114,41 @@ function initDesktopDropdowns() {
         toolsTrigger.addEventListener("click", (e) => {
             e.stopPropagation();
             const open = toolsDropdown.classList.contains("show");
-            BE_closeAllDesktopDropdowns();
+            beCloseAllDesktopDropdowns();
             if (!open) toolsDropdown.classList.add("show");
         });
     }
 
-    /* ---------------- CLOSE ON OUTSIDE (DESKTOP VETËM) ---------------- */
+    /* ---------------- CLOSE ON OUTSIDE ---------------- */
     document.addEventListener("click", (e) => {
         if (
-            !BE_isInside(e.target, ".odds-format") &&
-            !BE_isInside(e.target, ".language-selector") &&
-            !BE_isInside(e.target, ".sub-item-tools") &&
-            !BE_isInside(e.target, ".tools-dropdown")
+            !beIsInside(e.target, ".odds-format") &&
+            !beIsInside(e.target, ".language-selector") &&
+            !beIsInside(e.target, ".sub-item-tools") &&
+            !beIsInside(e.target, ".tools-dropdown")
         ) {
-            BE_closeAllDesktopDropdowns();
+            beCloseAllDesktopDropdowns();
         }
     });
 
     /* ---------------- CLOSE ON ESC ---------------- */
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") BE_closeAllDesktopDropdowns();
+        if (e.key === "Escape") beCloseAllDesktopDropdowns();
     });
 }
 
 /*******************************************************
- * NAVIGATION SYNC (Desktop Only + hook për mobile menu)
+ * NAVIGATION SYNC (Desktop main nav <-> row-sub)
  *******************************************************/
+let beSectionNavInitialized = false;
+
 function initSectionNavigation() {
     const dMain = document.querySelectorAll(".main-nav .nav-item");
     const dSub  = document.querySelectorAll(".row-sub .subnav-group");
+
+    if (!dMain.length || !dSub.length) return;
+    if (beSectionNavInitialized) return;
+    beSectionNavInitialized = true;
 
     const activate = (section) => {
         if (!section) return;
@@ -147,9 +162,16 @@ function initSectionNavigation() {
         );
     };
 
-    // Ekspozuar për mobile menu (menu-link data-section)
+    // Expose for mobile menu (header-mobile.js) – safe global
     window.BE_activateSection = activate;
 
+    // Default active (based on markup)
+    const initial = Array.from(dMain).find(i => i.classList.contains("active")) || dMain[0];
+    if (initial) {
+        activate(initial.dataset.section);
+    }
+
+    // Desktop click handlers
     dMain.forEach(item => {
         item.addEventListener("click", (e) => {
             e.preventDefault();
@@ -159,21 +181,13 @@ function initSectionNavigation() {
 }
 
 /*******************************************************
- * INIT ALL HEADER MODULES (DESKTOP ONLY)
+ * INIT ALL HEADER MODULES (DESKTOP-ONLY LOGIC)
  *******************************************************/
 function initHeaderModules() {
-    if (window.__BE_HEADER_INITED__) return;
-    window.__BE_HEADER_INITED__ = true;
-
     initDesktopDropdowns();
     initSectionNavigation();
-
-    console.log("BetEngine Header (desktop) initialized v10");
+    console.log("BetEngine Header (desktop) initialized – v10");
 }
 
-/*******************************************************
- * LISTENER – HEADER READY
- *******************************************************/
-document.addEventListener("headerLoaded", () => {
-    initHeaderModules();
-});
+/* Run when header HTML is injected */
+document.addEventListener("headerLoaded", initHeaderModules);
