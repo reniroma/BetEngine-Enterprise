@@ -1,27 +1,23 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.0)
- * Enterprise rules:
- * - Hamburger NEVER closes on internal clicks
- * - Odds / Language open mobile modal
- * - Navigation opens submenus
- * - Login / Register open auth modals
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL)
+ * Rules:
+ * - Hamburger NEVER auto-closes on top-level navigation clicks
+ * - Odds/Language open the mobile modal without closing menu
+ * - Login/Register triggers auth overlays (desktop buttons)
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
-    const header   = document.querySelector(".header-mobile");
-    const panel    = document.querySelector(".mobile-menu-panel");
-    const overlay  = document.querySelector(".mobile-menu-overlay");
-    const modal    = document.getElementById("mobile-header-modal");
+    const headerMobile = document.querySelector(".header-mobile");
+    const panel   = document.querySelector(".mobile-menu-panel");
+    const overlay = document.querySelector(".mobile-menu-overlay");
+    const modal   = document.getElementById("mobile-header-modal");
 
-    if (!header || !panel || !overlay) return;
+    if (!headerMobile || !panel || !overlay) return;
 
-    const toggleBtn = header.querySelector(".mobile-menu-toggle");
+    const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
     const closeBtn  = panel.querySelector(".mobile-menu-close");
 
-    /* ==================================================
-       CORE OPEN / CLOSE (ONLY THESE CAN CLOSE MENU)
-    ================================================== */
     const openMenu = () => {
         overlay.classList.add("show");
         panel.classList.add("open");
@@ -40,19 +36,27 @@ document.addEventListener("headerLoaded", () => {
         openMenu();
     });
 
-    closeBtn?.addEventListener("click", closeMenu);
-    overlay?.addEventListener("click", closeMenu);
-
-    /* ==================================================
-       PREVENT CLICK-THROUGH
-    ================================================== */
-    panel.addEventListener("click", (e) => {
-        e.stopPropagation();
+    closeBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeMenu();
     });
 
-    /* ==================================================
-       NAVIGATION (SUBMENUS)
-    ================================================== */
+    overlay.addEventListener("click", closeMenu);
+
+    // Prevent click-through closing due to global listeners
+    panel.addEventListener("click", (e) => e.stopPropagation());
+
+    // ESC closes hamburger (only)
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && panel.classList.contains("open")) {
+            closeMenu();
+        }
+    });
+
+    /* ---------------------------------------
+       Top-level navigation: toggle submenus
+       (Never close hamburger automatically)
+    ---------------------------------------- */
     panel.querySelectorAll(".menu-link").forEach(link => {
         link.addEventListener("click", (e) => {
             e.preventDefault();
@@ -63,9 +67,8 @@ document.addEventListener("headerLoaded", () => {
 
             if (submenu) {
                 panel.querySelectorAll(".submenu").forEach(s => {
-                    s === submenu
-                        ? s.classList.toggle("open")
-                        : s.classList.remove("open");
+                    if (s === submenu) s.classList.toggle("open");
+                    else s.classList.remove("open");
                 });
             }
 
@@ -75,42 +78,38 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* ==================================================
-       QUICK CONTROLS (ODDS / LANGUAGE)
-    ================================================== */
-    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
+    /* ---------------------------------------
+       Quick Controls: open modal without closing menu
+    ---------------------------------------- */
+    const openModalSection = (sectionClass) => {
         if (!modal) return;
 
         modal.classList.add("show");
-        document.body.style.overflow = "hidden";
 
         modal.querySelectorAll(".be-modal-section")
             .forEach(s => s.classList.remove("active"));
 
-        modal.querySelector(".modal-odds")?.classList.add("active");
+        modal.querySelector(sectionClass)?.classList.add("active");
+
+        // Keep scroll locked (menu is already locking it)
+        document.body.style.overflow = "hidden";
+    };
+
+    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openModalSection(".modal-odds");
     });
 
     panel.querySelector(".menu-lang")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (!modal) return;
-
-        modal.classList.add("show");
-        document.body.style.overflow = "hidden";
-
-        modal.querySelectorAll(".be-modal-section")
-            .forEach(s => s.classList.remove("active"));
-
-        modal.querySelector(".modal-language")?.classList.add("active");
+        openModalSection(".modal-language");
     });
 
-    /* ==================================================
-       AUTH (LOGIN / REGISTER)
-    ================================================== */
+    /* ---------------------------------------
+       Mobile auth triggers
+    ---------------------------------------- */
     panel.querySelector(".menu-auth-login")?.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -123,5 +122,5 @@ document.addEventListener("headerLoaded", () => {
         document.querySelector(".btn-auth.register")?.click();
     });
 
-    console.log("[BetEngine] header-mobile.js v6.0 initialized");
+    console.log("[header-mobile] Initialized (stable rules)");
 });
