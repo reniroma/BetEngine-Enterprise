@@ -1,15 +1,18 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (FINAL v2.0)
- * FIXED:
- * - Guaranteed DOM injection order
- * - headerLoaded fires ONCE and ONLY when safe
- * - Prevents race conditions with header.js / header-mobile.js / auth
+ * BetEngine Enterprise – HEADER LOADER (FINAL, STABLE)
+ * Injects:
+ *  - header-desktop.html
+ *  - header-mobile.html
+ *  - header-modals.html
+ *  - auth-login.html
+ *  - auth-register.html
+ *
+ * Dispatches "headerLoaded" ONCE, only after injection.
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", async () => {
 
     const BASE_PATH = "layouts/header/";
-
     const FILES = [
         "header-desktop.html",
         "header-mobile.html",
@@ -17,8 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         "auth-login.html",
         "auth-register.html"
     ];
-
-    let headerLoadedOnce = false;
 
     async function fetchHTML(path) {
         try {
@@ -34,43 +35,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    const main = document.querySelector("main");
-    if (!main) {
-        console.error("[HeaderLoader] <main> not found");
+    const mainEl = document.querySelector("main");
+    if (!mainEl) {
+        console.error("[HeaderLoader] <main> not found. Abort.");
         return;
     }
 
-    const fragments = [];
-
-    for (const file of FILES) {
-        const html = await fetchHTML(BASE_PATH + file);
-        if (html && html.trim()) {
-            fragments.push(html.trim());
-        }
+    const parts = [];
+    for (const f of FILES) {
+        const html = await fetchHTML(BASE_PATH + f);
+        if (html && html.trim()) parts.push(html.trim());
     }
 
-    if (!fragments.length) {
-        console.error("[HeaderLoader] No header HTML loaded");
+    if (!parts.length) {
+        console.error("[HeaderLoader] No header HTML loaded.");
         return;
     }
 
-    // Inject ALL header HTML before <main>
-    main.insertAdjacentHTML("beforebegin", fragments.join("\n"));
+    mainEl.insertAdjacentHTML("beforebegin", parts.join("\n"));
 
-    /* ====================================================
-       FINAL SAFE DISPATCH
-    ==================================================== */
-    const fireHeaderLoaded = () => {
-        if (headerLoadedOnce) return;
-        headerLoadedOnce = true;
+    requestAnimationFrame(() => {
         document.dispatchEvent(new Event("headerLoaded"));
-        console.log("[HeaderLoader] headerLoaded dispatched (SAFE)");
-    };
-
-    // Double safety: DOM + microtask + next frame
-    setTimeout(() => {
-        requestAnimationFrame(() => {
-            fireHeaderLoaded();
-        });
-    }, 0);
+        console.log("[HeaderLoader] headerLoaded dispatched");
+    });
 });
