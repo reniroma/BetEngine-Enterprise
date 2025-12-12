@@ -1,20 +1,13 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (FINAL, STABLE)
- * - Injects: desktop header, mobile header, header modals,
- *   auth login + auth register
- * - SINGLE source of header HTML
- * - Emits "headerLoaded" ONCE, only after DOM injection
- * - Compatible with:
- *   header.js
- *   header-mobile.js
- *   header-auth.js
+ * BetEngine Enterprise – HEADER LOADER (FINAL v2.0)
+ * FIXED:
+ * - Guaranteed DOM injection order
+ * - headerLoaded fires ONCE and ONLY when safe
+ * - Prevents race conditions with header.js / header-mobile.js / auth
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    /* ====================================================
-       CONFIG
-    ==================================================== */
     const BASE_PATH = "layouts/header/";
 
     const FILES = [
@@ -25,9 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         "auth-register.html"
     ];
 
-    /* ====================================================
-       SAFE FETCH
-    ==================================================== */
+    let headerLoadedOnce = false;
+
     async function fetchHTML(path) {
         try {
             const res = await fetch(path, { cache: "no-store" });
@@ -42,39 +34,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    /* ====================================================
-       LOAD & INJECT
-    ==================================================== */
-    const mainEl = document.querySelector("main");
-
-    if (!mainEl) {
-        console.error("[HeaderLoader] <main> not found. Abort.");
+    const main = document.querySelector("main");
+    if (!main) {
+        console.error("[HeaderLoader] <main> not found");
         return;
     }
 
-    const htmlParts = [];
+    const fragments = [];
 
     for (const file of FILES) {
         const html = await fetchHTML(BASE_PATH + file);
-        if (html.trim().length) {
-            htmlParts.push(html.trim());
+        if (html && html.trim()) {
+            fragments.push(html.trim());
         }
     }
 
-    if (!htmlParts.length) {
-        console.error("[HeaderLoader] No header HTML loaded.");
+    if (!fragments.length) {
+        console.error("[HeaderLoader] No header HTML loaded");
         return;
     }
 
-    // Inject everything BEFORE <main>
-    mainEl.insertAdjacentHTML("beforebegin", htmlParts.join("\n"));
+    // Inject ALL header HTML before <main>
+    main.insertAdjacentHTML("beforebegin", fragments.join("\n"));
 
     /* ====================================================
-       FINALIZE
+       FINAL SAFE DISPATCH
     ==================================================== */
-    requestAnimationFrame(() => {
+    const fireHeaderLoaded = () => {
+        if (headerLoadedOnce) return;
+        headerLoadedOnce = true;
         document.dispatchEvent(new Event("headerLoaded"));
-        console.log("[HeaderLoader] headerLoaded dispatched");
-    });
+        console.log("[HeaderLoader] headerLoaded dispatched (SAFE)");
+    };
 
+    // Double safety: DOM + microtask + next frame
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            fireHeaderLoaded();
+        });
+    }, 0);
 });
