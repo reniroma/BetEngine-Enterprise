@@ -16,50 +16,45 @@
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
 
-    <!-- AUTH MODALS CSS (after desktop.css) -->
+    <!-- AUTH MODALS CSS (must be after desktop.css) -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
-    <!-- MOBILE CSS (always last) -->
+    <!-- MOBILE CSS (always loaded last) -->
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
 <body>
 
     <!-- ====================================================
-         HEADERS
-         Loaded dynamically by header-loader.js
-         (desktop + mobile + modals + mobile menu)
-         DO NOT PLACE ANY HEADER HTML HERE
+         HEADERS (Loaded dynamically by header-loader.js)
+         DO NOT PLACE RAW HEADER HTML HERE.
     ======================================================= -->
 
-    <!-- ====================================================
-         MAIN CONTENT
-    ======================================================= -->
     <main>
         <h1>BetEngine Enterprise</h1>
         <p>Enterprise-ready skeleton layout.</p>
     </main>
 
     <!-- ====================================================
-         JAVASCRIPT ORDER (STRICT – DO NOT CHANGE)
+         JAVASCRIPT ORDER (STRICT ENTERPRISE STANDARD)
     ======================================================= -->
 
-    <!-- CORE -->
+    <!-- CORE ENGINE -->
     <script src="js/core/core.js?v=4"></script>
 
-    <!-- HEADER LOADER (injects all header HTML) -->
+    <!-- HEADER LOADER (injects header-desktop, header-mobile, header-modals) -->
     <script src="js/core/header-loader.js?v=4"></script>
 
     <!-- DESKTOP HEADER LOGIC -->
     <script src="js/ui/header.js?v=6"></script>
 
-    <!-- MOBILE HEADER / HAMBURGER LOGIC -->
-    <script src="js/ui/header-mobile.js?v=5"></script>
+    <!-- MOBILE HEADER LOGIC -->
+    <script src="js/ui/header-mobile.js?v=3"></script>
 
-    <!-- UI WIDGETS -->
+    <!-- WIDGETS / UI HELPERS -->
     <script src="js/ui/widgets.js?v=4"></script>
 
-    <!-- AUTH MODALS -->
+    <!-- AUTH MODAL LOGIC -->
     <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
