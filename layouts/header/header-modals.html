@@ -1,6 +1,8 @@
 <!-- ====================================================
-     BetEngine Enterprise – HEADER MODALS (FINAL v3.1)
-     Restored original working structure
+     BetEngine Enterprise – HEADER MODALS (FINAL PATCH)
+     - Mobile Odds / Language modal
+     - Mobile Hamburger Menu
+     - Mobile Login / Register triggers (PATCH)
 ======================================================== -->
 
 <!-- ============================
@@ -12,7 +14,7 @@
         <div class="be-modal-header">
             <span class="be-modal-title">Select option</span>
             <button class="be-modal-close" type="button">
-                <img src="assets/icons/close.svg" alt="">
+                <img src="assets/icons/close.svg" alt="Close">
             </button>
         </div>
 
@@ -68,23 +70,32 @@
 </div>
 
 <!-- ====================================================
-     MOBILE MENU MODAL (HAMBURGER)
+     MOBILE MENU MODAL (HAMBURGER MENU)
 ======================================================== -->
 <div class="mobile-menu-overlay"></div>
 
 <div class="mobile-menu-panel">
 
     <button class="mobile-menu-close" type="button">
-        <img src="assets/icons/close.svg" alt="">
+        <img src="assets/icons/close.svg" alt="Close">
     </button>
 
     <!-- Brand -->
     <div class="menu-brand">
-        <img src="assets/logos/logo.svg" class="logo" alt="">
+        <img src="assets/logos/logo.svg" class="logo" alt="BetEngine">
         <div class="brand-text">
             <span class="name">BetEngine</span>
             <span class="tagline">Smart betting tools</span>
         </div>
+    </div>
+
+    <!-- ============================
+         AUTH (MOBILE) — PATCH
+    ============================= -->
+    <div class="menu-section">
+        <h4>Account</h4>
+        <button class="menu-item menu-auth-login">Login</button>
+        <button class="menu-item menu-auth-register">Register</button>
     </div>
 
     <!-- Quick Controls -->
@@ -132,7 +143,7 @@
 </div>
 
 <!-- ====================================================
-     DESKTOP AUTH MOUNT POINTS (CRITICAL)
+     AUTH CONTAINERS (DESKTOP)
 ======================================================== -->
-<div id="auth-login-container"></div>
-<div id="auth-register-container"></div>
+<div id="auth-login"></div>
+<div id="auth-register"></div>
