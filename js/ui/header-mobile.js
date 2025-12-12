@@ -1,92 +1,113 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.0)
- * FIXED: full compatibility with mobile.css
- * - Panel uses .open  (CSS expects .open)
- * - Overlay uses .show
- * - Full scroll lock/unlock
- * - Safe event handling
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL STABLE)
+ * - Works ONLY after header HTML is injected
+ * - No dependency on core.js
+ * - No duplicate listeners
+ * - Compatible with mobile.css + header-modals.html
  *********************************************************/
 
-function initMobileMenu() {
+document.addEventListener("headerLoaded", () => {
 
-    const mobileHeader = document.querySelector(".header-mobile");
-    if (!mobileHeader) return;
+    const headerMobile = document.querySelector(".header-mobile");
+    if (!headerMobile) return;
 
-    /* Elements */
-    const btnToggle     = mobileHeader.querySelector(".mobile-menu-toggle");
-    const menuPanel     = document.querySelector(".mobile-menu-panel");
-    const menuOverlay   = document.querySelector(".mobile-menu-overlay");
-    const btnClose      = document.querySelector(".mobile-menu-close");
+    /* ===============================
+       ELEMENTS
+    =============================== */
+    const toggleBtn  = headerMobile.querySelector(".mobile-menu-toggle");
+    const overlay    = document.querySelector(".mobile-menu-overlay");
+    const panel      = document.querySelector(".mobile-menu-panel");
+    const closeBtn   = panel?.querySelector(".mobile-menu-close");
 
-    /* Auth triggers inside mobile menu */
-    const menuAuthLogin      = document.querySelector(".menu-auth-login");
-    const menuAuthRegister   = document.querySelector(".menu-auth-register");
-    const desktopLoginBtn    = document.querySelector(".btn-auth.login");
-    const desktopRegisterBtn = document.querySelector(".btn-auth.register");
+    if (!toggleBtn || !overlay || !panel) {
+        console.warn("header-mobile.js: required elements missing");
+        return;
+    }
 
-    /* -------------------------
-       OPEN MENU
-    ------------------------- */
+    /* ===============================
+       OPEN / CLOSE
+    =============================== */
     const openMenu = () => {
-        if (!menuPanel || !menuOverlay) return;
-
-        menuPanel.classList.add("open");     // FIXED
-        menuOverlay.classList.add("show");   // correct
+        overlay.classList.add("show");
+        panel.classList.add("open");
         document.body.style.overflow = "hidden";
     };
 
-    /* -------------------------
-       CLOSE MENU
-    ------------------------- */
     const closeMenu = () => {
-        if (!menuPanel || !menuOverlay) return;
-
-        menuPanel.classList.remove("open");  // FIXED
-        menuOverlay.classList.remove("show");
+        overlay.classList.remove("show");
+        panel.classList.remove("open");
         document.body.style.overflow = "";
     };
 
-    /* -------------------------
+    /* ===============================
        EVENTS
-    ------------------------- */
+    =============================== */
 
-    // Toggle button (hamburger)
-    btnToggle?.addEventListener("click", (e) => {
+    // Hamburger
+    toggleBtn.addEventListener("click", (e) => {
         e.preventDefault();
         openMenu();
     });
 
-    // Close button (X)
-    btnClose?.addEventListener("click", (e) => {
+    // Close (X)
+    closeBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         closeMenu();
     });
 
-    // Click on overlay closes menu
-    menuOverlay?.addEventListener("click", () => {
+    // Overlay click
+    overlay.addEventListener("click", () => {
         closeMenu();
     });
 
-    // ESC key closes menu
+    // ESC
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeMenu();
+        if (e.key === "Escape" && panel.classList.contains("open")) {
+            closeMenu();
+        }
     });
 
-    /* -------------------------
-       AUTH (Login / Register)
-    ------------------------- */
-    menuAuthLogin?.addEventListener("click", () => {
+    /* ===============================
+       NAVIGATION (MENU LINKS)
+    =============================== */
+    panel.querySelectorAll(".menu-link").forEach(link => {
+        link.addEventListener("click", () => {
+            const section = link.dataset.section;
+
+            if (section && typeof window.BE_activateSection === "function") {
+                window.BE_activateSection(section);
+            }
+
+            const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
+
+            if (submenu) {
+                panel.querySelectorAll(".submenu").forEach(s => {
+                    s === submenu
+                        ? s.classList.toggle("open")
+                        : s.classList.remove("open");
+                });
+            } else {
+                closeMenu();
+            }
+        });
+    });
+
+    /* ===============================
+       QUICK CONTROLS (ODDS / LANG)
+    =============================== */
+    panel.querySelector(".menu-odds")?.addEventListener("click", () => {
         closeMenu();
-        desktopLoginBtn?.click();
+        document
+            .querySelector(".mobile-odds-toggle")
+            ?.click();
     });
 
-    menuAuthRegister?.addEventListener("click", () => {
+    panel.querySelector(".menu-lang")?.addEventListener("click", () => {
         closeMenu();
-        desktopRegisterBtn?.click();
+        document
+            .querySelector(".mobile-lang-toggle")
+            ?.click();
     });
 
-    console.log("Mobile menu initialized (v5.0)");
-}
-
-/* Initialize after headers are injected */
-document.addEventListener("headerLoaded", initMobileMenu);
+    console.log("header-mobile.js FINAL initialized");
+});
