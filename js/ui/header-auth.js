@@ -1,106 +1,95 @@
 /*********************************************************
  * BetEngine Enterprise – AUTH SYSTEM (2 MODALS)
  * Login + Register (separate overlays)
- * FINAL VERSION – WITH FIX FOR REGISTER OVERLAY BUG
+ * FINAL v2.0 – enterprise-safe init
+ *
+ * Fixes:
+ * - Works even if headerLoaded fired before this script loads
+ * - Prevents double-binding
  *********************************************************/
 
-document.addEventListener("headerLoaded", () => {
+(function () {
 
-    /*******************************************************
-     * ELEMENT REFERENCES
-     *******************************************************/
-    const loginModal    = document.getElementById("auth-login");
-    const registerModal = document.getElementById("auth-register");
+    const initAuth = () => {
+        if (document.documentElement.dataset.beAuthInit === "1") return;
+        document.documentElement.dataset.beAuthInit = "1";
 
-    const loginBox      = loginModal?.querySelector(".be-auth-box");
-    const registerBox   = registerModal?.querySelector(".be-auth-box");
+        const loginModal    = document.getElementById("auth-login");
+        const registerModal = document.getElementById("auth-register");
 
-    const loginBtn      = document.querySelector(".btn-auth.login");
-    const registerBtn   = document.querySelector(".btn-auth.register");
+        const loginBtn      = document.querySelector(".btn-auth.login");
+        const registerBtn   = document.querySelector(".btn-auth.register");
 
-    const closeBtns     = document.querySelectorAll("[data-auth-close]");
-    const switchBtns    = document.querySelectorAll(".auth-switch");
+        if (!loginModal || !registerModal || !loginBtn || !registerBtn) return;
 
-    /*******************************************************
-     * HELPERS: OPEN / CLOSE
-     *******************************************************/
-    const open = (modal) => {
-        if (!modal) return;
-        modal.classList.add("show");
-        document.body.style.overflow = "hidden";
-    };
+        const closeBtns  = document.querySelectorAll("[data-auth-close]");
+        const switchBtns = document.querySelectorAll(".auth-switch");
 
-    const close = (modal) => {
-        if (!modal) return;
-        modal.classList.remove("show");
-        document.body.style.overflow = "";
-    };
+        const open = (modal) => {
+            if (!modal) return;
+            modal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        };
 
-    /*******************************************************
-     * OPEN BUTTONS
-     *******************************************************/
-    loginBtn?.addEventListener("click", () => {
-        close(registerModal);
-        open(loginModal);
-    });
+        const close = (modal) => {
+            if (!modal) return;
+            modal.classList.remove("show");
+            document.body.style.overflow = "";
+        };
 
-    registerBtn?.addEventListener("click", () => {
-        close(loginModal);
-        open(registerModal);
-    });
-
-    /*******************************************************
-     * CLOSE BUTTONS (X)
-     *******************************************************/
-    closeBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            close(loginModal);
+        loginBtn.addEventListener("click", () => {
             close(registerModal);
+            open(loginModal);
         });
-    });
 
-    /*******************************************************
-     * SWITCH LOGIN <-> REGISTER
-     *******************************************************/
-    switchBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            const target = btn.dataset.authTarget;
+        registerBtn.addEventListener("click", () => {
+            close(loginModal);
+            open(registerModal);
+        });
 
-            if (target === "login") {
-                close(registerModal);
-                open(loginModal);
-            }
-            else if (target === "register") {
+        closeBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
                 close(loginModal);
-                open(registerModal);
-            }
+                close(registerModal);
+            });
         });
-    });
 
-    /*******************************************************
-     * FIX KRITIK:
-     * Prevent clicks inside modal box from closing overlay
-     *******************************************************/
-    loginBox?.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
-
-    registerBox?.addEventListener("click", (e) => {
-        e.stopPropagation();
-    });
-
-    /*******************************************************
-     * CLOSE ONLY WHEN CLICKING STRICTLY ON THE OVERLAY
-     *******************************************************/
-    [loginModal, registerModal].forEach(modal => {
-        modal?.addEventListener("click", (e) => {
-
-            // click MUST be exactly on the overlay background
-            const isOverlay = e.target === modal;
-
-            if (isOverlay) {
-                close(modal);
-            }
+        switchBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const target = btn.dataset.authTarget;
+                if (target === "login") {
+                    close(registerModal);
+                    open(loginModal);
+                } else if (target === "register") {
+                    close(loginModal);
+                    open(registerModal);
+                }
+            });
         });
+
+        [loginModal, registerModal].forEach(modal => {
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) close(modal);
+            });
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Escape") return;
+            if (loginModal.classList.contains("show")) close(loginModal);
+            if (registerModal.classList.contains("show")) close(registerModal);
+        });
+
+        console.log("Auth initialized (v2.0)");
+    };
+
+    // Init on headerLoaded (normal path)
+    document.addEventListener("headerLoaded", initAuth);
+
+    // Fallback init (if header already injected)
+    window.addEventListener("load", () => {
+        if (document.querySelector(".btn-auth.login") && document.getElementById("auth-login")) {
+            initAuth();
+        }
     });
-});
+
+})();
