@@ -1,9 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL STABLE)
- * - Works ONLY after header HTML is injected
- * - No dependency on core.js
- * - No duplicate listeners
- * - Compatible with mobile.css + header-modals.html
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v5.1)
+ * FIX: Stop event bubbling inside mobile menu panel
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -11,22 +8,19 @@ document.addEventListener("headerLoaded", () => {
     const headerMobile = document.querySelector(".header-mobile");
     if (!headerMobile) return;
 
-    /* ===============================
-       ELEMENTS
-    =============================== */
-    const toggleBtn  = headerMobile.querySelector(".mobile-menu-toggle");
-    const overlay    = document.querySelector(".mobile-menu-overlay");
-    const panel      = document.querySelector(".mobile-menu-panel");
-    const closeBtn   = panel?.querySelector(".mobile-menu-close");
+    const toggleBtn = headerMobile.querySelector(".mobile-menu-toggle");
+    const overlay   = document.querySelector(".mobile-menu-overlay");
+    const panel     = document.querySelector(".mobile-menu-panel");
+    const closeBtn  = panel?.querySelector(".mobile-menu-close");
 
-    if (!toggleBtn || !overlay || !panel) {
-        console.warn("header-mobile.js: required elements missing");
-        return;
-    }
+    if (!toggleBtn || !overlay || !panel) return;
 
-    /* ===============================
-       OPEN / CLOSE
-    =============================== */
+    /* STOP GLOBAL CLICK KILL */
+    panel.addEventListener("click", (e) => {
+        e.stopPropagation();
+    });
+
+    /* OPEN / CLOSE */
     const openMenu = () => {
         overlay.classList.add("show");
         panel.classList.add("open");
@@ -39,45 +33,31 @@ document.addEventListener("headerLoaded", () => {
         document.body.style.overflow = "";
     };
 
-    /* ===============================
-       EVENTS
-    =============================== */
-
-    // Hamburger
     toggleBtn.addEventListener("click", (e) => {
         e.preventDefault();
+        e.stopPropagation();
         openMenu();
     });
 
-    // Close (X)
     closeBtn?.addEventListener("click", (e) => {
         e.preventDefault();
         closeMenu();
     });
 
-    // Overlay click
-    overlay.addEventListener("click", () => {
-        closeMenu();
-    });
+    overlay.addEventListener("click", closeMenu);
 
-    // ESC
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && panel.classList.contains("open")) {
             closeMenu();
         }
     });
 
-    /* ===============================
-       NAVIGATION (MENU LINKS)
-    =============================== */
+    /* MENU LINKS */
     panel.querySelectorAll(".menu-link").forEach(link => {
-        link.addEventListener("click", () => {
+        link.addEventListener("click", (e) => {
+            e.stopPropagation();
+
             const section = link.dataset.section;
-
-            if (section && typeof window.BE_activateSection === "function") {
-                window.BE_activateSection(section);
-            }
-
             const submenu = panel.querySelector(`.submenu[data-subnav="${section}"]`);
 
             if (submenu) {
@@ -89,25 +69,25 @@ document.addEventListener("headerLoaded", () => {
             } else {
                 closeMenu();
             }
+
+            if (section && typeof window.BE_activateSection === "function") {
+                window.BE_activateSection(section);
+            }
         });
     });
 
-    /* ===============================
-       QUICK CONTROLS (ODDS / LANG)
-    =============================== */
-    panel.querySelector(".menu-odds")?.addEventListener("click", () => {
+    /* QUICK CONTROLS */
+    panel.querySelector(".menu-odds")?.addEventListener("click", (e) => {
+        e.stopPropagation();
         closeMenu();
-        document
-            .querySelector(".mobile-odds-toggle")
-            ?.click();
+        document.querySelector(".mobile-odds-toggle")?.click();
     });
 
-    panel.querySelector(".menu-lang")?.addEventListener("click", () => {
+    panel.querySelector(".menu-lang")?.addEventListener("click", (e) => {
+        e.stopPropagation();
         closeMenu();
-        document
-            .querySelector(".mobile-lang-toggle")
-            ?.click();
+        document.querySelector(".mobile-lang-toggle")?.click();
     });
 
-    console.log("header-mobile.js FINAL initialized");
+    console.log("header-mobile.js v5.1 FIXED");
 });
