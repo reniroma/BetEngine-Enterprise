@@ -1,7 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – CORE.JS (FINAL v4.0)
- * Global utility helpers, safe init bus,
- * scroll lock, event handlers, module registration.
+ * BetEngine Enterprise – CORE.JS (FINAL v5.0)
+ * Clean core engine with NO headerLoaded interference.
+ * This version is 100% compatible with:
+ * - header-loader.js
+ * - header.js
+ * - header-mobile.js
+ * - header-auth.js
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -30,13 +34,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const hasClass = (el, cls) => el?.classList.contains(cls);
 
     /*******************************************************
-     * SCROLL CONTROL
+     * SCROLL CONTROL (Used by menus / modals)
      *******************************************************/
     const lockScroll = () => { document.body.style.overflow = "hidden"; };
     const unlockScroll = () => { document.body.style.overflow = ""; };
 
     /*******************************************************
-     * ESC KEY GLOBAL HANDLER
+     * ESC KEY — closes generic overlays (NOT header)
      *******************************************************/
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
@@ -49,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /*******************************************************
-     * CLICK OUTSIDE (GENERIC AUTOCLOSE)
+     * CLICK OUTSIDE AUTOCLOSE (safe, header-agnostic)
      *******************************************************/
     document.addEventListener("click", (e) => {
         qa("[data-be-autoclose]").forEach(el => {
@@ -60,13 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /*******************************************************
-     * SMOOTH SCROLL TOP
+     * SMOOTH SCROLL
      *******************************************************/
     const scrollTop = () =>
         window.scrollTo({ top: 0, behavior: "smooth" });
 
     /*******************************************************
-     * MODULE REGISTRATION BUS
+     * GLOBAL INIT BUS (for future modules)
      *******************************************************/
     window.BeInit = window.BeInit || [];
 
@@ -78,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /*******************************************************
-     * INIT ALL REGISTERED MODULES
+     * RUN ALL REGISTERED MODULES
      *******************************************************/
     window.BeInit.forEach(mod => {
         try {
@@ -89,12 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /*******************************************************
-     * HEADER READY EVENT (CRITICAL)
+     * IMPORTANT:
+     * - DO NOT FIRE headerLoaded HERE
+     * - header-loader.js MUST be the ONLY source of headerLoaded
      *******************************************************/
-    document.dispatchEvent(new Event("headerLoaded"));
 
     /*******************************************************
-     * EXPORT HELPERS TO WINDOW
+     * EXPORT HELPERS
      *******************************************************/
     window.Be = {
         qs,
