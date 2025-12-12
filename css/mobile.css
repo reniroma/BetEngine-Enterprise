@@ -1,295 +1,159 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL v7.1)
- * Mobile-only header + hamburger (OddsPortal-style)
- * Desktop UI remains 100% untouched.
+ * BetEngine Enterprise – MOBILE.CSS (FINAL v6.0)
+ * Enterprise mobile UX layer
  *********************************************************/
 
-/* =======================================================
-   GLOBAL MOBILE VISIBILITY CONTROL
-======================================================= */
-
-.header-mobile {
-    display: none;
-}
-
 @media (max-width: 900px) {
-    .header-desktop {
-        display: none !important;
-    }
 
+    /* ==================================================
+       MOBILE HEADER
+    ================================================== */
     .header-mobile {
-        display: block !important;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: var(--bg-header, #0b0b12);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-}
 
-/* HARD DESKTOP ISOLATION — must hide mobile menu entirely */
-@media (min-width: 901px) {
-    .mobile-menu-overlay,
-    .mobile-menu-panel,
-    .mobile-only {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-    }
-}
-
-/* =======================================================
-   GLOBAL MOBILE HEADER WRAPPER
-======================================================= */
-
-.header-mobile {
-    width: 100%;
-    background: linear-gradient(
-        to bottom,
-        #0b0b12 0%,
-        #101018 50%,
-        #11141d 100%
-    );
-    color: #ffffff;
-    position: sticky;
-    top: 0;
-    z-index: 5000;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
-    font-size: 13px;
-}
-
-.header-mobile * {
-    box-sizing: border-box;
-    font-family: inherit;
-}
-
-/* =======================================================
-   TOP BAR (Hamburger + Brand + Actions)
-======================================================= */
-
-.mobile-top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-}
-
-.mobile-brand {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-}
-
-.mobile-brand .logo {
-    width: 28px;
-    height: 28px;
-}
-
-.mobile-brand .brand-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-brand .name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ffec00;
-    white-space: nowrap;
-}
-
-.mobile-brand .tagline {
-    font-size: 11px;
-    color: #b3b3b3;
-    white-space: nowrap;
-}
-
-.mobile-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Icon buttons */
-
-.mobile-icon-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(24, 24, 36, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.mobile-icon-btn img {
-    width: 17px;
-    height: 17px;
-}
-
-/* =======================================================
-   LEGACY QUICK ROW (HIDDEN, preserved for modal triggers)
-======================================================= */
-
-.mobile-quick-row {
-    display: none !important;
-}
-
-/* =======================================================
-   HIDE OLD NAVIGATION (chips + subnav)
-======================================================= */
-
-@media (max-width: 900px) {
-    .mobile-main-nav,
-    .mobile-sub-nav {
-        display: none !important;
-    }
-}
-
-/* =======================================================
-   MOBILE HAMBURGER MENU (OVERLAY + PANEL)
-======================================================= */
-
-/* Dark background behind panel */
-.mobile-menu-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    z-index: 9000;
-    display: none;
-}
-
-.mobile-menu-overlay.show {
-    display: block;
-}
-
-/* Slide panel */
-.mobile-menu-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 260px;
-    max-width: 80%;
-    height: 100vh;
-    background: #0c0c14;
-    z-index: 10000;
-    padding: 16px 16px 28px;
-    box-shadow: 4px 0 18px rgba(0, 0, 0, 0.55);
-    transform: translateX(-100%);
-    transition: transform 0.25s ease;
-    overflow-y: auto;
-    scrollbar-width: thin;
-}
-
-.mobile-menu-panel.open {
-    transform: translateX(0);
-}
-
-/* Panel close button */
-.mobile-menu-close {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin-bottom: 12px;
-}
-
-.mobile-menu-close img {
-    width: 24px;
-    height: 24px;
-}
-
-/* Brand block inside panel */
-
-.menu-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.menu-brand .logo {
-    width: 30px;
-    height: 30px;
-}
-
-.menu-brand .brand-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.menu-brand .name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffec00;
-}
-
-.menu-brand .tagline {
-    font-size: 11px;
-    color: #b3b3b3;
-}
-
-/* Sections inside panel */
-
-.menu-section {
-    margin-top: 20px;
-}
-
-.menu-section h4,
-.menu-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ffec00;
-    margin-bottom: 8px;
-}
-
-/* Top-level links */
-
-.menu-link,
-.menu-item {
-    width: 100%;
-    text-align: left;
-    padding: 10px 10px;
-    border-radius: 6px;
-    background: #161822;
-    color: #f2f2f2;
-    font-size: 13px;
-    margin-bottom: 6px;
-}
-
-/* Submenu */
-
-.submenu {
-    display: none;
-    padding-left: 12px;
-    margin-bottom: 6px;
-}
-
-.submenu.open {
-    display: block;
-}
-
-.submenu-item {
-    width: 100%;
-    text-align: left;
-    padding: 8px 10px;
-    border-radius: 6px;
-    background: #151721;
-    color: #e0e0e0;
-    font-size: 13px;
-    margin-bottom: 4px;
-}
-
-/* =======================================================
-   MOBILE MODAL (OLD SYSTEM — ALWAYS HIDDEN)
-======================================================= */
-
-.be-modal-overlay {
-    display: none !important;
-}
-
-/* =======================================================
-   EXTRA SMALL DEVICES (<480px)
-======================================================= */
-
-@media (max-width: 480px) {
     .mobile-top-bar {
-        padding: 6px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+    }
+
+    .mobile-icon-btn {
+        background: none;
+        border: none;
+        padding: 6px;
+        cursor: pointer;
+    }
+
+    /* ==================================================
+       HAMBURGER OVERLAY
+    ================================================== */
+    .mobile-menu-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+        z-index: 1900;
+    }
+
+    .mobile-menu-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* ==================================================
+       HAMBURGER PANEL
+    ================================================== */
+    .mobile-menu-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 86%;
+        max-width: 320px;
+        height: 100vh;
+        background: #0f121b;
+        transform: translateX(-100%);
+        transition: transform .25s ease;
+        z-index: 2000;
+        overflow-y: auto;
+        pointer-events: auto;
+    }
+
+    .mobile-menu-panel.open {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    /* ==================================================
+       MENU CONTENT
+    ================================================== */
+    .menu-brand {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .menu-section {
+        padding: 14px 16px;
+    }
+
+    .menu-link,
+    .menu-item {
+        width: 100%;
+        text-align: left;
+        padding: 10px 0;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* ==================================================
+       SUBMENUS
+    ================================================== */
+    .submenu {
+        display: none;
+        padding-left: 12px;
+        margin-top: 6px;
+    }
+
+    .submenu.open {
+        display: block;
+    }
+
+    .submenu-item {
+        display: block;
+        padding: 6px 0;
+        font-size: 13px;
+        color: #ccc;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    /* ==================================================
+       MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
+    ================================================== */
+    .be-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+    }
+
+    .be-modal-overlay.show {
+        display: flex;
+    }
+
+    .be-modal {
+        width: 90%;
+        max-width: 360px;
+        background: #11141d;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    /* ==================================================
+       AUTH MODALS (DESKTOP ONLY)
+    ================================================== */
+    .be-auth-overlay {
+        z-index: 4000;
     }
 }
