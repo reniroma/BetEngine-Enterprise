@@ -103,14 +103,9 @@ document.addEventListener("headerLoaded", () => {
     /* ==================================================
        BOOKMARKS (MANAGE MY LEAGUES)
        LOGIN GUARD (UX ONLY)
-       ✅ PATCH: pointerdown + closest (event delegation)
     ================================================== */
-    document.addEventListener("pointerdown", e => {
-        const btn = e.target.closest(".mobile-bookmarks-btn");
-        if (!btn) return;
-
-        e.preventDefault();
-        e.stopPropagation();
+    qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
+        stop(e);
 
         const isLoggedIn =
             document.body.classList.contains("is-authenticated");
