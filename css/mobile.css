@@ -268,5 +268,49 @@
     max-height: calc(82vh - 56px); /* header height compensation */
 }
 
+/* ==================================================
+   PATCH: MOBILE HEADER ACTIONS ALIGNMENT
+   Scope: mobile header only
+   Safe: no desktop impact
+================================================== */
+
+@media (max-width: 900px) {
+
+    .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-actions button {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .mobile-actions button img {
+        width: 18px;
+        height: 18px;
+        pointer-events: none;
+    }
+
+    /* Bookmarks highlight (yellow star) */
+    .mobile-bookmarks-btn img {
+        filter: drop-shadow(0 0 4px rgba(255, 236, 0, 0.6));
+    }
+
+    /* Touch feedback */
+    .mobile-actions button:active {
+        background: rgba(255, 255, 255, 0.08);
+    }
+}
+  
 
 
