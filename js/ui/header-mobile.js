@@ -108,13 +108,25 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       BOOKMARKS (Manage My Leagues)
-       Hamburger stays open
+   BOOKMARKS (Manage My Leagues)
+   LOGIN GUARD
     ================================================== */
-    qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
-        stop(e);
-        openModal(bookmarksModal);
-    });
+   qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
+    stop(e);
+
+    /* Auth state check (single source of truth) */
+    const isLoggedIn =
+        document.body.classList.contains("is-authenticated") ||
+        window.BE_isAuthenticated === true;
+
+    if (!isLoggedIn) {
+        closeMenu();
+        window.BE_openLogin?.();
+        return;
+    }
+
+    openModal(bookmarksModal);
+});
 
     /* ==================================================
        AUTH (LOGIN / REGISTER)
