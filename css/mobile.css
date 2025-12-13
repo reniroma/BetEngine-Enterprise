@@ -1,12 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE.CSS
- * Desktop-safe mobile layer:
- * - Mobile UI is hidden by default (desktop)
- * - Enabled only under @media (max-width: 900px)
+ * BetEngine Enterprise – MOBILE.CSS (FINAL)
+ * Desktop-safe mobile layer
  *********************************************************/
 
 /* ==================================================
-   DEFAULT (DESKTOP): HIDE MOBILE UI ALWAYS
+   DEFAULT (DESKTOP): HIDE MOBILE UI
 ================================================== */
 .header-mobile,
 .mobile-only,
@@ -35,22 +33,7 @@
         top: 0;
         z-index: 1000;
         background: var(--bg-header, #0b0b12);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .mobile-top-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 14px;
-        gap: 10px;
-    }
-
-    .mobile-icon-btn {
-        background: none;
-        border: none;
-        padding: 6px;
-        cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
     /* ==================================================
@@ -60,7 +43,7 @@
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0,0,0,0.6);
         opacity: 0;
         pointer-events: none;
         transition: opacity .2s ease;
@@ -89,7 +72,6 @@
         z-index: 2000;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        pointer-events: auto;
         padding-bottom: 18px;
     }
 
@@ -97,131 +79,101 @@
         transform: translateX(0);
     }
 
-    .mobile-menu-close {
-        background: none;
-        border: none;
-        padding: 12px;
-        cursor: pointer;
-    }
-
     /* ==================================================
-       MENU CONTENT
-    ================================================== */
-    .menu-brand {
-        padding: 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .menu-section {
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .menu-link,
-    .menu-item {
-        width: 100%;
-        text-align: left;
-        padding: 10px 0;
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-    /* ==================================================
-       SUBMENUS (SCROLL-FRIENDLY)
-    ================================================== */
-    .submenu {
-        max-height: 0;
-        overflow: hidden;
-        padding-left: 12px;
-        transition: max-height .25s ease;
-    }
-
-    .submenu.open {
-        max-height: 520px;
-        overflow: auto;
-        padding-top: 6px;
-        margin-top: 6px;
-    }
-
-    .submenu-item {
-        display: block;
-        padding: 8px 0;
-        font-size: 13px;
-        color: #ccc;
-        background: none;
-        border: none;
-        text-align: left;
-        cursor: pointer;
-    }
-
-    /* ==================================================
-       MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
+       MOBILE MODALS (ODDS / LANGUAGE / TOOLS)
     ================================================== */
     .be-modal-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.65);
+        background: rgba(0,0,0,0.65);
         align-items: center;
         justify-content: center;
         z-index: 3000;
-        pointer-events: none;
     }
 
     .be-modal-overlay.show {
         display: flex;
-        pointer-events: auto;
     }
 
     .be-modal {
-        width: 92%;
-        max-width: 360px;
+        width: 92vw;              /* ✅ FINAL DECISION */
+        max-width: 360px;         /* ✅ ENTERPRISE STANDARD */
+        max-height: 70vh;         /* ✅ SAFE HEIGHT */
         background: #11141d;
         border-radius: 12px;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
     }
 
     /* ==================================================
-       PATCH A – VERTICAL OPTIONS FIX (SAFE)
-       Odds / Language / Tools
+       MODAL HEADER (TITLE + CLOSE)
     ================================================== */
-
-    .be-modal-body {
+    .be-modal-header {
         display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding: 12px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        flex-shrink: 0;
     }
 
+    .be-modal-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .be-modal-close {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+    }
+
+    .be-modal-close img {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* ==================================================
+       MODAL BODY
+    ================================================== */
+    .be-modal-body {
+        padding: 12px 16px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Language list is long → scroll enabled */
+    .modal-language {
+        max-height: calc(70vh - 52px);
+        overflow-y: auto;
+    }
+
+    /* ==================================================
+       MODAL ITEMS (VERTICAL, CLEAN)
+    ================================================== */
     .be-modal-item {
         width: 100%;
-        padding: 12px 14px;
-        border-radius: 8px;
-        background: #151827;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px 0;
+        background: none;
+        border: none;
         color: #ffffff;
-        font-size: 14px;
         text-align: left;
+        font-size: 14px;
         cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .be-modal-item:hover {
-        background: #1c2033;
-        border-color: rgba(255, 255, 255, 0.18);
+    .be-modal-item:last-child {
+        border-bottom: none;
     }
 
-    .be-modal-item.active {
-        background: #ffec00;
-        color: #11141d;
-        border-color: #ffec00;
-        font-weight: 600;
-    }
-
-    /* Keep auth overlays above everything if ever enabled on mobile */
+    /* ==================================================
+       AUTH MODALS PRIORITY (IF USED)
+    ================================================== */
     .be-auth-overlay {
         z-index: 4000;
     }
