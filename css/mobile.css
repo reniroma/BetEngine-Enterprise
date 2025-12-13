@@ -140,7 +140,7 @@
     }
 
     .submenu.open {
-        max-height: 520px; /* allows "dropdown inside hamburger" without closing */
+        max-height: 520px;
         overflow: auto;
         padding-top: 6px;
         margin-top: 6px;
@@ -184,7 +184,44 @@
         overflow: hidden;
     }
 
-    /* Keep auth overlays above everything if used on mobile */
+    /* ==================================================
+       PATCH A – VERTICAL OPTIONS FIX (SAFE)
+       Odds / Language / Tools
+    ================================================== */
+
+    .be-modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px;
+    }
+
+    .be-modal-item {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: #151827;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        font-size: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .be-modal-item:hover {
+        background: #1c2033;
+        border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .be-modal-item.active {
+        background: #ffec00;
+        color: #11141d;
+        border-color: #ffec00;
+        font-weight: 600;
+    }
+
+    /* Keep auth overlays above everything if ever enabled on mobile */
     .be-auth-overlay {
         z-index: 4000;
     }
