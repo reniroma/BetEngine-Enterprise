@@ -152,3 +152,81 @@ document.addEventListener("headerLoaded", () => {
 
     console.log("header-mobile.js v6.0 READY");
 });
+
+/* ==================================================
+   FAZA 4 – MOBILE ODDS / LANGUAGE ACTIVE + SYNC
+================================================== */
+
+/* -------- ODDS -------- */
+document.querySelectorAll("#mobile-odds-modal .be-modal-item")
+    .forEach(item => {
+
+        item.addEventListener("click", () => {
+
+            /* mobile active */
+            document
+                .querySelectorAll("#mobile-odds-modal .be-modal-item")
+                .forEach(i => i.classList.remove("active"));
+
+            item.classList.add("active");
+
+            const oddsType = item.dataset.odds;
+            const label = item.textContent.trim();
+
+            /* sync desktop */
+            document
+                .querySelectorAll(".header-desktop .odds-dropdown .item")
+                .forEach(i => {
+                    i.classList.toggle(
+                        "active",
+                        i.dataset.odds === oddsType
+                    );
+                });
+
+            const desktopLabel =
+                document.querySelector(".header-desktop .odds-label");
+            if (desktopLabel) desktopLabel.textContent = label;
+
+            /* close modal only */
+            document
+                .getElementById("mobile-odds-modal")
+                ?.classList.remove("show");
+        });
+    });
+
+/* -------- LANGUAGE -------- */
+document.querySelectorAll("#mobile-language-modal .be-modal-item")
+    .forEach(item => {
+
+        item.addEventListener("click", () => {
+
+            /* mobile active */
+            document
+                .querySelectorAll("#mobile-language-modal .be-modal-item")
+                .forEach(i => i.classList.remove("active"));
+
+            item.classList.add("active");
+
+            const lang = item.dataset.lang;
+            const label = item.textContent.trim();
+
+            /* sync desktop */
+            document
+                .querySelectorAll(".header-desktop .language-dropdown .item")
+                .forEach(i => {
+                    i.classList.toggle(
+                        "active",
+                        i.dataset.lang === lang
+                    );
+                });
+
+            const desktopLang =
+                document.querySelector(".header-desktop .lang-code");
+            if (desktopLang) desktopLang.textContent = label;
+
+            /* close modal only */
+            document
+                .getElementById("mobile-language-modal")
+                ?.classList.remove("show");
+        });
+    });
