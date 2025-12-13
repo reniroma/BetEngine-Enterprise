@@ -312,14 +312,7 @@
     }
 }
 
-   /* FIX: Mobile Bookmarks modal visibility */
-#mobile-bookmarks-modal {
-    z-index: 10050;
-}
-
-#mobile-bookmarks-modal.show {
-    display: flex;
-}
+   
 
 
 
