@@ -15,7 +15,7 @@
  * NO desktop interference
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("headerLoaded", () => {
 
     /* ==================================================
        HELPERS
