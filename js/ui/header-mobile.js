@@ -1,149 +1,154 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL – PHASE 3)
- * RULES APPLIED:
- * - Hamburger controls ONLY hamburger
- * - Odds / Language open mobile modal WITHOUT closing hamburger
- * - Login / Register close hamburger and open auth via public API
- * - Navigation toggles submenus, hamburger stays open
- * - NO global click killers
- * - NO desktop interference
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.0)
+ * PATCH MINIMAL
+ * Compatible ONLY with new header-modals.html structure
+ *
+ * RESPONSIBILITIES:
+ * 1. Open / close hamburger menu
+ * 2. Open mobile Odds / Language / Tools modals
+ * 3. Trigger auth (login / register) WITHOUT breaking menu
+ * 4. NEVER auto-close hamburger unless explicitly requested
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
 
     /* ==================================================
-       SAFE HELPERS
+       HELPERS
     ================================================== */
     const qs = (sel, scope = document) => scope.querySelector(sel);
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
-    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+
+    const stop = e => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
     /* ==================================================
-       CORE ELEMENTS
+       ELEMENTS
     ================================================== */
-    const headerMobile = qs(".header-mobile");
-    const panel   = qs(".mobile-menu-panel");
-    const overlay = qs(".mobile-menu-overlay");
-    const modal   = qs("#mobile-header-modal");
+    const overlay   = qs(".mobile-menu-overlay");
+    const panel     = qs(".mobile-menu-panel");
+    const toggleBtn = qs(".mobile-menu-toggle");
+    const closeBtn  = qs(".mobile-menu-close");
 
-    if (!headerMobile || !panel || !overlay) {
-        console.warn("[header-mobile] Required elements missing");
-        return;
-    }
+    const oddsModal = qs("#mobile-odds-modal");
+    const langModal = qs("#mobile-language-modal");
+    const toolsModal = qs("#mobile-tools-modal");
 
-    const toggleBtn = qs(".mobile-menu-toggle", headerMobile);
-    const closeBtn  = qs(".mobile-menu-close", panel);
+    if (!overlay || !panel) return;
 
     /* ==================================================
-       HAMBURGER OPEN / CLOSE (ONLY THIS)
+       HAMBURGER STATE
     ================================================== */
     const openMenu = () => {
-        panel.classList.add("open");
         overlay.classList.add("show");
+        panel.classList.add("open");
+        document.body.style.overflow = "hidden";
     };
 
     const closeMenu = () => {
-        panel.classList.remove("open");
         overlay.classList.remove("show");
+        panel.classList.remove("open");
+        document.body.style.overflow = "";
     };
 
-    on(toggleBtn, "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    /* ==================================================
+       MENU TOGGLE
+    ================================================== */
+    toggleBtn?.addEventListener("click", e => {
+        stop(e);
         openMenu();
     });
 
-    on(closeBtn, "click", (e) => {
-        e.preventDefault();
-        closeMenu();
-    });
+    closeBtn?.addEventListener("click", closeMenu);
+    overlay.addEventListener("click", closeMenu);
 
-    on(overlay, "click", closeMenu);
-
-    /* Prevent click-through closing */
-    on(panel, "click", (e) => e.stopPropagation());
+    /* Prevent click-through */
+    panel.addEventListener("click", e => e.stopPropagation());
 
     /* ==================================================
-       NAVIGATION (SUBMENUS – DO NOT CLOSE HAMBURGER)
+       MOBILE MODALS (ODDS / LANGUAGE / TOOLS)
+       IMPORTANT: DO NOT CLOSE HAMBURGER
     ================================================== */
-    qa(".menu-link", panel).forEach(link => {
-        on(link, "click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const section = link.dataset.section;
-            const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
-
-            if (submenu) {
-                qa(".submenu", panel).forEach(s =>
-                    s === submenu
-                        ? s.classList.toggle("open")
-                        : s.classList.remove("open")
-                );
-            }
-
-            if (section && typeof window.BE_activateSection === "function") {
-                window.BE_activateSection(section);
-            }
-        });
-    });
-
-    /* ==================================================
-       MOBILE MODAL (ODDS / LANGUAGE)
-       - Hamburger MUST stay open
-    ================================================== */
-    const openMobileModal = (type) => {
+    const openModal = modal => {
         if (!modal) return;
-
-        qa(".be-modal-section", modal).forEach(s =>
-            s.classList.remove("active")
-        );
-
-        qs(`.modal-${type}`, modal)?.classList.add("active");
         modal.classList.add("show");
         document.body.style.overflow = "hidden";
     };
 
-    on(qs(".menu-odds", panel), "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openMobileModal("odds");
+    const closeModal = modal => {
+        if (!modal) return;
+        modal.classList.remove("show");
+        document.body.style.overflow = "hidden"; // hamburger still open
+    };
+
+    qa(".be-modal-close").forEach(btn => {
+        btn.addEventListener("click", e => {
+            stop(e);
+            closeModal(btn.closest(".be-modal-overlay"));
+        });
     });
 
-    on(qs(".menu-lang", panel), "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openMobileModal("language");
+    qa(".be-modal-overlay").forEach(modal => {
+        modal.addEventListener("click", e => {
+            if (e.target === modal) closeModal(modal);
+        });
     });
+
+    /* Triggers */
+    qs(".menu-odds")?.addEventListener("click", e => {
+        stop(e);
+        openModal(oddsModal);
+    });
+
+    qs(".menu-lang")?.addEventListener("click", e => {
+        stop(e);
+        openModal(langModal);
+    });
+
+    /* Tools modal can be wired later if needed */
+    // qs(".menu-tools")?.addEventListener("click", ...)
 
     /* ==================================================
        AUTH (LOGIN / REGISTER)
-       - Close hamburger
-       - Open auth via PUBLIC API ONLY
+       RULE:
+       - Hamburger closes
+       - Auth opens via global API
     ================================================== */
-    on(qs(".menu-auth-login", panel), "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    qs(".menu-auth-login")?.addEventListener("click", e => {
+        stop(e);
         closeMenu();
-        modal?.classList.remove("show");
-        document.body.style.overflow = "hidden";
-
-        if (typeof window.BE_openLogin === "function") {
-            window.BE_openLogin();
-        }
+        window.BE_openLogin?.();
     });
 
-    on(qs(".menu-auth-register", panel), "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    qs(".menu-auth-register")?.addEventListener("click", e => {
+        stop(e);
         closeMenu();
-        modal?.classList.remove("show");
-        document.body.style.overflow = "hidden";
-
-        if (typeof window.BE_openRegister === "function") {
-            window.BE_openRegister();
-        }
+        window.BE_openRegister?.();
     });
 
-    console.log("header-mobile.js – PHASE 3 READY");
+    /* ==================================================
+       NAVIGATION (SUBMENUS ONLY)
+       RULE:
+       - Clicking section toggles submenu
+       - NEVER closes hamburger
+    ================================================== */
+    qa(".menu-link").forEach(link => {
+        link.addEventListener("click", e => {
+            stop(e);
+
+            const section = link.dataset.section;
+            const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
+
+            if (!submenu) return;
+
+            qa(".submenu", panel).forEach(s =>
+                s === submenu
+                    ? s.classList.toggle("open")
+                    : s.classList.remove("open")
+            );
+        });
+    });
+
+    console.log("header-mobile.js v6.0 READY");
 });
