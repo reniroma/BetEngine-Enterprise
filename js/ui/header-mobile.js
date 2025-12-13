@@ -1,13 +1,17 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.0)
- * PATCH MINIMAL
- * Compatible ONLY with new header-modals.html structure
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.1)
+ * SAFE / MINIMAL / STABLE
  *
- * RESPONSIBILITIES:
- * 1. Open / close hamburger menu
- * 2. Open mobile Odds / Language / Tools modals
- * 3. Trigger auth (login / register) WITHOUT breaking menu
- * 4. NEVER auto-close hamburger unless explicitly requested
+ * Responsibilities:
+ * 1. Hamburger open / close
+ * 2. Open mobile Odds / Language modals
+ * 3. Activate Odds / Language options
+ * 4. Sync mobile ↔ desktop state
+ * 5. Trigger Login / Register safely
+ *
+ * NO side effects
+ * NO global click killers
+ * NO desktop interference
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -24,7 +28,7 @@ document.addEventListener("headerLoaded", () => {
     };
 
     /* ==================================================
-       ELEMENTS
+       CORE ELEMENTS
     ================================================== */
     const overlay   = qs(".mobile-menu-overlay");
     const panel     = qs(".mobile-menu-panel");
@@ -33,9 +37,8 @@ document.addEventListener("headerLoaded", () => {
 
     const oddsModal = qs("#mobile-odds-modal");
     const langModal = qs("#mobile-language-modal");
-    const toolsModal = qs("#mobile-tools-modal");
 
-    if (!overlay || !panel) return;
+    if (!overlay || !panel || !toggleBtn) return;
 
     /* ==================================================
        HAMBURGER STATE
@@ -53,9 +56,9 @@ document.addEventListener("headerLoaded", () => {
     };
 
     /* ==================================================
-       MENU TOGGLE
+       HAMBURGER EVENTS
     ================================================== */
-    toggleBtn?.addEventListener("click", e => {
+    toggleBtn.addEventListener("click", e => {
         stop(e);
         openMenu();
     });
@@ -63,23 +66,20 @@ document.addEventListener("headerLoaded", () => {
     closeBtn?.addEventListener("click", closeMenu);
     overlay.addEventListener("click", closeMenu);
 
-    /* Prevent click-through */
     panel.addEventListener("click", e => e.stopPropagation());
 
     /* ==================================================
-       MOBILE MODALS (ODDS / LANGUAGE / TOOLS)
-       IMPORTANT: DO NOT CLOSE HAMBURGER
+       MOBILE MODALS (ODDS / LANGUAGE)
+       Hamburger MUST stay open
     ================================================== */
     const openModal = modal => {
         if (!modal) return;
         modal.classList.add("show");
-        document.body.style.overflow = "hidden";
     };
 
     const closeModal = modal => {
         if (!modal) return;
         modal.classList.remove("show");
-        document.body.style.overflow = "hidden"; // hamburger still open
     };
 
     qa(".be-modal-close").forEach(btn => {
@@ -95,7 +95,6 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    /* Triggers */
     qs(".menu-odds")?.addEventListener("click", e => {
         stop(e);
         openModal(oddsModal);
@@ -106,14 +105,9 @@ document.addEventListener("headerLoaded", () => {
         openModal(langModal);
     });
 
-    /* Tools modal can be wired later if needed */
-    // qs(".menu-tools")?.addEventListener("click", ...)
-
     /* ==================================================
        AUTH (LOGIN / REGISTER)
-       RULE:
-       - Hamburger closes
-       - Auth opens via global API
+       Hamburger closes, auth opens
     ================================================== */
     qs(".menu-auth-login")?.addEventListener("click", e => {
         stop(e);
@@ -129,9 +123,7 @@ document.addEventListener("headerLoaded", () => {
 
     /* ==================================================
        NAVIGATION (SUBMENUS ONLY)
-       RULE:
-       - Clicking section toggles submenu
-       - NEVER closes hamburger
+       Hamburger NEVER closes
     ================================================== */
     qa(".menu-link").forEach(link => {
         link.addEventListener("click", e => {
@@ -150,22 +142,15 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    console.log("header-mobile.js v6.0 READY");
-});
+    /* ==================================================
+       FAZA 4 – ODDS ACTIVE + SYNC
+    ================================================== */
+    qa("#mobile-odds-modal .be-modal-item").forEach(item => {
 
-/* ==================================================
-   FAZA 4 – MOBILE ODDS / LANGUAGE ACTIVE + SYNC
-================================================== */
+        item.addEventListener("click", e => {
+            stop(e);
 
-/* -------- ODDS -------- */
-document.querySelectorAll("#mobile-odds-modal .be-modal-item")
-    .forEach(item => {
-
-        item.addEventListener("click", () => {
-
-            /* mobile active */
-            document
-                .querySelectorAll("#mobile-odds-modal .be-modal-item")
+            qa("#mobile-odds-modal .be-modal-item")
                 .forEach(i => i.classList.remove("active"));
 
             item.classList.add("active");
@@ -173,9 +158,7 @@ document.querySelectorAll("#mobile-odds-modal .be-modal-item")
             const oddsType = item.dataset.odds;
             const label = item.textContent.trim();
 
-            /* sync desktop */
-            document
-                .querySelectorAll(".header-desktop .odds-dropdown .item")
+            qa(".header-desktop .odds-dropdown .item")
                 .forEach(i => {
                     i.classList.toggle(
                         "active",
@@ -184,25 +167,22 @@ document.querySelectorAll("#mobile-odds-modal .be-modal-item")
                 });
 
             const desktopLabel =
-                document.querySelector(".header-desktop .odds-label");
+                qs(".header-desktop .odds-label");
             if (desktopLabel) desktopLabel.textContent = label;
 
-            /* close modal only */
-            document
-                .getElementById("mobile-odds-modal")
-                ?.classList.remove("show");
+            closeModal(oddsModal);
         });
     });
 
-/* -------- LANGUAGE -------- */
-document.querySelectorAll("#mobile-language-modal .be-modal-item")
-    .forEach(item => {
+    /* ==================================================
+       FAZA 4 – LANGUAGE ACTIVE + SYNC
+    ================================================== */
+    qa("#mobile-language-modal .be-modal-item").forEach(item => {
 
-        item.addEventListener("click", () => {
+        item.addEventListener("click", e => {
+            stop(e);
 
-            /* mobile active */
-            document
-                .querySelectorAll("#mobile-language-modal .be-modal-item")
+            qa("#mobile-language-modal .be-modal-item")
                 .forEach(i => i.classList.remove("active"));
 
             item.classList.add("active");
@@ -210,9 +190,7 @@ document.querySelectorAll("#mobile-language-modal .be-modal-item")
             const lang = item.dataset.lang;
             const label = item.textContent.trim();
 
-            /* sync desktop */
-            document
-                .querySelectorAll(".header-desktop .language-dropdown .item")
+            qa(".header-desktop .language-dropdown .item")
                 .forEach(i => {
                     i.classList.toggle(
                         "active",
@@ -221,12 +199,12 @@ document.querySelectorAll("#mobile-language-modal .be-modal-item")
                 });
 
             const desktopLang =
-                document.querySelector(".header-desktop .lang-code");
+                qs(".header-desktop .lang-code");
             if (desktopLang) desktopLang.textContent = label;
 
-            /* close modal only */
-            document
-                .getElementById("mobile-language-modal")
-                ?.classList.remove("show");
+            closeModal(langModal);
         });
     });
+
+    console.log("header-mobile.js v6.1 READY");
+});
