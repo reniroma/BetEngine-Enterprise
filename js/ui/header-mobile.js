@@ -103,8 +103,12 @@ document.addEventListener("headerLoaded", () => {
     /* ==================================================
        BOOKMARKS (MANAGE MY LEAGUES)
        LOGIN GUARD (UX ONLY)
+       FIX: EVENT DELEGATION (SAFE)
     ================================================== */
-    qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
+    document.addEventListener("click", e => {
+        const btn = e.target.closest(".mobile-bookmarks-btn");
+        if (!btn) return;
+
         stop(e);
 
         const isLoggedIn =
