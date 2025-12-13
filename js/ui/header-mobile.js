@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.1)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.2)
  * SAFE / MINIMAL / STABLE
  *
  * Responsibilities:
@@ -8,6 +8,7 @@
  * 3. Activate Odds / Language options
  * 4. Sync mobile ↔ desktop state
  * 5. Trigger Login / Register safely
+ * 6. Open Bookmarks modal (Manage My Leagues)
  *
  * NO side effects
  * NO global click killers
@@ -37,6 +38,7 @@ document.addEventListener("headerLoaded", () => {
 
     const oddsModal = qs("#mobile-odds-modal");
     const langModal = qs("#mobile-language-modal");
+    const bookmarksModal = qs("#mobile-bookmarks-modal");
 
     if (!overlay || !panel || !toggleBtn) return;
 
@@ -69,7 +71,7 @@ document.addEventListener("headerLoaded", () => {
     panel.addEventListener("click", e => e.stopPropagation());
 
     /* ==================================================
-       MOBILE MODALS (ODDS / LANGUAGE)
+       MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
        Hamburger MUST stay open
     ================================================== */
     const openModal = modal => {
@@ -103,6 +105,15 @@ document.addEventListener("headerLoaded", () => {
     qs(".menu-lang")?.addEventListener("click", e => {
         stop(e);
         openModal(langModal);
+    });
+
+    /* ==================================================
+       BOOKMARKS (Manage My Leagues)
+       Hamburger stays open
+    ================================================== */
+    qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
+        stop(e);
+        openModal(bookmarksModal);
     });
 
     /* ==================================================
@@ -206,5 +217,5 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
-    console.log("header-mobile.js v6.1 READY");
+    console.log("header-mobile.js v6.2 READY");
 });
