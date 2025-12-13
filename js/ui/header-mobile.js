@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.2)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.3)
  * SAFE / MINIMAL / STABLE
  *
  * Responsibilities:
@@ -9,10 +9,6 @@
  * 4. Sync mobile ↔ desktop state
  * 5. Trigger Login / Register safely
  * 6. Open Bookmarks modal (Manage My Leagues)
- *
- * NO side effects
- * NO global click killers
- * NO desktop interference
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -36,24 +32,24 @@ document.addEventListener("headerLoaded", () => {
     const toggleBtn = qs(".mobile-menu-toggle");
     const closeBtn  = qs(".mobile-menu-close");
 
-    const oddsModal = qs("#mobile-odds-modal");
-    const langModal = qs("#mobile-language-modal");
+    const oddsModal      = qs("#mobile-odds-modal");
+    const langModal      = qs("#mobile-language-modal");
     const bookmarksModal = qs("#mobile-bookmarks-modal");
 
-    if (!overlay || !panel || !toggleBtn) return;
+    if (!toggleBtn) return;
 
     /* ==================================================
        HAMBURGER STATE
     ================================================== */
     const openMenu = () => {
-        overlay.classList.add("show");
-        panel.classList.add("open");
+        overlay?.classList.add("show");
+        panel?.classList.add("open");
         document.body.style.overflow = "hidden";
     };
 
     const closeMenu = () => {
-        overlay.classList.remove("show");
-        panel.classList.remove("open");
+        overlay?.classList.remove("show");
+        panel?.classList.remove("open");
         document.body.style.overflow = "";
     };
 
@@ -66,22 +62,23 @@ document.addEventListener("headerLoaded", () => {
     });
 
     closeBtn?.addEventListener("click", closeMenu);
-    overlay.addEventListener("click", closeMenu);
+    overlay?.addEventListener("click", closeMenu);
 
-    panel.addEventListener("click", e => e.stopPropagation());
+    panel?.addEventListener("click", e => e.stopPropagation());
 
     /* ==================================================
-       MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
-       Hamburger MUST stay open
+       MODAL HELPERS
     ================================================== */
     const openModal = modal => {
         if (!modal) return;
         modal.classList.add("show");
+        document.body.style.overflow = "hidden";
     };
 
     const closeModal = modal => {
         if (!modal) return;
         modal.classList.remove("show");
+        document.body.style.overflow = "";
     };
 
     qa(".be-modal-close").forEach(btn => {
@@ -97,6 +94,9 @@ document.addEventListener("headerLoaded", () => {
         });
     });
 
+    /* ==================================================
+       ODDS / LANGUAGE MODALS
+    ================================================== */
     qs(".menu-odds")?.addEventListener("click", e => {
         stop(e);
         openModal(oddsModal);
@@ -108,29 +108,26 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-   BOOKMARKS (Manage My Leagues)
-   LOGIN GUARD
+       BOOKMARKS (Manage My Leagues)
+       LOGIN GUARD
     ================================================== */
-   qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
-    stop(e);
+    qs(".mobile-bookmarks-btn")?.addEventListener("click", e => {
+        stop(e);
 
-    /* Auth state check (single source of truth) */
-    const isLoggedIn =
-        document.body.classList.contains("is-authenticated") ||
-        window.BE_isAuthenticated === true;
+        const isLoggedIn =
+            document.body.classList.contains("is-authenticated") ||
+            window.BE_isAuthenticated === true;
 
-    if (!isLoggedIn) {
-        closeMenu();
-        window.BE_openLogin?.();
-        return;
-    }
+        if (!isLoggedIn) {
+            window.BE_openLogin?.();
+            return;
+        }
 
-    openModal(bookmarksModal);
-});
+        openModal(bookmarksModal);
+    });
 
     /* ==================================================
        AUTH (LOGIN / REGISTER)
-       Hamburger closes, auth opens
     ================================================== */
     qs(".menu-auth-login")?.addEventListener("click", e => {
         stop(e);
@@ -145,8 +142,7 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       NAVIGATION (SUBMENUS ONLY)
-       Hamburger NEVER closes
+       SUBMENUS (NO AUTO CLOSE)
     ================================================== */
     qa(".menu-link").forEach(link => {
         link.addEventListener("click", e => {
@@ -166,10 +162,9 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       FAZA 4 – ODDS ACTIVE + SYNC
+       ODDS ACTIVE + SYNC
     ================================================== */
     qa("#mobile-odds-modal .be-modal-item").forEach(item => {
-
         item.addEventListener("click", e => {
             stop(e);
 
@@ -182,15 +177,11 @@ document.addEventListener("headerLoaded", () => {
             const label = item.textContent.trim();
 
             qa(".header-desktop .odds-dropdown .item")
-                .forEach(i => {
-                    i.classList.toggle(
-                        "active",
-                        i.dataset.odds === oddsType
-                    );
-                });
+                .forEach(i =>
+                    i.classList.toggle("active", i.dataset.odds === oddsType)
+                );
 
-            const desktopLabel =
-                qs(".header-desktop .odds-label");
+            const desktopLabel = qs(".header-desktop .odds-label");
             if (desktopLabel) desktopLabel.textContent = label;
 
             closeModal(oddsModal);
@@ -198,10 +189,9 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       FAZA 4 – LANGUAGE ACTIVE + SYNC
+       LANGUAGE ACTIVE + SYNC
     ================================================== */
     qa("#mobile-language-modal .be-modal-item").forEach(item => {
-
         item.addEventListener("click", e => {
             stop(e);
 
@@ -214,20 +204,16 @@ document.addEventListener("headerLoaded", () => {
             const label = item.textContent.trim();
 
             qa(".header-desktop .language-dropdown .item")
-                .forEach(i => {
-                    i.classList.toggle(
-                        "active",
-                        i.dataset.lang === lang
-                    );
-                });
+                .forEach(i =>
+                    i.classList.toggle("active", i.dataset.lang === lang)
+                );
 
-            const desktopLang =
-                qs(".header-desktop .lang-code");
+            const desktopLang = qs(".header-desktop .lang-code");
             if (desktopLang) desktopLang.textContent = label;
 
             closeModal(langModal);
         });
     });
 
-    console.log("header-mobile.js v6.2 READY");
+    console.log("header-mobile.js v6.3 READY");
 });
