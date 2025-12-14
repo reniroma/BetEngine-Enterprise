@@ -1,11 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH.CSS (FINAL v5.2)
+ * BetEngine Enterprise – AUTH.CSS (FINAL v5.3)
  * Desktop + Mobile authentication modals
- * UI POLISH:
- * - Fixed Register layout
- * - Social icons aligned
- * - Uniform inputs & select
- * - Zero JS / HTML changes
+ * UI POLISH (DESKTOP ONLY):
+ * - Improved Login & Register layout
+ * - Refined social buttons
+ * - Better spacing & hierarchy
+ * - ZERO mobile / HTML / JS impact
  *********************************************************/
 
 /* ======================================================
@@ -48,7 +48,8 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.auth-header-title {
+.auth-header-title,
+.auth-title {
     font-size: 16px;
     font-weight: 600;
     color: #00eaff;
@@ -73,7 +74,7 @@
 }
 
 /* ======================================================
-   SOCIAL BUTTONS (FIXED)
+   SOCIAL BUTTONS (BASE)
 ====================================================== */
 .auth-social {
     display: flex;
@@ -129,6 +130,11 @@
     color: #cfd3df;
 }
 
+.auth-field {
+    display: flex;
+    flex-direction: column;
+}
+
 .auth-field input,
 .auth-field select {
     height: 40px;
@@ -140,7 +146,6 @@
     font-size: 14px;
 }
 
-/* Remove native select look */
 .auth-field select {
     appearance: none;
 }
@@ -188,7 +193,7 @@
 }
 
 /* ======================================================
-   MOBILE SUPPORT
+   MOBILE SUPPORT (UNCHANGED)
 ====================================================== */
 @media (max-width: 900px) {
 
@@ -204,29 +209,82 @@
         max-width: 92%;
     }
 
-   /* ======================================================
-   FIX: COUNTRY SELECT ALIGNMENT (REGISTER)
-   Makes select identical to inputs
+    .auth-field input,
+    .auth-field select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .auth-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: none;
+        padding-right: 36px;
+    }
+}
+
+/* ======================================================
+   DESKTOP UI POLISH (A + B + C)
+   SAFE PATCH — DESKTOP ONLY
 ====================================================== */
+@media (min-width: 901px) {
 
-.auth-field {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+    /* Modal breathing room */
+    .be-auth-box {
+        padding-bottom: 6px;
+    }
+
+    .auth-body {
+        padding: 22px 22px 24px;
+    }
+
+    /* Header hierarchy */
+    .auth-header {
+        padding: 18px 22px;
+    }
+
+    .auth-header-title,
+    .auth-title {
+        font-size: 17px;
+    }
+
+    /* Social buttons refinement */
+    .auth-social-btn {
+        height: 46px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .auth-social-btn:hover {
+        background: #20243a;
+        border-color: rgba(255,255,255,0.18);
+    }
+
+    /* Divider spacing */
+    .auth-divider {
+        margin: 18px 0;
+    }
+
+    /* Form clarity */
+    .auth-form {
+        gap: 14px;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        height: 42px;
+    }
+
+    /* Country select visual distinction */
+    .auth-field select {
+        cursor: pointer;
+    }
+
+    /* Footer breathing room */
+    .auth-footer-text {
+        margin-top: 18px;
+    }
 }
 
-.auth-field input,
-.auth-field select {
-    width: 100%;
-    box-sizing: border-box;
-}
-
-/* Kill native select UI differences */
-.auth-field select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
-    padding-right: 36px; /* space for future custom arrow */
-}
-
+/* =============== END OF FILE =============== */
