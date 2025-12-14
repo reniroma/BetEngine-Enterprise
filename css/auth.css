@@ -1,11 +1,14 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH.CSS (FINAL v5.0)
- * Desktop-only authentication modals
- * Fully isolated, zero side effects
+ * BetEngine Enterprise – AUTH.CSS (FINAL v5.1)
+ * Desktop + Mobile authentication modals
+ * SAFE FIX:
+ * - Auth modals now work on mobile
+ * - No JS changes required
+ * - Zero side effects
  *********************************************************/
 
 /* ======================================================
-   OVERLAY (DESKTOP ONLY)
+   OVERLAY (GLOBAL)
 ====================================================== */
 .be-auth-overlay {
     position: fixed;
@@ -17,6 +20,7 @@
     z-index: 4000;
 }
 
+/* Show state */
 .be-auth-overlay.show {
     display: flex;
 }
@@ -126,12 +130,16 @@
 }
 
 /* ======================================================
-   MOBILE BLOCK (AUTH DISABLED ON MOBILE)
+   MOBILE SUPPORT (FIXED)
+   Auth works on mobile when .show is present
 ====================================================== */
 @media (max-width: 900px) {
+
     .be-auth-overlay {
-        display: none !important;
+        display: none;
+    }
+
+    .be-auth-overlay.show {
+        display: flex;
     }
 }
-
-
