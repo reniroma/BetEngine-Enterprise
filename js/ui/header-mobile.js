@@ -130,13 +130,13 @@
            Hamburger closes, auth opens
         ================================================== */
         qs(".menu-auth-login")?.addEventListener("click", (e) => {
-            e.preventDefault();
+            stop(e);
             closeMenu();
             window.BE_openLogin?.();
         });
 
         qs(".menu-auth-register")?.addEventListener("click", (e) => {
-            e.preventDefault();
+            stop(e);
             closeMenu();
             window.BE_openRegister?.();
         });
