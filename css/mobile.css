@@ -13,7 +13,7 @@
 .mobile-menu-overlay,
 .mobile-menu-panel,
 .be-modal-overlay {
-    display: flex;
+    display: none;
 }
 
 /* ==================================================
