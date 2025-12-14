@@ -1,100 +1,102 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.0)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.1)
  * Single source of truth for Login / Register modals
+ *
  * FIXED:
- * - Correct modal IDs
+ * - No fatal exit if modals are not yet in DOM
+ * - Safe re-binding after header injection
  * - Desktop & Mobile compatible
- * - No hamburger interference
+ * - Public API always available
  *********************************************************/
 
-document.addEventListener("headerLoaded", () => {
+(function () {
+    let initialized = false;
 
-    /* ==================================================
-       HELPERS
-    ================================================== */
-    const qs = (sel, scope = document) => scope.querySelector(sel);
-    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+    function initAuth() {
+        if (initialized) return;
 
-    /* ==================================================
-       ELEMENTS (CORRECT IDS)
-    ================================================== */
-    const loginBtn    = qs(".btn-auth.login");
-    const registerBtn = qs(".btn-auth.register");
+        const qs = (sel, scope = document) => scope.querySelector(sel);
+        const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-    const loginModal    = qs("#login-modal");
-    const registerModal = qs("#register-modal");
+        const loginModal    = qs("#login-modal");
+        const registerModal = qs("#register-modal");
 
-    if (!loginModal || !registerModal) {
-        console.error("[AUTH] Login/Register modals not found in DOM");
-        return;
-    }
+        /* If modals are not yet injected, wait */
+        if (!loginModal || !registerModal) return;
 
-    /* ==================================================
-       STATE CONTROL
-    ================================================== */
-    const closeAll = () => {
-        loginModal.classList.remove("show");
-        registerModal.classList.remove("show");
-        document.body.style.overflow = "";
-    };
+        initialized = true;
 
-    const openLogin = () => {
-        closeAll();
-        loginModal.classList.add("show");
-        document.body.style.overflow = "hidden";
-    };
+        /* ==================================================
+           STATE CONTROL
+        ================================================== */
+        const closeAll = () => {
+            loginModal.classList.remove("show");
+            registerModal.classList.remove("show");
+            document.body.style.overflow = "";
+        };
 
-    const openRegister = () => {
-        closeAll();
-        registerModal.classList.add("show");
-        document.body.style.overflow = "hidden";
-    };
+        const openLogin = () => {
+            closeAll();
+            loginModal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        };
 
-    /* ==================================================
-       TRIGGERS (DESKTOP + MOBILE)
-    ================================================== */
-    on(loginBtn, "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openLogin();
-    });
+        const openRegister = () => {
+            closeAll();
+            registerModal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        };
 
-    on(registerBtn, "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openRegister();
-    });
-
-    /* ==================================================
-       CLOSE HANDLERS
-    ================================================== */
-    [loginModal, registerModal].forEach(modal => {
-
-        // Close button
-        on(modal.querySelector(".auth-close"), "click", (e) => {
+        /* ==================================================
+           DESKTOP TRIGGERS
+        ================================================== */
+        on(qs(".btn-auth.login"), "click", (e) => {
             e.preventDefault();
             e.stopPropagation();
-            closeAll();
+            openLogin();
         });
 
-        // Click outside modal box
-        on(modal, "click", (e) => {
-            if (e.target === modal) closeAll();
+        on(qs(".btn-auth.register"), "click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            openRegister();
         });
-    });
 
-    /* ==================================================
-       ESC KEY
-    ================================================== */
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAll();
-    });
+        /* ==================================================
+           CLOSE HANDLERS
+        ================================================== */
+        [loginModal, registerModal].forEach(modal => {
 
-    /* ==================================================
-       PUBLIC API (USED BY MOBILE MENU)
-    ================================================== */
-    window.BE_openLogin = openLogin;
-    window.BE_openRegister = openRegister;
+            on(modal.querySelector(".auth-close"), "click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeAll();
+            });
 
-    console.log("header-auth.js v4.0 READY");
-});
+            on(modal, "click", (e) => {
+                if (e.target === modal) closeAll();
+            });
+        });
+
+        /* ==================================================
+           ESC KEY
+        ================================================== */
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeAll();
+        });
+
+        /* ==================================================
+           PUBLIC API (USED BY MOBILE / BOOKMARKS / ETC)
+        ================================================== */
+        window.BE_openLogin = openLogin;
+        window.BE_openRegister = openRegister;
+
+        console.log("header-auth.js v4.1 READY");
+    }
+
+    /* Primary hook */
+    document.addEventListener("headerLoaded", initAuth);
+
+    /* Fallback safety */
+    document.addEventListener("DOMContentLoaded", initAuth);
+})();
