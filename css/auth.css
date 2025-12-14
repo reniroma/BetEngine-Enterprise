@@ -230,34 +230,5 @@
     padding-right: 36px; /* space for future custom arrow */
 }
 
-/* ======================================================
-   DESKTOP FIX — REGISTER ALIGNMENT (FINAL)
-====================================================== */
-
-/* Ensure identical vertical rhythm */
-.auth-field {
-    margin-bottom: 10px;
-}
-
-/* Make SELECT identical to INPUT (desktop browsers) */
-.auth-field select {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    line-height: 40px;
-    padding: 0 10px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: none;
-}
-
-/* Spacing before checkbox */
-.auth-checkbox {
-    margin-top: 6px;
-}
-
 
 
