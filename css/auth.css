@@ -204,7 +204,22 @@
         max-width: 92%;
     }
 
-  
+   /* ======================================================
+   FIX: COUNTRY SELECT ALIGNMENT (REGISTER)
+   Makes select identical to inputs
+====================================================== */
+
+.auth-field {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-field input,
+.auth-field select {
+    width: 100%;
+    box-sizing: border-box;
+}
 
 /* Kill native select UI differences */
 .auth-field select {
@@ -214,8 +229,4 @@
     background-image: none;
     padding-right: 36px; /* space for future custom arrow */
 }
-
-
-
-
 
