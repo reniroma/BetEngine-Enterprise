@@ -14,29 +14,35 @@
     <link rel="stylesheet" href="css/components.css?v=4">
     <link rel="stylesheet" href="css/desktop.css?v=4">
 
-    <!-- AUTH MODALS CSS (after desktop.css) -->
+    <!-- AUTH MODALS CSS -->
     <link rel="stylesheet" href="css/auth.css?v=1">
 
-    <!-- MOBILE CSS (always last) -->
+    <!-- MOBILE CSS (ALWAYS LAST) -->
     <link rel="stylesheet" href="css/mobile.css?v=4">
 </head>
 
 <body>
 
-    <!-- Headers are injected by header-loader.js -->
+    <!-- Headers injected by header-loader.js -->
 
     <main>
         <h1>BetEngine Enterprise</h1>
         <p>Enterprise-ready skeleton layout.</p>
     </main>
 
-    <!-- JS ORDER (STRICT) -->
+    <!-- ==================================================
+         JS ORDER (CRITICAL – FINAL)
+    ================================================== -->
+
     <script src="js/core/core.js?v=4"></script>
     <script src="js/core/header-loader.js?v=4"></script>
+
+    <!-- AUTH MUST BE REGISTERED BEFORE headerLoaded -->
+    <script src="js/ui/header-auth.js?v=1"></script>
+
     <script src="js/ui/header.js?v=10"></script>
     <script src="js/ui/header-mobile.js?v=6"></script>
     <script src="js/ui/widgets.js?v=4"></script>
-    <script src="js/ui/header-auth.js?v=1"></script>
 
 </body>
 </html>
