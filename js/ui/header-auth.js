@@ -1,7 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.1)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.0)
  * Single source of truth for Login / Register modals
- * Desktop + Mobile SAFE PATCH
+ * FIXED:
+ * - Correct modal IDs
+ * - Desktop & Mobile compatible
+ * - No hamburger interference
  *********************************************************/
 
 document.addEventListener("headerLoaded", () => {
@@ -10,12 +13,14 @@ document.addEventListener("headerLoaded", () => {
        HELPERS
     ================================================== */
     const qs = (sel, scope = document) => scope.querySelector(sel);
-    const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
     const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
     /* ==================================================
-       ELEMENTS
+       ELEMENTS (CORRECT IDS)
     ================================================== */
+    const loginBtn    = qs(".btn-auth.login");
+    const registerBtn = qs(".btn-auth.register");
+
     const loginModal    = qs("#login-modal");
     const registerModal = qs("#register-modal");
 
@@ -46,37 +51,18 @@ document.addEventListener("headerLoaded", () => {
     };
 
     /* ==================================================
-       TRIGGERS – DESKTOP
+       TRIGGERS (DESKTOP + MOBILE)
     ================================================== */
-    on(qs(".btn-auth.login"), "click", (e) => {
+    on(loginBtn, "click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         openLogin();
     });
 
-    on(qs(".btn-auth.register"), "click", (e) => {
+    on(registerBtn, "click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         openRegister();
-    });
-
-    /* ==================================================
-       TRIGGERS – MOBILE (PATCH)
-    ================================================== */
-    qa(".menu-auth-login").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            openLogin();
-        });
-    });
-
-    qa(".menu-auth-register").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            openRegister();
-        });
     });
 
     /* ==================================================
@@ -84,12 +70,14 @@ document.addEventListener("headerLoaded", () => {
     ================================================== */
     [loginModal, registerModal].forEach(modal => {
 
+        // Close button
         on(modal.querySelector(".auth-close"), "click", (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeAll();
         });
 
+        // Click outside modal box
         on(modal, "click", (e) => {
             if (e.target === modal) closeAll();
         });
@@ -103,10 +91,10 @@ document.addEventListener("headerLoaded", () => {
     });
 
     /* ==================================================
-       PUBLIC API
+       PUBLIC API (USED BY MOBILE MENU)
     ================================================== */
     window.BE_openLogin = openLogin;
     window.BE_openRegister = openRegister;
 
-    console.log("header-auth.js v4.1 READY");
+    console.log("header-auth.js v4.0 READY");
 });
