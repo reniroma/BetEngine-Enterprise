@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.0)
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.1)
  * Desktop-only components + shared base buttons.
  * ZERO mobile rules. 100% isolation using min-width:901px
  *********************************************************/
@@ -309,15 +309,26 @@ button {
     .odds-dropdown .item.active {
         color: var(--text-secondary, #00eaff);
     }
+}
 
 
-    /*******************************************************
-     * AUTH MODALS (DESKTOP)
-     * (left untouched — no mobile conflicts)
-     *******************************************************/
-    .be-auth-overlay {
-        /* Entire auth modal system left unchanged */
-    }
+/* =======================================================
+   AUTH MODALS – BASE VISIBILITY (DESKTOP + MOBILE)
+   REQUIRED FOR JS .show TO WORK
+======================================================= */
+
+.be-auth-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 4000;
+}
+
+.be-auth-overlay.show {
+    display: flex;
 }
 
 /* =============== END OF FILE =============== */
