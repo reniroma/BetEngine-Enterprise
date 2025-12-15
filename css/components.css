@@ -1,13 +1,14 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.0)
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.1)
  * Desktop-only components + shared base buttons.
- * ZERO mobile rules. 100% isolation using min-width:901px
+ * FIX:
+ * - SVG icons now render correctly inside auth buttons
+ * - ZERO side effects
  *********************************************************/
 
 
 /* =======================================================
    BASE BUTTONS / CONTROLS (SHARED, SAFE)
-   (allowed globally — these do NOT conflict with mobile)
 ======================================================= */
 
 button {
@@ -37,7 +38,6 @@ button {
 
 /* =======================================================
    DESKTOP-ONLY SCOPE
-   Everything inside this block is ignored by mobile.css
 ======================================================= */
 @media (min-width: 901px) {
 
@@ -54,9 +54,13 @@ button {
         color: #000;
     }
 
-    .btn-auth img {
+    /* FIX: support BOTH img AND svg icons */
+    .btn-auth img,
+    .btn-auth svg {
         width: 14px;
         height: 14px;
+        flex-shrink: 0;
+        display: block;
     }
 
 
@@ -310,13 +314,11 @@ button {
         color: var(--text-secondary, #00eaff);
     }
 
-
     /*******************************************************
      * AUTH MODALS (DESKTOP)
-     * (left untouched — no mobile conflicts)
      *******************************************************/
     .be-auth-overlay {
-        /* Entire auth modal system left unchanged */
+        /* untouched */
     }
 }
 
