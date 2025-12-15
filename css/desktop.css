@@ -441,16 +441,4 @@
     top: 0 !important;
 }
 
-/* =======================================================
-   ENTERPRISE FIX – SEARCH CONTAINMENT
-   (Stops overflow without affecting layout)
-======================================================= */
 
-
-.header-desktop .search-box {
-    max-width: 220px;
-}
-
-.search-box input {
-    max-width: 100%;
-}
