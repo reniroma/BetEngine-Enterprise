@@ -1,0 +1,50 @@
+<div class="be-auth-overlay" id="login-modal">
+    <div class="be-auth-box">
+
+        <div class="auth-header">
+            <span class="auth-title">Login</span>
+            <button class="auth-close" type="button">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <!-- Social login -->
+        <div class="auth-social">
+            <button class="auth-social-btn facebook" type="button">Sign in with Facebook</button>
+            <button class="auth-social-btn google" type="button">Sign in with Google</button>
+            <button class="auth-social-btn apple" type="button">Sign in with Apple</button>
+        </div>
+
+        <div class="auth-divider"><span>OR</span></div>
+
+        <!-- Login form -->
+        <form class="auth-form" autocomplete="on">
+            <label class="auth-field">
+                <span class="auth-label">Username</span>
+                <input type="text" name="username" autocomplete="username">
+            </label>
+
+            <label class="auth-field">
+                <span class="auth-label">Password</span>
+                <input type="password" name="password" autocomplete="current-password">
+            </label>
+
+            <label class="auth-checkbox">
+                <input type="checkbox" name="remember">
+                <span>Remember me</span>
+            </label>
+
+            <button class="auth-submit primary" type="submit">Login</button>
+
+            <div class="auth-footer-text">
+                <span>Don’t have an account?</span>
+                <button class="auth-link" type="button" data-open-register>
+                    Create one for free
+                </button>
+            </div>
+
+            <button class="auth-link auth-forgot" type="button">Forgot password?</button>
+        </form>
+
+    </div>
+</div>

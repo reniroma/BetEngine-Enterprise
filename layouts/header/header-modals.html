@@ -1,0 +1,152 @@
+<!-- ====================================================
+     BetEngine Enterprise – HEADER MODALS
+     Mobile-only modals + hamburger panel
+==================================================== -->
+
+<!-- ============================
+     MOBILE ONLY WRAPPER
+============================ -->
+<div class="mobile-only">
+
+    <!-- ============================
+         MOBILE ODDS MODAL
+    ============================ -->
+    <div class="be-modal-overlay" id="mobile-odds-modal" aria-hidden="true">
+        <div class="be-modal" role="dialog" aria-modal="true">
+
+            <div class="be-modal-header">
+                <span class="be-modal-title">Odds Format</span>
+                <button class="be-modal-close" type="button" aria-label="Close">
+                    <img src="assets/icons/close.svg" alt="">
+                </button>
+            </div>
+
+            <div class="be-modal-body modal-odds">
+                <button class="be-modal-item active" type="button" data-odds="decimal">Decimal Odds (1.50)</button>
+                <button class="be-modal-item" type="button" data-odds="fractional">Fractional Odds (1/2)</button>
+                <button class="be-modal-item" type="button" data-odds="moneyline">Moneyline Odds (-200)</button>
+                <button class="be-modal-item" type="button" data-odds="hongkong">Hong Kong Odds (0.50)</button>
+                <button class="be-modal-item" type="button" data-odds="malay">Malay Odds (0.50)</button>
+                <button class="be-modal-item" type="button" data-odds="indonesian">Indonesian Odds (-2.00)</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================
+         MOBILE LANGUAGE MODAL
+    ============================ -->
+    <div class="be-modal-overlay" id="mobile-language-modal" aria-hidden="true">
+        <div class="be-modal" role="dialog" aria-modal="true">
+
+            <div class="be-modal-header">
+                <span class="be-modal-title">Language</span>
+                <button class="be-modal-close" type="button" aria-label="Close">
+                    <img src="assets/icons/close.svg" alt="">
+                </button>
+            </div>
+
+            <div class="be-modal-body modal-language">
+                <button class="be-modal-item" type="button" data-lang="sq">Albanian</button>
+                <button class="be-modal-item" type="button" data-lang="ar">Arabic</button>
+                <button class="be-modal-item" type="button" data-lang="zh">Chinese</button>
+                <button class="be-modal-item" type="button" data-lang="nl">Dutch</button>
+                <button class="be-modal-item active" type="button" data-lang="en">English</button>
+                <button class="be-modal-item" type="button" data-lang="fr">French</button>
+                <button class="be-modal-item" type="button" data-lang="de">German</button>
+                <button class="be-modal-item" type="button" data-lang="el">Greek</button>
+                <button class="be-modal-item" type="button" data-lang="hi">Hindi</button>
+                <button class="be-modal-item" type="button" data-lang="id">Indonesian</button>
+                <button class="be-modal-item" type="button" data-lang="it">Italian</button>
+                <button class="be-modal-item" type="button" data-lang="ja">Japanese</button>
+                <button class="be-modal-item" type="button" data-lang="ko">Korean</button>
+                <button class="be-modal-item" type="button" data-lang="pl">Polish</button>
+                <button class="be-modal-item" type="button" data-lang="pt">Portuguese</button>
+                <button class="be-modal-item" type="button" data-lang="ro">Romanian</button>
+                <button class="be-modal-item" type="button" data-lang="ru">Russian</button>
+                <button class="be-modal-item" type="button" data-lang="sr">Serbian</button>
+                <button class="be-modal-item" type="button" data-lang="es">Spanish</button>
+                <button class="be-modal-item" type="button" data-lang="tr">Turkish</button>
+                <button class="be-modal-item" type="button" data-lang="uk">Ukrainian</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================
+         HAMBURGER OVERLAY
+    ============================ -->
+    <div class="mobile-menu-overlay" aria-hidden="true"></div>
+
+    <!-- ============================
+         HAMBURGER PANEL
+    ============================ -->
+    <div class="mobile-menu-panel" aria-hidden="true">
+        <button class="mobile-menu-close" type="button" aria-label="Close menu">
+            <img src="assets/icons/close.svg" alt="">
+        </button>
+
+        <div class="menu-brand">
+            <img src="assets/logos/logo.svg" class="logo" alt="">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4>Account</h4>
+            <button class="menu-item menu-auth-login" type="button">Login</button>
+            <button class="menu-item menu-auth-register" type="button">Register</button>
+        </div>
+
+        <div class="menu-section">
+            <h4>Quick Controls</h4>
+            <button class="menu-item menu-odds" type="button">Odds Format</button>
+            <button class="menu-item menu-lang" type="button">Language</button>
+        </div>
+
+        <div class="menu-section">
+            <h4>Navigation</h4>
+            <button class="menu-link" type="button" data-section="odds">Odds Comparison</button>
+            <div class="submenu" data-subnav="odds"></div>
+
+            <button class="menu-link" type="button" data-section="community">Community</button>
+            <div class="submenu" data-subnav="community"></div>
+
+            <button class="menu-link" type="button" data-section="bookmakers">Bookmakers</button>
+            <div class="submenu" data-subnav="bookmakers"></div>
+
+            <button class="menu-link" type="button" data-section="premium">Premium</button>
+            <div class="submenu" data-subnav="premium"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================
+     MOBILE BOOKMARKS MODAL (GLOBAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-bookmarks-modal" aria-hidden="true">
+    <div class="be-modal" role="dialog" aria-modal="true">
+
+        <div class="be-modal-header">
+            <span class="be-modal-title">Manage My Leagues</span>
+            <button class="be-modal-close" type="button" aria-label="Close">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <div class="be-modal-body">
+            <div class="be-modal-placeholder">
+                Select sports and leagues to personalize your experience.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================
+     AUTH CONTAINERS (GLOBAL)
+============================ -->
+<div id="auth-login-container"></div>
+<div id="auth-register-container"></div>

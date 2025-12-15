@@ -1,7 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX)
- * Base page structure, containers, spacing, header flow,
- * footer stability, enterprise-level layout consistency.
+ * BetEngine Enterprise – LAYOUT.CSS (FINAL FIX v2.1)
  *********************************************************/
 
 /* =======================================================
@@ -21,7 +19,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Global container controlling content width */
+/* Global container */
 .be-container {
     width: 100%;
     max-width: 1440px;
@@ -30,36 +28,35 @@ body {
 }
 
 /* =======================================================
-   HEADER SPACING FLOW
+   HEADER SPACING FLOW (DESKTOP ONLY)
 ======================================================= */
 
-.header-desktop,
-.header-mobile {
+.header-desktop {
     width: 100%;
     position: relative;
     background: var(--bg-header, #0a0c12);
+    z-index: 100;
 }
 
-/* Each row separated by the separator bar */
+/* Never style header-mobile here */
+.header-mobile {
+    /* intentionally EMPTY */
+}
+
+/* Header rows */
 .header-row {
     display: flex;
     align-items: center;
     width: 100%;
     padding: 8px 18px;
+    background: var(--bg-header, #0a0c12);
 }
 
-/* Background consistency for all rows */
-.header-row,
+/* row-specific backgrounds */
 .row-top,
 .row-main,
 .row-sub {
     background: var(--bg-header, #0a0c12);
-}
-
-/* Prevent layout shift when dropdowns are open */
-.header-desktop,
-.header-mobile {
-    z-index: 100;
 }
 
 /* =======================================================
@@ -74,7 +71,6 @@ main {
     min-height: calc(100vh - 200px);
 }
 
-/* Headings */
 main h1 {
     font-size: 24px;
     color: var(--text-primary, #ffec00);
@@ -87,7 +83,7 @@ main p {
 }
 
 /* =======================================================
-   FOOTER BASE (SKELETON READY)
+   FOOTER
 ======================================================= */
 
 footer {
@@ -102,7 +98,7 @@ footer {
 }
 
 /* =======================================================
-   GRID SYSTEM (ENTERPRISE)
+   GRID SYSTEM
 ======================================================= */
 
 .be-grid {
@@ -113,7 +109,6 @@ footer {
     margin: 0 auto;
 }
 
-/* Column helpers */
 .col-12 { grid-column: span 12; }
 .col-9  { grid-column: span 9;  }
 .col-8  { grid-column: span 8;  }
@@ -122,32 +117,16 @@ footer {
 .col-3  { grid-column: span 3;  }
 
 /* =======================================================
-   FLEX GLOBAL HELPERS
+   FLEX HELPERS
 ======================================================= */
 
-.be-flex {
-    display: flex;
-}
-
-.be-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.be-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.be-vcenter {
-    display: flex;
-    align-items: center;
-}
+.be-flex { display: flex; }
+.be-center { display: flex; justify-content: center; align-items: center; }
+.be-between { display: flex; justify-content: space-between; align-items: center; }
+.be-vcenter { display: flex; align-items: center; }
 
 /* =======================================================
-   SPACERS (ENTERPRISE STANDARD)
+   SPACERS
 ======================================================= */
 
 .sp-4  { height: 4px; }
@@ -158,7 +137,7 @@ footer {
 .sp-32 { height: 32px; }
 
 /* =======================================================
-   PAGE WRAPPING (READY FOR FUTURE MODULES)
+   PAGE WRAPPER
 ======================================================= */
 
 .page-wrapper {
@@ -167,7 +146,6 @@ footer {
     padding-bottom: 30px;
 }
 
-/* Module containers (future pages: league, match, community, premium) */
 .module-box {
     width: 100%;
     background: var(--bg-panel, #11141d);
@@ -178,7 +156,7 @@ footer {
 }
 
 /* =======================================================
-   RESPONSIVE (TABLET + SMALL DESKTOP)
+   RESPONSIVE
 ======================================================= */
 
 @media (max-width: 1100px) {
@@ -196,10 +174,6 @@ footer {
         padding: 14px 14px;
     }
 }
-
-/* =======================================================
-   TINY DEVICES < 380px
-======================================================= */
 
 @media (max-width: 380px) {
     main {

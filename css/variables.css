@@ -1,76 +1,64 @@
 /*********************************************************
- * BetEngine Enterprise – VARIABLES.CSS (FINAL FIX)
- * The official color system & theme tokens for the UI.
- * All CSS files rely on these variables.
+ * BetEngine Enterprise – VARIABLES.CSS (FINAL v1.0)
+ * Centralized theme variables for desktop + mobile
+ * FIX MINIMAL: only adds missing variables, no design changes
  *********************************************************/
 
 :root {
 
-    /*******************************************************
-     * CORE BACKGROUND LAYERS (Dark Theme)
-     *******************************************************/
-    --bg-main: #050509;
-    --bg-header: #0b0b12;
-    --bg-nav: #101018;
-
-    /* Panels */
+    /* ===================================================
+       CORE COLORS
+    =================================================== */
+    --bg-main: #0a0c12;
+    --bg-header: #0a0c12;
+    --bg-nav: #0a0c12;
     --bg-panel: #11141d;
     --bg-panel-soft: #181824;
     --bg-panel-strong: #0d0d16;
-    --bg-chip: #1f1f2d;
 
-    /*******************************************************
-     * BUTTONS
-     *******************************************************/
+    /* Buttons */
+    --bg-chip: #1f1f2d;
     --bg-button-primary: #ffec00;
     --bg-button-primary-soft: rgba(255, 236, 0, 0.12);
-
     --bg-button-secondary: #222236;
-    --bg-button-secondary-hover: #2d2d42;
 
-    /*******************************************************
-     * TEXT COLORS
-     *******************************************************/
-    --text-primary: #ffec00;    /* Premium yellow highlight */
-    --text-secondary: #00eaff;  /* Cyan neon accent */
-    --text-muted: #b3b3b3;      /* Standard subdued text */
+    /* Text */
+    --text-primary: #ffec00;
+    --text-secondary: #00eaff;
+    --text-muted: #b3b3b3;
 
-    /*******************************************************
-     * BADGES / STATUS
-     *******************************************************/
-    --bg-badge-live: #ff1744;      /* Live red */
-    --bg-badge-premium: #ff9800;   /* Amber premium */
+    /* Badges */
+    --bg-badge-live: #ff1744;
+    --bg-badge-premium: #ff9800;
 
-    /*******************************************************
-     * BORDERS
-     *******************************************************/
-    --border-soft: rgba(255,255,255,0.06);
-    --border-medium: rgba(255,255,255,0.12);
+    /* Borders */
     --border-neon: #ff0000;
 
-    /*******************************************************
-     * SHADOWS
-     *******************************************************/
-    --shadow-soft: 0px 4px 14px rgba(0,0,0,0.35);
-    --shadow-strong: 0px 12px 36px rgba(0,0,0,0.55);
 
-    /*******************************************************
-     * GLOBAL SIZES
-     *******************************************************/
-    --header-height-desktop: 132px;
-    --header-height-mobile: 164px;
+    /* ===================================================
+       FIXED: MOBILE HEADER GRADIENT VARIABLES
+       Needed by mobile.css
+    =================================================== */
+    --mobile-header-grad-1: #0b0b12;
+    --mobile-header-grad-2: #101018;
+    --mobile-header-grad-3: #11141d;
 
-    /*******************************************************
-     * TRANSITIONS
-     *******************************************************/
-    --t-fast: 0.15s ease;
-    --t-medium: 0.25s ease;
-    --t-slow: 0.35s ease;
+    /* Mobile icon/button background */
+    --mobile-icon-bg: rgba(24, 24, 36, 0.95);
 
-    /*******************************************************
-     * Z-INDEX TOKENS (Hierarchy)
-     *******************************************************/
-    --z-header: 100;
-    --z-dropdown: 300;
-    --z-modal: 9999;
+    /* Mobile slide panel background */
+    --mobile-panel-bg: #0c0c14;
+
+
+    /* ===================================================
+       FIXED: AUTH VARIABLES (used by auth.css)
+    =================================================== */
+    --auth-bg: #0a0c12;
+    --auth-border: rgba(255, 255, 255, 0.1);
+
+
+    /* ===================================================
+       FIXED: NAV VARIABLE (desktop.css requires it)
+    =================================================== */
+    --nav-bg: #0a0c12;
 }

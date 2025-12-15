@@ -1,63 +1,40 @@
+<!-- ====================================================
+     MOBILE HEADER – BetEngine Enterprise (UPDATED)
+     Patch: Added Bookmarks icon between Search & Notification
+==================================================== -->
 <header class="header-mobile">
-    <!-- TOP ROW: hamburger + top options -->
-    <div class="mobile-row row-top">
-        <button class="hamburger" type="button" aria-label="Toggle menu">
-            ☰
+
+    <div class="mobile-top-bar">
+
+        <!-- HAMBURGER -->
+        <button class="mobile-menu-toggle" type="button" aria-label="Menu">
+            <img src="assets/icons/hamburger.svg" alt="">
         </button>
 
-        <div class="top-options">
-            <button class="odds-toggle" type="button">
-                <span class="value">Decimal Odds</span>
-                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
-            </button>
-
-            <button class="lang-toggle" type="button">
-                <img src="/assets/icons/language.svg" alt="" class="icon-lang">
-                <span class="lang-code">EN</span>
-                <img src="/assets/icons/caret-down.svg" alt="" class="icon-caret">
-            </button>
-        </div>
-    </div>
-
-    <!-- BRAND ROW -->
-    <div class="mobile-row row-brand">
-        <img src="/assets/logos/logo.svg" class="logo" alt="BetEngine logo">
-        <div class="brand-text">
+        <!-- BRAND -->
+        <div class="mobile-brand">
             <span class="name">BetEngine</span>
-            <span class="tagline">Smart betting tools</span>
+        </div>
+
+        <!-- RIGHT ACTIONS -->
+        <div class="mobile-actions">
+
+            <!-- SEARCH -->
+            <button class="mobile-search-btn" type="button" aria-label="Search">
+                <img src="assets/icons/search.svg" alt="">
+            </button>
+
+            <!-- BOOKMARKS (NEW) -->
+            <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
+                <img src="assets/icons/bookmarks.svg" alt="">
+            </button>
+
+            <!-- NOTIFICATIONS -->
+            <button class="mobile-notifications-btn" type="button" aria-label="Notifications">
+                <img src="assets/icons/notification.svg" alt="">
+            </button>
+
         </div>
     </div>
 
-    <!-- SEARCH ROW -->
-    <div class="mobile-row row-search">
-        <div class="search-box">
-            <img src="/assets/icons/search.svg" class="search-icon" alt="">
-            <input type="search" placeholder="Search (team / player)" aria-label="Search team or player">
-        </div>
-
-        <button class="notif-button" type="button" aria-label="Notifications">
-            <img src="/assets/icons/notification.svg" alt="" class="notif-icon">
-        </button>
-    </div>
-
-    <!-- MAIN NAV CHIPS -->
-    <nav class="mobile-main-nav" aria-label="Primary navigation">
-        <button class="nav-chip active" type="button" data-section="odds">ODDS</button>
-        <button class="nav-chip" type="button" data-section="community">COMMUNITY</button>
-        <button class="nav-chip" type="button" data-section="bookmakers">BOOKMAKERS</button>
-        <button class="nav-chip" type="button" data-section="premium">PREMIUM ★</button>
-    </nav>
-
-    <!-- SUB NAV (for now only ODDS group, ready for extension) -->
-    <nav class="mobile-sub-nav" aria-label="Secondary navigation">
-        <div class="subnav-group active" data-subnav="odds">
-            <button class="sub-chip" type="button">HOME</button>
-            <button class="sub-chip" type="button">NEXT MATCHES</button>
-            <button class="sub-chip" type="button">DROPPING ODDS</button>
-            <button class="sub-chip" type="button">SURE BETS</button>
-            <button class="sub-chip" type="button">IN PLAY ODDS</button>
-            <button class="sub-chip" type="button">ALL EVENTS</button>
-            <button class="sub-chip tools" type="button">BETTING TOOLS ▾</button>
-        </div>
-    </nav>
 </header>

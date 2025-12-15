@@ -1,0 +1,110 @@
+<!-- ============================================================
+     REGISTER MODAL — BETENGINE ENTERPRISE (FINAL VERSION)
+     Fully compatible with CSS + JS FINAL
+=============================================================== -->
+<div class="be-auth-overlay" id="register-modal">
+
+    <div class="be-auth-box">
+
+        <!-- Header -->
+        <div class="auth-header">
+            <span class="auth-title">Create account</span>
+            <button class="auth-close" type="button" data-auth-close>
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <!-- Scroll Container -->
+        <div class="auth-body">
+            <div class="auth-scroll">
+
+                <!-- Social Login -->
+                <div class="auth-social">
+
+                    <button class="auth-social-btn facebook" type="button">
+                        <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
+                        Sign up with Facebook
+                    </button>
+
+                    <button class="auth-social-btn google" type="button">
+                        <img src="assets/icons/google.svg" class="auth-social-icon" alt="">
+                        Sign up with Google
+                    </button>
+
+                    <button class="auth-social-btn apple" type="button">
+                        <img src="assets/icons/apple.svg" class="auth-social-icon" alt="">
+                        Sign up with Apple
+                    </button>
+
+                </div>
+
+                <!-- Divider -->
+                <div class="auth-divider"><span>OR</span></div>
+
+                <!-- Register Form -->
+                <form class="auth-form" autocomplete="on">
+
+                    <!-- Username -->
+                    <label class="auth-field">
+                        <span class="auth-label">Username</span>
+                        <input type="text" name="username" autocomplete="username">
+                    </label>
+
+                    <!-- Email -->
+                    <label class="auth-field">
+                        <span class="auth-label">Email</span>
+                        <input type="email" name="email" autocomplete="email">
+                    </label>
+
+                    <!-- Password -->
+                    <label class="auth-field">
+                        <span class="auth-label">Password</span>
+                        <input type="password" name="password" autocomplete="new-password">
+                    </label>
+
+                    <!-- Country -->
+                    <label class="auth-field">
+                        <span class="auth-label">Country</span>
+                        <select name="country">
+                            <option value="">Select country</option>
+                            <option value="al">Albania</option>
+                            <option value="be">Belgium</option>
+                            <option value="de">Germany</option>
+                            <option value="fr">France</option>
+                            <option value="it">Italy</option>
+                            <option value="es">Spain</option>
+                            <option value="gb">United Kingdom</option>
+                            <option value="us">United States</option>
+                        </select>
+                    </label>
+
+                    <!-- Terms Checkbox -->
+                    <label class="auth-checkbox">
+                        <input type="checkbox" name="marketing">
+                        <span>I agree to the Terms of Use and want to receive news and special offers.</span>
+                    </label>
+
+                    <!-- Submit -->
+                    <button class="auth-submit" type="submit">
+                        Create my account
+                    </button>
+
+                    <!-- Footer Links -->
+                    <div class="auth-footer-text">
+                        <span>Already have an account?</span>
+
+                        <button class="auth-link auth-switch"
+                                type="button"
+                                data-auth-target="login">
+                            Login here
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

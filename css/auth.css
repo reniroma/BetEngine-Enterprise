@@ -1,0 +1,290 @@
+/*********************************************************
+ * BetEngine Enterprise – AUTH.CSS (FINAL v5.3)
+ * Desktop + Mobile authentication modals
+ * UI POLISH (DESKTOP ONLY):
+ * - Improved Login & Register layout
+ * - Refined social buttons
+ * - Better spacing & hierarchy
+ * - ZERO mobile / HTML / JS impact
+ *********************************************************/
+
+/* ======================================================
+   OVERLAY
+====================================================== */
+.be-auth-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.65);
+    z-index: 4000;
+}
+
+.be-auth-overlay.show {
+    display: flex;
+}
+
+/* ======================================================
+   MODAL BOX
+====================================================== */
+.be-auth-box {
+    width: 100%;
+    max-width: 420px;
+    background: #11141d;
+    border-radius: 14px;
+    box-shadow: 0 22px 60px rgba(0,0,0,0.8);
+    color: #ffffff;
+}
+
+/* ======================================================
+   HEADER
+====================================================== */
+.auth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.auth-header-title,
+.auth-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #00eaff;
+}
+
+.auth-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.auth-close img {
+    width: 18px;
+    height: 18px;
+}
+
+/* ======================================================
+   BODY
+====================================================== */
+.auth-body {
+    padding: 18px;
+}
+
+/* ======================================================
+   SOCIAL BUTTONS (BASE)
+====================================================== */
+.auth-social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.auth-social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 44px;
+    border-radius: 10px;
+    background: #151827;
+    border: 1px solid #2b3040;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.auth-social-btn:hover {
+    background: #1c2033;
+}
+
+.auth-social-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* ======================================================
+   DIVIDER
+====================================================== */
+.auth-divider {
+    text-align: center;
+    font-size: 12px;
+    color: #9aa0b5;
+    margin: 14px 0;
+}
+
+/* ======================================================
+   FORM
+====================================================== */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-label {
+    font-size: 12px;
+    color: #cfd3df;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-field input,
+.auth-field select {
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid #2b3040;
+    background: #151827;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.auth-field select {
+    appearance: none;
+}
+
+/* ======================================================
+   CHECKBOX
+====================================================== */
+.auth-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: #cfd3df;
+    margin-top: 4px;
+}
+
+/* ======================================================
+   PRIMARY BUTTON
+====================================================== */
+.auth-submit {
+    margin-top: 14px;
+    height: 44px;
+    border-radius: 999px;
+    background: #ffec00;
+    color: #11141d;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ======================================================
+   FOOTER LINKS
+====================================================== */
+.auth-footer-text {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #9aa0b5;
+    text-align: center;
+}
+
+.auth-link {
+    background: none;
+    border: none;
+    color: #00eaff;
+    cursor: pointer;
+}
+
+/* ======================================================
+   MOBILE SUPPORT (UNCHANGED)
+====================================================== */
+@media (max-width: 900px) {
+
+    .be-auth-overlay {
+        display: none;
+    }
+
+    .be-auth-overlay.show {
+        display: flex;
+    }
+
+    .be-auth-box {
+        max-width: 92%;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .auth-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: none;
+        padding-right: 36px;
+    }
+}
+
+/* ======================================================
+   DESKTOP UI POLISH (A + B + C)
+   SAFE PATCH — DESKTOP ONLY
+====================================================== */
+@media (min-width: 901px) {
+
+    /* Modal breathing room */
+    .be-auth-box {
+        padding-bottom: 6px;
+    }
+
+    .auth-body {
+        padding: 22px 22px 24px;
+    }
+
+    /* Header hierarchy */
+    .auth-header {
+        padding: 18px 22px;
+    }
+
+    .auth-header-title,
+    .auth-title {
+        font-size: 17px;
+    }
+
+    /* Social buttons refinement */
+    .auth-social-btn {
+        height: 46px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .auth-social-btn:hover {
+        background: #20243a;
+        border-color: rgba(255,255,255,0.18);
+    }
+
+    /* Divider spacing */
+    .auth-divider {
+        margin: 18px 0;
+    }
+
+    /* Form clarity */
+    .auth-form {
+        gap: 14px;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        height: 42px;
+    }
+
+    /* Country select visual distinction */
+    .auth-field select {
+        cursor: pointer;
+    }
+
+    /* Footer breathing room */
+    .auth-footer-text {
+        margin-top: 18px;
+    }
+}
+
+/* =============== END OF FILE =============== */

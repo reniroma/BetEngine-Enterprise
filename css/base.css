@@ -1,8 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – BASE.CSS (FINAL FIX)
- * Global resets, typography, interactions, scroll,
- * transitions, form controls, universal utilities.
+ * BetEngine Enterprise – BASE.CSS (FINAL v2.0)
+ * Global resets, typography, scroll, transitions,
+ * utilities. ZERO layout logic. Fully compatible with 
+ * all enterprise CSS layers.
  *********************************************************/
+
 
 /* =======================================================
    CSS RESET (ENTERPRISE)
@@ -25,8 +27,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background: var(--bg-main, #0a0c12);
-    color: var(--text-secondary, #00eaff);
+    background: var(--bg-main);
+    color: var(--text-secondary);
     overflow-x: hidden;
 }
 
@@ -35,30 +37,32 @@ body, button, input {
     -webkit-tap-highlight-color: transparent;
 }
 
+
 /* =======================================================
    TYPOGRAPHY
 ======================================================= */
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    color: var(--text-primary, #ffec00);
+    color: var(--text-primary);
     line-height: 1.2;
 }
 
 p {
-    color: var(--text-muted, #b3b3b3);
+    color: var(--text-muted);
     line-height: 1.55;
     margin-bottom: 12px;
     font-size: 14px;
 }
 
 a {
-    text-decoration: none;
     color: inherit;
+    text-decoration: none;
 }
 
+
 /* =======================================================
-   SCROLLBAR REFINEMENT
+   SCROLLBAR
 ======================================================= */
 
 ::-webkit-scrollbar {
@@ -78,14 +82,15 @@ a {
     background: #3f3f55;
 }
 
+
 /* =======================================================
    INPUTS / FORMS
 ======================================================= */
 
 input, select, textarea {
-    background: var(--bg-panel-soft, #181824);
+    background: var(--bg-panel-soft);
     border: 1px solid rgba(255,255,255,0.08);
-    color: var(--text-secondary, #00eaff);
+    color: var(--text-secondary);
     padding: 8px 10px;
     border-radius: 8px;
     outline: none;
@@ -95,19 +100,20 @@ input, select, textarea {
 input:focus,
 textarea:focus,
 select:focus {
-    border-color: var(--text-secondary, #00eaff);
+    border-color: var(--text-secondary);
     box-shadow: 0 0 0 2px rgba(0,234,255,0.15);
 }
 
-/* Remove arrows for number fields */
+/* Remove number spinners */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
+
 /* =======================================================
-   BUTTON BASE STYLE
+   BUTTON BASE
 ======================================================= */
 
 button {
@@ -120,14 +126,14 @@ button {
 }
 
 button:disabled {
-    opacity: 0.5;
+    opacity: .45;
     cursor: not-allowed;
 }
 
-/* Active & focus */
 button:active {
     transform: scale(0.97);
 }
+
 
 /* =======================================================
    IMAGES / ICONS
@@ -135,11 +141,9 @@ button:active {
 
 img {
     display: block;
-    width: auto;
     max-width: 100%;
 }
 
-/* SVG icons crisp */
 .icon,
 .icon-caret,
 .icon-lang {
@@ -147,8 +151,9 @@ img {
     user-select: none;
 }
 
+
 /* =======================================================
-   GLOBAL SELECTION COLOR
+   TEXT SELECTION COLOR
 ======================================================= */
 
 ::selection {
@@ -156,8 +161,9 @@ img {
     color: #000;
 }
 
+
 /* =======================================================
-   TABLE STANDARDIZATION
+   TABLE STANDARD STYLE
 ======================================================= */
 
 table {
@@ -173,27 +179,36 @@ th, td {
 
 th {
     font-weight: 600;
-    color: var(--text-primary, #ffec00);
+    color: var(--text-primary);
 }
 
 td {
-    color: var(--text-muted, #b3b3b3);
+    color: var(--text-muted);
 }
+
 
 /* =======================================================
    TRANSITIONS
 ======================================================= */
 
-a, button, .nav-item, .sub-item, .nav-chip, .sub-chip {
+a,
+button,
+.nav-item,
+.sub-item,
+.nav-chip,
+.sub-chip {
     transition: all 0.18s ease;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     transition: border-color .15s ease, box-shadow .15s ease;
 }
 
+
 /* =======================================================
-   UTILITY CLASSES
+   UTILITIES
 ======================================================= */
 
 .hidden {
@@ -224,6 +239,7 @@ input, select, textarea {
     text-align: center;
 }
 
+
 /* =======================================================
    SPACING UTILITIES
 ======================================================= */
@@ -242,15 +258,12 @@ input, select, textarea {
 .mb-24 { margin-bottom: 24px; }
 .mb-32 { margin-bottom: 32px; }
 
+
 /* =======================================================
    RESPONSIVE POLISH
 ======================================================= */
 
 @media (max-width: 900px) {
-    p {
-        font-size: 13px;
-    }
-    h1 {
-        font-size: 20px;
-    }
+    p { font-size: 13px; }
+    h1 { font-size: 20px; }
 }

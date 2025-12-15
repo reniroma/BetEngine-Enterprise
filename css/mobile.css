@@ -1,285 +1,318 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE CSS (FINAL FIX)
- * Fully compatible with index.html + components.css
- * No structural changes. Only alignment, spacing, stacking.
+ * BetEngine Enterprise – MOBILE.CSS
+ * Desktop-safe mobile layer:
+ * - Mobile UI is hidden by default (desktop)
+ * - Enabled only under @media (max-width: 900px)
  *********************************************************/
 
-/* =======================================================
-   MOBILE VISIBILITY
-======================================================= */
-
-.header-mobile {
+/* ==================================================
+   DEFAULT (DESKTOP): HIDE MOBILE UI ALWAYS
+================================================== */
+.header-mobile,
+.mobile-only,
+.mobile-menu-overlay,
+.mobile-menu-panel,
+.be-modal-overlay {
     display: none;
 }
 
+/* ==================================================
+   MOBILE BREAKPOINT
+================================================== */
 @media (max-width: 900px) {
-    .header-desktop {
-        display: none;
-    }
-    .header-mobile {
+
+    /* Show mobile containers */
+    .header-mobile,
+    .mobile-only {
         display: block;
     }
-}
 
-/* =======================================================
-   GLOBAL MOBILE LAYOUT
-======================================================= */
+    /* ==================================================
+       MOBILE HEADER
+    ================================================== */
+    .header-mobile {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: var(--bg-header, #0b0b12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
 
-.header-mobile {
-    width: 100%;
-    background: var(--bg-header, #0a0c12);
-    position: relative;
-    z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
+    .mobile-top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        gap: 10px;
+    }
 
-.header-mobile .mobile-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    gap: 10px;
-}
+    .mobile-icon-btn {
+        background: none;
+        border: none;
+        padding: 6px;
+        cursor: pointer;
+    }
 
-/* =======================================================
-   ROW 1 (TOP OPTIONS + HAMBURGER)
-======================================================= */
+    /* ==================================================
+       HAMBURGER OVERLAY
+    ================================================== */
+    .mobile-menu-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+        z-index: 1900;
+    }
 
-.row-top {
-    justify-content: space-between;
-}
+    .mobile-menu-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-.row-top .top-options {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    /* ==================================================
+       HAMBURGER PANEL
+    ================================================== */
+    .mobile-menu-panel {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 86%;
+        max-width: 340px;
+        height: 100vh;
+        background: #0f121b;
+        transform: translateX(-100%);
+        transition: transform .25s ease;
+        z-index: 2000;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        pointer-events: auto;
+        padding-bottom: 18px;
+    }
 
-/* Improve tap area */
-.mobile-odds-toggle,
-.mobile-lang-toggle {
-    padding: 6px 12px;
-    border-radius: 12px;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-secondary, #00eaff);
-    font-size: 13px;
-}
+    .mobile-menu-panel.open {
+        transform: translateX(0);
+    }
 
-.mobile-lang-toggle .lang-code {
-    font-weight: 600;
-}
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+    }
 
-/* =======================================================
-   ROW BRAND
-======================================================= */
+    /* ==================================================
+       MENU CONTENT
+    ================================================== */
+    .menu-brand {
+        padding: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-.row-brand .logo {
-    width: 38px;
-    height: 38px;
-}
+    .menu-section {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
 
-.row-brand .brand-text .name {
-    font-size: 16px;
-    color: var(--text-primary, #ffec00);
-    font-weight: 700;
-}
+    .menu-link,
+    .menu-item {
+        width: 100%;
+        text-align: left;
+        padding: 10px 0;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+    }
 
-.row-brand .brand-text .tagline {
-    font-size: 12px;
-    color: var(--text-muted, #b3b3b3);
-}
+    /* ==================================================
+       SUBMENUS (SCROLL-FRIENDLY)
+    ================================================== */
+    .submenu {
+        max-height: 0;
+        overflow: hidden;
+        padding-left: 12px;
+        transition: max-height .25s ease;
+    }
 
-/* =======================================================
-   SEARCH ROW
-======================================================= */
+    .submenu.open {
+        max-height: 520px;
+        overflow: auto;
+        padding-top: 6px;
+        margin-top: 6px;
+    }
 
-.row-search .search-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-panel-soft, #181824);
-    padding: 8px 12px;
-    border-radius: 12px;
-    flex: 1;
-}
+    .submenu-item {
+        display: block;
+        padding: 8px 0;
+        font-size: 13px;
+        color: #ccc;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+    }
 
-.row-search .search-box input {
-    flex: 1;
-    font-size: 14px;
-}
+    /* ==================================================
+       MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
+    ================================================== */
+    .be-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        pointer-events: none;
+    }
 
-.row-search .notif-button {
-    width: 40px;
-    height: 40px;
-    background: var(--bg-panel-soft);
-}
+    .be-modal-overlay.show {
+        display: flex;
+        pointer-events: auto;
+    }
 
-/* =======================================================
-   MAIN MOBILE NAVIGATION (CHIPS)
-======================================================= */
+    .be-modal {
+        width: 92%;
+        max-width: 360px;
+        background: #11141d;
+        border-radius: 12px;
+        overflow: hidden;
+    }
 
-.mobile-main-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px 10px;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-}
+    /* ==================================================
+       PATCH A – VERTICAL OPTIONS FIX (SAFE)
+       Odds / Language / Tools
+    ================================================== */
 
-.mobile-main-nav::-webkit-scrollbar {
-    display: none;
-}
+    .be-modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px;
+    }
 
-.nav-chip {
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    letter-spacing: .05em;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted, #b3b3b3);
-    flex-shrink: 0;
-}
+    .be-modal-item {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        background: #151827;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        font-size: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
 
-.nav-chip.active {
-    background: var(--bg-button-primary-soft, rgba(255,236,0,0.12));
-    color: var(--text-primary, #ffec00);
-}
+    .be-modal-item:hover {
+        background: #1c2033;
+        border-color: rgba(255, 255, 255, 0.18);
+    }
 
-/* =======================================================
-   SUBNAV MOBILE
-======================================================= */
+    .be-modal-item.active {
+        background: #ffec00;
+        color: #11141d;
+        border-color: #ffec00;
+        font-weight: 600;
+    }
 
-.mobile-sub-nav {
-    padding: 0 14px 12px;
-}
+    /* Keep auth overlays above everything if ever enabled on mobile */
+    .be-auth-overlay {
+        z-index: 4000;
+    }
 
-.mobile-sub-nav .subnav-group {
-    display: none;
-    flex-wrap: wrap;
-    gap: 8px;
-}
+   /* ==================================================
+   PATCH B – MOBILE MODALS UX FIX (SAFE & ISOLATED)
+   - Correct position
+   - Sticky header (title + X)
+   - Scroll only for long lists (Language)
+================================================== */
 
-.mobile-sub-nav .subnav-group.active {
-    display: flex;
-}
-
-.sub-chip {
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 11px;
-    background: var(--bg-panel-soft, #181824);
-    color: var(--text-muted);
-}
-
-.sub-chip.tools {
-    background: var(--bg-button-secondary, #222236);
-    color: var(--text-secondary);
-}
-
-/* =======================================================
-   MOBILE MODAL FIX (ODDS / LANGUAGE / TOOLS)
-======================================================= */
-
-.be-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.be-modal-overlay.show {
-    display: flex;
-}
-
+/* Modal container sizing */
 .be-modal {
     width: 92%;
-    max-width: 380px;
-    background: var(--bg-panel, #11141d);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.85);
-    animation: modalFade .18s ease-out;
+    max-width: 360px;
+    max-height: 82vh;            /* modal takes max 82% of screen height */
+    display: flex;
+    flex-direction: column;
 }
 
-@keyframes modalFade {
-    from { transform: scale(.94); opacity: .25; }
-    to   { transform: scale(1);    opacity: 1; }
-}
-
+/* Header always visible */
 .be-modal-header {
-    padding: 14px;
-    background: var(--bg-panel-strong, #0d0d16);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: #11141d;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 
-.be-modal-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-secondary);
-}
-
-.be-modal-close {
-    width: 30px;
-    height: 30px;
-    background: var(--bg-panel-soft);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
+/* Modal body scrolls, not whole modal */
 .be-modal-body {
-    padding: 6px 0;
-    max-height: 380px;
+    flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Modal sections aligned */
-.be-modal-section {
-    display: none;
-    padding-bottom: 10px;
+/* Extra comfort for long language lists */
+.be-modal-body.modal-language {
+    max-height: calc(82vh - 56px); /* header height compensation */
 }
 
-.be-modal-section.active {
-    display: block;
-}
+/* ==================================================
+   PATCH: MOBILE HEADER ACTIONS ALIGNMENT
+   Scope: mobile header only
+   Safe: no desktop impact
+================================================== */
 
-.be-modal-item {
-    width: 100%;
-    padding: 10px 16px;
-    text-align: left;
-    font-size: 14px;
-    color: var(--text-muted);
-}
+@media (max-width: 900px) {
 
-.be-modal-item:hover {
-    background: var(--bg-panel-soft);
-    color: var(--text-secondary);
-}
-
-/* =======================================================
-   RESPONSIVE HOOKS (TINY DEVICES < 360px)
-======================================================= */
-
-@media (max-width: 360px) {
-    .nav-chip {
-        padding: 7px 10px;
-        font-size: 11px;
+    .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
-    .sub-chip {
-        padding: 5px 8px;
-        font-size: 10px;
+
+    .mobile-actions button {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        border-radius: 50%;
     }
-    .mobile-odds-toggle,
-    .mobile-lang-toggle {
-        padding: 5px 10px;
-        font-size: 12px;
+
+    .mobile-actions button img {
+        width: 18px;
+        height: 18px;
+        pointer-events: none;
+    }
+
+    /* Bookmarks highlight (yellow star) */
+    .mobile-bookmarks-btn img {
+        filter: drop-shadow(0 0 4px rgba(255, 236, 0, 0.6));
+    }
+
+    /* Touch feedback */
+    .mobile-actions button:active {
+        background: rgba(255, 255, 255, 0.08);
     }
 }
+
+   
+
+
+
