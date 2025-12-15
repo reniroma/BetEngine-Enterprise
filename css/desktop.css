@@ -134,6 +134,16 @@
     z-index: 250;
 }
 
+/* ENTERPRISE FIX – SEARCH INPUT CONTAINMENT */
+.header-desktop .search-box {
+    max-width: 220px;
+}
+
+.header-desktop .search-box input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* =======================================================
    ROW 3 (SUB NAVIGATION)
 ======================================================= */
