@@ -112,6 +112,23 @@
     gap: 10px;
 }
 
+/* =======================================================
+   PATCH – SEARCH FLEX OVERFLOW FIX (SAFE)
+======================================================= */
+
+.row-main .search-notify {
+    min-width: 0;
+}
+
+.search-box {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.search-box input {
+    min-width: 0;
+}
+
 .row-main {
     position: relative;
     z-index: 250;
