@@ -238,3 +238,27 @@
     .main-nav { gap: 14px; }
 }
 
+/*********************************************************
+ * FIX: Language dropdown width = trigger width
+ *********************************************************/
+
+.header-desktop .language-selector {
+    position: relative;
+}
+
+.header-desktop .language-dropdown {
+    width: 100%;
+    min-width: unset !important;
+    max-width: unset !important;
+    right: 0;
+    left: auto;
+}
+
+/*********************************************************
+ * FIX: Notification icon desktop override
+ *********************************************************/
+
+.header-desktop .notif-icon {
+    width: 22px !important;
+    height: 22px !important;
+}
