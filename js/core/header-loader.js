@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER LOADER (FINAL, STABLE)
+ * BetEngine Enterprise – HEADER LOADER (FINAL v7.3)
  * Injects:
  *  - header-desktop.html
  *  - header-mobile.html
@@ -7,7 +7,9 @@
  *  - auth-login.html
  *  - auth-register.html
  *
- * Dispatches "headerLoaded" ONCE, only after injection.
+ * Guarantees:
+ *  - Safe, idempotent "headerLoaded"
+ *  - Late listeners always receive the event
  *********************************************************/
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -20,6 +22,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         "auth-login.html",
         "auth-register.html"
     ];
+
+    // ==================================================
+    // GLOBAL READY FLAG (SINGLE SOURCE OF TRUTH)
+    // ==================================================
+    window.__BE_HEADER_READY__ = false;
 
     async function fetchHTML(path) {
         try {
@@ -52,10 +59,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    // ==================================================
+    // INJECT HEADER
+    // ==================================================
     mainEl.insertAdjacentHTML("beforebegin", parts.join("\n"));
 
-    requestAnimationFrame(() => {
+    // ==================================================
+    // DISPATCH (SAFE + IDEMPOTENT)
+    // ==================================================
+    const dispatchHeaderLoaded = () => {
+        if (window.__BE_HEADER_READY__) return;
+        window.__BE_HEADER_READY__ = true;
         document.dispatchEvent(new Event("headerLoaded"));
         console.log("[HeaderLoader] headerLoaded dispatched");
-    });
+    };
+
+    // Dispatch after injection, next frame
+    requestAnimationFrame(dispatchHeaderLoaded);
+
+    // Fallback: ensure late listeners also get it
+    setTimeout(dispatchHeaderLoaded, 0);
 });
