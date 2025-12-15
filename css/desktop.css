@@ -1,7 +1,6 @@
-
 /*********************************************************
- * BetEngine Enterprise – DESKTOP CSS (ENTERPRISE GRID FIX)
- * Variant A – Stable grid, no overflow, no icon shrink
+ * BetEngine Enterprise – DESKTOP CSS (FINAL CLEAN)
+ * Single-grid architecture – stable, predictable, safe
  *********************************************************/
 
 /* =======================================================
@@ -26,6 +25,8 @@
     position: relative;
     z-index: 100;
     border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(to bottom,#0b0b12 0%,#101018 50%,#11141d 100%);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.55);
 }
 
 .header-row {
@@ -61,18 +62,23 @@
     gap: 12px;
 }
 
+.header-desktop .row-top .right > * {
+    margin-left: 14px;
+}
+
 /* =======================================================
-   ROW 2 (BRAND + NAV + SEARCH)  ✅ ENTERPRISE GRID FIX
+   ROW 2 (BRAND + NAV + SEARCH) – ENTERPRISE GRID
 ======================================================= */
 
 .row-main {
     min-height: 58px;
     display: grid;
-    grid-template-columns: 240px 1fr auto; /* ✅ KEY FIX */
+    grid-template-columns: 240px 1fr auto; /* SINGLE SOURCE */
     align-items: center;
     gap: 18px;
     position: relative;
     z-index: 250;
+    padding: 8px 24px;
 }
 
 .row-main .brand {
@@ -97,7 +103,7 @@
 }
 
 /* =======================================================
-   SEARCH + NOTIFICATION (ISOLATED, SAFE)
+   SEARCH + NOTIFICATION (ISOLATED, STABLE)
 ======================================================= */
 
 .row-main .search-notify {
@@ -105,18 +111,16 @@
     align-items: center;
     justify-content: flex-end;
     gap: 12px;
-    min-width: 0;
+    flex-shrink: 0;
 }
 
-/* search box – cannot push others */
+/* Search box – fixed footprint */
 .header-desktop .search-box {
     width: 210px;
-    min-width: 180px;
-    max-width: 240px;
-    flex: 0 0 auto;
+    flex: 0 0 210px;
+    overflow: hidden;
 }
 
-/* search input behaviour (unchanged logic) */
 .search-box input {
     width: 140px;
     box-sizing: border-box;
@@ -127,7 +131,7 @@
     transition: width .2s ease;
 }
 
-/* notification – fixed, unshrinkable */
+/* Notification – unshrinkable */
 .header-desktop .notif-button {
     width: 34px;
     height: 34px;
@@ -140,9 +144,10 @@
 }
 
 .header-desktop .notif-icon {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     display: block;
+    opacity: 1;
 }
 
 /* =======================================================
@@ -176,14 +181,27 @@
 }
 
 /* =======================================================
-   DROPDOWNS (UNCHANGED, NOW UNCLIPPED)
+   DROPDOWNS – DESKTOP ONLY (NO MOBILE CONFLICT)
 ======================================================= */
 
 .odds-dropdown,
 .language-dropdown,
 .tools-dropdown {
-    z-index: 999 !important;
+    position: absolute;
+    z-index: 999;
     margin-top: 4px;
+}
+
+.header-desktop .odds-format,
+.header-desktop .language-selector {
+    position: relative;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    top: calc(100% + 6px);
+    right: 0;
+    left: auto;
 }
 
 .language-dropdown {
@@ -192,17 +210,8 @@
 }
 
 /* =======================================================
-   VISUAL PACK (UNCHANGED)
+   PREMIUM STAR
 ======================================================= */
-
-.header-desktop {
-    background: linear-gradient(to bottom,#0b0b12 0%,#101018 50%,#11141d 100%);
-    box-shadow: 0 5px 25px rgba(0,0,0,0.55);
-}
-
-.header-desktop .row-top .right > * {
-    margin-left: 14px;
-}
 
 .premium-link .premium-star {
     font-size: 14px;
@@ -210,67 +219,21 @@
     top: -1px;
     margin-left: 4px;
 }
-/* =======================================================
-   ENTERPRISE FIX – ROW 2 RIGHT COLUMN ISOLATION
-   Fixes:
-   - notification icon disappearing
-   - search overlapping premium star
-   - dropdown misalignment
-======================================================= */
-
-.row-main {
-    grid-template-columns: 240px 1fr minmax(260px, max-content);
-}
-
-.header-desktop .search-notify {
-    min-width: 0;
-    max-width: 100%;
-    overflow: visible;
-}
-
-.header-desktop .search-box {
-    flex: 1 1 auto;
-    min-width: 180px;
-    max-width: 210px;
-}
-
-.header-desktop .notif-button {
-    flex: 0 0 34px;
-}
-
-/* Dropdown anchor fix */
-.header-desktop .odds-format,
-.header-desktop .language-selector {
-    position: relative;
-}
-
-.header-desktop .odds-dropdown,
-.header-desktop .language-dropdown {
-    left: auto !important;
-    right: 0 !important;
-}
 
 /* =======================================================
-   FIX: Language dropdown anchor (ROW 1 safe)
+   RESPONSIVE DESKTOP TWEAKS
 ======================================================= */
 
-.header-desktop .language-selector {
-    position: relative;
+@media (max-width: 1200px) {
+    .row-main {
+        grid-template-columns: 200px 1fr auto;
+    }
+    .main-nav { gap: 16px; }
 }
 
-.header-desktop .language-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
-    left: auto;
-}
-/* =======================================================
-   FIX: Notification icon size (single source of truth)
-======================================================= */
-
-.header-desktop .notif-icon {
-    width: 22px !important;
-    height: 22px !important;
-    display: block;
-    opacity: 1;
+@media (max-width: 1050px) {
+    .row-main {
+        grid-template-columns: 180px 1fr auto;
+    }
+    .main-nav { gap: 14px; }
 }
