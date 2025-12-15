@@ -262,3 +262,19 @@
     width: 22px !important;
     height: 22px !important;
 }
+
+/* =========================================
+   FIX: Notification icon visual size
+   SAFE – desktop only
+========================================= */
+@media (min-width: 901px) {
+    .header-desktop .notif-button {
+        width: 36px;
+        height: 36px;
+    }
+
+    .header-desktop .notif-icon {
+        width: 24px;
+        height: 24px;
+    }
+}
