@@ -1,187 +1,102 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.2)
- * Desktop + Mobile header behaviour
- * AUTH LOGIC REMOVED (single source moved to header-auth.js)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.1)
+ * Single source of truth for Login / Register
+ * FIX: Correct event binding for injected header
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+/* ==================================================
+   UTILS
+================================================== */
+const qs = (sel, scope = document) => scope.querySelector(sel);
+const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-    /*******************************************************
-     * GLOBAL STATE (SINGLE SOURCE OF TRUTH)
-     *******************************************************/
-    let desktopListenersAttached = false;
+const lockBody = (lock) => {
+    document.body.style.overflow = lock ? "hidden" : "";
+};
 
-    const state = {
-        desktopDropdownOpen: false
+/* ==================================================
+   INIT AUTH (AFTER HEADER INJECTION)
+================================================== */
+function initAuth() {
+
+    const loginOverlay    = qs("#auth-login-container");
+    const registerOverlay = qs("#auth-register-container");
+
+    if (!loginOverlay || !registerOverlay) return;
+
+    const closeAll = () => {
+        loginOverlay.classList.remove("show");
+        registerOverlay.classList.remove("show");
+        lockBody(false);
     };
 
-    /*******************************************************
-     * UTILS
-     *******************************************************/
-    const isInside = (target, selector) => {
-        return !!(target && target.closest(selector));
+    const openLogin = () => {
+        closeAll();
+        loginOverlay.classList.add("show");
+        lockBody(true);
     };
 
-    const closeAllDesktopDropdowns = () => {
-        document
-            .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
-            .forEach(el => el.classList.remove("show"));
-
-        state.desktopDropdownOpen = false;
+    const openRegister = () => {
+        closeAll();
+        registerOverlay.classList.add("show");
+        lockBody(true);
     };
 
-    /*******************************************************
-     * DESKTOP DROPDOWNS
-     *******************************************************/
-    function initDesktopDropdowns() {
-        const header = document.querySelector(".header-desktop");
-        if (!header) return;
+    /* -------- Triggers -------- */
+    on(qs(".btn-auth.login"), "click", (e) => {
+        e.preventDefault();
+        openLogin();
+    });
 
-        /* ---------------- ODDS ---------------- */
-        const oddsToggle   = header.querySelector(".odds-format .odds-toggle");
-        const oddsDropdown = header.querySelector(".odds-dropdown");
-        const oddsItems    = oddsDropdown?.querySelectorAll(".item") || [];
-        const oddsLabel    = header.querySelector(".odds-label");
+    on(qs(".btn-auth.register"), "click", (e) => {
+        e.preventDefault();
+        openRegister();
+    });
 
-        if (oddsToggle && oddsDropdown) {
-            oddsToggle.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const open = oddsDropdown.classList.contains("show");
-                closeAllDesktopDropdowns();
-                if (!open) {
-                    oddsDropdown.classList.add("show");
-                    state.desktopDropdownOpen = true;
-                }
-            });
+    on(qs(".menu-auth-login"), "click", openLogin);
+    on(qs(".menu-auth-register"), "click", openRegister);
 
-            oddsItems.forEach(item => {
-                item.addEventListener("click", (e) => {
-                    e.stopPropagation();
+    /* -------- Close handlers -------- */
+    [loginOverlay, registerOverlay].forEach(overlay => {
 
-                    oddsItems.forEach(i => i.classList.remove("active"));
-                    item.classList.add("active");
+        on(overlay.querySelector(".auth-close"), "click", closeAll);
 
-                    const clean = item.textContent.split("(")[0].trim();
-                    if (oddsLabel) oddsLabel.textContent = clean;
-
-                    closeAllDesktopDropdowns();
-                });
-            });
-        }
-
-        /* ---------------- LANGUAGE ---------------- */
-        const langToggle   = header.querySelector(".language-toggle");
-        const langDropdown = header.querySelector(".language-dropdown");
-        const langItems    = langDropdown?.querySelectorAll(".item") || [];
-        const langLabel    = header.querySelector(".language-selector .lang-code");
-
-        if (langToggle && langDropdown) {
-            langToggle.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const open = langDropdown.classList.contains("show");
-                closeAllDesktopDropdowns();
-                if (!open) {
-                    langDropdown.classList.add("show");
-                    state.desktopDropdownOpen = true;
-                }
-            });
-
-            langItems.forEach(item => {
-                item.addEventListener("click", (e) => {
-                    e.stopPropagation();
-
-                    langItems.forEach(i => i.classList.remove("active"));
-                    item.classList.add("active");
-
-                    if (langLabel) langLabel.textContent = item.textContent;
-
-                    closeAllDesktopDropdowns();
-                });
-            });
-        }
-
-        /* ---------------- BETTING TOOLS ---------------- */
-        const toolsTrigger  = header.querySelector(".sub-item-tools");
-        const toolsDropdown = toolsTrigger?.querySelector(".tools-dropdown");
-
-        if (toolsTrigger && toolsDropdown) {
-            toolsTrigger.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const open = toolsDropdown.classList.contains("show");
-                closeAllDesktopDropdowns();
-                if (!open) {
-                    toolsDropdown.classList.add("show");
-                    state.desktopDropdownOpen = true;
-                }
-            });
-        }
-    }
-
-    /*******************************************************
-     * GLOBAL DESKTOP LISTENERS (SINGLETON)
-     *******************************************************/
-    function attachDesktopGlobalListeners() {
-        if (desktopListenersAttached) return;
-        desktopListenersAttached = true;
-
-        document.addEventListener("click", (e) => {
-            if (!state.desktopDropdownOpen) return;
-
-            if (
-                !isInside(e.target, ".odds-format") &&
-                !isInside(e.target, ".language-selector") &&
-                !isInside(e.target, ".sub-item-tools")
-            ) {
-                closeAllDesktopDropdowns();
-            }
+        on(overlay, "click", (e) => {
+            if (e.target === overlay) closeAll();
         });
+    });
 
-        document.addEventListener("keydown", (e) => {
-            if (e.key !== "Escape") return;
-            if (!state.desktopDropdownOpen) return;
-
-            closeAllDesktopDropdowns();
+    /* -------- Switch -------- */
+    document.querySelectorAll(".auth-switch").forEach(btn => {
+        on(btn, "click", () => {
+            const target = btn.dataset.authTarget;
+            if (target === "login") openLogin();
+            if (target === "register") openRegister();
         });
-    }
+    });
 
-    /*******************************************************
-     * NAVIGATION SYNC
-     *******************************************************/
-    function initSectionNavigation() {
-        const dMain = document.querySelectorAll(".main-nav .nav-item");
-        const dSub  = document.querySelectorAll(".row-sub .subnav-group");
+    /* -------- ESC -------- */
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (
+            loginOverlay.classList.contains("show") ||
+            registerOverlay.classList.contains("show")
+        ) {
+            closeAll();
+        }
+    });
 
-        const activate = (section) => {
-            dMain.forEach(i =>
-                i.classList.toggle("active", i.dataset.section === section)
-            );
+    /* -------- Public API -------- */
+    window.BE_openLogin = openLogin;
+    window.BE_openRegister = openRegister;
+}
 
-            dSub.forEach(g =>
-                g.classList.toggle("active", g.dataset.subnav === section)
-            );
-        };
+/* ==================================================
+   EVENT BINDING (FIXED)
+================================================== */
+document.addEventListener("headerLoaded", initAuth);
 
-        dMain.forEach(item => {
-            item.addEventListener("click", (e) => {
-                e.preventDefault();
-                activate(item.dataset.section);
-            });
-        });
-    }
-
-    /*******************************************************
-     * INIT
-     *******************************************************/
-    function initHeader() {
-        initDesktopDropdowns();
-        attachDesktopGlobalListeners();
-        initSectionNavigation();
-    }
-
-    document.addEventListener("headerLoaded", initHeader);
-
-    if (document.querySelector(".header-desktop")) {
-        initHeader();
-    }
-
-});
+// Fallback for late load
+if (window.__BE_HEADER_READY__ === true) {
+    initAuth();
+}
