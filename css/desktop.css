@@ -446,9 +446,6 @@
    (Stops overflow without affecting layout)
 ======================================================= */
 
-.header-desktop .search-notify {
-    overflow: hidden;
-}
 
 .header-desktop .search-box {
     max-width: 220px;
