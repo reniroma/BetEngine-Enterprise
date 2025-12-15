@@ -398,4 +398,8 @@
     cursor: pointer;
 }
 
-
+/* FIX: Auth SVG icons (stroke-based) */
+.header-desktop .btn-auth img {
+    fill: none !important;
+    stroke: currentColor !important;
+}
