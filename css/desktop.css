@@ -1,3 +1,4 @@
+
 /*********************************************************
  * BetEngine Enterprise – DESKTOP CSS (ENTERPRISE GRID FIX)
  * Variant A – Stable grid, no overflow, no icon shrink
@@ -208,4 +209,43 @@
     position: relative;
     top: -1px;
     margin-left: 4px;
+}
+/* =======================================================
+   ENTERPRISE FIX – ROW 2 RIGHT COLUMN ISOLATION
+   Fixes:
+   - notification icon disappearing
+   - search overlapping premium star
+   - dropdown misalignment
+======================================================= */
+
+.row-main {
+    grid-template-columns: 240px 1fr minmax(260px, max-content);
+}
+
+.header-desktop .search-notify {
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+}
+
+.header-desktop .search-box {
+    flex: 1 1 auto;
+    min-width: 180px;
+    max-width: 210px;
+}
+
+.header-desktop .notif-button {
+    flex: 0 0 34px;
+}
+
+/* Dropdown anchor fix */
+.header-desktop .odds-format,
+.header-desktop .language-selector {
+    position: relative;
+}
+
+.header-desktop .odds-dropdown,
+.header-desktop .language-dropdown {
+    left: auto !important;
+    right: 0 !important;
 }
