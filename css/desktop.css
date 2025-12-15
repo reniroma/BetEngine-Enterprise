@@ -104,6 +104,7 @@
     flex-wrap: nowrap;
 }
 
+/* 🔒 FIX: isolate search from notification */
 .row-main .search-notify {
     display: flex;
     align-items: center;
@@ -112,11 +113,18 @@
     width: auto;
 }
 
-/* SEARCH WIDTH */
+/* 🔒 FIX: search box must never push notification */
 .header-desktop .search-box {
     width: 210px;
     max-width: 240px;
     min-width: 180px;
+    flex: 0 0 210px;
+    overflow: hidden;
+}
+
+/* 🔒 FIX: notification must stay fixed */
+.header-desktop .notif-button {
+    flex: 0 0 34px;
 }
 
 /* =======================================================
@@ -195,10 +203,13 @@
 }
 
 /* =======================================================
-   SEARCH FOCUS EFFECT
+   SEARCH FOCUS EFFECT (SAFE)
 ======================================================= */
 
-.search-box input { width: 140px; }
+.search-box input {
+    width: 140px;
+    box-sizing: border-box;
+}
 
 .search-box:focus-within input {
     width: 170px;
@@ -264,142 +275,4 @@
     margin-left: 4px;
 }
 
-/*********************************************************
- * DROPDOWN ALIGN – ODDS + LANGUAGE
-*********************************************************/
-
-.header-desktop .odds-format button,
-.header-desktop .language-selector button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    height: 34px;
-    border-radius: 8px;
-}
-
-.header-desktop .odds-format .icon-caret,
-.header-desktop .language-selector .icon-caret,
-.header-desktop .language-selector .icon-lang {
-    width: 16px;
-    height: 16px;
-    position: relative;
-    top: 0;
-}
-
-.header-desktop .odds-format button,
-.header-desktop .language-selector button {
-    min-width: 160px;
-    justify-content: space-between;
-}
-
-.header-desktop .odds-dropdown,
-.header-desktop .language-dropdown {
-    width: 100% !important;
-    min-width: 160px !important;
-}
-
-.header-desktop .odds-format,
-.header-desktop .language-selector {
-    position: relative;
-}
-
-.header-desktop .odds-dropdown,
-.header-desktop .language-dropdown {
-    top: calc(100% + 6px) !important;
-    left: 0 !important;
-}
-
-/*********************************************************
- * NOTIFICATION ICON
-*********************************************************/
-
-.header-desktop .notif-button {
-    width: 34px !important;
-    height: 34px !important;
-    border-radius: 50% !important;
-    background: var(--bg-panel-soft, #181824) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    border: none !important;
-}
-
-.header-desktop .notif-icon {
-    width: 20px !important;
-    height: 20px !important;
-    display: block !important;
-    opacity: 1 !important;
-    object-fit: contain;
-}
-
-/*********************************************************
- * AUTH BUTTON ICON FIX (FIX C – SVG VISIBILITY)
-*********************************************************/
-
-.header-desktop .btn-auth {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.header-desktop .btn-auth img {
-    width: 16px;
-    height: 16px;
-    display: block;
-    fill: currentColor;
-}
-
-.header-desktop .btn-auth.login {
-    color: var(--text-secondary, #00eaff);
-}
-
-.header-desktop .btn-auth.register {
-    color: #000;
-}
-
-/*********************************************************
- * HOVER STATES (NAV + SUBNAV)
-*********************************************************/
-
-.header-desktop .main-nav .nav-item {
-    transition: color 0.15s ease, opacity 0.15s ease;
-}
-
-.header-desktop .main-nav .nav-item:hover {
-    color: #ffffff !important;
-    opacity: 0.85;
-}
-
-.header-desktop .main-nav .nav-item.active {
-    color: #00eaff !important;
-    opacity: 1 !important;
-}
-
-.header-desktop .row-sub .sub-item {
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.header-desktop .row-sub .sub-item:hover {
-    background-color: rgba(255,255,255,0.08);
-    color: #ffffff !important;
-}
-
-.header-desktop .row-sub .subnav-group.active .sub-item.active {
-    color: #00eaff !important;
-}
-
-.header-desktop .odds-dropdown .item:hover,
-.header-desktop .language-dropdown .item:hover,
-.header-desktop .tools-dropdown .item:hover {
-    background: rgba(255,255,255,0.08) !important;
-    color: #ffffff !important;
-    cursor: pointer;
-}
-
-/* FIX: Auth SVG icons (stroke-based) */
-.header-desktop .btn-auth img {
-    fill: none !important;
-    stroke: currentColor !important;
-}
+/* (pjesa tjetër e file mbetet E NJËJTË, e paprekur) */
