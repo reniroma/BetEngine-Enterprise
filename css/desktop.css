@@ -254,15 +254,6 @@
     left: auto;
 }
 
-/*********************************************************
- * FIX: Notification icon desktop override
- *********************************************************/
-
-.header-desktop .notif-icon {
-    width: 22px !important;
-    height: 22px !important;
-}
-
 /* =========================================
    FIX: Notification icon visual size
    SAFE – desktop only
