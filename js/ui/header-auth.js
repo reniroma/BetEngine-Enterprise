@@ -1,100 +1,187 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v4.0)
- * Single source of truth for Login / Register modals
- * FIXED:
- * - Correct modal IDs
- * - Desktop & Mobile compatible
- * - No hamburger interference
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.2)
+ * Desktop + Mobile header behaviour
+ * AUTH LOGIC REMOVED (single source moved to header-auth.js)
  *********************************************************/
 
-document.addEventListener("headerLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    /* ==================================================
-       HELPERS
-    ================================================== */
-    const qs = (sel, scope = document) => scope.querySelector(sel);
-    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+    /*******************************************************
+     * GLOBAL STATE (SINGLE SOURCE OF TRUTH)
+     *******************************************************/
+    let desktopListenersAttached = false;
 
-    /* ==================================================
-       ELEMENTS (CORRECT IDS)
-    ================================================== */
-    const loginBtn    = qs(".btn-auth.login");
-    const registerBtn = qs(".btn-auth.register");
+    const state = {
+        desktopDropdownOpen: false
+    };
 
-    const loginModal    = qs("#login-modal");
-    const registerModal = qs("#register-modal");
+    /*******************************************************
+     * UTILS
+     *******************************************************/
+    const isInside = (target, selector) => {
+        return !!(target && target.closest(selector));
+    };
 
-    if (!loginModal || !registerModal) {
-        console.error("[AUTH] Login/Register modals not found in DOM");
-        return;
+    const closeAllDesktopDropdowns = () => {
+        document
+            .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+            .forEach(el => el.classList.remove("show"));
+
+        state.desktopDropdownOpen = false;
+    };
+
+    /*******************************************************
+     * DESKTOP DROPDOWNS
+     *******************************************************/
+    function initDesktopDropdowns() {
+        const header = document.querySelector(".header-desktop");
+        if (!header) return;
+
+        /* ---------------- ODDS ---------------- */
+        const oddsToggle   = header.querySelector(".odds-format .odds-toggle");
+        const oddsDropdown = header.querySelector(".odds-dropdown");
+        const oddsItems    = oddsDropdown?.querySelectorAll(".item") || [];
+        const oddsLabel    = header.querySelector(".odds-label");
+
+        if (oddsToggle && oddsDropdown) {
+            oddsToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = oddsDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) {
+                    oddsDropdown.classList.add("show");
+                    state.desktopDropdownOpen = true;
+                }
+            });
+
+            oddsItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+
+                    oddsItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const clean = item.textContent.split("(")[0].trim();
+                    if (oddsLabel) oddsLabel.textContent = clean;
+
+                    closeAllDesktopDropdowns();
+                });
+            });
+        }
+
+        /* ---------------- LANGUAGE ---------------- */
+        const langToggle   = header.querySelector(".language-toggle");
+        const langDropdown = header.querySelector(".language-dropdown");
+        const langItems    = langDropdown?.querySelectorAll(".item") || [];
+        const langLabel    = header.querySelector(".language-selector .lang-code");
+
+        if (langToggle && langDropdown) {
+            langToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = langDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) {
+                    langDropdown.classList.add("show");
+                    state.desktopDropdownOpen = true;
+                }
+            });
+
+            langItems.forEach(item => {
+                item.addEventListener("click", (e) => {
+                    e.stopPropagation();
+
+                    langItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    if (langLabel) langLabel.textContent = item.textContent;
+
+                    closeAllDesktopDropdowns();
+                });
+            });
+        }
+
+        /* ---------------- BETTING TOOLS ---------------- */
+        const toolsTrigger  = header.querySelector(".sub-item-tools");
+        const toolsDropdown = toolsTrigger?.querySelector(".tools-dropdown");
+
+        if (toolsTrigger && toolsDropdown) {
+            toolsTrigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const open = toolsDropdown.classList.contains("show");
+                closeAllDesktopDropdowns();
+                if (!open) {
+                    toolsDropdown.classList.add("show");
+                    state.desktopDropdownOpen = true;
+                }
+            });
+        }
     }
 
-    /* ==================================================
-       STATE CONTROL
-    ================================================== */
-    const closeAll = () => {
-        loginModal.classList.remove("show");
-        registerModal.classList.remove("show");
-        document.body.style.overflow = "";
-    };
+    /*******************************************************
+     * GLOBAL DESKTOP LISTENERS (SINGLETON)
+     *******************************************************/
+    function attachDesktopGlobalListeners() {
+        if (desktopListenersAttached) return;
+        desktopListenersAttached = true;
 
-    const openLogin = () => {
-        closeAll();
-        loginModal.classList.add("show");
-        document.body.style.overflow = "hidden";
-    };
+        document.addEventListener("click", (e) => {
+            if (!state.desktopDropdownOpen) return;
 
-    const openRegister = () => {
-        closeAll();
-        registerModal.classList.add("show");
-        document.body.style.overflow = "hidden";
-    };
-
-    /* ==================================================
-       TRIGGERS (DESKTOP + MOBILE)
-    ================================================== */
-    on(loginBtn, "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openLogin();
-    });
-
-    on(registerBtn, "click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openRegister();
-    });
-
-    /* ==================================================
-       CLOSE HANDLERS
-    ================================================== */
-    [loginModal, registerModal].forEach(modal => {
-
-        // Close button
-        on(modal.querySelector(".auth-close"), "click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            closeAll();
+            if (
+                !isInside(e.target, ".odds-format") &&
+                !isInside(e.target, ".language-selector") &&
+                !isInside(e.target, ".sub-item-tools")
+            ) {
+                closeAllDesktopDropdowns();
+            }
         });
 
-        // Click outside modal box
-        on(modal, "click", (e) => {
-            if (e.target === modal) closeAll();
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Escape") return;
+            if (!state.desktopDropdownOpen) return;
+
+            closeAllDesktopDropdowns();
         });
-    });
+    }
 
-    /* ==================================================
-       ESC KEY
-    ================================================== */
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeAll();
-    });
+    /*******************************************************
+     * NAVIGATION SYNC
+     *******************************************************/
+    function initSectionNavigation() {
+        const dMain = document.querySelectorAll(".main-nav .nav-item");
+        const dSub  = document.querySelectorAll(".row-sub .subnav-group");
 
-    /* ==================================================
-       PUBLIC API (USED BY MOBILE MENU)
-    ================================================== */
-    window.BE_openLogin = openLogin;
-    window.BE_openRegister = openRegister;
+        const activate = (section) => {
+            dMain.forEach(i =>
+                i.classList.toggle("active", i.dataset.section === section)
+            );
 
-    console.log("header-auth.js v4.0 READY");
+            dSub.forEach(g =>
+                g.classList.toggle("active", g.dataset.subnav === section)
+            );
+        };
+
+        dMain.forEach(item => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                activate(item.dataset.section);
+            });
+        });
+    }
+
+    /*******************************************************
+     * INIT
+     *******************************************************/
+    function initHeader() {
+        initDesktopDropdowns();
+        attachDesktopGlobalListeners();
+        initSectionNavigation();
+    }
+
+    document.addEventListener("headerLoaded", initHeader);
+
+    if (document.querySelector(".header-desktop")) {
+        initHeader();
+    }
+
 });
