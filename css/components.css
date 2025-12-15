@@ -322,4 +322,25 @@ button {
     }
 }
 
-/* =============== END OF FILE =============== */
+/* =============== END OF ORIGINAL FILE =============== */
+
+
+/* =======================================================
+   PATCH 1 – Notification icon must never shrink (DESKTOP)
+======================================================= */
+@media (min-width: 901px) {
+    .notif-icon {
+        flex-shrink: 0;
+    }
+}
+
+
+/* =======================================================
+   PATCH 2 – Dropdown anchor fix (Odds / Language – DESKTOP)
+======================================================= */
+@media (min-width: 901px) {
+    .odds-format,
+    .language-selector {
+        position: relative;
+    }
+}
