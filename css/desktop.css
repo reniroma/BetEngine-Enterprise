@@ -132,7 +132,6 @@
     z-index: 200;
 }
 
-/* GAP FIX */
 .row-sub .subnav-group {
     display: none;
     align-items: center;
@@ -143,7 +142,6 @@
     display: flex;
 }
 
-/* Sub-items */
 .row-sub .sub-item {
     padding: 6px 8px;
     font-size: 12px;
@@ -156,7 +154,6 @@
     border-radius: 4px;
 }
 
-/* Dropdown container */
 .sub-item-tools {
     position: relative;
     display: flex;
@@ -256,12 +253,10 @@
     padding-right: 24px !important;
 }
 
-/* Right cluster spacing */
 .header-desktop .row-top .right > * {
     margin-left: 14px !important;
 }
 
-/* Premium star */
 .premium-link .premium-star {
     font-size: 14px;
     position: relative;
@@ -340,6 +335,31 @@
 }
 
 /*********************************************************
+ * AUTH BUTTON ICON FIX (FIX C – SVG VISIBILITY)
+*********************************************************/
+
+.header-desktop .btn-auth {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-desktop .btn-auth img {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: currentColor;
+}
+
+.header-desktop .btn-auth.login {
+    color: var(--text-secondary, #00eaff);
+}
+
+.header-desktop .btn-auth.register {
+    color: #000;
+}
+
+/*********************************************************
  * HOVER STATES (NAV + SUBNAV)
 *********************************************************/
 
@@ -370,21 +390,10 @@
     color: #00eaff !important;
 }
 
-/* DROPDOWN ITEMS HOVER */
 .header-desktop .odds-dropdown .item:hover,
 .header-desktop .language-dropdown .item:hover,
 .header-desktop .tools-dropdown .item:hover {
     background: rgba(255,255,255,0.08) !important;
     color: #ffffff !important;
     cursor: pointer;
-}
-
-/* =======================================================
-   FIX: AUTH SVG ICON VISIBILITY (DESKTOP ONLY)
-======================================================= */
-
-.header-desktop .btn-auth img {
-    fill: unset !important;
-    color: inherit;
-    opacity: 1;
 }
