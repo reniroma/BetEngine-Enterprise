@@ -239,7 +239,7 @@
 }
 
 @media (max-width: 1050px) {
-    .row-main { grid-template-columns: 180px 1fr 260px; }
+    .row-main { grid-template-columns: 180px 1fr 220px; }
     .main-nav { gap: 14px; }
 }
 
