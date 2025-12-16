@@ -1,6 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.4)
- * SAFE / MINIMAL / STABLE
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.5)
+ * PREMIUM FOCUS MODE
  *
  * Responsibilities:
  * 1. Hamburger open / close
@@ -8,12 +8,10 @@
  * 3. Activate Odds / Language options
  * 4. Sync mobile ↔ desktop state
  * 5. Trigger Login / Register safely
- * 6. Open Bookmarks modal (Manage My Leagues)
- * 7. Mobile navigation accordion with Premium priority
+ * 6. Open Bookmarks modal
+ * 7. Premium Focus Mode (exclusive view)
  *
- * NO side effects
- * NO global click killers
- * NO desktop interference
+ * MOBILE ONLY – NO DESKTOP INTERFERENCE
  *********************************************************/
 
 (function () {
@@ -46,7 +44,6 @@
         const bookmarksModal = qs("#mobile-bookmarks-modal");
 
         if (!overlay || !panel || !toggleBtn) return;
-
         initialized = true;
 
         /* ==================================================
@@ -55,12 +52,14 @@
         const openMenu = () => {
             overlay.classList.add("show");
             panel.classList.add("open");
+            panel.classList.remove("premium-mode");
             document.body.style.overflow = "hidden";
         };
 
         const closeMenu = () => {
             overlay.classList.remove("show");
             panel.classList.remove("open");
+            panel.classList.remove("premium-mode");
             document.body.style.overflow = "";
         };
 
@@ -116,7 +115,7 @@
         });
 
         /* ==================================================
-           AUTH (LOGIN / REGISTER)
+           AUTH
         ================================================== */
         qs(".menu-auth-login")?.addEventListener("click", (e) => {
             stop(e);
@@ -131,46 +130,36 @@
         });
 
         /* ==================================================
-           NAVIGATION LOGIC
-           - Locked section respected
-           - Premium priority mode
+           PREMIUM FOCUS MODE
         ================================================== */
-        const submenus = qa(".submenu", panel);
-        const links    = qa(".menu-link", panel);
+        const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
-        const closeAllSubmenus = (except = []) => {
-            submenus.forEach((s) => {
-                if (!except.includes(s)) s.classList.remove("open");
-            });
-        };
+        premiumLink?.addEventListener("click", (e) => {
+            stop(e);
+            panel.classList.add("premium-mode");
 
-        links.forEach((link) => {
+            // Ensure premium submenu is open
+            const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
+            if (premiumSub) premiumSub.classList.add("open");
+        });
+
+        /* ==================================================
+           NORMAL ACCORDION (NON-PREMIUM)
+        ================================================== */
+        qa('.menu-link:not([data-section="premium"])', panel).forEach((link) => {
             link.addEventListener("click", (e) => {
                 stop(e);
+
+                panel.classList.remove("premium-mode");
 
                 const section = link.dataset.section;
                 const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
                 if (!submenu) return;
 
-                const isLocked   = link.dataset.lockOpen === "true";
-                const isPremium  = link.dataset.premiumFocus === "true";
-
-                if (isPremium) {
-                    closeAllSubmenus([submenu]);
-                    submenu.classList.add("open");
-                    panel.classList.add("premium-focus");
-                    return;
-                }
-
-                panel.classList.remove("premium-focus");
-
-                submenus.forEach((s) => {
-                    const parentLink = qs(`.menu-link[data-section="${s.dataset.subnav}"]`, panel);
-                    const parentLocked = parentLink?.dataset.lockOpen === "true";
-
+                qa(".submenu", panel).forEach((s) => {
                     if (s === submenu) {
                         s.classList.toggle("open");
-                    } else if (!parentLocked) {
+                    } else {
                         s.classList.remove("open");
                     }
                 });
@@ -225,7 +214,7 @@
             });
         });
 
-        console.log("header-mobile.js v6.4 READY");
+        console.log("header-mobile.js v6.5 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);
