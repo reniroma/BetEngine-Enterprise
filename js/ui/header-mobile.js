@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.3)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.4)
  * SAFE / MINIMAL / STABLE
  *
  * Responsibilities:
@@ -9,6 +9,7 @@
  * 4. Sync mobile ↔ desktop state
  * 5. Trigger Login / Register safely
  * 6. Open Bookmarks modal (Manage My Leagues)
+ * 7. Mobile navigation accordion with Premium priority
  *
  * NO side effects
  * NO global click killers
@@ -44,11 +45,8 @@
         const langModal      = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
 
-        /* If header is not injected yet, exit quietly.
-           headerLoaded will call init again when ready. */
         if (!overlay || !panel || !toggleBtn) return;
 
-        /* Now safe to mark initialized */
         initialized = true;
 
         /* ==================================================
@@ -66,9 +64,6 @@
             document.body.style.overflow = "";
         };
 
-        /* ==================================================
-           HAMBURGER EVENTS
-        ================================================== */
         toggleBtn.addEventListener("click", (e) => {
             stop(e);
             openMenu();
@@ -76,7 +71,6 @@
 
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
-
         panel.addEventListener("click", (e) => e.stopPropagation());
 
         /* ==================================================
@@ -116,10 +110,6 @@
             openModal(langModal);
         });
 
-        /* ==================================================
-           BOOKMARKS (Manage My Leagues)
-           Hamburger stays open
-        ================================================== */
         qs(".mobile-bookmarks-btn")?.addEventListener("click", (e) => {
             stop(e);
             openModal(bookmarksModal);
@@ -127,7 +117,6 @@
 
         /* ==================================================
            AUTH (LOGIN / REGISTER)
-           Hamburger closes, auth opens
         ================================================== */
         qs(".menu-auth-login")?.addEventListener("click", (e) => {
             stop(e);
@@ -142,26 +131,54 @@
         });
 
         /* ==================================================
-           NAVIGATION (SUBMENUS ONLY)
-           Hamburger NEVER closes
+           NAVIGATION LOGIC
+           - Locked section respected
+           - Premium priority mode
         ================================================== */
-        qa(".menu-link").forEach((link) => {
+        const submenus = qa(".submenu", panel);
+        const links    = qa(".menu-link", panel);
+
+        const closeAllSubmenus = (except = []) => {
+            submenus.forEach((s) => {
+                if (!except.includes(s)) s.classList.remove("open");
+            });
+        };
+
+        links.forEach((link) => {
             link.addEventListener("click", (e) => {
                 stop(e);
 
                 const section = link.dataset.section;
                 const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
-
                 if (!submenu) return;
 
-                qa(".submenu", panel).forEach((s) =>
-                    s === submenu ? s.classList.toggle("open") : s.classList.remove("open")
-                );
+                const isLocked   = link.dataset.lockOpen === "true";
+                const isPremium  = link.dataset.premiumFocus === "true";
+
+                if (isPremium) {
+                    closeAllSubmenus([submenu]);
+                    submenu.classList.add("open");
+                    panel.classList.add("premium-focus");
+                    return;
+                }
+
+                panel.classList.remove("premium-focus");
+
+                submenus.forEach((s) => {
+                    const parentLink = qs(`.menu-link[data-section="${s.dataset.subnav}"]`, panel);
+                    const parentLocked = parentLink?.dataset.lockOpen === "true";
+
+                    if (s === submenu) {
+                        s.classList.toggle("open");
+                    } else if (!parentLocked) {
+                        s.classList.remove("open");
+                    }
+                });
             });
         });
 
         /* ==================================================
-           PHASE 4 – ODDS ACTIVE + SYNC
+           ODDS ACTIVE + SYNC
         ================================================== */
         qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -185,7 +202,7 @@
         });
 
         /* ==================================================
-           PHASE 4 – LANGUAGE ACTIVE + SYNC
+           LANGUAGE ACTIVE + SYNC
         ================================================== */
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -208,12 +225,9 @@
             });
         });
 
-        console.log("header-mobile.js v6.3 READY");
+        console.log("header-mobile.js v6.4 READY");
     }
 
-    /* Primary: headerLoaded (header injected) */
     document.addEventListener("headerLoaded", initHeaderMobile);
-
-    /* Fallback: if header is already in DOM at page load */
     document.addEventListener("DOMContentLoaded", initHeaderMobile);
 })();
