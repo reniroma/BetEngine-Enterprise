@@ -370,9 +370,10 @@
 /* ============================
    MORE BUTTON (arrow feel)
 ============================ */
-.mobile-sport-more img {
-    width: 20px;
-    height: 20px;
+.sport-icon {
+    width: 26px;
+    height: 26px;
+    display: block;
 }
 
 
