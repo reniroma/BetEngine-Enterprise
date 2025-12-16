@@ -363,8 +363,17 @@
     text-overflow: ellipsis;
 }
 
-.mobile-sport-item.active {
-    color: #ffec00;
+/* ACTIVE icon color for BOTH: inline SVG (More) + IMG icons */
+.mobile-sport-item.active .sport-icon,
+.mobile-sport-item.active img {
+  color: #ffec00;
+  stroke: #ffec00;
+}
+
+.mobile-sport-item.active .sport-icon path,
+.mobile-sport-item.active .sport-icon circle,
+.mobile-sport-item.active .sport-icon line {
+  stroke: #ffec00;
 }
 
 /* ============================
