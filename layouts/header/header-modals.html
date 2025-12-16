@@ -1,20 +1,8 @@
 <!-- ====================================================
      BetEngine Enterprise – HEADER MODALS (FINAL)
      Mobile-only modals + hamburger panel
-     Includes:
-     - Odds Modal
-     - Language Modal
-     - Hamburger Panel + populated submenus
-     - Bookmarks Modal
-     - My Coupon Modal
-     - Search Modal
-     - Notifications Modal
-     - Auth Containers
 ==================================================== -->
 
-<!-- ============================
-     MOBILE ONLY WRAPPER
-============================ -->
 <div class="mobile-only">
 
     <!-- ============================
@@ -22,7 +10,6 @@
     ============================ -->
     <div class="be-modal-overlay" id="mobile-odds-modal" aria-hidden="true">
         <div class="be-modal" role="dialog" aria-modal="true">
-
             <div class="be-modal-header">
                 <span class="be-modal-title">Odds Format</span>
                 <button class="be-modal-close" type="button" aria-label="Close">
@@ -38,7 +25,6 @@
                 <button class="be-modal-item" type="button" data-odds="malay">Malay Odds (0.50)</button>
                 <button class="be-modal-item" type="button" data-odds="indonesian">Indonesian Odds (-2.00)</button>
             </div>
-
         </div>
     </div>
 
@@ -47,7 +33,6 @@
     ============================ -->
     <div class="be-modal-overlay" id="mobile-language-modal" aria-hidden="true">
         <div class="be-modal" role="dialog" aria-modal="true">
-
             <div class="be-modal-header">
                 <span class="be-modal-title">Language</span>
                 <button class="be-modal-close" type="button" aria-label="Close">
@@ -78,7 +63,6 @@
                 <button class="be-modal-item" type="button" data-lang="tr">Turkish</button>
                 <button class="be-modal-item" type="button" data-lang="uk">Ukrainian</button>
             </div>
-
         </div>
     </div>
 
@@ -104,217 +88,96 @@
             </div>
         </div>
 
-        <!-- ============================
-             ACCOUNT (Login/Register live here)
-        ============================ -->
+        <!-- ACCOUNT -->
         <div class="menu-section">
             <h4>Account</h4>
             <button class="menu-item menu-auth-register" type="button">Register</button>
             <button class="menu-item menu-auth-login" type="button">Login</button>
         </div>
 
-        <!-- ============================
-             QUICK CONTROLS (ONLY these two)
-             NOTE: Search/Coupon/Notifications are ROW 1 actions
-        ============================ -->
+        <!-- QUICK CONTROLS -->
         <div class="menu-section">
             <h4>Quick Controls</h4>
             <button class="menu-item menu-odds" type="button">Odds Format</button>
             <button class="menu-item menu-lang" type="button">Language</button>
         </div>
 
-        <!-- ============================
-             NAVIGATION
-        ============================ -->
-        <div class="menu-section">
+        <!-- NAVIGATION (ENTERPRISE IDENTIFIED) -->
+        <div class="menu-section navigation">
             <h4>Navigation</h4>
 
-            <!-- ODDS COMPARISON (DEFAULT OPEN LIKE ODDSPORTAL) -->
             <div class="menu-group" data-group="odds">
-                <button class="menu-link" type="button" data-section="odds" aria-expanded="true" data-lock-open="true">
-                    Odds Comparison
-                </button>
-
-                <div class="submenu open" data-subnav="odds">
-                    <button class="submenu-item" type="button" data-nav="odds-home">Home</button>
-                    <button class="submenu-item" type="button" data-nav="odds-next-matches">Next Matches</button>
-                    <button class="submenu-item" type="button" data-nav="odds-all-events">All Events</button>
-                    <button class="submenu-item" type="button" data-nav="odds-standings">Standings</button>
+                <button class="menu-link" type="button" data-section="odds">Odds Comparison</button>
+                <div class="submenu" data-subnav="odds">
+                    <button class="submenu-item" type="button">Home</button>
+                    <button class="submenu-item" type="button">Next Matches</button>
+                    <button class="submenu-item" type="button">All Events</button>
+                    <button class="submenu-item" type="button">Standings</button>
                 </div>
             </div>
 
-            <!-- BETTING TOOLS (DROPDOWN) -->
             <div class="menu-group" data-group="betting">
-                <button class="menu-link" type="button" data-section="betting" aria-expanded="false">
-                    Betting Tools
-                </button>
-
+                <button class="menu-link" type="button" data-section="betting">Betting Tools</button>
                 <div class="submenu" data-subnav="betting">
-                    <button class="submenu-item" type="button" data-nav="tools-dropping-odds">Dropping Odds</button>
-                    <button class="submenu-item" type="button" data-nav="tools-sure-bets">Sure Bets</button>
-                    <button class="submenu-item" type="button" data-nav="tools-in-play-odds">In-Play Odds</button>
-                    <button class="submenu-item" type="button" data-nav="tools-value-bets">Value Bets</button>
-                    <button class="submenu-item" type="button" data-nav="tools-blocked-odds">Blocked Odds</button>
-                    <button class="submenu-item" type="button" data-nav="tools-hot-matches">Hot Matches</button>
-                    <button class="submenu-item" type="button" data-nav="tools-bet-calculator">Bet Calculator</button>
+                    <button class="submenu-item" type="button">Dropping Odds</button>
+                    <button class="submenu-item" type="button">Sure Bets</button>
+                    <button class="submenu-item" type="button">In-Play Odds</button>
+                    <button class="submenu-item" type="button">Value Bets</button>
+                    <button class="submenu-item" type="button">Blocked Odds</button>
+                    <button class="submenu-item" type="button">Hot Matches</button>
+                    <button class="submenu-item" type="button">Bet Calculator</button>
                 </div>
             </div>
 
-            <!-- COMMUNITY (DROPDOWN) -->
             <div class="menu-group" data-group="community">
-                <button class="menu-link" type="button" data-section="community" aria-expanded="false">
-                    Community
-                </button>
-
+                <button class="menu-link" type="button" data-section="community">Community</button>
                 <div class="submenu" data-subnav="community">
-                    <button class="submenu-item" type="button" data-nav="community-home">Home</button>
-                    <button class="submenu-item" type="button" data-nav="community-users">Users</button>
-                    <button class="submenu-item" type="button" data-nav="community-top-predictions">Top Predictions</button>
-                    <button class="submenu-item" type="button" data-nav="community-my-statistics">My Statistics</button>
-                    <button class="submenu-item" type="button" data-nav="community-my-profile">My Profile</button>
-                    <button class="submenu-item" type="button" data-nav="community-my-predictions">My Predictions</button>
-                    <button class="submenu-item" type="button" data-nav="community-my-coupons">My Coupons</button>
+                    <button class="submenu-item" type="button">Home</button>
+                    <button class="submenu-item" type="button">Users</button>
+                    <button class="submenu-item" type="button">Top Predictions</button>
+                    <button class="submenu-item" type="button">My Statistics</button>
+                    <button class="submenu-item" type="button">My Profile</button>
+                    <button class="submenu-item" type="button">My Predictions</button>
+                    <button class="submenu-item" type="button">My Coupons</button>
                 </div>
             </div>
 
-            <!-- BOOKMAKERS (DROPDOWN) -->
             <div class="menu-group" data-group="bookmakers">
-                <button class="menu-link" type="button" data-section="bookmakers" aria-expanded="false">
-                    Bookmakers
-                </button>
-
+                <button class="menu-link" type="button" data-section="bookmakers">Bookmakers</button>
                 <div class="submenu" data-subnav="bookmakers">
-                    <button class="submenu-item" type="button" data-nav="bookmakers-bookie-info">Bookie Info</button>
-                    <button class="submenu-item" type="button" data-nav="bookmakers-bonus-offers">Bonus Offers</button>
-                    <button class="submenu-item" type="button" data-nav="bookmakers-odds-quality">Odds Quality</button>
-                    <button class="submenu-item" type="button" data-nav="bookmakers-betting-apps">Betting Apps</button>
+                    <button class="submenu-item" type="button">Bookie Info</button>
+                    <button class="submenu-item" type="button">Bonus Offers</button>
+                    <button class="submenu-item" type="button">Odds Quality</button>
+                    <button class="submenu-item" type="button">Betting Apps</button>
                 </div>
             </div>
 
-            <!-- PREMIUM (10 OPTIONS) -->
             <div class="menu-group" data-group="premium">
-                <button class="menu-link" type="button" data-section="premium" aria-expanded="false" data-premium-focus="true">
-                    Premium
-                </button>
-
+                <button class="menu-link" type="button" data-section="premium">Premium</button>
                 <div class="submenu" data-subnav="premium">
-                    <button class="submenu-item" type="button" data-nav="premium-dashboard">Premium Dashboard</button>
-                    <button class="submenu-item" type="button" data-nav="premium-market-insights">Market Insights</button>
-                    <button class="submenu-item" type="button" data-nav="premium-fair-odds-engine">Fair Odds Engine</button>
-                    <button class="submenu-item" type="button" data-nav="premium-ai-predictions">AI Predictions</button>
-                    <button class="submenu-item" type="button" data-nav="premium-smart-h2h">Smart H2H Insights</button>
-                    <button class="submenu-item" type="button" data-nav="premium-value-finder">Value Finder</button>
-                    <button class="submenu-item" type="button" data-nav="premium-sharp-vs-public">Sharp vs Public Money</button>
-                    <button class="submenu-item" type="button" data-nav="premium-shock-alerts">Shock Alerts</button>
-                    <button class="submenu-item" type="button" data-nav="premium-ai-live-momentum">AI Live Momentum</button>
-                    <button class="submenu-item" type="button" data-nav="premium-fake-trend-detector">Fake Trend Detector</button>
+                    <button class="submenu-item" type="button">Premium Dashboard</button>
+                    <button class="submenu-item" type="button">Market Insights</button>
+                    <button class="submenu-item" type="button">Fair Odds Engine</button>
+                    <button class="submenu-item" type="button">AI Predictions</button>
+                    <button class="submenu-item" type="button">Smart H2H Insights</button>
+                    <button class="submenu-item" type="button">Value Finder</button>
+                    <button class="submenu-item" type="button">Sharp vs Public Money</button>
+                    <button class="submenu-item" type="button">Shock Alerts</button>
+                    <button class="submenu-item" type="button">AI Live Momentum</button>
+                    <button class="submenu-item" type="button">Fake Trend Detector</button>
                 </div>
             </div>
-
         </div>
 
-        <!-- ============================
-             FOOTER CONTROLS (like OddsPortal)
-             (Keeps UX near bottom, no new modals here)
-        ============================ -->
+        <!-- FOOTER CONTROLS -->
         <div class="menu-section">
-            <div class="menu-item menu-odds" role="button" tabindex="0">Odds formats: <strong>Decimal Odds</strong></div>
-            <div class="menu-item menu-lang" role="button" tabindex="0">Language: <strong>English</strong></div>
+            <div class="menu-item menu-odds">Odds formats: <strong>Decimal Odds</strong></div>
+            <div class="menu-item menu-lang">Language: <strong>English</strong></div>
         </div>
 
     </div>
 </div>
 
-<!-- ============================
-     MOBILE BOOKMARKS MODAL (GLOBAL)
-============================ -->
-<div class="be-modal-overlay" id="mobile-bookmarks-modal" aria-hidden="true">
-    <div class="be-modal" role="dialog" aria-modal="true">
-
-        <div class="be-modal-header">
-            <span class="be-modal-title">Manage My Leagues</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
-
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Select sports and leagues to personalize your experience.
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- ============================
-     MOBILE MY COUPON MODAL (GLOBAL)
-============================ -->
-<div class="be-modal-overlay" id="mobile-coupon-modal" aria-hidden="true">
-    <div class="be-modal" role="dialog" aria-modal="true">
-
-        <div class="be-modal-header">
-            <span class="be-modal-title">My Coupon</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
-
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Your selected matches will appear here.
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- ============================
-     MOBILE SEARCH MODAL (GLOBAL)
-============================ -->
-<div class="be-modal-overlay" id="mobile-search-modal" aria-hidden="true">
-    <div class="be-modal" role="dialog" aria-modal="true">
-
-        <div class="be-modal-header">
-            <span class="be-modal-title">Search</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
-
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Search teams, players, leagues or competitions.
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- ============================
-     MOBILE NOTIFICATIONS MODAL (GLOBAL)
-============================ -->
-<div class="be-modal-overlay" id="mobile-notifications-modal" aria-hidden="true">
-    <div class="be-modal" role="dialog" aria-modal="true">
-
-        <div class="be-modal-header">
-            <span class="be-modal-title">Notifications</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
-
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                You have no notifications yet.
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- ============================
-     AUTH CONTAINERS (GLOBAL)
-============================ -->
+<!-- AUTH CONTAINERS -->
 <div id="auth-login-container"></div>
 <div id="auth-register-container"></div>
