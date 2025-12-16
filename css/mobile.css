@@ -186,7 +186,9 @@
 
     /* ==================================================
        PATCH A – VERTICAL OPTIONS FIX (SAFE)
+       Odds / Language / Tools
     ================================================== */
+
     .be-modal-body {
         display: flex;
         flex-direction: column;
@@ -207,6 +209,11 @@
         transition: background 0.15s ease, border-color 0.15s ease;
     }
 
+    .be-modal-item:hover {
+        background: #1c2033;
+        border-color: rgba(255, 255, 255, 0.18);
+    }
+
     .be-modal-item.active {
         background: #ffec00;
         color: #11141d;
@@ -214,22 +221,97 @@
         font-weight: 600;
     }
 
-    /* Keep auth overlays above everything */
+    /* Keep auth overlays above everything if ever enabled on mobile */
     .be-auth-overlay {
         z-index: 4000;
     }
 
-    /* ==================================================
-       🔧 PATCH C – MOBILE SEARCH INPUT FIX (MINIMAL)
-       Reason: ensure search input is focusable & clickable
-       Scope: mobile only
-       Impact: search only
-    ================================================== */
-    .header-mobile input[type="search"],
-    .header-mobile .search-box,
-    .header-mobile .search-box * {
-        pointer-events: auto;
-        z-index: 1100;
-        position: relative;
+   /* ==================================================
+   PATCH B – MOBILE MODALS UX FIX (SAFE & ISOLATED)
+   - Correct position
+   - Sticky header (title + X)
+   - Scroll only for long lists (Language)
+================================================== */
+
+/* Modal container sizing */
+.be-modal {
+    width: 92%;
+    max-width: 360px;
+    max-height: 82vh;            /* modal takes max 82% of screen height */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header always visible */
+.be-modal-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: #11141d;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* Modal body scrolls, not whole modal */
+.be-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Extra comfort for long language lists */
+.be-modal-body.modal-language {
+    max-height: calc(82vh - 56px); /* header height compensation */
+}
+
+/* ==================================================
+   PATCH: MOBILE HEADER ACTIONS ALIGNMENT
+   Scope: mobile header only
+   Safe: no desktop impact
+================================================== */
+
+@media (max-width: 900px) {
+
+    .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-actions button {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .mobile-actions button img {
+        width: 18px;
+        height: 18px;
+        pointer-events: none;
+    }
+
+    /* Bookmarks highlight (yellow star) */
+    .mobile-bookmarks-btn img {
+        filter: drop-shadow(0 0 4px rgba(255, 236, 0, 0.6));
+    }
+
+    /* Touch feedback */
+    .mobile-actions button:active {
+        background: rgba(255, 255, 255, 0.08);
     }
 }
+
+   
+
+
