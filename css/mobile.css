@@ -423,15 +423,25 @@
 
    /* =====================================================
    BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
-   Corrected enterprise scope
+   Final enterprise fix
 ===================================================== */
 
-/* Hide ONLY non-premium navigation groups */
-.mobile-menu-panel.premium-mode .menu-group:not([data-group="premium"]) {
+/* Hide ALL menu sections by default */
+.mobile-menu-panel.premium-mode .menu-section {
     display: none;
 }
 
-/* Ensure premium group is visible */
+/* Show ONLY navigation section */
+.mobile-menu-panel.premium-mode .menu-section:last-of-type {
+    display: block;
+}
+
+/* Inside navigation, hide ALL groups */
+.mobile-menu-panel.premium-mode .menu-group {
+    display: none;
+}
+
+/* Show ONLY premium group */
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
     display: block;
 }
@@ -439,3 +449,4 @@
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
     display: block;
 }
+
