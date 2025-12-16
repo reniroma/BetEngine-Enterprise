@@ -1,9 +1,14 @@
 <!-- ====================================================
-     MOBILE HEADER – BetEngine Enterprise (UPDATED)
-     Patch: Added Bookmarks icon between Search & Notification
+     MOBILE HEADER – BetEngine Enterprise
+     Includes:
+     - Top Bar (Hamburger, Brand, Actions)
+     - Sports Row (5 Sports + More)
 ==================================================== -->
 <header class="header-mobile">
 
+    <!-- ============================
+         TOP BAR
+    ============================ -->
     <div class="mobile-top-bar">
 
         <!-- HAMBURGER -->
@@ -24,9 +29,14 @@
                 <img src="assets/icons/search.svg" alt="">
             </button>
 
-            <!-- BOOKMARKS (NEW) -->
+            <!-- BOOKMARKS -->
             <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
                 <img src="assets/icons/bookmarks.svg" alt="">
+            </button>
+
+            <!-- MY COUPON -->
+            <button class="mobile-coupon-btn" type="button" aria-label="My Coupon">
+                <img src="assets/icons/coupon.svg" alt="My Coupon">
             </button>
 
             <!-- NOTIFICATIONS -->
@@ -34,12 +44,38 @@
                 <img src="assets/icons/notification.svg" alt="">
             </button>
 
-             <!-- MY COUPON -->
-            <button class="mobile-coupon-btn" type="button" aria-label="My Coupon">
-                <img src="assets/icons/coupon.svg" alt="">
-            </button>
-
         </div>
+    </div>
+
+    <!-- ============================
+         SPORTS ROW (HTML ONLY)
+    ============================ -->
+    <div class="mobile-sports-row">
+
+        <button class="mobile-sport-item active" type="button" data-sport="football">
+            Football
+        </button>
+
+        <button class="mobile-sport-item" type="button" data-sport="basketball">
+            Basketball
+        </button>
+
+        <button class="mobile-sport-item" type="button" data-sport="tennis">
+            Tennis
+        </button>
+
+        <button class="mobile-sport-item" type="button" data-sport="hockey">
+            Hockey
+        </button>
+
+        <button class="mobile-sport-item" type="button" data-sport="volleyball">
+            Volleyball
+        </button>
+
+        <button class="mobile-sport-item mobile-sport-more" type="button" data-sport="more">
+            More
+        </button>
+
     </div>
 
 </header>
