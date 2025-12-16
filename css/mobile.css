@@ -423,14 +423,15 @@
 
    /* =====================================================
    BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
-   Enterprise isolated scope
+   Corrected enterprise scope
 ===================================================== */
 
-.mobile-menu-panel.premium-mode .menu-section,
-.mobile-menu-panel.premium-mode .menu-group {
+/* Hide ONLY non-premium navigation groups */
+.mobile-menu-panel.premium-mode .menu-group:not([data-group="premium"]) {
     display: none;
 }
 
+/* Ensure premium group is visible */
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
     display: block;
 }
@@ -438,13 +439,3 @@
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
     display: block;
 }
-
-.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu-item {
-    opacity: 1;
-}
-
-
-
-
-
-
