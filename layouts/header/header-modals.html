@@ -1,12 +1,20 @@
 <!-- ====================================================
-     BetEngine Enterprise – HEADER MODALS (MOBILE FINAL)
-     Scope:
-     - Mobile-only hamburger structure
-     - Odds Comparison always open (no dropdown)
-     - Correct separation Odds Comparison vs Betting Tools
-     - Single instance Odds / Language (moved to bottom)
+     BetEngine Enterprise – HEADER MODALS (FINAL)
+     Mobile-only modals + hamburger panel
+     Includes:
+     - Odds Modal
+     - Language Modal
+     - Hamburger Panel + populated submenus
+     - Bookmarks Modal
+     - My Coupon Modal
+     - Search Modal
+     - Notifications Modal
+     - Auth Containers
 ==================================================== -->
 
+<!-- ============================
+     MOBILE ONLY WRAPPER
+============================ -->
 <div class="mobile-only">
 
     <!-- ============================
@@ -14,6 +22,7 @@
     ============================ -->
     <div class="be-modal-overlay" id="mobile-odds-modal" aria-hidden="true">
         <div class="be-modal" role="dialog" aria-modal="true">
+
             <div class="be-modal-header">
                 <span class="be-modal-title">Odds Format</span>
                 <button class="be-modal-close" type="button" aria-label="Close">
@@ -22,13 +31,14 @@
             </div>
 
             <div class="be-modal-body modal-odds">
-                <button class="be-modal-item active" data-odds="decimal">Decimal Odds (1.50)</button>
-                <button class="be-modal-item" data-odds="fractional">Fractional Odds (1/2)</button>
-                <button class="be-modal-item" data-odds="moneyline">Moneyline Odds (-200)</button>
-                <button class="be-modal-item" data-odds="hongkong">Hong Kong Odds (0.50)</button>
-                <button class="be-modal-item" data-odds="malay">Malay Odds (0.50)</button>
-                <button class="be-modal-item" data-odds="indonesian">Indonesian Odds (-2.00)</button>
+                <button class="be-modal-item active" type="button" data-odds="decimal">Decimal Odds (1.50)</button>
+                <button class="be-modal-item" type="button" data-odds="fractional">Fractional Odds (1/2)</button>
+                <button class="be-modal-item" type="button" data-odds="moneyline">Moneyline Odds (-200)</button>
+                <button class="be-modal-item" type="button" data-odds="hongkong">Hong Kong Odds (0.50)</button>
+                <button class="be-modal-item" type="button" data-odds="malay">Malay Odds (0.50)</button>
+                <button class="be-modal-item" type="button" data-odds="indonesian">Indonesian Odds (-2.00)</button>
             </div>
+
         </div>
     </div>
 
@@ -37,6 +47,7 @@
     ============================ -->
     <div class="be-modal-overlay" id="mobile-language-modal" aria-hidden="true">
         <div class="be-modal" role="dialog" aria-modal="true">
+
             <div class="be-modal-header">
                 <span class="be-modal-title">Language</span>
                 <button class="be-modal-close" type="button" aria-label="Close">
@@ -45,13 +56,28 @@
             </div>
 
             <div class="be-modal-body modal-language">
-                <button class="be-modal-item" data-lang="nl">Dutch</button>
-                <button class="be-modal-item active" data-lang="en">English</button>
-                <button class="be-modal-item" data-lang="fr">French</button>
-                <button class="be-modal-item" data-lang="de">German</button>
-                <button class="be-modal-item" data-lang="es">Spanish</button>
-                <button class="be-modal-item" data-lang="it">Italian</button>
+                <button class="be-modal-item" type="button" data-lang="ar">Arabic</button>
+                <button class="be-modal-item" type="button" data-lang="zh">Chinese</button>
+                <button class="be-modal-item" type="button" data-lang="nl">Dutch</button>
+                <button class="be-modal-item active" type="button" data-lang="en">English</button>
+                <button class="be-modal-item" type="button" data-lang="fr">French</button>
+                <button class="be-modal-item" type="button" data-lang="de">German</button>
+                <button class="be-modal-item" type="button" data-lang="el">Greek</button>
+                <button class="be-modal-item" type="button" data-lang="hi">Hindi</button>
+                <button class="be-modal-item" type="button" data-lang="id">Indonesian</button>
+                <button class="be-modal-item" type="button" data-lang="it">Italian</button>
+                <button class="be-modal-item" type="button" data-lang="ja">Japanese</button>
+                <button class="be-modal-item" type="button" data-lang="ko">Korean</button>
+                <button class="be-modal-item" type="button" data-lang="pl">Polish</button>
+                <button class="be-modal-item" type="button" data-lang="pt">Portuguese</button>
+                <button class="be-modal-item" type="button" data-lang="ro">Romanian</button>
+                <button class="be-modal-item" type="button" data-lang="ru">Russian</button>
+                <button class="be-modal-item" type="button" data-lang="sr">Serbian</button>
+                <button class="be-modal-item" type="button" data-lang="es">Spanish</button>
+                <button class="be-modal-item" type="button" data-lang="tr">Turkish</button>
+                <button class="be-modal-item" type="button" data-lang="uk">Ukrainian</button>
             </div>
+
         </div>
     </div>
 
@@ -69,19 +95,21 @@
             <img src="assets/icons/close.svg" alt="">
         </button>
 
-        <!-- BRAND -->
         <div class="menu-brand">
-            <span class="brand-name">BetEngine</span>
-            <span class="brand-tagline">Smart betting tools</span>
+            <img src="assets/logos/logo.svg" class="logo" alt="">
+            <div class="brand-text">
+                <span class="name">BetEngine</span>
+                <span class="tagline">Smart betting tools</span>
+            </div>
         </div>
 
         <!-- ============================
-             ACCOUNT (TOP)
+             ACCOUNT
         ============================ -->
         <div class="menu-section">
             <h4>Account</h4>
-            <button class="menu-item menu-auth-register">Register</button>
-            <button class="menu-item menu-auth-login">Login</button>
+            <button class="menu-item menu-auth-register" type="button">Register</button>
+            <button class="menu-item menu-auth-login" type="button">Login</button>
         </div>
 
         <!-- ============================
@@ -90,72 +118,190 @@
         <div class="menu-section">
             <h4>Navigation</h4>
 
-            <!-- ODDS COMPARISON (ALWAYS OPEN) -->
-            <div class="menu-group static-open">
-                <div class="submenu open">
-                    <button class="submenu-item" data-nav="odds-home">Home</button>
-                    <button class="submenu-item" data-nav="odds-next-matches">Next Matches</button>
-                    <button class="submenu-item" data-nav="odds-dropping-odds">Dropping Odds</button>
-                    <button class="submenu-item" data-nav="odds-sure-bets">Sure Bets</button>
-                    <button class="submenu-item" data-nav="odds-in-play">In-Play Odds</button>
-                    <button class="submenu-item" data-nav="odds-all-events">All Events</button>
-                    <button class="submenu-item" data-nav="odds-betting-tools">Betting Tools</button>
+            <!-- ODDS COMPARISON (DEFAULT OPEN) -->
+            <div class="menu-group" data-group="odds">
+                <button class="menu-link" type="button" data-section="odds" aria-expanded="true" data-lock-open="true">
+                    Odds Comparison
+                </button>
+
+                <div class="submenu open" data-subnav="odds">
+                    <button class="submenu-item" type="button" data-nav="odds-home">Home</button>
+                    <button class="submenu-item" type="button" data-nav="odds-next-matches">Next Matches</button>
+                    <button class="submenu-item" type="button" data-nav="odds-dropping-odds">Dropping Odds</button>
+                    <button class="submenu-item" type="button" data-nav="odds-sure-bets">Sure Bets</button>
+                    <button class="submenu-item" type="button" data-nav="odds-in-play-odds">In-Play Odds</button>
+                    <button class="submenu-item" type="button" data-nav="odds-all-events">All Events</button>
                 </div>
             </div>
 
-            <!-- BETTING TOOLS (ONLY REAL TOOLS) -->
-            <div class="menu-group">
-                <button class="menu-link" type="button" data-section="betting">Betting Tools</button>
-                <div class="submenu">
-                    <button class="submenu-item" data-nav="tools-value-bets">Value Bets</button>
-                    <button class="submenu-item" data-nav="tools-blocked-odds">Blocked Odds</button>
-                    <button class="submenu-item" data-nav="tools-hot-matches">Hot Matches</button>
-                    <button class="submenu-item" data-nav="tools-bet-calculator">Bet Calculator</button>
+            <!-- BETTING TOOLS (DROPDOWN) -->
+            <div class="menu-group" data-group="betting">
+                <button class="menu-link" type="button" data-section="betting" aria-expanded="false">
+                    Betting Tools
+                </button>
+
+                <div class="submenu" data-subnav="betting">
+                    <button class="submenu-item" type="button" data-nav="tools-value-bets">Value Bets</button>
+                    <button class="submenu-item" type="button" data-nav="tools-blocked-odds">Blocked Odds</button>
+                    <button class="submenu-item" type="button" data-nav="tools-hot-matches">Hot Matches</button>
+                    <button class="submenu-item" type="button" data-nav="tools-bet-calculator">Bet Calculator</button>
                 </div>
             </div>
 
-            <!-- COMMUNITY -->
-            <div class="menu-group">
-                <button class="menu-link" data-section="community">Community</button>
-                <div class="submenu">
-                    <button class="submenu-item">Home</button>
-                    <button class="submenu-item">Users</button>
-                    <button class="submenu-item">Top Predictions</button>
+            <!-- COMMUNITY (DROPDOWN) -->
+            <div class="menu-group" data-group="community">
+                <button class="menu-link" type="button" data-section="community" aria-expanded="false">
+                    Community
+                </button>
+
+                <div class="submenu" data-subnav="community">
+                    <button class="submenu-item" type="button" data-nav="community-home">Home</button>
+                    <button class="submenu-item" type="button" data-nav="community-users">Users</button>
+                    <button class="submenu-item" type="button" data-nav="community-top-predictions">Top Predictions</button>
+                    <button class="submenu-item" type="button" data-nav="community-my-statistics">My Statistics</button>
+                    <button class="submenu-item" type="button" data-nav="community-my-profile">My Profile</button>
+                    <button class="submenu-item" type="button" data-nav="community-my-predictions">My Predictions</button>
+                    <button class="submenu-item" type="button" data-nav="community-my-coupons">My Coupons</button>
                 </div>
             </div>
 
-            <!-- BOOKMAKERS -->
-            <div class="menu-group">
-                <button class="menu-link" data-section="bookmakers">Bookmakers</button>
-                <div class="submenu">
-                    <button class="submenu-item">Bookie Info</button>
-                    <button class="submenu-item">Bonus Offers</button>
-                    <button class="submenu-item">Odds Quality</button>
+            <!-- BOOKMAKERS (DROPDOWN) -->
+            <div class="menu-group" data-group="bookmakers">
+                <button class="menu-link" type="button" data-section="bookmakers" aria-expanded="false">
+                    Bookmakers
+                </button>
+
+                <div class="submenu" data-subnav="bookmakers">
+                    <button class="submenu-item" type="button" data-nav="bookmakers-bookie-info">Bookie Info</button>
+                    <button class="submenu-item" type="button" data-nav="bookmakers-bonus-offers">Bonus Offers</button>
+                    <button class="submenu-item" type="button" data-nav="bookmakers-odds-quality">Odds Quality</button>
+                    <button class="submenu-item" type="button" data-nav="bookmakers-betting-apps">Betting Apps</button>
                 </div>
             </div>
 
-            <!-- PREMIUM -->
-            <div class="menu-group">
-                <button class="menu-link" data-section="premium">Premium</button>
-                <div class="submenu">
-                    <button class="submenu-item">Premium Dashboard</button>
-                    <button class="submenu-item">Market Insights</button>
-                    <button class="submenu-item">AI Predictions</button>
+            <!-- PREMIUM (DROPDOWN) -->
+            <div class="menu-group" data-group="premium">
+                <button class="menu-link" type="button" data-section="premium" aria-expanded="false" data-premium-focus="true">
+                    Premium
+                </button>
+
+                <div class="submenu" data-subnav="premium">
+                    <button class="submenu-item" type="button" data-nav="premium-dashboard">Premium Dashboard</button>
+                    <button class="submenu-item" type="button" data-nav="premium-market-insights">Market Insights</button>
+                    <button class="submenu-item" type="button" data-nav="premium-fair-odds-engine">Fair Odds Engine</button>
+                    <button class="submenu-item" type="button" data-nav="premium-ai-predictions">AI Predictions</button>
+                    <button class="submenu-item" type="button" data-nav="premium-smart-h2h">Smart H2H Insights</button>
+                    <button class="submenu-item" type="button" data-nav="premium-value-finder">Value Finder</button>
+                    <button class="submenu-item" type="button" data-nav="premium-sharp-vs-public">Sharp vs Public Money</button>
+                    <button class="submenu-item" type="button" data-nav="premium-shock-alerts">Shock Alerts</button>
+                    <button class="submenu-item" type="button" data-nav="premium-ai-live-momentum">AI Live Momentum</button>
+                    <button class="submenu-item" type="button" data-nav="premium-fake-trend-detector">Fake Trend Detector</button>
                 </div>
             </div>
+
         </div>
 
         <!-- ============================
-             BOTTOM CONTROLS (SINGLE SOURCE)
+             FOOTER CONTROLS (SINGLE INSTANCE)
         ============================ -->
         <div class="menu-section">
-            <button class="menu-item menu-odds">Odds format: <strong>Decimal Odds</strong></button>
-            <button class="menu-item menu-lang">Language: <strong>English</strong></button>
+            <div class="menu-item menu-odds" role="button" tabindex="0">Odds formats: <strong>Decimal Odds</strong></div>
+            <div class="menu-item menu-lang" role="button" tabindex="0">Language: <strong>English</strong></div>
         </div>
 
     </div>
 </div>
 
-<!-- AUTH CONTAINERS -->
+<!-- ============================
+     MOBILE BOOKMARKS MODAL (GLOBAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-bookmarks-modal" aria-hidden="true">
+    <div class="be-modal" role="dialog" aria-modal="true">
+
+        <div class="be-modal-header">
+            <span class="be-modal-title">Manage My Leagues</span>
+            <button class="be-modal-close" type="button" aria-label="Close">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <div class="be-modal-body">
+            <div class="be-modal-placeholder">
+                Select sports and leagues to personalize your experience.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================
+     MOBILE MY COUPON MODAL (GLOBAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-coupon-modal" aria-hidden="true">
+    <div class="be-modal" role="dialog" aria-modal="true">
+
+        <div class="be-modal-header">
+            <span class="be-modal-title">My Coupon</span>
+            <button class="be-modal-close" type="button" aria-label="Close">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <div class="be-modal-body">
+            <div class="be-modal-placeholder">
+                Your selected matches will appear here.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================
+     MOBILE SEARCH MODAL (GLOBAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-search-modal" aria-hidden="true">
+    <div class="be-modal" role="dialog" aria-modal="true">
+
+        <div class="be-modal-header">
+            <span class="be-modal-title">Search</span>
+            <button class="be-modal-close" type="button" aria-label="Close">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <div class="be-modal-body">
+            <div class="be-modal-placeholder">
+                Search teams, players, leagues or competitions.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================
+     MOBILE NOTIFICATIONS MODAL (GLOBAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-notifications-modal" aria-hidden="true">
+    <div class="be-modal" role="dialog" aria-modal="true">
+
+        <div class="be-modal-header">
+            <span class="be-modal-title">Notifications</span>
+            <button class="be-modal-close" type="button" aria-label="Close">
+                <img src="assets/icons/close.svg" alt="">
+            </button>
+        </div>
+
+        <div class="be-modal-body">
+            <div class="be-modal-placeholder">
+                You have no notifications yet.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================
+     AUTH CONTAINERS (GLOBAL)
+============================ -->
 <div id="auth-login-container"></div>
 <div id="auth-register-container"></div>
