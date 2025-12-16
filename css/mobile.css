@@ -310,35 +310,36 @@
     .mobile-actions button:active {
         background: rgba(255, 255, 255, 0.08);
     }
-
-
-  /* ====================================================
-   MOBILE SPORTS ROW – FINAL (OddsPortal-style)
+/* ====================================================
+   MOBILE SPORTS ROW – FIT 6 ITEMS (NO OFFSCREEN)
+   5 sports + More always visible
 ==================================================== */
 
 .mobile-sports-row {
     display: flex;
-    gap: 14px;
-    padding: 10px 12px;
+    align-items: stretch;
+    justify-content: space-between;
+
+    padding: 8px 10px;
     background: #0b0f17;
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+
+    gap: 0;              /* critical: no spacing overflow */
+    overflow: hidden;    /* critical: prevent pushing More offscreen */
 }
 
-.mobile-sports-row::-webkit-scrollbar {
-    display: none;
-}
-
+/* each item shares width equally */
 .mobile-sport-item {
-    flex: 0 0 auto;
-    min-width: 64px;
+    flex: 1 1 0;
+    min-width: 0;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 4px;
 
+    padding: 6px 2px;
     background: none;
     border: 0;
     cursor: pointer;
@@ -347,28 +348,23 @@
 }
 
 .mobile-sport-item img {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
+    display: block;
 }
 
 .mobile-sport-item .sport-label {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 1;
+
+    max-width: 100%;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mobile-sport-item.active {
     color: #ffec00;
-}
-
-/* ============================
-   ACTIVE STATE
-============================ */
-.mobile-sport-item.active {
-    color: #ffec00;
-}
-
-.mobile-sport-item.active img {
-    opacity: 1;
 }
 
 /* ============================
