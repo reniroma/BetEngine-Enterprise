@@ -1,6 +1,15 @@
 <!-- ====================================================
-     BetEngine Enterprise – HEADER MODALS
+     BetEngine Enterprise – HEADER MODALS (FINAL)
      Mobile-only modals + hamburger panel
+     Includes:
+     - Odds Modal
+     - Language Modal
+     - Hamburger Panel + populated submenus
+     - Bookmarks Modal
+     - My Coupon Modal
+     - Search Modal
+     - Notifications Modal
+     - Auth Containers
 ==================================================== -->
 
 <!-- ============================
@@ -104,21 +113,68 @@
             <h4>Quick Controls</h4>
             <button class="menu-item menu-odds" type="button">Odds Format</button>
             <button class="menu-item menu-lang" type="button">Language</button>
+            <button class="menu-item menu-search" type="button">Search</button>
+            <button class="menu-item menu-coupon" type="button">My Coupon</button>
+            <button class="menu-item menu-notifications" type="button">Notifications</button>
         </div>
 
         <div class="menu-section">
             <h4>Navigation</h4>
+
+            <!-- ODDS -->
             <button class="menu-link" type="button" data-section="odds">Odds Comparison</button>
-            <div class="submenu" data-subnav="odds"></div>
+            <div class="submenu" data-subnav="odds">
+                <button class="submenu-item" type="button" data-nav="odds-home">Home</button>
+                <button class="submenu-item" type="button" data-nav="odds-next-matches">Next Matches</button>
+                <button class="submenu-item" type="button" data-nav="odds-dropping-odds">Dropping Odds</button>
+                <button class="submenu-item" type="button" data-nav="odds-sure-bets">Sure Bets</button>
+                <button class="submenu-item" type="button" data-nav="odds-in-play-odds">In Play Odds</button>
+                <button class="submenu-item" type="button" data-nav="odds-all-events">All Events</button>
+                <button class="submenu-item" type="button" data-nav="odds-blocked-odds">Blocked Odds</button>
+                <button class="submenu-item" type="button" data-nav="odds-value-bets">Value Bets</button>
+                <button class="submenu-item" type="button" data-nav="odds-hot-matches">Hot Matches</button>
+                <button class="submenu-item" type="button" data-nav="odds-archived-results">Archived Results</button>
+                <button class="submenu-item" type="button" data-nav="odds-standings">Standings</button>
+                <button class="submenu-item" type="button" data-nav="odds-bet-calculator">Bet Calculator</button>
+            </div>
 
+            <!-- COMMUNITY -->
             <button class="menu-link" type="button" data-section="community">Community</button>
-            <div class="submenu" data-subnav="community"></div>
+            <div class="submenu" data-subnav="community">
+                <button class="submenu-item" type="button" data-nav="community-home">Home</button>
+                <button class="submenu-item" type="button" data-nav="community-feed">Feed</button>
+                <button class="submenu-item" type="button" data-nav="community-users">Users</button>
+                <button class="submenu-item" type="button" data-nav="community-top-predictions">Top Predictions</button>
+                <button class="submenu-item" type="button" data-nav="community-my-statistics">My Statistics</button>
+                <button class="submenu-item" type="button" data-nav="community-my-profile">My Profile</button>
+                <button class="submenu-item" type="button" data-nav="community-my-predictions">My Predictions</button>
+                <button class="submenu-item" type="button" data-nav="community-my-coupons">My Coupons</button>
+            </div>
 
+            <!-- BOOKMAKERS -->
             <button class="menu-link" type="button" data-section="bookmakers">Bookmakers</button>
-            <div class="submenu" data-subnav="bookmakers"></div>
+            <div class="submenu" data-subnav="bookmakers">
+                <button class="submenu-item" type="button" data-nav="bookmakers-bookie-info">Bookie Info</button>
+                <button class="submenu-item" type="button" data-nav="bookmakers-bonus-offers">Bonus Offers</button>
+                <button class="submenu-item" type="button" data-nav="bookmakers-odds-quality">Odds Quality</button>
+                <button class="submenu-item" type="button" data-nav="bookmakers-betting-apps">Betting Apps</button>
+            </div>
 
+            <!-- PREMIUM -->
             <button class="menu-link" type="button" data-section="premium">Premium</button>
-            <div class="submenu" data-subnav="premium"></div>
+            <div class="submenu" data-subnav="premium">
+                <button class="submenu-item" type="button" data-nav="premium-dashboard">Premium Dashboard</button>
+                <button class="submenu-item" type="button" data-nav="premium-market-insights">Market Insights</button>
+                <button class="submenu-item" type="button" data-nav="premium-fair-odds-engine">Fair Odds Engine</button>
+                <button class="submenu-item" type="button" data-nav="premium-ai-predictions">AI Predictions</button>
+                <button class="submenu-item" type="button" data-nav="premium-smart-h2h">Smart H2H Insights</button>
+                <button class="submenu-item" type="button" data-nav="premium-value-finder">Value Finder</button>
+                <button class="submenu-item" type="button" data-nav="premium-sharp-vs-public">Sharp vs Public Money</button>
+                <button class="submenu-item" type="button" data-nav="premium-shock-alerts">Shock Alerts</button>
+                <button class="submenu-item" type="button" data-nav="premium-ai-live-momentum">AI Live Momentum</button>
+                <button class="submenu-item" type="button" data-nav="premium-fake-trend-detector">Fake Trend Detector</button>
+            </div>
+
         </div>
     </div>
 </div>
