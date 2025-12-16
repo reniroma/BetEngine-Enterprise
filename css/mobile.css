@@ -360,7 +360,80 @@
     .mobile-sport-more {
         margin-left: auto;
     }
+
+   /* ====================================================
+   MOBILE SPORTS ROW (OddsPortal-style)
+   SAFE / ISOLATED
+==================================================== */
+
+.mobile-sports-row {
+    display: flex;
+    gap: 14px;
+    padding: 10px 12px;
+    background: #0b0f17;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
+
+.mobile-sports-row::-webkit-scrollbar {
+    display: none;
+}
+
+/* ============================
+   SPORT ITEM
+============================ */
+.mobile-sport-item {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    min-width: 56px;
+    padding: 6px 4px;
+
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: #cfd3da;
+}
+
+.mobile-sport-item img {
+    width: 22px;
+    height: 22px;
+    opacity: 0.85;
+}
+
+/* LABEL */
+.mobile-sport-item .sport-label {
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+    text-transform: capitalize;
+}
+
+/* ============================
+   ACTIVE STATE
+============================ */
+.mobile-sport-item.active {
+    color: #ffec00;
+}
+
+.mobile-sport-item.active img {
+    opacity: 1;
+}
+
+/* ============================
+   MORE BUTTON (arrow feel)
+============================ */
+.mobile-sport-more img {
+    width: 20px;
+    height: 20px;
+}
+
+
 
 
 
