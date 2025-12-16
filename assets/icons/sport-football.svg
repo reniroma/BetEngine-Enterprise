@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" viewBox="0 0 36 48">
-  <circle cx="18" cy="14" r="12" fill="none" stroke="#ffffff" stroke-width="2"/>
-  <polygon points="18,8 22,11 20,16 16,16 14,11" fill="#ffffff"/>
-  <text x="18" y="44" text-anchor="middle" font-size="10" fill="#ffffff">Football</text>
+<svg
+  class="sport-icon"
+  viewBox="0 0 24 24"
+  fill="#ffffff"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <circle cx="12" cy="12" r="9"></circle>
 </svg>
