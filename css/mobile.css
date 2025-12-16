@@ -312,9 +312,8 @@
     }
 
 
-   /* ====================================================
-   MOBILE SPORTS ROW (OddsPortal-style)
-   SAFE / ISOLATED
+  /* ====================================================
+   MOBILE SPORTS ROW – FINAL (OddsPortal-style)
 ==================================================== */
 
 .mobile-sports-row {
@@ -322,8 +321,7 @@
     gap: 14px;
     padding: 10px 12px;
     background: #0b0f17;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -332,37 +330,34 @@
     display: none;
 }
 
-/* ============================
-   SPORT ITEM
-============================ */
 .mobile-sport-item {
     flex: 0 0 auto;
+    min-width: 64px;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-
-    min-width: 56px;
-    padding: 6px 4px;
+    gap: 6px;
 
     background: none;
     border: 0;
     cursor: pointer;
-    color: #cfd3da;
+
+    color: #9aa0aa;
 }
 
 .mobile-sport-item img {
     width: 22px;
     height: 22px;
-    opacity: 0.85;
 }
 
-/* LABEL */
 .mobile-sport-item .sport-label {
     font-size: 11px;
-    line-height: 1;
     white-space: nowrap;
-    text-transform: capitalize;
+}
+
+.mobile-sport-item.active {
+    color: #ffec00;
 }
 
 /* ============================
