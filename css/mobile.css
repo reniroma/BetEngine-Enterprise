@@ -54,6 +54,40 @@
     }
 
     /* ==================================================
+       MOBILE HEADER ACTIONS ALIGNMENT
+       Scope: mobile header only
+================================================== */
+    .mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-actions button {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    .mobile-actions button img {
+        width: 18px;
+        height: 18px;
+        pointer-events: none;
+    }
+
+    /* Touch feedback */
+    .mobile-actions button:active {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* ==================================================
        HAMBURGER OVERLAY
     ================================================== */
     .mobile-menu-overlay {
@@ -158,7 +192,7 @@
     }
 
     /* ==================================================
-       MOBILE MODAL (ODDS / LANGUAGE / TOOLS)
+       MOBILE MODAL (ODDS / LANGUAGE / BOOKMARKS / ETC.)
     ================================================== */
     .be-modal-overlay {
         display: none;
@@ -176,24 +210,46 @@
         pointer-events: auto;
     }
 
+    /* Modal container sizing */
     .be-modal {
         width: 92%;
         max-width: 360px;
+        max-height: 82vh;
+        display: flex;
+        flex-direction: column;
         background: #11141d;
         border-radius: 12px;
         overflow: hidden;
     }
 
-    /* ==================================================
-       PATCH A – VERTICAL OPTIONS FIX (SAFE)
-       Odds / Language / Tools
-    ================================================== */
+    /* Header always visible */
+    .be-modal-header {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        background: #11141d;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+    }
 
+    /* Modal body scrolls, not whole modal */
     .be-modal-body {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         display: flex;
         flex-direction: column;
         gap: 6px;
         padding: 12px;
+    }
+
+    /* Extra comfort for long language lists */
+    .be-modal-body.modal-language {
+        max-height: calc(82vh - 56px);
     }
 
     .be-modal-item {
@@ -226,169 +282,85 @@
         z-index: 4000;
     }
 
-   /* ==================================================
-   PATCH B – MOBILE MODALS UX FIX (SAFE & ISOLATED)
-   - Correct position
-   - Sticky header (title + X)
-   - Scroll only for long lists (Language)
-================================================== */
+    /* ======================================================
+       MOBILE HEADER – SPORTS ROW (ROW 2)
+       FINAL RULES:
+       - Row 2 has different background than Row 1
+       - Labels are slightly larger and white by default
+       - Active changes LABEL color only (icons do not change)
+       - "More" is always light orange (icon + label)
+    ======================================================= */
 
-/* Modal container sizing */
-.be-modal {
-    width: 92%;
-    max-width: 360px;
-    max-height: 82vh;            /* modal takes max 82% of screen height */
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header always visible */
-.be-modal-header {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: #11141d;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-/* Modal body scrolls, not whole modal */
-.be-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Extra comfort for long language lists */
-.be-modal-body.modal-language {
-    max-height: calc(82vh - 56px); /* header height compensation */
-}
-
-/* ==================================================
-   PATCH: MOBILE HEADER ACTIONS ALIGNMENT
-   Scope: mobile header only
-   Safe: no desktop impact
-================================================== */
-
-@media (max-width: 900px) {
-
-    .mobile-actions {
+    .mobile-sports-row {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        padding: 8px 10px;
+        background: #131826; /* darker grey to visually separate from Row 1 */
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .mobile-actions button {
-        width: 36px;
-        height: 36px;
+    .mobile-sports-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-sport-item {
+        flex: 0 0 auto;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 5px;
+        min-width: 50px;
+        padding: 6px 4px;
         background: none;
-        border: none;
-        padding: 0;
+        border: 0;
         cursor: pointer;
-        border-radius: 50%;
     }
 
-    .mobile-actions button img {
-        width: 18px;
-        height: 18px;
-        pointer-events: none;
+    /* Icons stay neutral (do not change on active) */
+    .mobile-sport-item img,
+    .mobile-sport-item .sport-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
     }
 
-    /* Bookmarks highlight (yellow star) */
-    .mobile-bookmarks-btn img {
-        filter: drop-shadow(0 0 4px rgba(255, 236, 0, 0.6));
+    /* Inline SVG neutral color */
+    .mobile-sport-item .sport-icon {
+        color: #ffffff;
     }
 
-    /* Touch feedback */
-    .mobile-actions button:active {
-        background: rgba(255, 255, 255, 0.08);
+    /* Ensure svg strokes remain neutral even if parent text changes */
+    .mobile-sport-item .sport-icon * {
+        stroke: currentColor;
     }
-/* ====================================================
-   MOBILE SPORTS ROW – FIT 6 ITEMS (NO OFFSCREEN)
-   5 sports + More always visible
-==================================================== */
 
-.mobile-sports-row {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
+    /* Label: slightly larger, white by default */
+    .mobile-sport-item .sport-label {
+        font-size: 12px;
+        line-height: 1.1;
+        font-weight: 600;
+        color: #ffffff;
+        white-space: nowrap;
+        text-transform: capitalize;
+    }
 
-    padding: 8px 10px;
-    background: #0b0f17;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    /* Active: change LABEL only */
+    .mobile-sport-item.active .sport-label {
+        color: #ff9d00; /* light orange */
+    }
 
-    gap: 0;              /* critical: no spacing overflow */
-    overflow: hidden;    /* critical: prevent pushing More offscreen */
-}
+    /* "More" always light orange (icon + label) */
+    .mobile-sport-more .sport-label {
+        color: #ff9d00;
+    }
 
-/* each item shares width equally */
-.mobile-sport-item {
-    flex: 1 1 0;
-    min-width: 0;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-
-    padding: 6px 2px;
-    background: none;
-    border: 0;
-    cursor: pointer;
-
-    color: #9aa0aa;
-}
-
-.mobile-sport-item img {
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
-.mobile-sport-item .sport-label {
-    font-size: 10px;
-    line-height: 1;
-
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* ACTIVE icon color for BOTH: inline SVG (More) + IMG icons */
-.mobile-sport-item.active .sport-icon,
-.mobile-sport-item.active img {
-  color: #ffec00;
-  stroke: #ffec00;
-}
-
-.mobile-sport-item.active .sport-icon path,
-.mobile-sport-item.active .sport-icon circle,
-.mobile-sport-item.active .sport-icon line {
-  stroke: #ffec00;
-}
-
-/* ============================
-   MORE BUTTON (arrow feel)
-============================ */
-.sport-icon {
-    width: 20px;
-    height: 20px;
-    display: block;
-}
-
-/* ====================================================
-   PATCH: FORCE "MORE" TO BE YELLOW (icon + label)
-   Safe: affects only the More button
-==================================================== */
-.mobile-sport-item.mobile-sport-more {
-    color: var(--text-primary, #ffec00);
+    .mobile-sport-more .sport-icon {
+        color: #ff9d00;
+        width: 20px;
+        height: 20px;
+    }
 }
