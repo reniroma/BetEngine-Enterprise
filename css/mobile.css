@@ -420,7 +420,30 @@
     .mobile-sport-more svg {
         color: #ff9d00;
     }
+
+   /* =====================================================
+   BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
+   Enterprise isolated scope
+===================================================== */
+
+.mobile-menu-panel.premium-mode .menu-section,
+.mobile-menu-panel.premium-mode .menu-group {
+    display: none;
 }
+
+.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
+    display: block;
+}
+
+.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
+    display: block;
+}
+
+.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu-item {
+    opacity: 1;
+}
+
+
 
 
 
