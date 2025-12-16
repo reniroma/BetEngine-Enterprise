@@ -310,7 +310,59 @@
     .mobile-actions button:active {
         background: rgba(255, 255, 255, 0.08);
     }
+
+   /* ======================================================
+   MOBILE HEADER – SPORTS ROW (ICONS ONLY)
+   SAFE PATCH – ISOLATED
+====================================================== */
+@media (max-width: 900px) {
+
+    .mobile-sports-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        background: var(--bg-header, #0b0b12);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-sport-item {
+        flex: 0 0 auto;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: transparent;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0.55;
+        cursor: pointer;
+    }
+
+    .mobile-sport-item img {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+    .mobile-sport-item.active {
+        opacity: 1;
+        background: rgba(255, 236, 0, 0.14);
+    }
+
+    .mobile-sport-item.active img {
+        filter: brightness(1.15);
+    }
+
+    .mobile-sport-more {
+        margin-left: auto;
+    }
 }
+
+
 
    
 
