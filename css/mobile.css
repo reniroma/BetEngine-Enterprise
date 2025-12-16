@@ -385,10 +385,10 @@
     display: block;
 }
 
-
-
-
-
-   
-
-
+/* ====================================================
+   PATCH: FORCE "MORE" TO BE YELLOW (icon + label)
+   Safe: affects only the More button
+==================================================== */
+.mobile-sport-item.mobile-sport-more {
+    color: var(--text-primary, #ffec00);
+}
