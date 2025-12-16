@@ -1,0 +1,212 @@
+/* ====================================================
+   BetEngine Enterprise – SEARCH MODULE (CSS ONLY)
+   Isolated component styling (no global selectors)
+==================================================== */
+
+/* Root container */
+.be-search {
+    width: 100%;
+    max-width: 720px;
+    margin: 24px auto;
+    padding: 18px;
+    border-radius: 14px;
+    background: #11141d;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+}
+
+/* Header */
+.be-search-header {
+    margin-bottom: 14px;
+}
+
+.be-search-title {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #00eaff;
+}
+
+.be-search-subtitle {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+/* Input */
+.be-search-input-wrapper {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.be-search-input {
+    flex: 1;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: #151827;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.be-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.40);
+}
+
+.be-search-input:focus {
+    border-color: rgba(0, 234, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(0, 234, 255, 0.10);
+}
+
+.be-search-clear {
+    height: 42px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: #151827;
+    color: rgba(255, 255, 255, 0.90);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.be-search-clear:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: #1c2033;
+}
+
+/* States */
+.be-search-states {
+    margin-top: 10px;
+}
+
+.be-search-loading,
+.be-search-empty {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    background: rgba(21, 24, 39, 0.55);
+}
+
+.be-search-loading-text,
+.be-search-empty-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.70);
+}
+
+/* Results */
+.be-search-results {
+    margin: 12px 0 0 0;
+    padding: 0;
+    list-style: none;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Result item */
+.be-search-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 12px;
+    background: #11141d;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+}
+
+.be-search-result:first-child {
+    border-top: none;
+}
+
+.be-search-result:hover {
+    background: #14192a;
+}
+
+/* Active item (keyboard navigation) */
+.be-search-result.is-active {
+    background: rgba(0, 234, 255, 0.10);
+}
+
+/* Left icon */
+.be-search-result-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    flex: 0 0 28px;
+}
+
+/* Text */
+.be-search-result-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.be-search-result-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.be-search-result-meta {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Empty results list (when no items rendered) */
+.be-search-results:empty {
+    border: none;
+}
+
+/* ======================================================
+   MOBILE OVERRIDES (SAFE)
+====================================================== */
+@media (max-width: 900px) {
+    .be-search {
+        margin: 14px 12px;
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .be-search-input-wrapper {
+        gap: 8px;
+    }
+
+    .be-search-input {
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .be-search-clear {
+        height: 40px;
+        padding: 0 12px;
+        font-size: 13px;
+    }
+
+    .be-search-result {
+        padding: 11px 10px;
+    }
+}
+
+/* =============== END OF FILE =============== */
