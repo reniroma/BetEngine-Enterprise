@@ -1,11 +1,14 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.3)
- * Desktop + Mobile header behaviour
- * FIX: Correct event binding for injected header
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.4)
+ * Desktop-only header behaviour
+ *
+ * ENTERPRISE FIX:
+ * - Strict DOM scoping enforcement
+ * - Desktop JS NEVER interferes with mobile DOM
  *********************************************************/
 
 /*******************************************************
- * GLOBAL STATE (SINGLE SOURCE OF TRUTH)
+ * GLOBAL STATE (DESKTOP ONLY)
  *******************************************************/
 let desktopListenersAttached = false;
 
@@ -20,9 +23,17 @@ const isInside = (target, selector) => {
     return !!(target && target.closest(selector));
 };
 
+const isMobileDOM = (target) => {
+    return (
+        isInside(target, ".mobile-only") ||
+        isInside(target, ".mobile-menu-panel") ||
+        isInside(target, ".mobile-menu-overlay")
+    );
+};
+
 const closeAllDesktopDropdowns = () => {
     document
-        .querySelectorAll(".odds-dropdown, .language-dropdown, .tools-dropdown")
+        .querySelectorAll(".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .tools-dropdown")
         .forEach(el => el.classList.remove("show"));
 
     state.desktopDropdownOpen = false;
@@ -43,6 +54,8 @@ function initDesktopDropdowns() {
 
     if (oddsToggle && oddsDropdown) {
         oddsToggle.addEventListener("click", (e) => {
+            if (isMobileDOM(e.target)) return;
+
             e.stopPropagation();
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
@@ -54,6 +67,8 @@ function initDesktopDropdowns() {
 
         oddsItems.forEach(item => {
             item.addEventListener("click", (e) => {
+                if (isMobileDOM(e.target)) return;
+
                 e.stopPropagation();
 
                 oddsItems.forEach(i => i.classList.remove("active"));
@@ -75,6 +90,8 @@ function initDesktopDropdowns() {
 
     if (langToggle && langDropdown) {
         langToggle.addEventListener("click", (e) => {
+            if (isMobileDOM(e.target)) return;
+
             e.stopPropagation();
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
@@ -86,6 +103,8 @@ function initDesktopDropdowns() {
 
         langItems.forEach(item => {
             item.addEventListener("click", (e) => {
+                if (isMobileDOM(e.target)) return;
+
                 e.stopPropagation();
 
                 langItems.forEach(i => i.classList.remove("active"));
@@ -104,6 +123,8 @@ function initDesktopDropdowns() {
 
     if (toolsTrigger && toolsDropdown) {
         toolsTrigger.addEventListener("click", (e) => {
+            if (isMobileDOM(e.target)) return;
+
             e.stopPropagation();
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
@@ -116,19 +137,20 @@ function initDesktopDropdowns() {
 }
 
 /*******************************************************
- * GLOBAL DESKTOP LISTENERS (SINGLETON)
+ * GLOBAL DESKTOP LISTENERS (STRICTLY DESKTOP)
  *******************************************************/
 function attachDesktopGlobalListeners() {
     if (desktopListenersAttached) return;
     desktopListenersAttached = true;
 
     document.addEventListener("click", (e) => {
+        if (isMobileDOM(e.target)) return;
         if (!state.desktopDropdownOpen) return;
 
         if (
-            !isInside(e.target, ".odds-format") &&
-            !isInside(e.target, ".language-selector") &&
-            !isInside(e.target, ".sub-item-tools")
+            !isInside(e.target, ".header-desktop .odds-format") &&
+            !isInside(e.target, ".header-desktop .language-selector") &&
+            !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
             closeAllDesktopDropdowns();
         }
@@ -143,11 +165,13 @@ function attachDesktopGlobalListeners() {
 }
 
 /*******************************************************
- * NAVIGATION SYNC
+ * NAVIGATION SYNC (DESKTOP ONLY)
  *******************************************************/
 function initSectionNavigation() {
-    const dMain = document.querySelectorAll(".main-nav .nav-item");
-    const dSub  = document.querySelectorAll(".row-sub .subnav-group");
+    const dMain = document.querySelectorAll(".header-desktop .main-nav .nav-item");
+    const dSub  = document.querySelectorAll(".header-desktop .row-sub .subnav-group");
+
+    if (!dMain.length) return;
 
     const activate = (section) => {
         dMain.forEach(i =>
@@ -168,7 +192,7 @@ function initSectionNavigation() {
 }
 
 /*******************************************************
- * INIT (CALLED AFTER HEADER INJECTION)
+ * INIT (AFTER HEADER INJECTION)
  *******************************************************/
 function initHeader() {
     initDesktopDropdowns();
@@ -177,11 +201,10 @@ function initHeader() {
 }
 
 /*******************************************************
- * EVENT BINDING (FIXED)
+ * EVENT BINDING
  *******************************************************/
 document.addEventListener("headerLoaded", initHeader);
 
-// Fallback for late load
 if (window.__BE_HEADER_READY__ === true) {
     initHeader();
 }
