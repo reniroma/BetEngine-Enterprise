@@ -373,6 +373,55 @@
     .header-mobile .mobile-top-bar svg {
         color: #ff9d00; /* light orange */
     }
+
+   /* ======================================================
+   MOBILE SPORTS ROW – PER SPORT ICON COLORS
+   Scope: Sports Row only
+   File: mobile.css
+====================================================== */
+@media (max-width: 900px) {
+
+    /* Football – Green */
+    .mobile-sport-item.sport-football svg,
+    .mobile-sport-item.sport-football img {
+        color: #2ecc71;
+        filter: none;
+    }
+
+    /* Basketball – Orange */
+    .mobile-sport-item.sport-basketball svg,
+    .mobile-sport-item.sport-basketball img {
+        color: #f39c12;
+        filter: none;
+    }
+
+    /* Tennis – Neon Green */
+    .mobile-sport-item.sport-tennis svg,
+    .mobile-sport-item.sport-tennis img {
+        color: #a3ff12;
+        filter: none;
+    }
+
+    /* Hockey – Ice Blue */
+    .mobile-sport-item.sport-hockey svg,
+    .mobile-sport-item.sport-hockey img {
+        color: #5dade2;
+        filter: none;
+    }
+
+    /* Volleyball – Purple */
+    .mobile-sport-item.sport-volleyball svg,
+    .mobile-sport-item.sport-volleyball img {
+        color: #bb8fce;
+        filter: none;
+    }
+
+    /* More – Always light orange (override safe) */
+    .mobile-sport-more svg {
+        color: #ff9d00;
+    }
 }
+
+
 
 
