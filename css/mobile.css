@@ -363,4 +363,16 @@
         width: 20px;
         height: 20px;
     }
+
+   /* ======================================================
+   MOBILE ROW 1 – ICON COLOR (INLINE SVG ONLY)
+   Scope: header-mobile → top bar
+   Impact: mobile only, Row 1 only
+====================================================== */
+@media (max-width: 900px) {
+    .header-mobile .mobile-top-bar svg {
+        color: #ff9d00; /* light orange */
+    }
 }
+
+
