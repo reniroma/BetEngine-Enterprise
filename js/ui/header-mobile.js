@@ -81,7 +81,17 @@
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
         panel.addEventListener("click", (e) => e.stopPropagation());
+        /* ==================================================
+           HARD STOP: prevent ghost clicks
+           Ensures clicks inside panel never trigger overlay
+        ================================================== */
+        panel.addEventListener("mousedown", (e) => {
+            e.stopPropagation();
+        });
 
+        panel.addEventListener("touchstart", (e) => {
+            e.stopPropagation();
+        });
         /* ==================================================
            MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
            Hamburger MUST stay open
