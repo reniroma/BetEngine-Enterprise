@@ -1,6 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.3)
- * SAFE / MINIMAL / STABLE
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.6)
+ * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
  * Responsibilities:
  * 1. Hamburger open / close
@@ -8,11 +8,10 @@
  * 3. Activate Odds / Language options
  * 4. Sync mobile ↔ desktop state
  * 5. Trigger Login / Register safely
- * 6. Open Bookmarks modal (Manage My Leagues)
+ * 6. Open Bookmarks modal
+ * 7. Premium Focus Mode (exclusive view)
  *
- * NO side effects
- * NO global click killers
- * NO desktop interference
+ * MOBILE ONLY – NO DESKTOP INTERFERENCE
  *********************************************************/
 
 (function () {
@@ -32,6 +31,12 @@
             e.stopPropagation();
         };
 
+        const blurActive = () => {
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
+        };
+
         /* ==================================================
            CORE ELEMENTS
         ================================================== */
@@ -44,26 +49,28 @@
         const langModal      = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
 
-        /* If header is not injected yet, exit quietly.
-           headerLoaded will call init again when ready. */
         if (!overlay || !panel || !toggleBtn) return;
-
-        /* Now safe to mark initialized */
         initialized = true;
 
         /* ==================================================
-           HAMBURGER STATE
+           HAMBURGER STATE (SAFE)
         ================================================== */
         const openMenu = () => {
+            blurActive();
             overlay.classList.add("show");
             panel.classList.add("open");
             document.body.style.overflow = "hidden";
+            document.body.classList.add("menu-open");
         };
 
         const closeMenu = () => {
+            blurActive();
             overlay.classList.remove("show");
             panel.classList.remove("open");
+            panel.classList.remove("premium-mode");
             document.body.style.overflow = "";
+            document.body.classList.remove("menu-open");
+
         };
 
         /* ==================================================
@@ -76,9 +83,8 @@
 
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
-
         panel.addEventListener("click", (e) => e.stopPropagation());
-
+        
         /* ==================================================
            MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
            Hamburger MUST stay open
@@ -116,18 +122,13 @@
             openModal(langModal);
         });
 
-        /* ==================================================
-           BOOKMARKS (Manage My Leagues)
-           Hamburger stays open
-        ================================================== */
         qs(".mobile-bookmarks-btn")?.addEventListener("click", (e) => {
             stop(e);
             openModal(bookmarksModal);
         });
 
         /* ==================================================
-           AUTH (LOGIN / REGISTER)
-           Hamburger closes, auth opens
+           AUTH
         ================================================== */
         qs(".menu-auth-login")?.addEventListener("click", (e) => {
             stop(e);
@@ -142,26 +143,50 @@
         });
 
         /* ==================================================
-           NAVIGATION (SUBMENUS ONLY)
-           Hamburger NEVER closes
+           PREMIUM FOCUS MODE (STABLE)
         ================================================== */
-        qa(".menu-link").forEach((link) => {
+        const premiumLink = qs('.menu-link[data-section="premium"]', panel);
+
+        premiumLink?.addEventListener("click", (e) => {
+            stop(e);
+
+            panel.classList.add("premium-mode");
+
+            const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
+            if (!premiumSub) return;
+
+            qa(".submenu", panel).forEach((s) => {
+                if (s !== premiumSub) s.classList.remove("open");
+            });
+
+            premiumSub.classList.add("open");
+        });
+
+        /* ==================================================
+           NORMAL ACCORDION (NON-PREMIUM)
+        ================================================== */
+        qa('.menu-link:not([data-section="premium"])', panel).forEach((link) => {
             link.addEventListener("click", (e) => {
                 stop(e);
 
+                panel.classList.remove("premium-mode");
+
                 const section = link.dataset.section;
                 const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
-
                 if (!submenu) return;
 
-                qa(".submenu", panel).forEach((s) =>
-                    s === submenu ? s.classList.toggle("open") : s.classList.remove("open")
-                );
+                qa(".submenu", panel).forEach((s) => {
+                    if (s === submenu) {
+                        s.classList.toggle("open");
+                    } else {
+                        s.classList.remove("open");
+                    }
+                });
             });
         });
 
         /* ==================================================
-           PHASE 4 – ODDS ACTIVE + SYNC
+           ODDS ACTIVE + SYNC
         ================================================== */
         qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -185,7 +210,7 @@
         });
 
         /* ==================================================
-           PHASE 4 – LANGUAGE ACTIVE + SYNC
+           LANGUAGE ACTIVE + SYNC
         ================================================== */
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -208,12 +233,9 @@
             });
         });
 
-        console.log("header-mobile.js v6.3 READY");
+        console.log("header-mobile.js v6.6 READY");
     }
 
-    /* Primary: headerLoaded (header injected) */
     document.addEventListener("headerLoaded", initHeaderMobile);
-
-    /* Fallback: if header is already in DOM at page load */
     document.addEventListener("DOMContentLoaded", initHeaderMobile);
 })();

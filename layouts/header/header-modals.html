@@ -20,7 +20,7 @@
     <!-- ============================
          MOBILE ODDS MODAL
     ============================ -->
-    <div class="be-modal-overlay" id="mobile-odds-modal" aria-hidden="true">
+    <div class="be-modal-overlay" id="mobile-odds-modal">
         <div class="be-modal" role="dialog" aria-modal="true">
 
             <div class="be-modal-header">
@@ -45,7 +45,7 @@
     <!-- ============================
          MOBILE LANGUAGE MODAL
     ============================ -->
-    <div class="be-modal-overlay" id="mobile-language-modal" aria-hidden="true">
+    <div class="be-modal-overlay" id="mobile-language-modal">
         <div class="be-modal" role="dialog" aria-modal="true">
 
             <div class="be-modal-header">
@@ -56,7 +56,6 @@
             </div>
 
             <div class="be-modal-body modal-language">
-                <button class="be-modal-item" type="button" data-lang="sq">Albanian</button>
                 <button class="be-modal-item" type="button" data-lang="ar">Arabic</button>
                 <button class="be-modal-item" type="button" data-lang="zh">Chinese</button>
                 <button class="be-modal-item" type="button" data-lang="nl">Dutch</button>
@@ -85,12 +84,12 @@
     <!-- ============================
          HAMBURGER OVERLAY
     ============================ -->
-    <div class="mobile-menu-overlay" aria-hidden="true"></div>
+    <div class="mobile-menu-overlay"></div>
 
     <!-- ============================
          HAMBURGER PANEL
     ============================ -->
-    <div class="mobile-menu-panel" aria-hidden="true">
+    <div class="mobile-menu-panel" 
 
         <button class="mobile-menu-close" type="button" aria-label="Close menu">
             <img src="assets/icons/close.svg" alt="">
@@ -105,7 +104,7 @@
         </div>
 
         <!-- ============================
-             ACCOUNT (Login/Register live here)
+             ACCOUNT
         ============================ -->
         <div class="menu-section">
             <h4>Account</h4>
@@ -114,22 +113,12 @@
         </div>
 
         <!-- ============================
-             QUICK CONTROLS (ONLY these two)
-             NOTE: Search/Coupon/Notifications are ROW 1 actions
-        ============================ -->
-        <div class="menu-section">
-            <h4>Quick Controls</h4>
-            <button class="menu-item menu-odds" type="button">Odds Format</button>
-            <button class="menu-item menu-lang" type="button">Language</button>
-        </div>
-
-        <!-- ============================
              NAVIGATION
         ============================ -->
-        <div class="menu-section">
+        <div class="menu-section navigation">
             <h4>Navigation</h4>
 
-            <!-- ODDS COMPARISON (DEFAULT OPEN LIKE ODDSPORTAL) -->
+            <!-- ODDS COMPARISON (DEFAULT OPEN) -->
             <div class="menu-group" data-group="odds">
                 <button class="menu-link" type="button" data-section="odds" aria-expanded="true" data-lock-open="true">
                     Odds Comparison
@@ -138,8 +127,10 @@
                 <div class="submenu open" data-subnav="odds">
                     <button class="submenu-item" type="button" data-nav="odds-home">Home</button>
                     <button class="submenu-item" type="button" data-nav="odds-next-matches">Next Matches</button>
+                    <button class="submenu-item" type="button" data-nav="odds-dropping-odds">Dropping Odds</button>
+                    <button class="submenu-item" type="button" data-nav="odds-sure-bets">Sure Bets</button>
+                    <button class="submenu-item" type="button" data-nav="odds-in-play-odds">In-Play Odds</button>
                     <button class="submenu-item" type="button" data-nav="odds-all-events">All Events</button>
-                    <button class="submenu-item" type="button" data-nav="odds-standings">Standings</button>
                 </div>
             </div>
 
@@ -150,12 +141,11 @@
                 </button>
 
                 <div class="submenu" data-subnav="betting">
-                    <button class="submenu-item" type="button" data-nav="tools-dropping-odds">Dropping Odds</button>
-                    <button class="submenu-item" type="button" data-nav="tools-sure-bets">Sure Bets</button>
-                    <button class="submenu-item" type="button" data-nav="tools-in-play-odds">In-Play Odds</button>
-                    <button class="submenu-item" type="button" data-nav="tools-value-bets">Value Bets</button>
                     <button class="submenu-item" type="button" data-nav="tools-blocked-odds">Blocked Odds</button>
+                    <button class="submenu-item" type="button" data-nav="tools-value-bets">Value Bets</button>
                     <button class="submenu-item" type="button" data-nav="tools-hot-matches">Hot Matches</button>
+                    <button class="submenu-item" type="button" data-nav="tools-archived-results">Archived Results</button>
+                    <button class="submenu-item" type="button" data-nav="tools-standings">Standings</button>
                     <button class="submenu-item" type="button" data-nav="tools-bet-calculator">Bet Calculator</button>
                 </div>
             </div>
@@ -191,7 +181,7 @@
                 </div>
             </div>
 
-            <!-- PREMIUM (10 OPTIONS) -->
+            <!-- PREMIUM (DROPDOWN) -->
             <div class="menu-group" data-group="premium">
                 <button class="menu-link" type="button" data-section="premium" aria-expanded="false" data-premium-focus="true">
                     Premium
@@ -214,8 +204,7 @@
         </div>
 
         <!-- ============================
-             FOOTER CONTROLS (like OddsPortal)
-             (Keeps UX near bottom, no new modals here)
+             FOOTER CONTROLS (SINGLE INSTANCE)
         ============================ -->
         <div class="menu-section">
             <div class="menu-item menu-odds" role="button" tabindex="0">Odds formats: <strong>Decimal Odds</strong></div>
@@ -228,7 +217,7 @@
 <!-- ============================
      MOBILE BOOKMARKS MODAL (GLOBAL)
 ============================ -->
-<div class="be-modal-overlay" id="mobile-bookmarks-modal" aria-hidden="true">
+<div class="be-modal-overlay" id="mobile-bookmarks-modal">
     <div class="be-modal" role="dialog" aria-modal="true">
 
         <div class="be-modal-header">
@@ -250,7 +239,7 @@
 <!-- ============================
      MOBILE MY COUPON MODAL (GLOBAL)
 ============================ -->
-<div class="be-modal-overlay" id="mobile-coupon-modal" aria-hidden="true">
+<div class="be-modal-overlay" id="mobile-coupon-modal">
     <div class="be-modal" role="dialog" aria-modal="true">
 
         <div class="be-modal-header">
@@ -272,7 +261,7 @@
 <!-- ============================
      MOBILE SEARCH MODAL (GLOBAL)
 ============================ -->
-<div class="be-modal-overlay" id="mobile-search-modal" aria-hidden="true">
+<div class="be-modal-overlay" id="mobile-search-modal">
     <div class="be-modal" role="dialog" aria-modal="true">
 
         <div class="be-modal-header">
@@ -294,7 +283,7 @@
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)
 ============================ -->
-<div class="be-modal-overlay" id="mobile-notifications-modal" aria-hidden="true">
+<div class="be-modal-overlay" id="mobile-notifications-modal">
     <div class="be-modal" role="dialog" aria-modal="true">
 
         <div class="be-modal-header">
