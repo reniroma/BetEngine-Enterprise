@@ -46,29 +46,43 @@
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
 
-     /* ==================================================
-        HAMBURGER STATE (PATCHED)
-     ================================================== */
+ /* ==================================================
+   HAMBURGER STATE (ARIA-SAFE FINAL)
+================================================== */
 
-     const openMenu = () => {
-         overlay.classList.add("show");
-         panel.classList.add("open");
+const blurActive = () => {
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+};
 
-         overlay.setAttribute("aria-hidden", "false");
-         panel.setAttribute("aria-hidden", "false");
+const openMenu = () => {
+    blurActive();
 
-         document.body.style.overflow = "hidden";
-     };
+    overlay.classList.add("show");
+    panel.classList.add("open");
 
-     const closeMenu = () => {
-         overlay.classList.remove("show");
-         panel.classList.remove("open");
+    overlay.removeAttribute("aria-hidden");
+    panel.removeAttribute("aria-hidden");
 
-         overlay.setAttribute("aria-hidden", "true");
-         panel.setAttribute("aria-hidden", "true");
+    overlay.inert = false;
+    panel.inert = false;
 
-         document.body.style.overflow = "";
-     };
+    document.body.style.overflow = "hidden";
+};
+
+const closeMenu = () => {
+    blurActive();
+
+    overlay.classList.remove("show");
+    panel.classList.remove("open");
+
+    overlay.inert = true;
+    panel.inert = true;
+
+    document.body.style.overflow = "";
+};
+
 
         toggleBtn.addEventListener("click", (e) => {
             stop(e);
