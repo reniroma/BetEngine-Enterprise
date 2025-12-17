@@ -1,6 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.5)
- * PREMIUM FOCUS MODE – FIXED
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.6)
+ * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
  * Responsibilities:
  * 1. Hamburger open / close
@@ -52,35 +52,23 @@
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
 
+        /* ==================================================
+           HAMBURGER STATE (SAFE)
+        ================================================== */
+        const openMenu = () => {
+            blurActive();
+            overlay.classList.add("show");
+            panel.classList.add("open");
+            document.body.style.overflow = "hidden";
+        };
 
-           /* ==================================================
-   HAMBURGER STATE (ENTERPRISE SAFE)
-================================================== */
-const openMenu = () => {
-    blurActive();
-
-    overlay.classList.add("show");
-    panel.classList.add("open");
-
-    overlay.inert = false;
-    panel.inert = false;
-
-    document.body.style.overflow = "hidden";
-};
-
-const closeMenu = () => {
-    blurActive();
-
-    overlay.classList.remove("show");
-    panel.classList.remove("open");
-    panel.classList.remove("premium-mode");
-
-    overlay.inert = true;
-    panel.inert = true;
-
-    document.body.style.overflow = "";
-};
-
+        const closeMenu = () => {
+            blurActive();
+            overlay.classList.remove("show");
+            panel.classList.remove("open");
+            panel.classList.remove("premium-mode");
+            document.body.style.overflow = "";
+        };
 
         /* ==================================================
            HAMBURGER EVENTS
@@ -152,7 +140,7 @@ const closeMenu = () => {
         });
 
         /* ==================================================
-           PREMIUM FOCUS MODE (FIXED – NO COLLAPSE)
+           PREMIUM FOCUS MODE (STABLE)
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
@@ -164,7 +152,7 @@ const closeMenu = () => {
             const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
             if (!premiumSub) return;
 
-            qa(".submenu", panel).forEach(s => {
+            qa(".submenu", panel).forEach((s) => {
                 if (s !== premiumSub) s.classList.remove("open");
             });
 
@@ -242,7 +230,7 @@ const closeMenu = () => {
             });
         });
 
-        console.log("header-mobile.js v6.5 READY");
+        console.log("header-mobile.js v6.6 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);
