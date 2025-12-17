@@ -52,14 +52,12 @@
         const openMenu = () => {
             overlay.classList.add("show");
             panel.classList.add("open");
-            panel.classList.remove("premium-mode");
             document.body.style.overflow = "hidden";
         };
 
         const closeMenu = () => {
             overlay.classList.remove("show");
             panel.classList.remove("open");
-            panel.classList.remove("premium-mode");
             document.body.style.overflow = "";
         };
 
