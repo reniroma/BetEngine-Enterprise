@@ -450,22 +450,6 @@
     display: block;
 }
 
-/* ==================================================
-   HARD ISOLATION – MOBILE HAMBURGER (CRITICAL FIX)
-   Prevent click-through to page behind menu
-================================================== */
-
-/* Overlay MUST capture all pointer events */
-.mobile-menu-overlay {
-    pointer-events: auto;
-}
-
-/* Panel MUST be the topmost interactive layer */
-.mobile-menu-panel {
-    pointer-events: auto;
-
-}
-
 
 
 
