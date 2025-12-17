@@ -114,8 +114,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 320px;
-        max-width: 85vw;
+        width: 86%;
+        max-width: 340px;
         height: 100vh;
         background: #0f121b;
         transform: translateX(-100%);
@@ -151,15 +151,25 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
+    .menu-section h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9aa0b3;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    }
+
     .menu-link,
     .menu-item {
         width: 100%;
         text-align: left;
-        padding: 10px 0;
+        padding: 12px 0;
         background: none;
         border: none;
         color: #fff;
-        font-size: 14px;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
     }
 
@@ -182,8 +192,9 @@
 
     .submenu-item {
         display: block;
-        padding: 8px 0;
+        padding: 10px 0;
         font-size: 13px;
+        font-weight: 500;
         color: #ccc;
         background: none;
         border: none;
@@ -254,7 +265,7 @@
 
     .be-modal-item {
         width: 100%;
-        padding: 12px 14px;
+        padding: 14px 16px;
         border-radius: 8px;
         background: #151827;
         border: 1px solid rgba(255, 255, 255, 0.08);
