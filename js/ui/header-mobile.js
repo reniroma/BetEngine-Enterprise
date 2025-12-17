@@ -89,6 +89,27 @@ const closeMenu = () => {
             openMenu();
         });
 
+        // --- PREMIUM FIX: prevent menu collapse ---
+const premiumLink = panel.querySelector('.menu-link[data-section="premium"]');
+
+if (premiumLink) {
+    premiumLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const submenu = panel.querySelector('.submenu[data-subnav="premium"]');
+        if (!submenu) return;
+
+        // close others
+        panel.querySelectorAll('.submenu').forEach(s => {
+            if (s !== submenu) s.classList.remove('open');
+        });
+
+        submenu.classList.toggle('open');
+    });
+}
+
+
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
         panel.addEventListener("click", (e) => e.stopPropagation());
