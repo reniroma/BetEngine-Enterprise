@@ -463,18 +463,11 @@
 /* Panel MUST be the topmost interactive layer */
 .mobile-menu-panel {
     pointer-events: auto;
-    isolation: isolate; /* NEW: blocks hit-testing bleed */
+
 }
 
-/* When menu is open, block page behind completely */
-.mobile-menu-panel.open ~ * {
-    pointer-events: none;
-}
 
-/* Safety: ensure nothing above panel can receive clicks */
-body.menu-open *:not(.mobile-menu-panel):not(.mobile-menu-panel *) {
-    pointer-events: none;
-}
+
 
    
   
