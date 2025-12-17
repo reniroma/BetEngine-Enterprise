@@ -1,6 +1,6 @@
 /*********************************************************
  * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.5)
- * PREMIUM FOCUS MODE
+ * PREMIUM FOCUS MODE – FIXED
  *
  * Responsibilities:
  * 1. Hamburger open / close
@@ -31,6 +31,12 @@
             e.stopPropagation();
         };
 
+        const blurActive = () => {
+            if (document.activeElement && document.activeElement.blur) {
+                document.activeElement.blur();
+            }
+        };
+
         /* ==================================================
            CORE ELEMENTS
         ================================================== */
@@ -46,69 +52,47 @@
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
 
- /* ==================================================
-   HAMBURGER STATE (ARIA-SAFE FINAL)
-================================================== */
+        /* ==================================================
+           HAMBURGER STATE (ARIA + INERT SAFE)
+        ================================================== */
+        const openMenu = () => {
+            blurActive();
 
-const blurActive = () => {
-    if (document.activeElement && document.activeElement.blur) {
-        document.activeElement.blur();
-    }
-};
+            overlay.classList.add("show");
+            panel.classList.add("open");
 
-const openMenu = () => {
-    blurActive();
+            overlay.removeAttribute("aria-hidden");
+            panel.removeAttribute("aria-hidden");
 
-    overlay.classList.add("show");
-    panel.classList.add("open");
+            overlay.inert = false;
+            panel.inert = false;
 
-    overlay.removeAttribute("aria-hidden");
-    panel.removeAttribute("aria-hidden");
+            document.body.style.overflow = "hidden";
+        };
 
-    overlay.inert = false;
-    panel.inert = false;
+        const closeMenu = () => {
+            blurActive();
 
-    document.body.style.overflow = "hidden";
-};
+            overlay.classList.remove("show");
+            panel.classList.remove("open");
+            panel.classList.remove("premium-mode");
 
-const closeMenu = () => {
-    blurActive();
+            overlay.setAttribute("aria-hidden", "true");
+            panel.setAttribute("aria-hidden", "true");
 
-    overlay.classList.remove("show");
-    panel.classList.remove("open");
+            overlay.inert = true;
+            panel.inert = true;
 
-    overlay.inert = true;
-    panel.inert = true;
+            document.body.style.overflow = "";
+        };
 
-    document.body.style.overflow = "";
-};
-
-
+        /* ==================================================
+           HAMBURGER EVENTS
+        ================================================== */
         toggleBtn.addEventListener("click", (e) => {
             stop(e);
             openMenu();
         });
-
-        // --- PREMIUM FIX: prevent menu collapse ---
-        const premiumLink = panel.querySelector('.menu-link[data-section="premium"]');
-
-        if (premiumLink) {
-             premiumLink.addEventListener("click", (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-
-        const submenu = panel.querySelector('.submenu[data-subnav="premium"]');
-        if (!submenu) return;
-
-              // close others
-            panel.querySelectorAll('.submenu').forEach(s => {
-            if (s !== submenu) s.classList.remove('open');
-        });
-
-        submenu.classList.toggle('open');
-    });
-}
-
 
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
@@ -172,17 +156,23 @@ const closeMenu = () => {
         });
 
         /* ==================================================
-           PREMIUM FOCUS MODE
+           PREMIUM FOCUS MODE (FIXED – NO COLLAPSE)
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
         premiumLink?.addEventListener("click", (e) => {
             stop(e);
+
             panel.classList.add("premium-mode");
 
-            // Ensure premium submenu is open
             const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
-            if (premiumSub) premiumSub.classList.add("open");
+            if (!premiumSub) return;
+
+            qa(".submenu", panel).forEach(s => {
+                if (s !== premiumSub) s.classList.remove("open");
+            });
+
+            premiumSub.classList.add("open");
         });
 
         /* ==================================================
