@@ -1,12 +1,12 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE.CSS
- * Desktop-safe mobile layer:
- * - Mobile UI is hidden by default (desktop)
- * - Enabled only under @media (max-width: 900px)
+ * BetEngine Enterprise – MOBILE.CSS (FINAL)
+ * Desktop-safe mobile layer
+ * - Mobile UI hidden by default
+ * - Enabled only under max-width: 900px
  *********************************************************/
 
 /* ==================================================
-   DEFAULT (DESKTOP): HIDE MOBILE UI ALWAYS
+   DEFAULT (DESKTOP): HIDE MOBILE UI
 ================================================== */
 .header-mobile,
 .mobile-only,
@@ -21,15 +21,17 @@
 ================================================== */
 @media (max-width: 900px) {
 
-    /* Show mobile containers */
+    /* ================================
+       BASE MOBILE VISIBILITY
+    ================================ */
     .header-mobile,
     .mobile-only {
         display: block;
     }
 
-    /* ==================================================
-       MOBILE HEADER
-    ================================================== */
+    /* ================================
+       HEADER MOBILE
+    ================================ */
     .header-mobile {
         position: sticky;
         top: 0;
@@ -53,10 +55,9 @@
         cursor: pointer;
     }
 
-    /* ==================================================
-       MOBILE HEADER ACTIONS ALIGNMENT
-       Scope: mobile header only
-================================================== */
+    /* ================================
+       MOBILE ACTIONS
+    ================================ */
     .mobile-actions {
         display: flex;
         align-items: center;
@@ -71,30 +72,22 @@
         justify-content: center;
         background: none;
         border: none;
-        padding: 0;
         cursor: pointer;
         border-radius: 50%;
     }
 
-    .mobile-actions button img {
-        width: 18px;
-        height: 18px;
-        pointer-events: none;
-    }
-
-    /* Touch feedback */
     .mobile-actions button:active {
-        background: rgba(255, 255, 255, 0.08);
+        background: rgba(255,255,255,0.08);
     }
 
-    /* ==================================================
+    /* ================================
        HAMBURGER OVERLAY
-    ================================================== */
+    ================================ */
     .mobile-menu-overlay {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0,0,0,0.6);
         opacity: 0;
         pointer-events: none;
         transition: opacity .2s ease;
@@ -106,9 +99,9 @@
         pointer-events: auto;
     }
 
-    /* ==================================================
+    /* ================================
        HAMBURGER PANEL
-    ================================================== */
+    ================================ */
     .mobile-menu-panel {
         display: block;
         position: fixed;
@@ -122,8 +115,6 @@
         transition: transform .25s ease;
         z-index: 2000;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        pointer-events: auto;
         padding-bottom: 18px;
     }
 
@@ -138,17 +129,17 @@
         cursor: pointer;
     }
 
-    /* ==================================================
-       MENU CONTENT
-    ================================================== */
+    /* ================================
+       MENU STRUCTURE
+    ================================ */
     .menu-brand {
         padding: 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
     .menu-section {
         padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255,255,255,0.04);
     }
 
     .menu-link,
@@ -163,9 +154,9 @@
         cursor: pointer;
     }
 
-    /* ==================================================
-       SUBMENUS (SCROLL-FRIENDLY)
-    ================================================== */
+    /* ================================
+       SUBMENUS
+    ================================ */
     .submenu {
         max-height: 0;
         overflow: hidden;
@@ -175,9 +166,9 @@
 
     .submenu.open {
         max-height: 520px;
-        overflow: auto;
         padding-top: 6px;
         margin-top: 6px;
+        overflow: auto;
     }
 
     .submenu-item {
@@ -187,22 +178,21 @@
         color: #ccc;
         background: none;
         border: none;
-        text-align: left;
         cursor: pointer;
     }
 
-    /* ==================================================
-       MOBILE MODAL (ODDS / LANGUAGE / BOOKMARKS / ETC.)
-    ================================================== */
+    /* ================================
+       MOBILE MODALS
+    ================================ */
     .be-modal-overlay {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.65);
-        align-items: center;
-        justify-content: center;
+        background: rgba(0,0,0,0.65);
         z-index: 3000;
         pointer-events: none;
+        align-items: center;
+        justify-content: center;
     }
 
     .be-modal-overlay.show {
@@ -210,247 +200,79 @@
         pointer-events: auto;
     }
 
-    /* Modal container sizing */
     .be-modal {
         width: 92%;
         max-width: 360px;
         max-height: 82vh;
-        display: flex;
-        flex-direction: column;
         background: #11141d;
         border-radius: 12px;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
     }
 
-    /* Header always visible */
     .be-modal-header {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255,255,255,0.08);
         background: #11141d;
-        position: sticky;
-        top: 0;
-        z-index: 2;
+        display: flex;
+        justify-content: space-between;
     }
 
-    /* Modal body scrolls, not whole modal */
     .be-modal-body {
         flex: 1;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        padding: 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
-        padding: 12px;
-    }
-
-    /* Extra comfort for long language lists */
-    .be-modal-body.modal-language {
-        max-height: calc(82vh - 56px);
     }
 
     .be-modal-item {
-        width: 100%;
         padding: 12px 14px;
         border-radius: 8px;
         background: #151827;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #ffffff;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: #fff;
         font-size: 14px;
-        text-align: left;
         cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease;
-    }
-
-    .be-modal-item:hover {
-        background: #1c2033;
-        border-color: rgba(255, 255, 255, 0.18);
     }
 
     .be-modal-item.active {
         background: #ffec00;
         color: #11141d;
-        border-color: #ffec00;
         font-weight: 600;
+        border-color: #ffec00;
     }
 
-    /* Keep auth overlays above everything if ever enabled on mobile */
-    .be-auth-overlay {
-        z-index: 4000;
-    }
+    /* =====================================================
+       PREMIUM FOCUS MODE (MOBILE ONLY)
+       FINAL – STABLE
+    ===================================================== */
 
-    /* ======================================================
-       MOBILE HEADER – SPORTS ROW (ROW 2)
-       FINAL RULES:
-       - Row 2 has different background than Row 1
-       - Labels are slightly larger and white by default
-       - Active changes LABEL color only (icons do not change)
-       - "More" is always light orange (icon + label)
-    ======================================================= */
-
-    .mobile-sports-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        background: #131826; /* darker grey to visually separate from Row 1 */
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .mobile-sports-row::-webkit-scrollbar {
+    /* Hide all menu sections */
+    .mobile-menu-panel.premium-mode .menu-section {
         display: none;
     }
 
-    .mobile-sport-item {
-        flex: 0 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        min-width: 50px;
-        padding: 6px 4px;
-        background: none;
-        border: 0;
-        cursor: pointer;
-    }
-
-    /* Icons stay neutral (do not change on active) */
-    .mobile-sport-item img,
-    .mobile-sport-item .sport-icon {
-        width: 24px;
-        height: 24px;
+    /* Show navigation section only */
+    .mobile-menu-panel.premium-mode .menu-section.navigation {
         display: block;
     }
 
-    /* Inline SVG neutral color */
-    .mobile-sport-item .sport-icon {
-        color: #ffffff;
+    /* Inside navigation hide all groups */
+    .mobile-menu-panel.premium-mode .menu-group {
+        display: none;
     }
 
-    /* Ensure svg strokes remain neutral even if parent text changes */
-    .mobile-sport-item .sport-icon * {
-        stroke: currentColor;
+    /* Show premium group */
+    .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
+        display: block;
     }
 
-    /* Label: slightly larger, white by default */
-    .mobile-sport-item .sport-label {
-        font-size: 12px;
-        line-height: 1.1;
-        font-weight: 600;
-        color: #ffffff;
-        white-space: nowrap;
-        text-transform: capitalize;
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"] .submenu {
+        display: block;
+        max-height: none;
     }
-
-    /* Active: change LABEL only */
-    .mobile-sport-item.active .sport-label {
-        color: #ff9d00; /* light orange */
-    }
-
-    /* "More" always light orange (icon + label) */
-    .mobile-sport-more .sport-label {
-        color: #ff9d00;
-    }
-
-    .mobile-sport-more .sport-icon {
-        color: #ff9d00;
-        width: 20px;
-        height: 20px;
-    }
-
-   /* ======================================================
-   MOBILE ROW 1 – ICON COLOR (INLINE SVG ONLY)
-   Scope: header-mobile → top bar
-   Impact: mobile only, Row 1 only
-====================================================== */
-@media (max-width: 900px) {
-    .header-mobile .mobile-top-bar svg {
-        color: #ff9d00; /* light orange */
-    }
-
-   /* ======================================================
-   MOBILE SPORTS ROW – PER SPORT ICON COLORS
-   Scope: Sports Row only
-   File: mobile.css
-====================================================== */
-@media (max-width: 900px) {
-
-    /* Football – Green */
-    .mobile-sport-item.sport-football svg,
-    .mobile-sport-item.sport-football img {
-        color: #2ecc71;
-        filter: none;
-    }
-
-    /* Basketball – Orange */
-    .mobile-sport-item.sport-basketball svg,
-    .mobile-sport-item.sport-basketball img {
-        color: #f39c12;
-        filter: none;
-    }
-
-    /* Tennis – Neon Green */
-    .mobile-sport-item.sport-tennis svg,
-    .mobile-sport-item.sport-tennis img {
-        color: #a3ff12;
-        filter: none;
-    }
-
-    /* Hockey – Ice Blue */
-    .mobile-sport-item.sport-hockey svg,
-    .mobile-sport-item.sport-hockey img {
-        color: #5dade2;
-        filter: none;
-    }
-
-    /* Volleyball – Purple */
-    .mobile-sport-item.sport-volleyball svg,
-    .mobile-sport-item.sport-volleyball img {
-        color: #bb8fce;
-        filter: none;
-    }
-
-    /* More – Always light orange (override safe) */
-    .mobile-sport-more svg {
-        color: #ff9d00;
-    }
-
-   /* =====================================================
-   BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
-   Explicit navigation targeting (FINAL)
-===================================================== */
-
-/* Hide ALL menu sections */
-.mobile-menu-panel.premium-mode .menu-section {
-    display: none;
 }
-
-/* Show ONLY Navigation section */
-.mobile-menu-panel.premium-mode .menu-section.navigation {
-    display: block;
-}
-
-/* Inside Navigation, hide all groups */
-.mobile-menu-panel.premium-mode .menu-group {
-    display: none;
-}
-
-/* Show ONLY Premium group */
-.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
-    display: block;
-}
-
-.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
-    display: block;
-}
-
-  
-
-
-
