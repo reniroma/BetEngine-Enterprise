@@ -450,4 +450,24 @@
     display: block;
 }
 
+   /* =========================================
+   MOBILE PREMIUM SUBMENU FIX
+   Prevent panel collapse on long submenu
+========================================= */
+
+.mobile-menu-panel {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.submenu[data-subnav="premium"] {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.submenu.open {
+    display: block;
+}
+
+
 
