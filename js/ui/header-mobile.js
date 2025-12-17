@@ -60,6 +60,7 @@
             overlay.classList.add("show");
             panel.classList.add("open");
             document.body.style.overflow = "hidden";
+            document.body.classList.add("menu-open");
         };
 
         const closeMenu = () => {
@@ -68,6 +69,8 @@
             panel.classList.remove("open");
             panel.classList.remove("premium-mode");
             document.body.style.overflow = "";
+            document.body.classList.remove("menu-open");
+
         };
 
         /* ==================================================
