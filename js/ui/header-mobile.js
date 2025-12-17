@@ -90,18 +90,18 @@ const closeMenu = () => {
         });
 
         // --- PREMIUM FIX: prevent menu collapse ---
-const premiumLink = panel.querySelector('.menu-link[data-section="premium"]');
+        const premiumLink = panel.querySelector('.menu-link[data-section="premium"]');
 
-if (premiumLink) {
-    premiumLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+        if (premiumLink) {
+             premiumLink.addEventListener("click", (e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
         const submenu = panel.querySelector('.submenu[data-subnav="premium"]');
         if (!submenu) return;
 
-        // close others
-        panel.querySelectorAll('.submenu').forEach(s => {
+              // close others
+            panel.querySelectorAll('.submenu').forEach(s => {
             if (s !== submenu) s.classList.remove('open');
         });
 
