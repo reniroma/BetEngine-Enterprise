@@ -72,6 +72,27 @@
         overlay.addEventListener("click", closeMenu);
         panel.addEventListener("click", (e) => e.stopPropagation());
 
+  /* ==================================================
+     PREMIUM MENU FIX (MOBILE)
+    Prevent hamburger from closing on Premium click
+  ================================================== */
+  document.addEventListener("click", (e) => {
+    const premiumBtn = e.target.closest('.menu-link[data-section="premium"]');
+    if (!premiumBtn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const premiumSubmenu = document.querySelector(
+        '.submenu[data-subnav="premium"]'
+    );
+
+    if (premiumSubmenu) {
+        premiumSubmenu.classList.toggle("open");
+    }
+});
+
+
         /* ==================================================
            MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
            Hamburger MUST stay open
