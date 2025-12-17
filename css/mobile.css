@@ -114,8 +114,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 86%;
-        max-width: 340px;
+        width: 320px;
+        max-width: 85vw;
         height: 100vh;
         background: #0f121b;
         transform: translateX(-100%);
