@@ -52,39 +52,35 @@
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
 
-        /* ==================================================
-           HAMBURGER STATE (ARIA + INERT SAFE)
-        ================================================== */
-        const openMenu = () => {
-            blurActive();
 
-            overlay.classList.add("show");
-            panel.classList.add("open");
+           /* ==================================================
+   HAMBURGER STATE (ENTERPRISE SAFE)
+================================================== */
+const openMenu = () => {
+    blurActive();
 
-            overlay.removeAttribute("aria-hidden");
-            panel.removeAttribute("aria-hidden");
+    overlay.classList.add("show");
+    panel.classList.add("open");
 
-            overlay.inert = false;
-            panel.inert = false;
+    overlay.inert = false;
+    panel.inert = false;
 
-            document.body.style.overflow = "hidden";
-        };
+    document.body.style.overflow = "hidden";
+};
 
-        const closeMenu = () => {
-            blurActive();
+const closeMenu = () => {
+    blurActive();
 
-            overlay.classList.remove("show");
-            panel.classList.remove("open");
-            panel.classList.remove("premium-mode");
+    overlay.classList.remove("show");
+    panel.classList.remove("open");
+    panel.classList.remove("premium-mode");
 
-            overlay.setAttribute("aria-hidden", "true");
-            panel.setAttribute("aria-hidden", "true");
+    overlay.inert = true;
+    panel.inert = true;
 
-            overlay.inert = true;
-            panel.inert = true;
+    document.body.style.overflow = "";
+};
 
-            document.body.style.overflow = "";
-        };
 
         /* ==================================================
            HAMBURGER EVENTS
