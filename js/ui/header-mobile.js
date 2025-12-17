@@ -46,20 +46,29 @@
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
 
-        /* ==================================================
-           HAMBURGER STATE
-        ================================================== */
-        const openMenu = () => {
-            overlay.classList.add("show");
-            panel.classList.add("open");
-            document.body.style.overflow = "hidden";
-        };
+     /* ==================================================
+        HAMBURGER STATE (PATCHED)
+     ================================================== */
 
-        const closeMenu = () => {
-            overlay.classList.remove("show");
-            panel.classList.remove("open");
-            document.body.style.overflow = "";
-        };
+     const openMenu = () => {
+         overlay.classList.add("show");
+         panel.classList.add("open");
+
+         overlay.setAttribute("aria-hidden", "false");
+         panel.setAttribute("aria-hidden", "false");
+
+         document.body.style.overflow = "hidden";
+     };
+
+     const closeMenu = () => {
+         overlay.classList.remove("show");
+         panel.classList.remove("open");
+
+         overlay.setAttribute("aria-hidden", "true");
+         panel.setAttribute("aria-hidden", "true");
+
+         document.body.style.overflow = "";
+     };
 
         toggleBtn.addEventListener("click", (e) => {
             stop(e);
