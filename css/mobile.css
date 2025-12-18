@@ -106,25 +106,61 @@
         pointer-events: auto;
     }
 
-    /* ==================================================
-       HAMBURGER PANEL
-    ================================================== */
-    .mobile-menu-panel {
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 86%;
-        max-width: 340px;
-        max-height: 100dvh;
+    /* ======================================================
+       MOBILE MENU – BRAND + CLOSE (OddsPortal aligned)
+       SAFE: same flow, no layout break
+    ====================================================== */
+
+    /* Brand acts as visual header */
+    .mobile-menu-panel .menu-brand {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        padding: 4px 16px 8px 16px; /* TOP / SIDES / BOTTOM */
         background: #0f121b;
-        transform: translateX(-100%);
-        transition: transform .25s ease;
-        z-index: 2000;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        pointer-events: auto;
-        padding-bottom: 18px;
+
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Close button participates in same flow */
+    .mobile-menu-panel .mobile-menu-close {
+        position: static; /* IMPORTANT: stays in flow */
+
+        padding: 6px;
+        margin-top: 2px; /* fine vertical alignment */
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Normal icon size */
+    .mobile-menu-panel .mobile-menu-close img,
+    .mobile-menu-panel .mobile-menu-close svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+    /* Logo stays aligned */
+    .mobile-menu-panel .menu-brand .logo {
+        height: 28px;
+        width: auto;
+        display: block;
+    }
+
+    /* Text block stays next to logo */
+    .mobile-menu-panel .brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+        margin-top: 2px;
+    }
+
+    /* Panel open state (unchanged behavior) */
+    .mobile-menu-panel.open {
+        transform: translateX(0);
     }
 
     /* ======================================================
