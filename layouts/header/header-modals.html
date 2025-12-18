@@ -87,14 +87,12 @@
     <div class="mobile-menu-overlay"></div>
 
     <!-- ============================
-         HAMBURGER PANEL
-    ============================ -->
-    <div class="mobile-menu-panel" 
+     HAMBURGER PANEL
+============================ -->
+<div class="mobile-menu-panel">
 
-        <button class="mobile-menu-close" type="button" aria-label="Close menu">
-            <img src="assets/icons/close.svg" alt="">
-        </button>
-
+    <!-- FIXED HEADER (NO SCROLL) -->
+    <div class="mobile-menu-header">
         <div class="menu-brand">
             <img src="assets/logos/logo.svg" class="logo" alt="">
             <div class="brand-text">
@@ -102,6 +100,14 @@
                 <span class="tagline">Smart betting tools</span>
             </div>
         </div>
+
+        <button class="mobile-menu-close" type="button" aria-label="Close menu">
+            <img src="assets/icons/close.svg" alt="">
+        </button>
+    </div>
+
+    <!-- SCROLLABLE CONTENT -->
+    <div class="mobile-menu-content">
 
         <!-- ============================
              ACCOUNT
@@ -112,7 +118,7 @@
             <button class="menu-item menu-auth-login" type="button">Login</button>
         </div>
 
-     <!-- ============================
+        <!-- ============================
              NAVIGATION
         ============================ -->
         <div class="menu-section navigation">
@@ -134,7 +140,7 @@
                 </div>
             </div>
 
-            <!-- BETTING TOOLS (DROPDOWN) -->
+            <!-- BETTING TOOLS -->
             <div class="menu-group" data-group="betting">
                 <button class="menu-link" type="button" data-section="betting" aria-expanded="false">
                     Betting Tools
@@ -150,7 +156,7 @@
                 </div>
             </div>
 
-            <!-- COMMUNITY (DROPDOWN) -->
+            <!-- COMMUNITY -->
             <div class="menu-group" data-group="community">
                 <button class="menu-link" type="button" data-section="community" aria-expanded="false">
                     Community
@@ -167,7 +173,7 @@
                 </div>
             </div>
 
-            <!-- BOOKMAKERS (DROPDOWN) -->
+            <!-- BOOKMAKERS -->
             <div class="menu-group" data-group="bookmakers">
                 <button class="menu-link" type="button" data-section="bookmakers" aria-expanded="false">
                     Bookmakers
@@ -181,7 +187,7 @@
                 </div>
             </div>
 
-            <!-- PREMIUM (DROPDOWN) -->
+            <!-- PREMIUM -->
             <div class="menu-group" data-group="premium">
                 <button class="menu-link" type="button" data-section="premium" aria-expanded="false" data-premium-focus="true">
                     Premium
@@ -200,27 +206,26 @@
                     <button class="submenu-item" type="button" data-nav="premium-fake-trend-detector">Fake Trend Detector</button>
                 </div>
             </div>
-
         </div>
 
-                <!-- ============================
-                     PREFERENCES
-                ============================ -->
-                <div class="menu-section preferences">
+        <!-- ============================
+             PREFERENCES
+        ============================ -->
+        <div class="menu-section preferences">
+            <h4>Preferences</h4>
 
-                <h4>Preferences</h4>
+            <button class="menu-item menu-odds" type="button">
+                Odds format: <strong>Decimal Odds</strong>
+            </button>
 
-                <button class="menu-item menu-odds" type="button">
-                    Odds format: <strong>Decimal Odds</strong>
-                </button>
+            <button class="menu-item menu-lang" type="button">
+                Language: <strong>English</strong>
+            </button>
+        </div>
 
-                <button class="menu-item menu-lang" type="button">
-                    Language: <strong>English</strong>
-                </button>
-                     
-           </div>
-      </div>
+    </div>
 </div>
+
 
 <!-- ============================
      MOBILE BOOKMARKS MODAL (GLOBAL)
