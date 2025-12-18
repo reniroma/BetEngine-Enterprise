@@ -150,6 +150,23 @@
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
+    /* ==================================================
+       MOBILE HAMBURGER – PREFERENCES
+       Odds Format & Language (combined)
+     ================================================== */
+     .menu-section.preferences {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+     }
+
+     .menu-section.preferences .menu-item.menu-odds,
+     .menu-section.preferences .menu-item.menu-lang {
+         font-size: 14px;
+         font-weight: 400;
+         opacity: 0.9;
+     }
+
 
     .menu-section h4 {
     font-size: 12px;
