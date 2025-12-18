@@ -153,6 +153,29 @@
     .menu-section + .menu-section {
         margin-top: 12px;
     }
+    /* =========================================
+       MOBILE MENU – ACCOUNT (HORIZONTAL FIX)
+    ========================================= */
+
+    .menu-section.account {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .menu-section.account h4 {
+        width: 100%;
+        margin-bottom: 6px;
+    }
+
+    /* buttons in one row */
+    .menu-section.account .menu-item {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0;
+    }
 
     /* ==================================================
        MOBILE HAMBURGER – PREFERENCES
@@ -480,25 +503,6 @@
 
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
     display: block;
-}
-/* =========================================
-   MOBILE MENU – ACCOUNT (LOGIN / REGISTER)
-========================================= */
-
-.mobile-menu-panel .menu-section.account {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 18px;
-}
-
-.mobile-menu-panel .menu-section.account h4 {
-    margin-bottom: 8px;
-}
-
-.mobile-menu-panel .menu-section.account .menu-item {
-    width: 100%;
-    text-align: left;
 }
 
 
