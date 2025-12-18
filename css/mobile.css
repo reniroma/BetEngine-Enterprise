@@ -128,6 +128,59 @@
     }
 
     /* ======================================================
+       MOBILE MENU – HEADER VISUAL ALIGN (OddsPortal style)
+       SAFE: no layout break, no sticky, no JS impact
+    ====================================================== */
+
+    /* Brand acts as visual header */
+    .mobile-menu-panel .menu-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        padding: 14px 16px;
+        background: #0f121b;
+
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Close button participates in same flow */
+    .mobile-menu-panel .mobile-menu-close {
+        position: static;           /* IMPORTANT */
+        padding: 6px;
+        margin: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Normal icon size */
+    .mobile-menu-panel .mobile-menu-close img,
+    .mobile-menu-panel .mobile-menu-close svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Logo stays aligned */
+    .mobile-menu-panel .menu-brand .logo {
+        height: 28px;
+        width: auto;
+    }
+
+    /* Text block stays next to logo */
+    .mobile-menu-panel .brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+
+    .mobile-menu-panel.open {
+        transform: translateX(0);
+ 
+    }
+
+    /* ======================================================
        MOBILE MENU – HEADER VISUAL SPLIT (OddsPortal style)
        X LEFT / NO STICKY / SAFE PATCH
     ====================================================== */
