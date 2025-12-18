@@ -116,7 +116,7 @@
         left: 0;
         width: 86%;
         max-width: 340px;
-        height: 100vh;
+        max-height: 100dvh;
         background: #0f121b;
         transform: translateX(-100%);
         transition: transform .25s ease;
