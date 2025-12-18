@@ -551,6 +551,33 @@
     border: 1px solid rgba(255,255,255,0.35);
 }
 
+   /* =====================================================
+   MOBILE MENU – ODDS COMPARISON ALWAYS OPEN
+===================================================== */
+
+/* Force Odds group always visible */
+.mobile-menu-panel
+.menu-group[data-group="odds"] {
+    display: block !important;
+}
+
+/* Disable collapse animation if exists */
+.mobile-menu-panel
+.menu-group[data-group="odds"] {
+    max-height: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Hide caret / arrow if present */
+.mobile-menu-panel
+.menu-link[data-section="odds"] .caret,
+.mobile-menu-panel
+.menu-link[data-section="odds"]::after {
+    display: none !important;
+}
+
+
 
 
 
