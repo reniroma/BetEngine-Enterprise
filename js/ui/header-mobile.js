@@ -233,37 +233,9 @@
             });
         });
 
-        /* =====================================================
-           FORCE ODDS COMPARISON ALWAYS OPEN (MOBILE)
-        ===================================================== */
-
-        document.addEventListener("headerLoaded", () => {
-            const oddsGroup = document.querySelector(
-                '.mobile-menu-panel .menu-group[data-group="odds"]'
-        );
-
-        const oddsTrigger = document.querySelector(
-            '.mobile-menu-panel .menu-link[data-section="odds"]'
-        );
-
-        if (oddsGroup) {
-            oddsGroup.classList.add("open");
-            oddsGroup.style.display = "block";
-        }
-
-        /* Disable toggle on click */
-        if (oddsTrigger) {
-            oddsTrigger.addEventListener("click", (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        }
-    });
-
         console.log("header-mobile.js v6.6 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);
     document.addEventListener("DOMContentLoaded", initHeaderMobile);
 })();
-
