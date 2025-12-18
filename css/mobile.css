@@ -481,6 +481,26 @@
 .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
     display: block;
 }
+/* =========================================
+   MOBILE MENU – ACCOUNT (LOGIN / REGISTER)
+========================================= */
+
+.mobile-menu-panel .menu-section.account {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.mobile-menu-panel .menu-section.account h4 {
+    margin-bottom: 8px;
+}
+
+.mobile-menu-panel .menu-section.account .menu-item {
+    width: 100%;
+    text-align: left;
+}
+
 
 
 
