@@ -127,6 +127,40 @@
         padding-bottom: 18px;
     }
 
+    /* ======================================================
+       MOBILE MENU – HEADER VISUAL SPLIT (OddsPortal style)
+       X LEFT / NO STICKY / SAFE PATCH
+    ====================================================== */
+
+    /* Header zone (logo + X) */
+    .mobile-menu-panel .menu-brand {
+        position: relative;
+        padding: 16px 16px 14px 44px; /* space for X on the left */
+        background: #0f121b;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Close button – LEFT side, normal size */
+    .mobile-menu-panel .mobile-menu-close {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        right: auto;
+        padding: 6px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Ensure close icon size is normal */
+    .mobile-menu-panel .mobile-menu-close img,
+    .mobile-menu-panel .mobile-menu-close svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+
     .mobile-menu-panel.open {
         transform: translateX(0);
     }
