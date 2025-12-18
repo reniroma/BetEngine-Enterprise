@@ -154,6 +154,38 @@
         margin-top: 12px;
     }
    
+    /* =====================================================
+       MOBILE – PREFERENCES (Odds + Language)
+       Visual grouping ONLY (Option B)
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+      /* Target ONLY the section that contains odds + language */
+      .mobile-menu-panel .menu-section:last-of-type {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Visual header (pseudo, no HTML change) */
+    .mobile-menu-panel .menu-section:last-of-type::before {
+      content: "Preferences";
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    /* Compact spacing for items */
+    .mobile-menu-panel .menu-section:last-of-type .menu-item {
+      padding: 10px 0;
+    }
+ }
+
     /* =========================================
        MOBILE – ACCOUNT (LOGIN / REGISTER)
        Vertical layout – space optimization
