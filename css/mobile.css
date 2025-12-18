@@ -1,11 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – MOBILE.CSS (FINAL CONSOLIDATED)
+ * BetEngine Enterprise – MOBILE.CSS (FINAL STABLE)
  * Mobile-only UI layer
- * Active under max-width: 900px
+ * Active ONLY under max-width: 900px
  *********************************************************/
 
 /* ==================================================
-   DEFAULT (DESKTOP): HIDE MOBILE UI
+   DESKTOP DEFAULT – HIDE ALL MOBILE UI
 ================================================== */
 .header-mobile,
 .mobile-only,
@@ -20,20 +20,22 @@
 ================================================== */
 @media (max-width: 900px) {
 
-    /* Enable mobile containers */
+    /* ==============================
+       ENABLE MOBILE CONTAINERS
+    ============================== */
     .header-mobile,
     .mobile-only {
         display: block;
     }
 
-    /* ==================================================
+    /* ==============================
        MOBILE HEADER (ROW 1)
-    ================================================== */
+    ============================== */
     .header-mobile {
         position: sticky;
         top: 0;
         z-index: 1000;
-        background: var(--bg-header, #0b0b12);
+        background: #0b0b12;
         border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
@@ -45,7 +47,7 @@
         gap: 10px;
     }
 
-    .header-mobile .mobile-top-bar svg {
+    .header-mobile svg {
         color: #ff9d00;
     }
 
@@ -58,21 +60,17 @@
     .mobile-actions button {
         width: 36px;
         height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         background: none;
         border: none;
         border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .mobile-actions button:active {
-        background: rgba(255,255,255,0.08);
-    }
-
-    /* ==================================================
+    /* ==============================
        SPORTS ROW (ROW 2)
-    ================================================== */
+    ============================== */
     .mobile-sports-row {
         display: flex;
         align-items: center;
@@ -81,7 +79,6 @@
         background: #131826;
         border-bottom: 1px solid rgba(255,255,255,0.06);
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
     }
 
     .mobile-sports-row::-webkit-scrollbar {
@@ -97,7 +94,7 @@
         min-width: 50px;
         padding: 6px 4px;
         background: none;
-        border: 0;
+        border: none;
     }
 
     .mobile-sport-item img,
@@ -109,7 +106,7 @@
     .mobile-sport-item .sport-label {
         font-size: 12px;
         font-weight: 600;
-        color: #fff;
+        color: #ffffff;
         white-space: nowrap;
     }
 
@@ -122,9 +119,9 @@
         color: #ff9d00;
     }
 
-    /* ==================================================
+    /* ==============================
        HAMBURGER OVERLAY
-    ================================================== */
+    ============================== */
     .mobile-menu-overlay {
         display: block;
         position: fixed;
@@ -141,9 +138,9 @@
         pointer-events: auto;
     }
 
-    /* ==================================================
+    /* ==============================
        HAMBURGER PANEL
-    ================================================== */
+    ============================== */
     .mobile-menu-panel {
         display: block;
         position: fixed;
@@ -151,7 +148,7 @@
         left: 0;
         width: 86%;
         max-width: 340px;
-        height: 100dvh;
+        height: 100vh;
         background: #0f121b;
         transform: translateX(-100%);
         transition: transform .25s ease;
@@ -173,9 +170,9 @@
         padding: 10px;
     }
 
-    /* ==================================================
+    /* ==============================
        MENU BRAND
-    ================================================== */
+    ============================== */
     .menu-brand {
         display: flex;
         align-items: center;
@@ -199,9 +196,9 @@
         color: #9aa0b3;
     }
 
-    /* ==================================================
+    /* ==============================
        MENU SECTIONS
-    ================================================== */
+    ============================== */
     .menu-section {
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -216,9 +213,9 @@
         letter-spacing: 0.06em;
     }
 
-    /* ==================================================
+    /* ==============================
        ACCOUNT (OddsPortal style)
-    ================================================== */
+    ============================== */
     .menu-section.account {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -243,25 +240,25 @@
 
     .menu-auth-register {
         background: #8c6b00;
-        color: #fff;
+        color: #ffffff;
     }
 
     .menu-auth-login {
         background: transparent;
         border: 1px solid rgba(255,255,255,0.35);
-        color: #fff;
+        color: #ffffff;
     }
 
-    /* ==================================================
-       NAVIGATION & SUBMENUS
-    ================================================== */
+    /* ==============================
+       NAVIGATION + SUBMENUS
+    ============================== */
     .menu-link,
     .menu-item {
         width: 100%;
         padding: 12px 0;
         background: none;
         border: none;
-        color: #fff;
+        color: #ffffff;
         font-size: 15px;
         font-weight: 600;
         text-align: left;
@@ -283,15 +280,15 @@
     .submenu-item {
         padding: 10px 0;
         font-size: 13px;
-        color: #ccc;
+        color: #cccccc;
         background: none;
         border: none;
         text-align: left;
     }
 
-    /* ==================================================
+    /* ==============================
        PREFERENCES
-    ================================================== */
+    ============================== */
     .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
@@ -303,9 +300,9 @@
         opacity: 0.9;
     }
 
-    /* ==================================================
+    /* ==============================
        MOBILE MODALS
-    ================================================== */
+    ============================== */
     .be-modal-overlay {
         display: none;
         position: fixed;
@@ -351,7 +348,7 @@
         border-radius: 8px;
         background: #151827;
         border: 1px solid rgba(255,255,255,0.08);
-        color: #fff;
+        color: #ffffff;
         font-size: 14px;
     }
 
