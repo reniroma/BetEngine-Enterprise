@@ -135,10 +135,10 @@
     /* Brand acts as visual header */
     .mobile-menu-panel .menu-brand {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 10px;
 
-        padding: 14px 16px;
+        padding: 4px 16px 10px;
         background: #0f121b;
 
         border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -148,7 +148,7 @@
     .mobile-menu-panel .mobile-menu-close {
         position: static;           /* IMPORTANT */
         padding: 6px;
-        margin: 0;
+        margin-top: 2px;
 
         display: flex;
         align-items: center;
@@ -164,7 +164,7 @@
 
     /* Logo stays aligned */
     .mobile-menu-panel .menu-brand .logo {
-        height: 28px;
+        height: 26px;
         width: auto;
     }
 
