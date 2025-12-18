@@ -150,6 +150,25 @@
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
+   
+    /* =========================================
+       MOBILE – ACCOUNT (LOGIN / REGISTER)
+       Vertical layout – space optimization
+    ========================================= */
+
+    .menu-section.account {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .menu-section.account .menu-item,
+    .menu-section.account .menu-link {
+        display: block;
+        width: 100%;
+        padding: 8px 0;
+        font-weight: 600;
+    }
+
     /* ==================================================
        MOBILE HAMBURGER – PREFERENCES
        Odds Format & Language (combined)
