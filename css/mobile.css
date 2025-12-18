@@ -126,6 +126,10 @@
         pointer-events: auto;
         padding-bottom: 18px;
     }
+   
+    .mobile-menu-panel.open {
+        transform: translateX(0);
+    }
 
     /* ======================================================
        MOBILE MENU – HEADER VISUAL ALIGN (OddsPortal style)
