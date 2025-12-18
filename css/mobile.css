@@ -505,6 +505,55 @@
     display: block;
 }
 
+   /* =====================================================
+   MOBILE MENU – ACCOUNT (OddsPortal style)
+===================================================== */
+
+.mobile-menu-panel .menu-section.account {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Hiq titullin ACCOUNT nga rrjedha */
+.mobile-menu-panel .menu-section.account h4 {
+    grid-column: 1 / -1;
+    margin-bottom: 6px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+}
+
+/* Buttons base */
+.mobile-menu-panel .menu-section.account .menu-item {
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+}
+
+/* REGISTER – filled */
+.mobile-menu-panel .menu-auth-register {
+    background: #8c6b00; /* afër OddsPortal */
+    color: #fff;
+}
+
+/* LOGIN – outline */
+.mobile-menu-panel .menu-auth-login {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+}
+
+
+
+
 
 
 
