@@ -165,7 +165,7 @@
         /* ==================================================
            NORMAL ACCORDION (NON-PREMIUM)
         ================================================== */
-        qa('.menu-link:not([data-section]', panel).forEach((link) => {
+        qa('.menu-link:not([data-section="premium"])', panel).forEach((link) => {
             link.addEventListener("click", (e) => {
                 stop(e);
 
