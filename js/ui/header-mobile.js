@@ -2,15 +2,6 @@
  * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.6)
  * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
- * Responsibilities:
- * 1. Hamburger open / close
- * 2. Open mobile Odds / Language modals
- * 3. Activate Odds / Language options
- * 4. Sync mobile ↔ desktop state
- * 5. Trigger Login / Register safely
- * 6. Open Bookmarks modal
- * 7. Premium Focus Mode (exclusive view)
- *
  * MOBILE ONLY – NO DESKTOP INTERFERENCE
  *********************************************************/
 
@@ -59,6 +50,11 @@
             blurActive();
             overlay.classList.add("show");
             panel.classList.add("open");
+
+            /* ===== FORCE ODDS ALWAYS OPEN ===== */
+            const oddsSub = qs('.submenu[data-subnav="odds"]', panel);
+            if (oddsSub) oddsSub.classList.add("open");
+
             document.body.style.overflow = "hidden";
             document.body.classList.add("menu-open");
         };
@@ -70,7 +66,6 @@
             panel.classList.remove("premium-mode");
             document.body.style.overflow = "";
             document.body.classList.remove("menu-open");
-
         };
 
         /* ==================================================
@@ -84,7 +79,7 @@
         closeBtn?.addEventListener("click", closeMenu);
         overlay.addEventListener("click", closeMenu);
         panel.addEventListener("click", (e) => e.stopPropagation());
-        
+
         /* ==================================================
            MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
            Hamburger MUST stay open
@@ -164,26 +159,28 @@
 
         /* ==================================================
            NORMAL ACCORDION (NON-PREMIUM)
+           ⚠️ ODDS IS EXCLUDED – ALWAYS OPEN
         ================================================== */
-        qa('.menu-link:not([data-section="premium"])', panel).forEach((link) => {
-            link.addEventListener("click", (e) => {
-                stop(e);
+        qa('.menu-link:not([data-section="premium"]):not([data-section="odds"])', panel)
+            .forEach((link) => {
+                link.addEventListener("click", (e) => {
+                    stop(e);
 
-                panel.classList.remove("premium-mode");
+                    panel.classList.remove("premium-mode");
 
-                const section = link.dataset.section;
-                const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
-                if (!submenu) return;
+                    const section = link.dataset.section;
+                    const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
+                    if (!submenu) return;
 
-                qa(".submenu", panel).forEach((s) => {
-                    if (s === submenu) {
-                        s.classList.toggle("open");
-                    } else {
-                        s.classList.remove("open");
-                    }
+                    qa(".submenu", panel).forEach((s) => {
+                        if (s === submenu) {
+                            s.classList.toggle("open");
+                        } else {
+                            s.classList.remove("open");
+                        }
+                    });
                 });
             });
-        });
 
         /* ==================================================
            ODDS ACTIVE + SYNC
