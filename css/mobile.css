@@ -156,15 +156,7 @@
         top: 10px;
         right: 10px;
     }
-    /* Fix oversized close (X) icon in mobile menu */
-    .mobile-menu-panel .mobile-menu-close img {
-        width: 22px;
-        height: 22px;
-        display: block;
-    }
-
-
-
+    
     .mobile-menu-close {
         background: none;
         border: none;
