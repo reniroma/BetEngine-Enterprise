@@ -154,24 +154,6 @@
         margin-top: 12px;
     }
 
-    /* =========================================
-       MOBILE – ACCOUNT (LOGIN / REGISTER)
-       Vertical layout – space optimization
-    ========================================= */
-
-    .menu-section.account {
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .menu-section.account .menu-item,
-    .menu-section.account .menu-link {
-        display: block;
-        width: 100%;
-        padding: 8px 0;
-        font-weight: 600;
-    }
-
     /* ==================================================
        MOBILE HAMBURGER – PREFERENCES
        Odds Format & Language (combined)
@@ -190,27 +172,27 @@
      }
 
 
-    .menu-section h4 {
-    font-size: 12px;
-    font-weight: 600;
-    color: #9aa0b3;
-    margin: 0 0 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    }
+     .menu-section h4 {
+         font-size: 12px;
+         font-weight: 600;
+         color: #9aa0b3;
+         margin: 0 0 6px;
+         text-transform: uppercase;
+         letter-spacing: 0.04em;
+     }
 
-    .menu-link,
-    .menu-item {
-        width: 100%;
-        text-align: left;
-        padding: 12px 0;
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-    }
+     .menu-link,
+     .menu-item {
+         width: 100%;
+         text-align: left;
+         padding: 12px 0;
+         background: none;
+         border: none;
+         color: #fff;
+         font-size: 15px;
+         font-weight: 600;
+         cursor: pointer;
+     }
 
     /* ==================================================
        SUBMENUS (SCROLL-FRIENDLY)
