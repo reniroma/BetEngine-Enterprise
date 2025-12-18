@@ -516,7 +516,7 @@
     align-items: center;
 }
 
-/* Hiq titullin ACCOUNT nga rrjedha */
+/* ACCOUNT heading spans full grid */
 .mobile-menu-panel .menu-section.account h4 {
     grid-column: 1 / -1;
     margin-bottom: 6px;
