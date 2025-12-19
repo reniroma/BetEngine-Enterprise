@@ -132,6 +132,58 @@
     }
 
     /* ======================================================
+       MOBILE MENU – HEADER VISUAL FIX (SAFE)
+       affects ONLY visual alignment
+    ====================================================== */
+
+    .mobile-menu-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      padding: 6px 16px 10px;
+      background: #0f121b;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Brand block */
+    .mobile-menu-header .menu-brand {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* Logo */
+    .mobile-menu-header .menu-brand .logo {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+
+    /* Text */
+    .mobile-menu-header .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      margin-top: 2px;
+    }
+
+    /* Close (X) */
+    .mobile-menu-header .mobile-menu-close {
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-menu-header .mobile-menu-close svg,
+    .mobile-menu-header .mobile-menu-close img {
+      width: 20px;
+      height: 20px;
+    }
+
+
+    /* ======================================================
        MOBILE MENU – HEADER VISUAL ALIGN (OddsPortal style)
        SAFE: no layout break, no sticky, no JS impact
     ====================================================== */
