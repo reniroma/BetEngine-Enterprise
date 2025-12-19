@@ -222,6 +222,107 @@
     .menu-section + .menu-section {
         margin-top: 12px;
     }
+   
+    /* ===========================
+       MENU CONTENT – NAVIGATION BASE
+    =========================== */
+
+    .menu-section.navigation {
+        padding: 14px 16px;
+    }
+
+    /* ================================
+   MENU LINK – PRIMARY NAV ITEMS
+    ================================ */
+
+    .menu-section.navigation .menu-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        background: none;
+        border: none;
+
+        padding: 10px 0;
+        margin: 0;
+
+        font-size: 15px;
+        font-weight: 600;
+        color: #ffffff;
+
+        cursor: pointer;
+        text-align: left;
+    }
+
+    /* Hover / focus (mobile-safe) */
+    .menu-section.navigation .menu-link:active {
+        opacity: 0.75;
+    }
+
+    /* Expanded state (aria) */
+    .menu-section.navigation .menu-link[aria-expanded="true"] {
+        color: var(--color-accent, #ffec00);
+    }
+
+    /* ================================
+       SUBMENU – NAVIGATION
+    ================================ */
+
+    .menu-section.navigation .submenu {
+        display: none;
+        flex-direction: column;
+
+        margin-top: 6px;
+        padding-left: 12px;
+    }
+
+    /* Open state */
+    .menu-section.navigation .submenu.open {
+        display: flex;
+    }
+
+    /* Submenu items */
+    .menu-section.navigation .submenu-item {
+        background: none;
+        border: none;
+
+        padding: 8px 0;
+
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.85);
+
+        text-align: left;
+        cursor: pointer;
+    }
+
+    /* Active / press feedback */
+    .menu-section.navigation .submenu-item:active {
+        opacity: 0.7;
+    }
+
+    /* ================================
+       SUBMENU – ACTIVE STATE
+    ================================ */
+
+    .menu-section.navigation .submenu-item.active {
+        color: #ffec00;
+        font-weight: 600;
+    }
+
+    /* optional: soft indicator line */
+    .menu-section.navigation .submenu-item.active::before {
+        content: "";
+        display: inline-block;
+        width: 4px;
+        height: 4px;
+        margin-right: 8px;
+
+        background: #ffec00;
+        border-radius: 50%;
+    }
+
     /* =========================================
        MOBILE MENU – ACCOUNT (HORIZONTAL FIX)
     ========================================= */
