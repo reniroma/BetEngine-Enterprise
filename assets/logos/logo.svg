@@ -1,6 +1,13 @@
-<svg width="130" height="26" viewBox="0 0 140 26" xmlns="http://www.w3.org/2000/svg">
-  <rect width="240" height="60" rx="8" fill="#ffec00"/>
-  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="26" font-family="Arial" font-weight="700" fill="#000">
+<svg width="130" height="28" viewBox="0 0 240 40" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="240" height="40" rx="8" fill="#ffcc00"/>
+
+  <text
+    x="120"
+    y="26"
+    text-anchor="middle"
+    font-size="26"
+    font-family="Arial, sans-serif"
+    fill="#000">
     BetEngine
   </text>
 </svg>
