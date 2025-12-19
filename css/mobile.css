@@ -41,18 +41,17 @@
     .mobile-top-bar {
         position: relative;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
-        padding: 10px 14px;
+        padding: 2px 14px 10px;
     }
    
     .mobile-top-bar .brand {
-        position: absolute;
-        left:50%;
-        transform: translateX(-50%);
+        position: static;
+        margin: 0;
         display: flex;
         align-items: center;
-        gap: 8px
+        gap: 8px;
     }    
 
     .mobile-icon-btn {
@@ -65,7 +64,7 @@
     /* ==================================================
        MOBILE HEADER ACTIONS ALIGNMENT
        Scope: mobile header only
-================================================== */
+    ================================================== */
     .mobile-actions {
         display: flex;
         align-items: center;
@@ -136,34 +135,55 @@
         padding-bottom: 18px;
     }
    
+    /* FIX: Close button out of flow so brand can move up */
+    .mobile-menu-panel > button[aria-label="Close menu"] {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        background: none;
+        border: none;
+        padding: 6px;
+    }
+    .mobile-menu-panel > button[aria-label="Close menu"] img,
+    .mobile-menu-panel > button[aria-label="Close menu"] svg {
+        width: 22px;
+        height: 22px;
+        display: block; 
+    }
+   
     .mobile-menu-panel.open {
         transform: translateX(0);
     }
 
     /* ======================================================
-       MOBILE MENU – HEADER VISUAL ALIGN (OddsPortal style)
+       MOBILE MENU – HEADER VISUAL 
        SAFE: no layout break, no sticky, no JS impact
     ====================================================== */
+
 
     /* Brand acts as visual header */
     .mobile-menu-panel .menu-brand {
         position: relative;
-        padding: 0px 16px 8px 10px;
         display: flex;
         align-items: center;
+        justify-content: center;          /* CENTER BRAND */
         gap: 10px;
+  
+        padding: 12px 16px;              /* symmetric padding */
         background: #0f121b;
         border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* Close button participates in same flow */
-    .mobile-menu-panel .mobile-menu-close {
-        position: static;           /* IMPORTANT */
+    /* Close button OUT of flow - correct selector */
+    .mobile-menu-panel > button[aria-label="Close menu"] {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        background: none;
+        border: none;
         padding: 6px;
-        margin-top: 2px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     /* Normal icon size */
@@ -544,7 +564,7 @@
     display: block;
 }
 
-   /* =====================================================
+/* =====================================================
    MOBILE MENU – ACCOUNT (OddsPortal style)
 ===================================================== */
 
