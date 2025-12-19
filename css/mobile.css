@@ -64,7 +64,7 @@
     /* ==================================================
        MOBILE HEADER ACTIONS ALIGNMENT
        Scope: mobile header only
-================================================== */
+    ================================================== */
     .mobile-actions {
         display: flex;
         align-items: center;
