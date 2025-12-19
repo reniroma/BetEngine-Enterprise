@@ -262,7 +262,7 @@
 
     /* Expanded state (aria) */
     .menu-section.navigation .menu-link[aria-expanded="true"] {
-        color: var(--color-accent, #ffec00);
+        color: var(--color-accent, #f4a11a);
     }
 
     /* ================================
@@ -731,7 +731,7 @@
     letter-spacing: 0.6px;
     text-transform: uppercase;
     padding: 14px 18px;
-    color: #f4a11a;
+    color: #cfd3d8;
     margin-bottom: 10px;
 }
 
