@@ -145,6 +145,12 @@
         border: none;
         padding: 6px;
     }
+
+    /* FIX 2: Force brand to top of panel */
+    .mobile-menu-panel  .menu-brand {
+        margin-top: 0;
+        padding-top: 12px;
+    }
    
     .mobile-menu-panel.open {
         transform: translateX(0);
