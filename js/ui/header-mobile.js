@@ -191,7 +191,10 @@
                     
                     // Close all submenus except odds
                     qa(".submenu", panel).forEach((s) => {
-                        if (s.dataset.subnav !== "odds") {
+                        if (
+                            s.dataset.subnav !== "odds" &&
+                            s !== submenu
+                        ) {
                             s.classList.remove("open");
                         }
                     });
