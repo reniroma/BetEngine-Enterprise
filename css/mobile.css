@@ -145,20 +145,11 @@
         border: none;
         padding: 6px;
     }
-
     .mobile-menu-panel > button[aria-label="Close menu"] img,
     .mobile-menu-panel > button[aria-label="Close menu"] svg {
         width: 22px;
         height: 22px;
-        max-width: 22px;
-        max-height: 22px;
-        display: block;
-    }
-
-    /* FIX 2: Force brand to top of panel */
-    .mobile-menu-panel  .menu-brand {
-        margin-top: 0;
-        padding-top: 12px;
+        display: block; 
     }
    
     .mobile-menu-panel.open {
@@ -170,11 +161,6 @@
        SAFE: no layout break, no sticky, no JS impact
     ====================================================== */
 
-   /* FORCE FLOW: menu header must respect panel flow */
-   .mobile-menu-panel {
-       display: flex !important;
-       flex-direction: column;
-   }
 
     /* Brand acts as visual header */
     .mobile-menu-panel .menu-brand {
