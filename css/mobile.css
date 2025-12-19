@@ -138,13 +138,12 @@
 
     /* Brand acts as visual header */
     .mobile-menu-panel .menu-brand {
+        position: relative;
+        padding: 0px 16px 8px 10px;
         display: flex;
         align-items: center;
         gap: 10px;
-
-        padding: 0px 16px 8px 10px;
         background: #0f121b;
-
         border-bottom: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -153,7 +152,6 @@
         position: static;           /* IMPORTANT */
         padding: 6px;
         margin-top: 2px;
-
         display: flex;
         align-items: center;
         justify-content: center;
