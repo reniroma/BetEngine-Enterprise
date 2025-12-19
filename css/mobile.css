@@ -363,22 +363,22 @@
 
     
     /* =====================================================
-       Row 2 corrective patch – additive (FINAL)
+       Row 2 corrective patch – additive (REAL SELECTORS)
        Scope: Mobile Header – Sports Row only
     ===================================================== */
 
     @media (max-width: 900px) {
 
+    /* Ensure horizontal scrolling is owned by the real wrapper */
     .mobile-sports-row {
-        display: flex;                  /* CRITICAL: enable horizontal layout */
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;          /* prevent wrapping */
+        overflow-x: auto;           /* enable horizontal scroll */
+        overflow-y: hidden;         /* avoid vertical jitter */
     }
 
+    /* Prevent flex items (buttons) from shrinking */
     .mobile-sport-item {
-        flex: 0 0 auto;
-        flex-shrink: 0;
+        flex: 0 0 auto;             /* keep intrinsic width */
+        flex-shrink: 0;             /* no collapse */
     }
 }
