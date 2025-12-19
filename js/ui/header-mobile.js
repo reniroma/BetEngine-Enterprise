@@ -198,7 +198,7 @@
     
                     // Toggle current submenu
                     if (!isOpen) {           
-                        submenu.classList.add("open");
+                        submenu.classList.remove("open");
                     } else {
                         submenu.classList.add("open");
                     }
