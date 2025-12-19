@@ -361,24 +361,24 @@
         font-weight: 600;
     }
 
-   
-    /* ======================================================
-       Row 2 corrective patch – additive
+    
+    /* =====================================================
+       Row 2 corrective patch – additive (FINAL)
        Scope: Mobile Header – Sports Row only
-       Reason: Restore horizontal strip behavior after cleanup
-    ====================================================== */
+    ===================================================== */
 
-    /* Ensure Row 2 remains a stable horizontal scroll container */
+    @media (max-width: 900px) {
+
     .mobile-sports-row {
-        overflow-x: auto;
+        display: flex;                  /* CRITICAL: enable horizontal layout */
         flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
     }
 
-    /* Prevent sport items from shrinking and breaking alignment */
     .mobile-sport-item {
         flex: 0 0 auto;
-    }  
-
-
-   
-  
+        flex-shrink: 0;
+    }
+}
