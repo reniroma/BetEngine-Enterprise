@@ -136,6 +136,18 @@
        SAFE: no layout break, no sticky, no JS impact
     ====================================================== */
 
+    /* Brand acts as visual header */
+    .mobile-menu-panel .menu-brand {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+
+        padding: 0px 16px 8px 10px;
+        background: #0f121b;
+
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
     /* Close button participates in same flow */
     .mobile-menu-panel .mobile-menu-close {
         position: static;           /* IMPORTANT */
