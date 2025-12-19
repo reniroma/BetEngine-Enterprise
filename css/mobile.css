@@ -700,15 +700,15 @@
 
 /* REGISTER – filled */
 .mobile-menu-panel .menu-auth-register {
-    background: #8c6b00; /* afër OddsPortal */
-    color: #fff;
+    background: #f4a11a; /* afër OddsPortal */
+    color: #111;
 }
 
 /* LOGIN – outline */
 .mobile-menu-panel .menu-auth-login {
     background: transparent;
     color: #fff;
-    border: 1px solid rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.25);
 }
 
    /* =====================================================
