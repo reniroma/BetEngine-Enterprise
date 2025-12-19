@@ -728,19 +728,6 @@
     color: #e6e6e6;
 }
 
-* =====================================================
-   FIX: Betting Tools must NOT inherit orange
-   Scope: Mobile hamburger navigation
-===================================================== */
-.menu-link[data-section="betting"] {
-    color: #cfd3d8;          /* neutral light grey */
-    font-weight: 600;
-}
-
-.menu-link[data-section="betting"].active {
-    color: #cfd3d8;          /* stays neutral even when open */
-}
-
 /* ---------- ACTIVE SECTION (ORANGE ACCENT) ---------- */
 .menu-link.active,
 .menu-link[data-section].active {
@@ -773,13 +760,6 @@
     color: #ff9800;
 }
 
-/* ---------- HAIRLINE DIVIDERS ---------- */
-.menu-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.06);
-    margin: 8px 0;
-}
-
 /* ---------- SECTION SEPARATION ---------- */
 .menu-section {
     padding-bottom: 6px;
@@ -789,41 +769,7 @@
     border-top: 1px solid rgba(255,255,255,0.04);
 }
 
-/* ---------- CARET / DROPDOWN ICON ---------- */
-.menu-link .caret,
-.menu-link .icon-arrow {
-    color: #9aa0a6;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
 
-.menu-link.active .caret {
-    color: #ff9800;
-    transform: rotate(180deg);
-}
-
-/* ---------- ODDS / LANGUAGE ROW ---------- */
-.mobile-menu-footer {
-    padding: 14px 18px;
-    font-size: 13px;
-    color: #b5b5b5;
-    border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.mobile-menu-footer strong {
-    color: #ff9800;
-    font-weight: 500;
-}
-
-/* ---------- REMOVE VISUAL NOISE ---------- */
-.menu-link,
-.submenu-item {
-    background: transparent;
-}
-
-.menu-link:hover,
-.submenu-item:hover {
-    background: rgba(255,255,255,0.03);
-}
 
 
    
