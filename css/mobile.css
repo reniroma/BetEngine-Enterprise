@@ -688,10 +688,11 @@
 /* Buttons base */
 .mobile-menu-panel .menu-section.account .menu-item {
     height: 44px;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     letter-spacing: 0.06em;
-    border-radius: 6px;
+    border-radius: 4px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     justify-content: center;
