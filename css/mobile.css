@@ -181,62 +181,12 @@
 
     .mobile-menu-panel.open {
         transform: translateX(0);
- 
-    }
-
-    /* ======================================================
-       MOBILE MENU – HEADER VISUAL SPLIT (OddsPortal style)
-       X LEFT / NO STICKY / SAFE PATCH
-    ====================================================== */
-
-    /* Header zone (logo + X) */
-    .mobile-menu-panel .menu-brand {
-        position: relative;
-        padding: 16px 16px 14px 44px; /* space for X on the left */
-        background: #0f121b;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    /* Close button – LEFT side, normal size */
-    .mobile-menu-panel .mobile-menu-close {
-        position: absolute;
-        top: 12px;
-        left: 10px;
-        right: auto;
-        padding: 6px;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    /* Ensure close icon size is normal */
-    .mobile-menu-panel .mobile-menu-close img,
-    .mobile-menu-panel .mobile-menu-close svg {
-        width: 20px;
-        height: 20px;
-        display: block;
-    }
-
-
-    .mobile-menu-panel.open {
-        transform: translateX(0);
-    }
-   
-    .mobile-menu-close {
-        background: none;
-        border: none;
-        padding: 12px;
-        cursor: pointer;
     }
 
     /* ==================================================
        MENU CONTENT
     ================================================== */
-    .menu-brand {
-        padding: 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
+   
     .menu-section {
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -510,22 +460,12 @@
         height: 20px;
     }
 
-   /* ======================================================
-   MOBILE ROW 1 – ICON COLOR (INLINE SVG ONLY)
-   Scope: header-mobile → top bar
-   Impact: mobile only, Row 1 only
-====================================================== */
-@media (max-width: 900px) {
-    .header-mobile .mobile-top-bar svg {
-        color: #ff9d00; /* light orange */
-    }
+    /* ======================================================
+      MOBILE SPORTS ROW – PER SPORT ICON COLORS
+      Scope: Sports Row only
+      File: mobile.css
+    ====================================================== */
 
-   /* ======================================================
-   MOBILE SPORTS ROW – PER SPORT ICON COLORS
-   Scope: Sports Row only
-   File: mobile.css
-====================================================== */
-@media (max-width: 900px) {
 
     /* Football – Green */
     .mobile-sport-item.sport-football svg,
