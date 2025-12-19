@@ -740,6 +740,19 @@
     margin-bottom: 10px;
 }
 
+* =====================================================
+   FIX: Betting Tools must NOT inherit orange
+   Scope: Mobile hamburger navigation
+===================================================== */
+.menu-link[data-section="betting"] {
+    color: #cfd3d8;          /* neutral light grey */
+    font-weight: 600;
+}
+
+.menu-link[data-section="betting"].active {
+    color: #cfd3d8;          /* stays neutral even when open */
+}
+
 /* ---------- ACTIVE SECTION (ORANGE ACCENT) ---------- */
 .menu-link.active,
 .menu-link[data-section].active {
