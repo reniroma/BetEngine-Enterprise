@@ -266,6 +266,16 @@
         color: var(--color-accent, #f4a11a);
     }
 
+    /* =====================================================
+       COLOR REBASE – EXCEPTION
+       Betting Tools must NEVER turn orange
+    ===================================================== */
+
+    .menu-group[data-group="betting"]
+    .menu-link[aria-expanded="true"] {
+        color: #ffffff;
+    }
+
     /* ================================
        SUBMENU – NAVIGATION
     ================================ */
