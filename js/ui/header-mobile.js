@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.6)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.7)
  * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
  * MOBILE ONLY – NO DESKTOP INTERFERENCE
@@ -138,12 +138,28 @@
         });
 
         /* ==================================================
-           PREMIUM FOCUS MODE (STABLE)
+           PREMIUM FOCUS MODE (TOGGLE FIXED)
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
         premiumLink?.addEventListener("click", (e) => {
             stop(e);
+
+            const isActive = panel.classList.contains("premium-mode");
+
+            if (isActive) {
+                panel.classList.remove("premium-mode");
+
+                qa(".submenu", panel).forEach((s) => {
+                    if (s.dataset.subnav === "odds") {
+                        s.classList.add("open");
+                    } else {
+                        s.classList.remove("open");
+                    }
+                });
+
+                return;
+            }
 
             panel.classList.add("premium-mode");
 
@@ -158,8 +174,7 @@
         });
 
         /* ==================================================
-           NORMAL ACCORDION (NON-PREMIUM)
-           ⚠️ ODDS IS EXCLUDED – ALWAYS OPEN
+           NORMAL ACCORDION (ODDS ALWAYS OPEN)
         ================================================== */
         qa('.menu-link:not([data-section="premium"]):not([data-section="odds"])', panel)
             .forEach((link) => {
@@ -173,8 +188,8 @@
                     if (!submenu) return;
 
                     qa(".submenu", panel).forEach((s) => {
-                        if (s === submenu) {
-                            s.classList.toggle("open");
+                        if (s === submenu || s.dataset.subnav === "odds") {
+                            s.classList.add("open");
                         } else {
                             s.classList.remove("open");
                         }
@@ -230,7 +245,7 @@
             });
         });
 
-        console.log("header-mobile.js v6.6 READY");
+        console.log("header-mobile.js v6.7 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);
