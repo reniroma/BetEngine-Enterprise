@@ -182,18 +182,26 @@
                     stop(e);
 
                     panel.classList.remove("premium-mode");
-
+                    
                     const section = link.dataset.section;
                     const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
                     if (!submenu) return;
-
+                    
+                    const isOpen = submenu.classList.contains("open");
+                    
+                    // Close all submenus except odds
                     qa(".submenu", panel).forEach((s) => {
-                        if (s === submenu || s.dataset.subnav === "odds") {
-                            s.classList.add("open");
-                        } else {
+                        if (s.dataset.subnav !== "odds") {
                             s.classList.remove("open");
                         }
                     });
+    
+                    // Toggle current submenu
+                    if (!isOpen) {           
+                        submenu.classList.add("open");
+                    } else {
+                        submenu.classList.add("open");
+                    }
                 });
             });
 
