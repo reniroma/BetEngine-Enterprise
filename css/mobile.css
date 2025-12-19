@@ -728,18 +728,6 @@
     color: #e6e6e6;
 }
 
-/* ---------- MAIN SECTION TITLES ---------- */
-.menu-section-title,
-.menu-link[data-section] {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    padding: 14px 18px;
-    color: #f4a11a;
-    margin-bottom: 10px;
-}
-
 * =====================================================
    FIX: Betting Tools must NOT inherit orange
    Scope: Mobile hamburger navigation
