@@ -256,11 +256,6 @@
         text-align: left;
     }
 
-    /* Hover / focus (mobile-safe) */
-    .menu-section.navigation .menu-link:active {
-        opacity: 0.75;
-    }
-
     /* Expanded state (aria) */
     .menu-section.navigation .menu-link[aria-expanded="true"] {
         color: var(--color-accent, #f4a11a);
