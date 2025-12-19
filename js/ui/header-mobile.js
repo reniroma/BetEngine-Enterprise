@@ -2,7 +2,7 @@
  * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.7)
  * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
- * MOBILE ONLY – NO DESKTOP INTERFERENCE
+ * MOBILE ONLY –  NO DESKTOP INTERFERENCE
  *********************************************************/
 
 (function () {
