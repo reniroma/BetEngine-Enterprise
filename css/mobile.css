@@ -360,4 +360,29 @@
         border-color: #ffec00;
         font-weight: 600;
     }
+
+    /* =====================================================
+       ENTERPRISE ROW 2 ADD-BACK PATCH (SAFE & ISOLATED)
+       Scope: Mobile Header – Sports Row ONLY
+       Reason:
+       - Restore original horizontal scroll behavior
+       - Restore flex overflow contract
+       - No visual or structural side effects
+    ===================================================== */
+
+    @media (max-width: 900px) {
+
+    /* Row 2 container: force horizontal scroll */
+    .mobile-sports-row {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Row 2 items: prevent flex shrink, enable overflow */
+    .mobile-sport-item {
+        flex: 0 0 auto;
+        min-width: 50px;
+    }
+
 }
