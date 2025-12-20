@@ -252,8 +252,10 @@
        ACCOUNT
     ================================================== */
     .menu-section.account {
-        display: flex;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        align-items: center;
     }
 
     .menu-section.account {
