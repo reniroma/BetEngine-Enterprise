@@ -1,8 +1,8 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.6)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.7)
  * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
- * MOBILE ONLY – NO DESKTOP INTERFERENCE
+ * MOBILE ONLY –  NO DESKTOP INTERFERENCE
  *********************************************************/
 
 (function () {
@@ -31,13 +31,13 @@
         /* ==================================================
            CORE ELEMENTS
         ================================================== */
-        const overlay   = qs(".mobile-menu-overlay");
-        const panel     = qs(".mobile-menu-panel");
+        const overlay = qs(".mobile-menu-overlay");
+        const panel = qs(".mobile-menu-panel");
         const toggleBtn = qs(".mobile-menu-toggle");
-        const closeBtn  = qs(".mobile-menu-close");
+        const closeBtn = qs(".mobile-menu-close");
 
-        const oddsModal      = qs("#mobile-odds-modal");
-        const langModal      = qs("#mobile-language-modal");
+        const oddsModal = qs("#mobile-odds-modal");
+        const langModal = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
 
         if (!overlay || !panel || !toggleBtn) return;
@@ -46,14 +46,18 @@
         /* ==================================================
            HAMBURGER STATE (SAFE)
         ================================================== */
+        const forceOddsOpen = () => {
+            const oddsSub = qs('.submenu[data-subnav="odds"]', panel);
+            if (oddsSub) oddsSub.classList.add("open");
+        };
+
         const openMenu = () => {
             blurActive();
             overlay.classList.add("show");
             panel.classList.add("open");
 
             /* ===== FORCE ODDS ALWAYS OPEN ===== */
-            const oddsSub = qs('.submenu[data-subnav="odds"]', panel);
-            if (oddsSub) oddsSub.classList.add("open");
+            forceOddsOpen();
 
             document.body.style.overflow = "hidden";
             document.body.classList.add("menu-open");
@@ -64,6 +68,14 @@
             overlay.classList.remove("show");
             panel.classList.remove("open");
             panel.classList.remove("premium-mode");
+
+            // close all submenus except odds
+            qa(".submenu", panel).forEach((s) => {
+                if (s.dataset.subnav !== "odds") s.classList.remove("open");
+            });
+
+            forceOddsOpen();
+
             document.body.style.overflow = "";
             document.body.classList.remove("menu-open");
         };
@@ -138,47 +150,86 @@
         });
 
         /* ==================================================
-           PREMIUM FOCUS MODE (STABLE)
+           PREMIUM FOCUS MODE (TOGGLE FIXED)
+           - click 1: enter premium-mode, open premium submenu, close others (except odds)
+           - click 2: exit premium-mode, close premium submenu, keep odds open
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
         premiumLink?.addEventListener("click", (e) => {
             stop(e);
 
+            const isActive = panel.classList.contains("premium-mode");
+
+            if (isActive) {
+                // EXIT premium-mode
+                panel.classList.remove("premium-mode");
+
+                const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
+                if (premiumSub) premiumSub.classList.remove("open");
+
+                // keep odds open; leave others closed
+                qa(".submenu", panel).forEach((s) => {
+                    if (s.dataset.subnav !== "odds" && s.dataset.subnav !== "premium") {
+                        s.classList.remove("open");
+                    }
+                });
+
+                forceOddsOpen();
+                return;
+            }
+
+            // ENTER premium-mode
             panel.classList.add("premium-mode");
 
             const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
             if (!premiumSub) return;
 
             qa(".submenu", panel).forEach((s) => {
-                if (s !== premiumSub) s.classList.remove("open");
+                if (s.dataset.subnav !== "odds") s.classList.remove("open");
             });
 
             premiumSub.classList.add("open");
+            forceOddsOpen();
         });
 
         /* ==================================================
            NORMAL ACCORDION (NON-PREMIUM)
-           ⚠️ ODDS IS EXCLUDED – ALWAYS OPEN
+           FIXED:
+           - Betting/Community/Bookmakers: click toggles open/close
+           - clicking another closes previous (except odds)
+           - leaving premium-mode when normal item clicked
+           - odds excluded (always open)
         ================================================== */
         qa('.menu-link:not([data-section="premium"]):not([data-section="odds"])', panel)
             .forEach((link) => {
                 link.addEventListener("click", (e) => {
                     stop(e);
 
+                    // exit premium-mode if active
                     panel.classList.remove("premium-mode");
+                    const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
+                    if (premiumSub) premiumSub.classList.remove("open");
 
                     const section = link.dataset.section;
                     const submenu = qs(`.submenu[data-subnav="${section}"]`, panel);
                     if (!submenu) return;
 
+                    const isOpen = submenu.classList.contains("open");
+
+                    // close all submenus except odds
                     qa(".submenu", panel).forEach((s) => {
-                        if (s === submenu) {
-                            s.classList.toggle("open");
-                        } else {
-                            s.classList.remove("open");
-                        }
+                        if (s.dataset.subnav !== "odds") s.classList.remove("open");
                     });
+
+                    // toggle current submenu
+                    if (!isOpen) {
+                        submenu.classList.add("open");
+                    } else {
+                        submenu.classList.remove("open");
+                    }
+
+                    forceOddsOpen();
                 });
             });
 
@@ -230,7 +281,7 @@
             });
         });
 
-        console.log("header-mobile.js v6.6 READY");
+        console.log("header-mobile.js v6.7 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);

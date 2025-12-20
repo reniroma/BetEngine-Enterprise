@@ -6,7 +6,7 @@
  *********************************************************/
 
 /* ==================================================
-   DEFAULT (DESKTOP): HIDE MOBILE UI ALWAYS
+   DEFAULT (DESKTOP):  HIDE MOBILE UI ALWAYS
 ================================================== */
 .header-mobile,
 .mobile-only,
@@ -41,18 +41,18 @@
     .mobile-top-bar {
         position: relative;
         display: flex;
-        align-items: flex-start;
+        align-items: center; /* FIX: vertical aligment */
         justify-content: space-between;
         padding: 2px 14px 10px;
     }
-   
+
     .mobile-top-bar .brand {
         position: static;
         margin: 0;
         display: flex;
         align-items: center;
         gap: 8px;
-    }    
+    }
 
     .mobile-icon-btn {
         background: none;
@@ -62,8 +62,7 @@
     }
 
     /* ==================================================
-       MOBILE HEADER ACTIONS ALIGNMENT
-       Scope: mobile header only
+       MOBILE HEADER ACTIONS
     ================================================== */
     .mobile-actions {
         display: flex;
@@ -90,7 +89,6 @@
         pointer-events: none;
     }
 
-    /* Touch feedback */
     .mobile-actions button:active {
         background: rgba(255, 255, 255, 0.08);
     }
@@ -125,7 +123,8 @@
         width: 86%;
         max-width: 340px;
         max-height: 100dvh;
-        background: #0f121b;
+        background: linear-gradient(180deg, #0f131a 0%, #0c1016 100%);
+        color: #e6e6e6;
         transform: translateX(-100%);
         transition: transform .25s ease;
         z-index: 2000;
@@ -134,48 +133,12 @@
         pointer-events: auto;
         padding-bottom: 18px;
     }
-   
-    /* FIX: Close button out of flow so brand can move up */
-    .mobile-menu-panel > button[aria-label="Close menu"] {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        z-index: 10;
-        background: none;
-        border: none;
-        padding: 6px;
-    }
-    .mobile-menu-panel > button[aria-label="Close menu"] img,
-    .mobile-menu-panel > button[aria-label="Close menu"] svg {
-        width: 22px;
-        height: 22px;
-        display: block; 
-    }
-   
+
     .mobile-menu-panel.open {
         transform: translateX(0);
     }
 
-    /* ======================================================
-       MOBILE MENU – HEADER VISUAL 
-       SAFE: no layout break, no sticky, no JS impact
-    ====================================================== */
-
-
-    /* Brand acts as visual header */
-    .mobile-menu-panel .menu-brand {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;          /* CENTER BRAND */
-        gap: 10px;
-  
-        padding: 12px 16px;              /* symmetric padding */
-        background: #0f121b;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    /* Close button OUT of flow - correct selector */
+    /* Close button */
     .mobile-menu-panel > button[aria-label="Close menu"] {
         position: absolute;
         top: 12px;
@@ -186,137 +149,293 @@
         padding: 6px;
     }
 
-    /* Normal icon size */
-    .mobile-menu-panel .mobile-menu-close img,
-    .mobile-menu-panel .mobile-menu-close svg {
-        width: 20px;
-        height: 20px;
+    .mobile-menu-panel > button[aria-label="Close menu"] img,
+    .mobile-menu-panel > button[aria-label="Close menu"] svg {
+        width: 22px;
+        height: 22px;
+        display: block;
     }
 
-    /* Logo stays aligned */
+    /* ==================================================
+       MENU HEADER
+    ================================================== */
+    .mobile-menu-panel .menu-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #0f121b;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
     .mobile-menu-panel .menu-brand .logo {
         height: 26px;
         width: auto;
     }
 
-    /* Text block stays next to logo */
     .mobile-menu-panel .brand-text {
         display: flex;
         flex-direction: column;
         line-height: 1.1;
-        margin-top: 0;
-    }
-
-    .mobile-menu-panel.open {
-        transform: translateX(0);
     }
 
     /* ==================================================
-       MENU CONTENT
+       MENU SECTIONS
     ================================================== */
-   
     .menu-section {
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
+
     .menu-section + .menu-section {
         margin-top: 12px;
     }
-    /* =========================================
-       MOBILE MENU – ACCOUNT (HORIZONTAL FIX)
-    ========================================= */
-
-    .menu-section.account {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-    }
-
-    .menu-section.account h4 {
-        width: 100%;
-        margin-bottom: 6px;
-    }
-
-    /* buttons in one row */
-    .menu-section.account .menu-item {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px 0;
-    }
 
     /* ==================================================
-       MOBILE HAMBURGER – PREFERENCES
-       Odds Format & Language (combined)
-     ================================================== */
-     .menu-section.preferences {
+       NAVIGATION
+    ================================================== */
+    .menu-section.navigation .menu-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        padding: 12px 18px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #f4a11a;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    /* --------------------------------------------------
+       EXCEPTION: Betting Tools is NOT a section header
+    -------------------------------------------------- */
+    .menu-group[data-group="betting"] > .menu-link {
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: normal;
+    }
+       
+    .menu-section.navigation .menu-link[aria-expanded="true"] {
+        color: var(--color-accent, #f4a11a);
+    }
+
+    .menu-section.navigation .submenu {
+        display: none;
+        flex-direction: column;
+        margin-top: 6px;
+        padding-left: 12px;
+    }
+
+    .menu-section.navigation .submenu.open {
+        display: flex;
+    }
+
+    .menu-section.navigation .submenu-item {
+        background: none;
+        border: none;
+        padding: 8px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: left;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+
+    .menu-section.navigation .submenu-item.active {
+        color: #ffec00;
+        font-weight: 600;
+    }
+
+
+    /* ==================================================
+       ACCOUNT
+    ================================================== */
+    .menu-section.account {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        align-items: center;
+    }
+
+    /* ACCOUNT heading spans full grid */
+    .menu-section.account h4 {
+        grid-column: 1 / -1;
+        margin-bottom: 6px;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        opacity: 0.6;
+    }
+
+    /* Buttons base */
+    .menu-section.account .menu-item {
+        height: 44px;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        border-radius: 4px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+    }
+
+    /* REGISTER – filled */
+    .mobile-menu-panel .menu-auth-register {
+        background: #f4a11a; /* afër OddsPortal */
+        color: #111;
+    }
+
+    /* LOGIN – outline */
+    .mobile-menu-panel .menu-auth-login {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+    /* ==================================================
+       PREFERENCES
+    ================================================== */
+    .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
-     }
-
-     .menu-section.preferences .menu-item.menu-odds,
-     .menu-section.preferences .menu-item.menu-lang {
-         font-size: 14px;
-         font-weight: 400;
-         opacity: 0.9;
-     }
-
-
-     .menu-section h4 {
-         font-size: 12px;
-         font-weight: 600;
-         color: #9aa0b3;
-         margin: 0 0 6px;
-         text-transform: uppercase;
-         letter-spacing: 0.04em;
-     }
-
-     .menu-link,
-     .menu-item {
-         width: 100%;
-         text-align: left;
-         padding: 12px 0;
-         background: none;
-         border: none;
-         color: #fff;
-         font-size: 15px;
-         font-weight: 600;
-         cursor: pointer;
-     }
-
-    /* ==================================================
-       SUBMENUS (SCROLL-FRIENDLY)
-    ================================================== */
-    .submenu {
-        max-height: 0;
-        overflow: hidden;
-        padding-left: 12px;
-        transition: max-height .25s ease;
     }
 
-    .submenu.open {
-        max-height: 520px;
-        overflow: auto;
-        padding-top: 6px;
-        margin-top: 6px;
+    .menu-section h4 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #9aa0b3;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
 
-    .submenu-item {
-        display: block;
-        padding: 10px 0;
-        font-size: 13px;
-        font-weight: 500;
-        color: #ccc;
+    .menu-link,
+    .menu-item {
+        width: 100%;
+        text-align: left;
+        padding: 12px 0;
         background: none;
         border: none;
-        text-align: left;
+        color: #f4a11a;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
     }
 
+    /* --------------------------------------------------
+       Odds Format & Language — VISUALLY SECONDARY LABELS
+       (Mobile only, label/trigger only)
+    -------------------------------------------------- */
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {    
+        font-size: 11.5px;        /* smaller than section headers */
+        font-weight: 500;       /* reduced emphasis */
+        letter-spacing: 0.02em; /* tighter text */
+        /* color intentionally NOT overridden*/
+    }
+
+    /* =====================================================
+       MOBILE — LANGUAGE ICON (LABEL ONLY)
+       Visual-only enhancement
+    ===================================================== */
+    .menu-section.preferences .menu-item.menu-lang {
+        display: flex;
+    /* REQUIRED for ::before visibility */
+        align-items: center;
+        gap: 8px; /* icon ↔ text spacing */
+    }
+
+    .menu-section.preferences .menu-item.menu-lang::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        background-image: url("/assets/icons/language.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.9;
+        flex-shrink: 0;
+    }
+
     /* ==================================================
-       MOBILE MODAL (ODDS / LANGUAGE / BOOKMARKS / ETC.)
+       NAVIGATION CARETS — SINGLE SOURCE OF TRUTH
+       Mobile Only | OddsPortal-aligned
+    ================================================== */
+
+    /* Reserve space + anchor */
+    .menu-group[data-group="community"] > .menu-link,
+    .menu-group[data-group="bookmakers"] > .menu-link,
+    .menu-group[data-group="premium"] > .menu-link,
+    .menu-group[data-group="betting"] > .menu-link,
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        position: relative;
+        padding-right: 34px;
+    }
+
+    /* Shared caret geometry */
+    .menu-group[data-group="community"] > .menu-link::after,
+    .menu-group[data-group="bookmakers"] > .menu-link::after,
+    .menu-group[data-group="premium"] > .menu-link::after,
+    .menu-group[data-group="betting"] > .menu-link::after,
+    .menu-section.preferences .menu-item.menu-odds::after,
+    .menu-section.preferences .menu-item.menu-lang::after {
+        content: "";
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 8px solid currentColor;
+        pointer-events: none;
+    }
+
+    /* Betting Tools — caret must stay gray (non inherit) */
+    .menu-group[data-group="betting"] > .menu-link::after {
+        border-top-color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Odds Format & Language — WHITE label */
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        color: #ffffff;
+    }
+
+    /* Preferences value color (OddsPortal) — hard isolation */
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-odds strong,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-lang strong,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-odds .value,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-lang .value {
+        color: #f4a11a;
+    }
+
+    /* Odds Format & Language — value text isolation (FIX) */
+    .menu-section.preferences .menu-item.menu-odds strong,
+    .menu-section.preferences .menu-item.menu-lang strong {
+        color: #f4a11a;
+    }
+
+    /* Odds Format & Language — ORANGE caret */
+    .menu-section.preferences .menu-item.menu-odds::after,
+    .menu-section.preferences .menu-item.menu-lang::after {
+        border-top-color: #f4a11a;
+    }
+
+    /* ==================================================
+       MODALS
     ================================================== */
     .be-modal-overlay {
         display: none;
@@ -406,7 +525,7 @@
         z-index: 4000;
     }
 
-    /* ======================================================
+       /* ======================================================
        MOBILE HEADER – SPORTS ROW (ROW 2)
        FINAL RULES:
        - Row 2 has different background than Row 1
@@ -488,134 +607,63 @@
         height: 20px;
     }
 
-    /* ======================================================
-      MOBILE SPORTS ROW – PER SPORT ICON COLORS
-      Scope: Sports Row only
-      File: mobile.css
-    ====================================================== */
+    /* =====================================================
+       BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
+       Explicit navigation targeting (FINAL)
+    ===================================================== */
 
-
-    /* Football – Green */
-    .mobile-sport-item.sport-football svg,
-    .mobile-sport-item.sport-football img {
-        color: #2ecc71;
-        filter: none;
+    /* Hide ALL menu sections */
+    .mobile-menu-panel.premium-mode .menu-section {
+        display: none;
     }
 
-    /* Basketball – Orange */
-    .mobile-sport-item.sport-basketball svg,
-    .mobile-sport-item.sport-basketball img {
-        color: #f39c12;
-        filter: none;
+    /* Show ONLY Navigation section */
+    .mobile-menu-panel.premium-mode .menu-section.navigation {
+        display: block;
     }
 
-    /* Tennis – Neon Green */
-    .mobile-sport-item.sport-tennis svg,
-    .mobile-sport-item.sport-tennis img {
-        color: #a3ff12;
-        filter: none;
+    /* Inside Navigation, hide all groups */
+    .mobile-menu-panel.premium-mode .menu-group {
+        display: none;
     }
 
-    /* Hockey – Ice Blue */
-    .mobile-sport-item.sport-hockey svg,
-    .mobile-sport-item.sport-hockey img {
-        color: #5dade2;
-        filter: none;
+    /* Show ONLY Premium group */
+    .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
+        display: block;
     }
 
-    /* Volleyball – Purple */
-    .mobile-sport-item.sport-volleyball svg,
-    .mobile-sport-item.sport-volleyball img {
-        color: #bb8fce;
-        filter: none;
+    /* =====================================================
+       PREMIUM – FULL SECTION VERTICAL LAYOUT (AESTHETIC ONLY)
+       Scope: Mobile menu → Premium
+    ===================================================== */
+
+    /* Premium group becomes a vertical section */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"] {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;               /* consistent vertical rhythm */
     }
 
-    /* More – Always light orange (override safe) */
-    .mobile-sport-more svg {
-        color: #ff9d00;
+    /* Premium submenu becomes a clean vertical list */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"]
+    .submenu[data-subnav="premium"] {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;               /* one item per row */
+        margin-top: 8px;
+        padding-left: 0;         /* remove dropdown indentation */
+
+        max-height: none;
+        overflow: visible;
     }
 
-   /* =====================================================
-   BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
-   Explicit navigation targeting (FINAL)
-===================================================== */
-
-/* Hide ALL menu sections */
-.mobile-menu-panel.premium-mode .menu-section {
-    display: none;
-}
-
-/* Show ONLY Navigation section */
-.mobile-menu-panel.premium-mode .menu-section.navigation {
-    display: block;
-}
-
-/* Inside Navigation, hide all groups */
-.mobile-menu-panel.premium-mode .menu-group {
-    display: none;
-}
-
-/* Show ONLY Premium group */
-.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
-    display: block;
-}
-
-.mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
-    display: block;
-}
-
-/* =====================================================
-   MOBILE MENU – ACCOUNT (OddsPortal style)
-===================================================== */
-
-.mobile-menu-panel .menu-section.account {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    align-items: center;
-}
-
-/* ACCOUNT heading spans full grid */
-.mobile-menu-panel .menu-section.account h4 {
-    grid-column: 1 / -1;
-    margin-bottom: 6px;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    opacity: 0.6;
-}
-
-/* Buttons base */
-.mobile-menu-panel .menu-section.account .menu-item {
-    height: 44px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-}
-
-/* REGISTER – filled */
-.mobile-menu-panel .menu-auth-register {
-    background: #8c6b00; /* afër OddsPortal */
-    color: #fff;
-}
-
-/* LOGIN – outline */
-.mobile-menu-panel .menu-auth-login {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.35);
-}
-
-
-
-
-
-
-
-
-   
-  
+    /* Premium items: full-width, left-aligned */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"]
+    .submenu-item {
+        width: 100%;
+        text-align: left;
+        padding: 10px 0;
+    }
