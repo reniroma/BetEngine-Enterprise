@@ -385,4 +385,87 @@
         min-width: 50px;
     }
 
-}
+       /* ======================================================
+       MOBILE HEADER – SPORTS ROW (ROW 2)
+       FINAL RULES:
+       - Row 2 has different background than Row 1
+       - Labels are slightly larger and white by default
+       - Active changes LABEL color only (icons do not change)
+       - "More" is always light orange (icon + label)
+    ======================================================= */
+
+    .mobile-sports-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: #131826; /* darker grey to visually separate from Row 1 */
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-sports-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-sport-item {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-width: 50px;
+        padding: 6px 4px;
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+
+    /* Icons stay neutral (do not change on active) */
+    .mobile-sport-item img,
+    .mobile-sport-item .sport-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+
+    /* Inline SVG neutral color */
+    .mobile-sport-item .sport-icon {
+        color: #ffffff;
+    }
+
+    /* Ensure svg strokes remain neutral even if parent text changes */
+    .mobile-sport-item .sport-icon * {
+        stroke: currentColor;
+    }
+
+    /* Label: slightly larger, white by default */
+    .mobile-sport-item .sport-label {
+        font-size: 12px;
+        line-height: 1.1;
+        font-weight: 600;
+        color: #ffffff;
+        white-space: nowrap;
+        text-transform: capitalize;
+    }
+
+    /* Active: change LABEL only */
+    .mobile-sport-item.active .sport-label {
+        color: #ff9d00; /* light orange */
+    }
+
+    /* "More" always light orange (icon + label) */
+    .mobile-sport-more .sport-label {
+        color: #ff9d00;
+    }
+
+    .mobile-sport-more .sport-icon {
+        color: #ff9d00;
+        width: 20px;
+        height: 20px;
+    }
+
+
+
