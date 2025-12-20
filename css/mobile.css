@@ -441,7 +441,6 @@
        - No visual or structural side effects
     ===================================================== */
 
-    @media (max-width: 900px) {
 
     /* Row 2 container: force horizontal scroll */
     .mobile-sports-row {
@@ -454,7 +453,7 @@
     .mobile-sport-item {
         flex: 0 0 auto;
         min-width: 50px;
-    }
+    
 
        /* ======================================================
        MOBILE HEADER – SPORTS ROW (ROW 2)
