@@ -494,5 +494,32 @@
         height: 20px;
     }
 
+    /* =====================================================
+       BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
+       Explicit navigation targeting (FINAL)
+    ===================================================== */
 
+    /* Hide ALL menu sections */
+    .mobile-menu-panel.premium-mode .menu-section {
+        display: none;
+    }
+
+    /* Show ONLY Navigation section */
+    .mobile-menu-panel.premium-mode .menu-section.navigation {
+        display: block;
+    }
+
+    /* Inside Navigation, hide all groups */
+    .mobile-menu-panel.premium-mode .menu-group {
+        display: none;
+    }
+
+    /* Show ONLY Premium group */
+    .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] {
+        display: block;
+    }
+
+    .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
+        display: block;
+    }
 
