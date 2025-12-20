@@ -248,22 +248,6 @@
         font-weight: 600;
     }
 
-    /* =====================================================
-       PREMIUM SUBMENU – VERTICAL FLOW FIX (ENTERPRISE)
-       Reason:
-       - max-height animation causes overlay
-       - Premium must expand in normal flow
-    ===================================================== */
-
-    .submenu[data-subnav="premium"] {
-        max-height: none;
-        overflow: visible;
-        display: none;
-    }
-
-    .submenu[data-subnav="premium"].open {
-        display: flex;
-    }
 
     /* ==================================================
        ACCOUNT
