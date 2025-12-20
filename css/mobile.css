@@ -41,7 +41,7 @@
     .mobile-top-bar {
         position: relative;
         display: flex;
-        align-items: flex-start;
+        align-items: flex-start; /* FIX: vertical aligment */
         justify-content: space-between;
         padding: 2px 14px 10px;
     }
