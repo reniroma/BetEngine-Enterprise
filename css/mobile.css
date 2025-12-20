@@ -431,29 +431,6 @@
     .be-auth-overlay {
         z-index: 4000;
     }
-   
-    /* =====================================================
-       ENTERPRISE ROW 2 ADD-BACK PATCH (SAFE & ISOLATED)
-       Scope: Mobile Header – Sports Row ONLY
-       Reason:
-       - Restore original horizontal scroll behavior
-       - Restore flex overflow contract
-       - No visual or structural side effects
-    ===================================================== */
-
-
-    /* Row 2 container: force horizontal scroll */
-    .mobile-sports-row {
-        display: flex;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Row 2 items: prevent flex shrink, enable overflow */
-    .mobile-sport-item {
-        flex: 0 0 auto;
-        min-width: 50px;
-    
 
        /* ======================================================
        MOBILE HEADER – SPORTS ROW (ROW 2)
