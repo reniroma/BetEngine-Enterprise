@@ -414,6 +414,28 @@
         color: #ffffff;
     }
 
+    /* =====================================================
+       MOBILE — LANGUAGE ICON (FINAL, CASCADE-SAFE)
+    ===================================================== */
+    .menu-section.preferences .menu-item.menu-lang {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .menu-section.preferences .menu-item.menu-lang::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        background-image: url("assets/icons/language.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.9;
+        flex-shrink: 0;
+    }
+
     /* Preferences value color (OddsPortal) — hard isolation */
     .mobile-menu-panel .menu-section.preferences .menu-item.menu-odds strong,
     .mobile-menu-panel .menu-section.preferences .menu-item.menu-lang strong,
