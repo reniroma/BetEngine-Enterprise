@@ -390,11 +390,18 @@
         color: #ffffff;
     }
 
+    /* Preferences value color (OddsPortal) — hard isolation */
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-odds strong,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-lang strong,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-odds .value,
+    .mobile-menu-panel .menu-section.preferences .menu-item.menu-lang .value {
+        color: #f4a11a;
+    }
+
     /* Odds Format & Language — value text isolation (FIX) */
     .menu-section.preferences .menu-item.menu-odds strong,
     .menu-section.preferences .menu-item.menu-lang strong {
         color: #f4a11a;
-        font-weight: 600; /* keep visual emphasis */
     }
 
     /* Odds Format & Language — ORANGE caret */
