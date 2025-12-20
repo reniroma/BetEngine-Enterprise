@@ -336,11 +336,10 @@
     -------------------------------------------------- */
     .menu-section.preferences .menu-item.menu-odds,
     .menu-section.preferences .menu-item.menu-lang {
-        font-size: 12px;        /* smaller than section headers */
+        font-size: 11px;        /* smaller than section headers */
         font-weight: 500;       /* reduced emphasis */
         letter-spacing: 0.02em; /* tighter text */
-    /* color intentionally NOT overridden */
-}
+    }
 
     /* ==================================================
        MODALS
