@@ -523,6 +523,38 @@
         display: block;
     }
 
-    .mobile-menu-panel.premium-mode .menu-group[data-group="premium"] .submenu {
-        display: block;
+    /* =====================================================
+       PREMIUM – FULL SECTION VERTICAL LAYOUT (AESTHETIC ONLY)
+       Scope: Mobile menu → Premium
+    ===================================================== */
+
+    /* Premium group becomes a vertical section */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"] {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;               /* consistent vertical rhythm */
+    }
+
+    /* Premium submenu becomes a clean vertical list */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"]
+    .submenu[data-subnav="premium"] {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;               /* one item per row */
+        margin-top: 8px;
+        padding-left: 0;         /* remove dropdown indentation */
+
+        max-height: none;
+        overflow: visible;
+    }
+
+    /* Premium items: full-width, left-aligned */
+    .mobile-menu-panel.premium-mode
+    .menu-group[data-group="premium"]
+    .submenu-item {
+        width: 100%;
+        text-align: left;
+        padding: 10px 0;
     }
