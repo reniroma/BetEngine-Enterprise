@@ -218,7 +218,7 @@
     -------------------------------------------------- */
     .menu-group[data-group="betting"] > .menu-link {
         color: #ffffff;
-        text-transform: none;
+        text-transform: uppercase;
         letter-spacing: normal;
     }
        
@@ -341,6 +341,29 @@
         font-weight: 500;       /* reduced emphasis */
         letter-spacing: 0.02em; /* tighter text */
         /* color intentionally NOT overridden*/
+    }
+
+    /* =====================================================
+       MOBILE — LANGUAGE ICON (LABEL ONLY)
+       Visual-only enhancement
+    ===================================================== */
+    .menu-section.preferences .menu-item.menu-lang {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* icon ↔ text spacing */
+    }
+
+    .menu-section.preferences .menu-item.menu-lang::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+        background-image: url("/assets/icons/language.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.9;
+        flex-shrink: 0;
     }
 
     /* ==================================================
