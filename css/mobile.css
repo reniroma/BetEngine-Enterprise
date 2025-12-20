@@ -355,7 +355,9 @@
     }
 
     .be-modal-header {
+        flex-shrink: 0;
         display: flex;
+        align-items: center;
         justify-content: space-between;
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -368,6 +370,10 @@
     .be-modal-body {
         flex: 1;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
         padding: 12px;
     }
 
@@ -380,6 +386,9 @@
         font-size: 14px;
         cursor: pointer;
     }
+    /* Extra comfort for long language lists */
+    .be-modal-body.modal-language {
+        max-height: calc(82vh - 56px);
 
     .be-modal-item.active {
         background: #ffec00;
