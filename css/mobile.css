@@ -360,36 +360,4 @@
         border-color: #ffec00;
         font-weight: 600;
     }
-
-    /* =====================================================
-       Enterprise runtime fix: Row 2 horizontal scroll unblocked
-       Scope: MOBILE ONLY
-       Reason: Counteracts global/inline overflow locks while
-       preserving menu-open scroll lock.
-    ===================================================== */
-
-    @media (max-width: 900px) {
-
-    /* Allow horizontal overflow when menu is NOT open */
-    html,
-    body:not(.menu-open) {
-        overflow-x: auto !important;
-    }
-
-    /* Preserve vertical page scrolling behavior */
-    body:not(.menu-open) {
-        overflow-y: auto;
-    }
-
-    /* Ensure Row 2 remains the intended horizontal scroller */
-    .header-mobile .mobile-sports-row {
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        flex-wrap: nowrap;
-    }
-
-    .header-mobile .mobile-sport-item {
-        flex: 0 0 auto;
-    }
 }
