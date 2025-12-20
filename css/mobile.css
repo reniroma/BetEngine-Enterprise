@@ -361,24 +361,19 @@
         font-weight: 600;
     }
 
-    
     /* =====================================================
-       Row 2 corrective patch – additive (REAL SELECTORS)
-       Scope: Mobile Header – Sports Row only
+       ENTERPRISE FIX: Mobile horizontal overflow allowance
+       Scope: MOBILE ONLY
+       Reason: Allow Row 2 (sports navigation) to scroll
+       without breaking global desktop overflow safety
     ===================================================== */
 
     @media (max-width: 900px) {
+        body {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    } 
 
-    /* Ensure horizontal scrolling is owned by the real wrapper */
-    .mobile-sports-row {
-        flex-wrap: nowrap;          /* prevent wrapping */
-        overflow-x: auto;           /* enable horizontal scroll */
-        overflow-y: hidden;         /* avoid vertical jitter */
-    }
-
-    /* Prevent flex items (buttons) from shrinking */
-    .mobile-sport-item {
-        flex: 0 0 auto;             /* keep intrinsic width */
-        flex-shrink: 0;             /* no collapse */
-    }
-}
+    
+     
