@@ -213,11 +213,15 @@
         text-align: left;
     }
 
-     /* Betting tools exception */
-    .menu-group[data-group="betting"]
-    .menu-link[aria-expanded="true"] {
+    /* --------------------------------------------------
+       EXCEPTION: Betting Tools is NOT a section header
+    -------------------------------------------------- */
+    .menu-group[data-group="betting"] > .menu-link {
         color: #ffffff;
+        text-transform: none;
+        letter-spacing: normal;
     }
+       
     .menu-section.navigation .menu-link[aria-expanded="true"] {
         color: var(--color-accent, #f4a11a);
     }
