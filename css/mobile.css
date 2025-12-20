@@ -343,6 +343,7 @@
         pointer-events: auto;
     }
 
+    /* Modal container sizing */
     .be-modal {
         width: 92%;
         max-width: 360px;
@@ -354,8 +355,11 @@
         overflow: hidden;
     }
 
+    /* Header always visible */
     .be-modal-header {
+        flex-shrink: 0;
         display: flex;
+        align-items: center;
         justify-content: space-between;
         padding: 14px 16px;
         border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -365,20 +369,38 @@
         z-index: 2;
     }
 
+    /* Modal body scrolls, not whole modal */
     .be-modal-body {
         flex: 1;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
         padding: 12px;
     }
 
+    /* Extra comfort for long language lists */
+    .be-modal-body.modal-language {
+        max-height: calc(82vh - 56px);
+    }
+
     .be-modal-item {
+        width: 100%;
         padding: 14px 16px;
         border-radius: 8px;
         background: #151827;
         border: 1px solid rgba(255, 255, 255, 0.08);
         color: #ffffff;
         font-size: 14px;
+        text-align: left;
         cursor: pointer;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .be-modal-item:hover {
+        background: #1c2033;
+        border-color: rgba(255, 255, 255, 0.18);
     }
 
     .be-modal-item.active {
@@ -388,6 +410,11 @@
         font-weight: 600;
     }
 
+    /* Keep auth overlays above everything if ever enabled on mobile */
+    .be-auth-overlay {
+        z-index: 4000;
+    }
+   
     /* =====================================================
        ENTERPRISE ROW 2 ADD-BACK PATCH (SAFE & ISOLATED)
        Scope: Mobile Header – Sports Row ONLY
