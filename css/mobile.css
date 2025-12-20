@@ -253,11 +253,10 @@
     ================================================== */
     .menu-section.account {
         display: flex;
-        flex-direction: row;
         gap: 10px;
     }
 
-    .menu-section.account h4 {
+    .menu-section.account {
         width: 100%;
         margin-bottom: 6px;
     }   
