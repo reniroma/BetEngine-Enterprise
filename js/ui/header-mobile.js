@@ -75,18 +75,7 @@
             });
 
             forceOddsOpen();
-        };
 
-        /* ==================================================
-           CRITICAL FIX: FULL BODY OVERFLOW RESET
-           (removes inline lock that breaks Row 2)
-        ================================================== */
-            document.body.style.removeProperty("overflow");
-            document.body.style.removeProperty("overflow-x");
-            document.body.style.removeProperty("overflow-y");
-            document.body.classList.remove("menu-open");
-        };
-              
             document.body.style.overflow = "";
             document.body.classList.remove("menu-open");
         };
