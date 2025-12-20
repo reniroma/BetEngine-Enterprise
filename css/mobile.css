@@ -388,10 +388,6 @@
        - Odds Format + Language: white label, orange caret + orange value
     ===================================================== */
 
-    /* 1) BETTING TOOLS — gray caret (OddsPortal style) */
-    .menu-group[data-group="betting"] > .menu-link::after {
-        border-left-color: rgba(255, 255, 255, 0.45);
-    }
 
     /* 2) ODDS FORMAT & LANGUAGE — white label text base */
     .menu-section.preferences .menu-item.menu-odds,
@@ -399,17 +395,68 @@
         color: #ffffff;
     }
 
-    /* 3) ODDS FORMAT & LANGUAGE — value in orange (OddsPortal) */
-    .menu-section.preferences .menu-item.menu-odds .value,
-    .menu-section.preferences .menu-item.menu-lang .value {
-        color: #f4a11a;
-    }
-
     /* 4) ODDS FORMAT & LANGUAGE — caret stays orange */
     .menu-section.preferences .menu-item.menu-odds::after,
     .menu-section.preferences .menu-item.menu-lang::after {
-        border-left-color: #f4a11a;
+        border-top-color: #f4a11a;
     }
+
+    /* ==================================================
+       NAVIGATION CARETS — UNIFIED ENTERPRISE FIX
+       Includes:
+       - Community
+       - Bookmakers
+       - Premium
+       - Betting Tools
+    ================================================== */
+
+    /* Reserve space + anchor */
+    .menu-group[data-group="community"] > .menu-link,
+    .menu-group[data-group="bookmakers"] > .menu-link,
+    .menu-group[data-group="premium"] > .menu-link,
+    .menu-group[data-group="betting"] > .menu-link,
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        position: relative;
+        padding-right: 34px;
+    }
+
+    /* Shared caret geometry */
+    .menu-group[data-group="community"] > .menu-link::after,
+    .menu-group[data-group="bookmakers"] > .menu-link::after,
+    .menu-group[data-group="premium"] > .menu-link::after,
+    .menu-group[data-group="betting"] > .menu-link::after,
+    .menu-section.preferences .menu-item.menu-odds::after,
+    .menu-section.preferences .menu-item.menu-lang::after {
+        content: "";
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 8px solid #f4a11a;
+        pointer-events: none;
+    }
+
+    /* Betting Tools — gray caret */
+    .menu-group[data-group="betting"] > .menu-link::after {
+        border-top-color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Odds Format & Language — white label */
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        color: #ffffff;
+    }
+
+    /* Odds Format & Language — value in orange (text-node safe) */
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        --value-color: #f4a11a;
+}
 
     /* ==================================================
        MODALS
