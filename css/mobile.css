@@ -246,6 +246,7 @@
         color: rgba(255, 255, 255, 0.8);
         text-align: left;
         cursor: pointer;
+        text-transform: uppercase;
     }
 
     .menu-section.navigation .submenu-item.active {
@@ -377,6 +378,37 @@
         font-weight: 500;       /* reduced emphasis */
         letter-spacing: 0.02em; /* tighter text */
         /* color intentionally NOT overridden*/
+    }
+
+    /* =====================================================
+       Navigation Caret Indicators — COLOR OVERRIDES ONLY
+       (Additive, Mobile Only)
+       Scope:
+       - Betting Tools caret: gray
+       - Odds Format + Language: white label, orange caret + orange value
+    ===================================================== */
+
+    /* 1) BETTING TOOLS — gray caret (OddsPortal style) */
+    .menu-group[data-group="betting"] > .menu-link::after {
+        border-left-color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* 2) ODDS FORMAT & LANGUAGE — white label text base */
+    .menu-section.preferences .menu-item.menu-odds,
+    .menu-section.preferences .menu-item.menu-lang {
+        color: #ffffff;
+    }
+
+    /* 3) ODDS FORMAT & LANGUAGE — value in orange (OddsPortal) */
+    .menu-section.preferences .menu-item.menu-odds .value,
+    .menu-section.preferences .menu-item.menu-lang .value {
+        color: #f4a11a;
+    }
+
+    /* 4) ODDS FORMAT & LANGUAGE — caret stays orange */
+    .menu-section.preferences .menu-item.menu-odds::after,
+    .menu-section.preferences .menu-item.menu-lang::after {
+        border-left-color: #f4a11a;
     }
 
     /* ==================================================
