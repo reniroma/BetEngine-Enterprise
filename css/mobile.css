@@ -213,14 +213,13 @@
         text-align: left;
     }
 
-    .menu-section.navigation .menu-link[aria-expanded="true"] {
-        color: var(--color-accent, #f4a11a);
-    }
-
-    /* Betting tools exception */
+     /* Betting tools exception */
     .menu-group[data-group="betting"]
     .menu-link[aria-expanded="true"] {
         color: #ffffff;
+    }
+    .menu-section.navigation .menu-link[aria-expanded="true"] {
+        color: var(--color-accent, #f4a11a);
     }
 
     .menu-section.navigation .submenu {
