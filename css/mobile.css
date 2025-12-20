@@ -398,11 +398,11 @@
         height: 0;
         border-left: 7px solid transparent;
         border-right: 7px solid transparent;
-        border-top: 8px solid #f4a11a;
+        border-top: 8px solid currentColor;
         pointer-events: none;
     }
 
-    /* Betting Tools — gray caret */
+    /* Betting Tools — caret must stay gray (non inherit) */
     .menu-group[data-group="betting"] > .menu-link::after {
         border-top-color: rgba(255, 255, 255, 0.45);
     }
