@@ -257,13 +257,7 @@
         gap: 12px;
         align-items: center;
     }
-
-    .menu-section.account {
-        width: 100%;
-        margin-bottom: 6px;
-    }   
-    
-    /* buttons in one row */
+   
     .menu-section.account .menu-item {
         flex: 1;
         display: flex;
@@ -272,7 +266,7 @@
         padding: 10px 0;
         font-size: 13px;
         font-weight: 500;
-        border-radius:4px;
+        
     }
 
     /* ==================================================
