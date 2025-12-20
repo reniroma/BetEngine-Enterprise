@@ -390,6 +390,13 @@
         color: #ffffff;
     }
 
+    /* Odds Format & Language — value text isolation (FIX) */
+    .menu-section.preferences .menu-item.menu-odds strong,
+    .menu-section.preferences .menu-item.menu-lang strong {
+        color: #f4a11a;
+        font-weight: 600; /* keep visual emphasis */
+    }
+
     /* Odds Format & Language — ORANGE caret */
     .menu-section.preferences .menu-item.menu-odds::after,
     .menu-section.preferences .menu-item.menu-lang::after {
