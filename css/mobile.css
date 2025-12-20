@@ -349,6 +349,7 @@
     ===================================================== */
     .menu-section.preferences .menu-item.menu-lang {
         display: flex;
+    /* REQUIRED for ::before visibility */
         align-items: center;
         gap: 8px; /* icon ↔ text spacing */
     }
