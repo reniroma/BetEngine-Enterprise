@@ -331,43 +331,6 @@
         cursor: pointer;
     }
 
-    /* ==================================================
-       NAVIGATION CARET INDICATORS (MOBILE ONLY)
-       Scope:
-       - Community
-       - Bookmakers
-       - Odds Format (label only)
-       - Language (label only)
-       Visual target: OddsPortal right-side caret
-    ================================================== */
-
-    /* Reserve space + anchor for caret (no layout shift) */
-    .menu-group[data-group="community"] > .menu-link,
-    .menu-group[data-group="bookmakers"] > .menu-link,
-    .menu-section.preferences .menu-item.menu-odds,
-    .menu-section.preferences .menu-item.menu-lang {
-        position: relative;
-        padding-right: 34px; /* caret lane */
-    }
-
-    /* Right-aligned down caret */
-    .menu-group[data-group="community"] > .menu-link::after,
-    .menu-group[data-group="bookmakers"] > .menu-link::after,
-    .menu-section.preferences .menu-item.menu-odds::after,
-    .menu-section.preferences .menu-item.menu-lang::after {
-        content: "";
-        position: absolute;
-        right: 18px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        border-top: 8px solid #f4a11a; /* required */
-        pointer-events: none;
-    }
-
     /* --------------------------------------------------
        Odds Format & Language — VISUALLY SECONDARY LABELS
        (Mobile only, label/trigger only)
@@ -380,34 +343,9 @@
         /* color intentionally NOT overridden*/
     }
 
-    /* =====================================================
-       Navigation Caret Indicators — COLOR OVERRIDES ONLY
-       (Additive, Mobile Only)
-       Scope:
-       - Betting Tools caret: gray
-       - Odds Format + Language: white label, orange caret + orange value
-    ===================================================== */
-
-
-    /* 2) ODDS FORMAT & LANGUAGE — white label text base */
-    .menu-section.preferences .menu-item.menu-odds,
-    .menu-section.preferences .menu-item.menu-lang {
-        color: #ffffff;
-    }
-
-    /* 4) ODDS FORMAT & LANGUAGE — caret stays orange */
-    .menu-section.preferences .menu-item.menu-odds::after,
-    .menu-section.preferences .menu-item.menu-lang::after {
-        border-top-color: #f4a11a;
-    }
-
     /* ==================================================
-       NAVIGATION CARETS — UNIFIED ENTERPRISE FIX
-       Includes:
-       - Community
-       - Bookmakers
-       - Premium
-       - Betting Tools
+       NAVIGATION CARETS — SINGLE SOURCE OF TRUTH
+       Mobile Only | OddsPortal-aligned
     ================================================== */
 
     /* Reserve space + anchor */
@@ -446,17 +384,17 @@
         border-top-color: rgba(255, 255, 255, 0.45);
     }
 
-    /* Odds Format & Language — white label */
+    /* Odds Format & Language — WHITE label */
     .menu-section.preferences .menu-item.menu-odds,
     .menu-section.preferences .menu-item.menu-lang {
         color: #ffffff;
     }
 
-    /* Odds Format & Language — value in orange (text-node safe) */
-    .menu-section.preferences .menu-item.menu-odds,
-    .menu-section.preferences .menu-item.menu-lang {
-        --value-color: #f4a11a;
-}
+    /* Odds Format & Language — ORANGE caret */
+    .menu-section.preferences .menu-item.menu-odds::after,
+    .menu-section.preferences .menu-item.menu-lang::after {
+        border-top-color: #f4a11a;
+    }
 
     /* ==================================================
        MODALS
