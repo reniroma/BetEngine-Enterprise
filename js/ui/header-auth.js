@@ -1,10 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.3)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.2)
  * Single source of truth for Login / Register overlays
- * FORGOT PASSWORD:
- * - State-driven (.state-forgot-open)
- * - No inline styles
- * - No layout refactor
  *********************************************************/
 
 /* =======================
@@ -27,22 +23,21 @@ function initAuth() {
     if (!loginOverlay || !registerOverlay) return;
 
     /* ===============================
-       FORGOT PASSWORD — STATE LOGIC
+       FORGOT PASSWORD — STATE PATCH
        =============================== */
-    const forgotBtn = loginOverlay.querySelector(".auth-forgot-link");
+    const forgotBtn = loginOverlay.querySelector(".auth-forgot");
 
     if (forgotBtn) {
         on(forgotBtn, "click", () => {
             loginOverlay.classList.add("state-forgot-open");
         });
     }
+    /* ===== END FORGOT PATCH ===== */
 
-    /* ===============================
-       CLOSE / RESET
-       =============================== */
     const closeAll = () => {
-        loginOverlay.classList.remove("show", "state-forgot-open");
+        loginOverlay.classList.remove("show");
         registerOverlay.classList.remove("show");
+        loginOverlay.classList.remove("state-forgot-open");
         lockBody(false);
     };
 
@@ -58,40 +53,29 @@ function initAuth() {
         lockBody(true);
     };
 
-    /* ===============================
-       TRIGGERS (DESKTOP)
-       =============================== */
+    /* Triggers (desktop) */
     on(qs(".btn-auth.login"), "click", (e) => {
         e.preventDefault();
         openLogin();
     });
-
     on(qs(".btn-auth.register"), "click", (e) => {
         e.preventDefault();
         openRegister();
     });
 
-    /* ===============================
-       TRIGGERS (MOBILE MENU)
-       =============================== */
+    /* Triggers (mobile menu) */
     on(qs(".menu-auth-login"), "click", openLogin);
     on(qs(".menu-auth-register"), "click", openRegister);
 
-    /* ===============================
-       CLOSE HANDLERS
-       =============================== */
+    /* Close handlers */
     [loginOverlay, registerOverlay].forEach(overlay => {
-        const closeBtn = overlay.querySelector(".auth-close");
-
-        on(closeBtn, "click", closeAll);
+        on(overlay.querySelector(".auth-close"), "click", closeAll);
         on(overlay, "click", (e) => {
             if (e.target === overlay) closeAll();
         });
     });
 
-    /* ===============================
-       SWITCH LOGIN / REGISTER
-       =============================== */
+    /* Switch between modals */
     document.querySelectorAll(".auth-switch").forEach(btn => {
         on(btn, "click", () => {
             const target = btn.dataset.authTarget;
@@ -100,12 +84,9 @@ function initAuth() {
         });
     });
 
-    /* ===============================
-       ESC KEY
-       =============================== */
+    /* ESC */
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
-
         if (
             loginOverlay.classList.contains("show") ||
             registerOverlay.classList.contains("show")
@@ -114,9 +95,7 @@ function initAuth() {
         }
     });
 
-    /* ===============================
-       PUBLIC API
-       =============================== */
+    /* Public API */
     window.BE_openLogin = openLogin;
     window.BE_openRegister = openRegister;
 }
