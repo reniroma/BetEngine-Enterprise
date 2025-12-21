@@ -32,7 +32,7 @@ function initAuth() {
     const openLogin = () => {
         closeAll();
         loginOverlay.classList.add("show");
-        lockBody(tru);
+        lockBody(true);
     };
 
     const openRegister = () => {
