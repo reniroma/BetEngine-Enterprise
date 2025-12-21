@@ -125,3 +125,13 @@ document.addEventListener("headerLoaded", initAuth);
 if (window.__BE_HEADER_READY__ === true) {
     initAuth();
 }
+
+/* ======================================
+   DEBUG / GLOBAL FORGOT CLICK CAPTURE
+   MUST BE LAST LINE OF FILE
+====================================== */
+document.addEventListener("click", (e) => {
+    if (e.target.closest(".auth-forgot-link, .auth-forgot")) {
+        console.log("FORGOT CLICK DETECTED");
+    }
+});
