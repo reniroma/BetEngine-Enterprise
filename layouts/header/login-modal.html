@@ -1,67 +1,106 @@
-<div class="be-auth-overlay" id="login-modal">
-    <div class="be-auth-box">
+```javascript
+/*********************************************************
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.3)
+ * Optimized for Login / Register / Forgot Password
+ *********************************************************/
 
-        <div class="auth-header">
-            <span class="auth-title">Login</span>
-            <button class="auth-close" type="button">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
+const qs = (sel, scope = document) => scope.querySelector(sel);
+const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-        <!-- Social login -->
-        <div class="auth-social">
-            <button class="auth-social-btn facebook" type="button">Sign in with Facebook</button>
-            <button class="auth-social-btn google" type="button">Sign in with Google</button>
-            <button class="auth-social-btn apple" type="button">Sign in with Apple</button>
-        </div>
+const lockBody = (lock) => {
+    document.body.style.overflow = lock ? "hidden" : "";
+};
 
-        <div class="auth-divider"><span>OR</span></div>
+function initAuth() {
+    const loginOverlay    = qs("#login-modal");
+    const registerOverlay = qs("#register-modal");
 
-        <!-- Login form -->
-        <form class="auth-form" autocomplete="on">
-            <label class="auth-field">
-                <span class="auth-label">Username</span>
-                <input type="text" name="username" autocomplete="username">
-            </label>
+    if (!loginOverlay || !registerOverlay) return;
 
-            <label class="auth-field">
-                <span class="auth-label">Password</span>
-                <input type="password" name="password" autocomplete="current-password">
-            </label>
+    const loginForm     = loginOverlay.querySelector(".auth-form");
+    const forgotBtn     = loginOverlay.querySelector(".auth-forgot");
+    const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
+    const backBtn       = loginOverlay.querySelector(".back-to-login");
 
-            <label class="auth-checkbox">
-                <input type="checkbox" name="remember">
-                <span>Remember me</span>
-            </label>
+    /* --- FORGOT PASSWORD LOGIC --- */
+    if (forgotBtn && forgotSection && loginForm) {
+        on(forgotBtn, "click", (e) => {
+            e.preventDefault();
+            loginOverlay.classList.add("state-forgot-open");
+            loginForm.style.display = "none";
+            forgotSection.style.display = "block";
+            forgotSection.setAttribute("aria-hidden", "false");
+        });
+    }
 
-            <button class="auth-submit primary" type="submit">Login</button>
+    if (backBtn) {
+        on(backBtn, "click", (e) => {
+            e.preventDefault();
+            loginOverlay.classList.remove("state-forgot-open");
+            loginForm.style.display = "flex";
+            forgotSection.style.display = "none";
+            forgotSection.setAttribute("aria-hidden", "true");
+        });
+    }
 
-            <div class="auth-footer-text">
-                <span>Don’t have an account?</span>
-                <button class="auth-link" type="button" data-open-register>
-                    Create one for free
-                </button>
-            </div>
+    /* --- COMMON HANDLERS --- */
+    const closeAll = () => {
+        loginOverlay.classList.remove("show", "state-forgot-open");
+        registerOverlay.classList.remove("show");
+        lockBody(false);
 
-            <button class="auth-link auth-forgot" type="button">Forgot password?</button>
-        </form>
+        // Reset to default state
+        if (loginForm) loginForm.style.display = "";
+        if (forgotSection) {
+            forgotSection.style.display = "none";
+            forgotSection.setAttribute("aria-hidden", "true");
+        }
+    };
 
-        <!-- FORGOT PASSWORD (INLINE, MOBILE ONLY) -->
-<div class="auth-forgot-section" aria-hidden="true">
-    <h3 class="auth-forgot-title">Forgotten password</h3>
-    <p class="auth-forgot-text">
-        Fill in your email to get forgotten password.
-        Additional information will be sent to your email.
-    </p>
+    const openLogin = () => {
+        closeAll();
+        loginOverlay.classList.add("show");
+        lockBody(true);
+    };
 
-    <label class="auth-field">
-        <span class="auth-label">Email *</span>
-        <input type="email" name="forgot_email" autocomplete="email">
-    </label>
+    const openRegister = () => {
+        closeAll();
+        registerOverlay.classList.add("show");
+        lockBody(true);
+    };
 
-    <button type="button" class="auth-submit primary">
-        CONFIRM
-    </button>
-</div>
-    
+    /* --- EVENT BINDING --- */
+    on(qs(".btn-auth.login"), "click", (e) => { e.preventDefault(); openLogin(); });
+    on(qs(".btn-auth.register"), "click", (e) => { e.preventDefault(); openRegister(); });
+    on(qs(".menu-auth-login"), "click", openLogin);
+    on(qs(".menu-auth-register"), "click", openRegister);
 
+    [loginOverlay, registerOverlay].forEach(overlay => {
+        const closeBtn = overlay.querySelector(".auth-close");
+        on(closeBtn, "click", closeAll);
+        on(overlay, "click", (e) => {
+            if (e.target === overlay) closeAll();
+        });
+    });
+
+    document.querySelectorAll(".auth-switch").forEach(btn => {
+        on(btn, "click", () => {
+            const target = btn.dataset.authTarget;
+            if (target === "login") openLogin();
+            if (target === "register") openRegister();
+        });
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeAll();
+    });
+
+    window.BE_openLogin = openLogin;
+    window.BE_openRegister = openRegister;
+}
+
+// Initialization
+document.addEventListener("headerLoaded", initAuth);
+if (window.__BE_HEADER_READY__ === true) {
+    initAuth();
+}
