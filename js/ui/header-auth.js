@@ -22,24 +22,34 @@ function initAuth() {
 
     if (!loginOverlay || !registerOverlay) return;
 
-    /* ===============================
-       FORGOT PASSWORD – STATE PATCH
-       =============================== */
-    const forgotBtn = loginOverlay.querySelector(".auth-forgot-link");
+    /* ==================================================
+       FORGOT PASSWORD — FINAL FIX (INLINE, SAFE)
+       ================================================== */
+    const loginForm     = loginOverlay.querySelector(".auth-form");
+    const forgotBtn     = loginOverlay.querySelector(".auth-forgot"); // ✅ FIXED
+    const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
 
-    if (forgotBtn) {
+    if (forgotBtn && forgotSection && loginForm) {
         forgotBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            e.stopPropagation();
-            loginOverlay.classList.add("state-forgot-open");
+            loginForm.style.display = "none";
+            forgotSection.style.display = "block";
+            forgotSection.setAttribute("aria-hidden", "false");
         });
     }
-    /* ===== END PATCH ===== */
+    /* ================= END FIX ================= */
 
     const closeAll = () => {
-        loginOverlay.classList.remove("show", "state-forgot-open");
+        loginOverlay.classList.remove("show");
         registerOverlay.classList.remove("show");
         lockBody(false);
+
+        /* Reset forgot password state */
+        if (loginForm) loginForm.style.display = "";
+        if (forgotSection) {
+            forgotSection.style.display = "none";
+            forgotSection.setAttribute("aria-hidden", "true");
+        }
     };
 
     const openLogin = () => {
