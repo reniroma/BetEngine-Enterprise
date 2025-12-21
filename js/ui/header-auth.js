@@ -23,10 +23,34 @@ function initAuth() {
 
     if (!loginOverlay || !registerOverlay) return;
 
+    /* ===============================
+       FORGOT PASSWORD – PATCH (MINIMAL)
+       =============================== */
+    const loginForm     = loginOverlay.querySelector(".auth-form");
+    const forgotBtn     = loginOverlay.querySelector(".auth-forgot");
+    const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
+
+    if (forgotBtn && forgotSection && loginForm) {
+        forgotBtn.addEventListener("click", () => {
+            loginForm.style.display = "none";
+            forgotSection.style.display = "block";
+            forgotSection.setAttribute("aria-hidden", "false");
+        });
+    }
+    /* ===== END PATCH ===== */
+
     const closeAll = () => {
         loginOverlay.classList.remove("show");
         registerOverlay.classList.remove("show");
         lockBody(false);
+
+        /* ===== RESET FORGOT STATE (SAFE) ===== */
+        if (loginForm) loginForm.style.display = "";
+        if (forgotSection) {
+            forgotSection.style.display = "none";
+            forgotSection.setAttribute("aria-hidden", "true");
+        }
+        /* ===== END RESET ===== */
     };
 
     const openLogin = () => {
