@@ -14,6 +14,8 @@
 
         <!-- BODY -->
         <div class="auth-body">
+
+            <!-- SCROLL CONTAINER (REQUIRED) -->
             <div class="auth-scroll">
 
                 <!-- Social register buttons -->
@@ -34,7 +36,9 @@
                     </button>
                 </div>
 
-                <div class="auth-divider"><span>OR</span></div>
+                <div class="auth-divider">
+                    <span>OR</span>
+                </div>
 
                 <!-- Register form -->
                 <form class="auth-form" autocomplete="on">
@@ -58,19 +62,24 @@
                         <span>I agree to the Terms & Privacy</span>
                     </label>
 
-                    <button class="auth-submit primary" type="submit">Create account</button>
+                    <button class="auth-submit primary" type="submit">
+                        Create account
+                    </button>
 
                     <div class="auth-footer-text">
                         <span>Already have an account?</span>
-                        <button type="button"
-                                class="auth-link auth-switch"
-                                data-auth-target="login">
+                        <button
+                            type="button"
+                            class="auth-link auth-switch"
+                            data-auth-target="login">
                             Sign in
                         </button>
                     </div>
                 </form>
 
-            </div>
-        </div>
+            </div><!-- /auth-scroll -->
+
+        </div><!-- /auth-body -->
+
     </div>
 </div>
