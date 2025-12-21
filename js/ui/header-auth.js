@@ -23,21 +23,22 @@ function initAuth() {
     if (!loginOverlay || !registerOverlay) return;
 
     /* ===============================
-       FORGOT PASSWORD — STATE PATCH
+       FORGOT PASSWORD – STATE PATCH
        =============================== */
-    const forgotBtn = loginOverlay.querySelector(".auth-forgot");
+    const forgotBtn = loginOverlay.querySelector(".auth-forgot-link");
 
     if (forgotBtn) {
-        on(forgotBtn, "click", () => {
+        forgotBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             loginOverlay.classList.add("state-forgot-open");
         });
     }
-    /* ===== END FORGOT PATCH ===== */
+    /* ===== END PATCH ===== */
 
     const closeAll = () => {
-        loginOverlay.classList.remove("show");
+        loginOverlay.classList.remove("show", "state-forgot-open");
         registerOverlay.classList.remove("show");
-        loginOverlay.classList.remove("state-forgot-open");
         lockBody(false);
     };
 
