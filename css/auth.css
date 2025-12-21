@@ -319,13 +319,6 @@
     background: #11141d;
 }
 
-/* 2) Scrollable body only (already full-screen) */
-.be-auth-box .auth-body {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
 /* 3) Subtle depth cue when scrolling */
 .be-auth-box .auth-body::before {
     content: "";
