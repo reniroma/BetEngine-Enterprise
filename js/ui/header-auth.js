@@ -1,6 +1,7 @@
 /*********************************************************
  * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.2)
  * Single source of truth for Login / Register overlays
+ * FIX: Forgot Password (inline, same modal, mobile-only UI)
  *********************************************************/
 
 /* =======================
@@ -17,39 +18,68 @@ const lockBody = (lock) => {
    INIT AUTH
 ======================= */
 function initAuth() {
-    const loginOverlay    = qs("#login-modal");
+    // Prevent double-binding if headerLoaded fires more than once
+    if (document.documentElement.dataset.beAuthInit === "1") return;
+    document.documentElement.dataset.beAuthInit = "1";
+
+    const loginOverlay = qs("#login-modal");
     const registerOverlay = qs("#register-modal");
 
     if (!loginOverlay || !registerOverlay) return;
 
-    /* ==================================================
-       FORGOT PASSWORD — FINAL FIX (INLINE, SAFE)
-       ================================================== */
-    const loginForm     = loginOverlay.querySelector(".auth-form");
-    const forgotBtn     = loginOverlay.querySelector(".auth-forgot"); // ✅ FIXED
+    /* =======================
+       FORGOT PASSWORD (INLINE)
+       - Reuse SAME login modal container
+       - Works with either .auth-forgot or .auth-forgot-link
+       - CSS owner: #login-modal.state-forgot-open .auth-forgot-section { display:block; }
+    ======================= */
+    const loginForm = loginOverlay.querySelector(".auth-form");
     const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
 
-    if (forgotBtn && forgotSection && loginForm) {
-        forgotBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            loginForm.style.display = "none";
-            forgotSection.style.display = "block";
-            forgotSection.setAttribute("aria-hidden", "false");
-        });
-    }
-    /* ================= END FIX ================= */
+    // Support both class names (project history has both variants)
+    const forgotBtn =
+        loginOverlay.querySelector(".auth-forgot-link") ||
+        loginOverlay.querySelector(".auth-forgot");
+
+    // Optional "back" link/button if you add it later (no requirement)
+    const backBtn =
+        loginOverlay.querySelector(".back-to-login") ||
+        loginOverlay.querySelector(".auth-back-login");
+
+    const openForgotInline = (e) => {
+        if (e && typeof e.preventDefault === "function") e.preventDefault();
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+
+        if (!loginForm || !forgotSection) return;
+
+        // Toggle state (CSS-driven visibility)
+        loginOverlay.classList.add("state-forgot-open");
+        forgotSection.setAttribute("aria-hidden", "false");
+
+        // Safety: hide login form explicitly (even if CSS changes later)
+        loginForm.style.display = "none";
+        forgotSection.style.display = "";
+
+        // Keep body locked because overlay remains open
+        lockBody(true);
+    };
+
+    const resetForgotInline = () => {
+        loginOverlay.classList.remove("state-forgot-open");
+
+        if (loginForm) loginForm.style.display = "";
+        if (forgotSection) {
+            forgotSection.style.display = "";
+            forgotSection.setAttribute("aria-hidden", "true");
+        }
+    };
 
     const closeAll = () => {
+        resetForgotInline();
+
         loginOverlay.classList.remove("show");
         registerOverlay.classList.remove("show");
         lockBody(false);
-
-        /* Reset forgot password state */
-        if (loginForm) loginForm.style.display = "";
-        if (forgotSection) {
-            forgotSection.style.display = "none";
-            forgotSection.setAttribute("aria-hidden", "true");
-        }
     };
 
     const openLogin = () => {
@@ -75,20 +105,41 @@ function initAuth() {
     });
 
     /* Triggers (mobile menu) */
-    on(qs(".menu-auth-login"), "click", openLogin);
-    on(qs(".menu-auth-register"), "click", openRegister);
+    on(qs(".menu-auth-login"), "click", (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        openLogin();
+    });
+    on(qs(".menu-auth-register"), "click", (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        openRegister();
+    });
+
+    /* Forgot trigger (inside login modal) */
+    on(forgotBtn, "click", openForgotInline);
+
+    /* Optional back-to-login (if exists) */
+    on(backBtn, "click", (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        resetForgotInline();
+        lockBody(true);
+    });
 
     /* Close handlers */
-    [loginOverlay, registerOverlay].forEach(overlay => {
-        on(overlay.querySelector(".auth-close"), "click", closeAll);
+    [loginOverlay, registerOverlay].forEach((overlay) => {
+        on(overlay.querySelector(".auth-close"), "click", (e) => {
+            if (e && e.preventDefault) e.preventDefault();
+            closeAll();
+        });
+
         on(overlay, "click", (e) => {
             if (e.target === overlay) closeAll();
         });
     });
 
     /* Switch between modals */
-    document.querySelectorAll(".auth-switch").forEach(btn => {
-        on(btn, "click", () => {
+    document.querySelectorAll(".auth-switch").forEach((btn) => {
+        on(btn, "click", (e) => {
+            if (e && e.preventDefault) e.preventDefault();
             const target = btn.dataset.authTarget;
             if (target === "login") openLogin();
             if (target === "register") openRegister();
@@ -98,6 +149,7 @@ function initAuth() {
     /* ESC */
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
+
         if (
             loginOverlay.classList.contains("show") ||
             registerOverlay.classList.contains("show")
