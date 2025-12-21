@@ -1,11 +1,9 @@
+```javascript
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.2)
- * Single source of truth for Login / Register overlays
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.3)
+ * Optimized for Login / Register / Forgot Password
  *********************************************************/
 
-/* =======================
-   UTILS
-======================= */
 const qs = (sel, scope = document) => scope.querySelector(sel);
 const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
@@ -13,38 +11,45 @@ const lockBody = (lock) => {
     document.body.style.overflow = lock ? "hidden" : "";
 };
 
-/* =======================
-   INIT AUTH
-======================= */
 function initAuth() {
     const loginOverlay    = qs("#login-modal");
     const registerOverlay = qs("#register-modal");
 
     if (!loginOverlay || !registerOverlay) return;
 
-    /* ==================================================
-       FORGOT PASSWORD — FINAL FIX (INLINE, SAFE)
-       ================================================== */
     const loginForm     = loginOverlay.querySelector(".auth-form");
-    const forgotBtn     = loginOverlay.querySelector(".auth-forgot"); // ✅ FIXED
+    const forgotBtn     = loginOverlay.querySelector(".auth-forgot");
     const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
+    const backBtn       = loginOverlay.querySelector(".back-to-login");
 
+    /* --- FORGOT PASSWORD LOGIC --- */
     if (forgotBtn && forgotSection && loginForm) {
-        forgotBtn.addEventListener("click", (e) => {
+        on(forgotBtn, "click", (e) => {
             e.preventDefault();
+            loginOverlay.classList.add("state-forgot-open");
             loginForm.style.display = "none";
             forgotSection.style.display = "block";
             forgotSection.setAttribute("aria-hidden", "false");
         });
     }
-    /* ================= END FIX ================= */
 
+    if (backBtn) {
+        on(backBtn, "click", (e) => {
+            e.preventDefault();
+            loginOverlay.classList.remove("state-forgot-open");
+            loginForm.style.display = "flex";
+            forgotSection.style.display = "none";
+            forgotSection.setAttribute("aria-hidden", "true");
+        });
+    }
+
+    /* --- COMMON HANDLERS --- */
     const closeAll = () => {
-        loginOverlay.classList.remove("show");
+        loginOverlay.classList.remove("show", "state-forgot-open");
         registerOverlay.classList.remove("show");
         lockBody(false);
 
-        /* Reset forgot password state */
+        // Reset to default state
         if (loginForm) loginForm.style.display = "";
         if (forgotSection) {
             forgotSection.style.display = "none";
@@ -64,29 +69,20 @@ function initAuth() {
         lockBody(true);
     };
 
-    /* Triggers (desktop) */
-    on(qs(".btn-auth.login"), "click", (e) => {
-        e.preventDefault();
-        openLogin();
-    });
-    on(qs(".btn-auth.register"), "click", (e) => {
-        e.preventDefault();
-        openRegister();
-    });
-
-    /* Triggers (mobile menu) */
+    /* --- EVENT BINDING --- */
+    on(qs(".btn-auth.login"), "click", (e) => { e.preventDefault(); openLogin(); });
+    on(qs(".btn-auth.register"), "click", (e) => { e.preventDefault(); openRegister(); });
     on(qs(".menu-auth-login"), "click", openLogin);
     on(qs(".menu-auth-register"), "click", openRegister);
 
-    /* Close handlers */
     [loginOverlay, registerOverlay].forEach(overlay => {
-        on(overlay.querySelector(".auth-close"), "click", closeAll);
+        const closeBtn = overlay.querySelector(".auth-close");
+        on(closeBtn, "click", closeAll);
         on(overlay, "click", (e) => {
             if (e.target === overlay) closeAll();
         });
     });
 
-    /* Switch between modals */
     document.querySelectorAll(".auth-switch").forEach(btn => {
         on(btn, "click", () => {
             const target = btn.dataset.authTarget;
@@ -95,28 +91,16 @@ function initAuth() {
         });
     });
 
-    /* ESC */
     document.addEventListener("keydown", (e) => {
-        if (e.key !== "Escape") return;
-        if (
-            loginOverlay.classList.contains("show") ||
-            registerOverlay.classList.contains("show")
-        ) {
-            closeAll();
-        }
+        if (e.key === "Escape") closeAll();
     });
 
-    /* Public API */
     window.BE_openLogin = openLogin;
     window.BE_openRegister = openRegister;
 }
 
-/* =======================
-   EVENT BINDING
-======================= */
+// Initialization
 document.addEventListener("headerLoaded", initAuth);
-
-// Fallback for late load
 if (window.__BE_HEADER_READY__ === true) {
     initAuth();
 }
