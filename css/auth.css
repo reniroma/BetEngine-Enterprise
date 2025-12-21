@@ -304,7 +304,72 @@
         -moz-appearance: none;
         background-image: none;
         padding-right: 36px;
-    }
+    } 
+   
+    /* ======================================================
+   MOBILE AUTH — VISUAL POLISH (FINAL)
+   Scope: Mobile only | CSS only | No logic change
+====================================================== */
+
+/* 1) Sticky header for context */
+.be-auth-box .auth-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #11141d;
+}
+
+/* 2) Scrollable body only (already full-screen) */
+.be-auth-box .auth-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 3) Subtle depth cue when scrolling */
+.be-auth-box .auth-body::before {
+    content: "";
+    position: sticky;
+    top: 0;
+    display: block;
+    height: 6px;
+    margin-top: -6px;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.35),
+        rgba(0,0,0,0)
+    );
+    pointer-events: none;
+}
+
+/* 4) Improved vertical rhythm */
+.auth-social {
+    margin-bottom: 18px;
+}
+
+.auth-divider {
+    margin: 18px 0;
+}
+
+.auth-form {
+    gap: 14px;
+}
+
+/* 5) Input focus refinement (premium, subtle) */
+.auth-field input:focus,
+.auth-field select:focus {
+    outline: none;
+    border-color: #00eaff;
+    box-shadow: 0 0 0 1px rgba(0,234,255,0.35);
+}
+
+/* 6) Safe-area support (iOS / modern devices) */
+.be-auth-box {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.auth-header {
+    padding-top: calc(14px + env(safe-area-inset-top));
 }
 
 /* ======================================================
