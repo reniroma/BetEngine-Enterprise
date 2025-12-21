@@ -32,13 +32,13 @@ function initAuth() {
     const openLogin = () => {
         closeAll();
         loginOverlay.classList.add("show");
-        lockBody(true);
+        lockBody(false);
     };
 
     const openRegister = () => {
         closeAll();
         registerOverlay.classList.add("show");
-        lockBody(true);
+        lockBody(false);
     };
 
     /* Triggers (desktop) */
