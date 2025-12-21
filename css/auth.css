@@ -209,6 +209,23 @@
         max-width: 92%;
     }
 
+    /* =========================================
+       AUTH MODAL — INTERNAL SCROLL OWNER
+       Mobile only | Root-cause fix
+    ========================================= */
+
+    .be-auth-box {
+        max-height: 82vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .auth-body {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .auth-field input,
     .auth-field select {
         width: 100%;
