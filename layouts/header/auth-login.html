@@ -16,18 +16,19 @@
         <div class="auth-body">
             <div class="auth-scroll">
 
+                <!-- Social login buttons -->
                 <div class="auth-social">
-                    <button class="auth-social-btn facebook">
+                    <button class="auth-social-btn facebook" type="button">
                         <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
                         <span>Sign in with Facebook</span>
                     </button>
 
-                    <button class="auth-social-btn google">
+                    <button class="auth-social-btn google" type="button">
                         <img src="assets/icons/google.svg" class="auth-social-icon" alt="">
                         <span>Sign in with Google</span>
                     </button>
 
-                    <button class="auth-social-btn apple">
+                    <button class="auth-social-btn apple" type="button">
                         <img src="assets/icons/apple.svg" class="auth-social-icon" alt="">
                         <span>Sign in with Apple</span>
                     </button>
@@ -35,36 +36,40 @@
 
                 <div class="auth-divider"><span>OR</span></div>
 
+                <!-- Login form -->
                 <form class="auth-form" autocomplete="on">
                     <label class="auth-field">
                         <span class="auth-label">Username</span>
-                        <input type="text" autocomplete="username">
+                        <input type="text" name="username" autocomplete="username">
                     </label>
 
                     <label class="auth-field">
                         <span class="auth-label">Password</span>
-                        <input type="password" autocomplete="current-password">
+                        <input type="password" name="password" autocomplete="current-password">
                     </label>
 
                     <label class="auth-checkbox">
-                        <input type="checkbox">
+                        <input type="checkbox" name="remember">
                         <span>Remember me</span>
                     </label>
 
-                    <button class="auth-submit">Login</button>
+                    <button class="auth-submit primary" type="submit">Login</button>
 
                     <div class="auth-footer-text">
                         <span>Don't have an account?</span>
-                        <button class="auth-link auth-switch" data-auth-target="register">
+                        <button type="button"
+                                class="auth-link auth-switch"
+                                data-auth-target="register">
                             Create one for free
                         </button>
                     </div>
 
-                    <button class="auth-link">Forgot password?</button>
+                    <button type="button" class="auth-link auth-forgot-link">
+                        Forgot password?
+                    </button>
                 </form>
 
             </div>
         </div>
-
     </div>
 </div>
