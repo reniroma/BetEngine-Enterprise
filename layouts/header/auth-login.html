@@ -14,6 +14,8 @@
 
         <!-- BODY -->
         <div class="auth-body">
+
+            <!-- SCROLL CONTAINER (REQUIRED) -->
             <div class="auth-scroll">
 
                 <!-- Social login buttons -->
@@ -34,7 +36,9 @@
                     </button>
                 </div>
 
-                <div class="auth-divider"><span>OR</span></div>
+                <div class="auth-divider">
+                    <span>OR</span>
+                </div>
 
                 <!-- Login form -->
                 <form class="auth-form" autocomplete="on">
@@ -53,13 +57,16 @@
                         <span>Remember me</span>
                     </label>
 
-                    <button class="auth-submit primary" type="submit">Login</button>
+                    <button class="auth-submit primary" type="submit">
+                        Login
+                    </button>
 
                     <div class="auth-footer-text">
                         <span>Don't have an account?</span>
-                        <button type="button"
-                                class="auth-link auth-switch"
-                                data-auth-target="register">
+                        <button
+                            type="button"
+                            class="auth-link auth-switch"
+                            data-auth-target="register">
                             Create one for free
                         </button>
                     </div>
@@ -69,7 +76,9 @@
                     </button>
                 </form>
 
-            </div>
-        </div>
+            </div><!-- /auth-scroll -->
+
+        </div><!-- /auth-body -->
+
     </div>
 </div>
