@@ -233,6 +233,30 @@
         background-image: none;
         padding-right: 36px;
     }
+
+    /* =========================================
+   FORGOT PASSWORD — INLINE (MOBILE ONLY)
+========================================= */
+.auth-forgot-section {
+    display: none;
+    margin-top: 22px;
+}
+
+#login-modal.state-forgot-open .auth-forgot-section {
+    display: block;
+}
+
+.auth-forgot-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.auth-forgot-text {
+    font-size: 13px;
+    color: #cfd3df;
+    margin-bottom: 14px;
 }
 
 /* ======================================================
