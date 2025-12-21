@@ -319,7 +319,21 @@
     /* Footer breathing room */
     .auth-footer-text {
         margin-top: 18px;
-    }
+    } 
+
+    /* ===============================
+   FORGOT PASSWORD – FORCE VISIBILITY
+   Works with injected DOM
+================================ */
+
+.auth-forgot-section {
+    display: none;
 }
 
-/* =============== END OF FILE =============== */
+.state-forgot-open .auth-forgot-section {
+    display: block !important;
+}
+
+.state-forgot-open .auth-form {
+    display: none !important;
+}
