@@ -27,7 +27,7 @@ function initAuth() {
        FORGOT PASSWORD – PATCH (MINIMAL)
        =============================== */
     const loginForm     = loginOverlay.querySelector(".auth-form");
-    const forgotBtn     = loginOverlay.querySelector(".auth-forgot");
+    const forgotBtn     = loginOverlay.querySelector(".auth-forgot-link");
     const forgotSection = loginOverlay.querySelector(".auth-forgot-section");
 
     if (forgotBtn && forgotSection && loginForm) {
