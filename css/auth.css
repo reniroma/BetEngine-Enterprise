@@ -1,11 +1,6 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH.CSS (FINAL v5.3)
+ * BetEngine Enterprise – AUTH.CSS (FINAL v5.4)
  * Desktop + Mobile authentication modals
- * UI POLISH (DESKTOP ONLY):
- * - Improved Login & Register layout
- * - Refined social buttons
- * - Better spacing & hierarchy
- * - ZERO mobile / HTML / JS impact
  *********************************************************/
 
 /* ======================================================
@@ -48,8 +43,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-.auth-header-title,
-.auth-title {
+.auth-header-title {
     font-size: 16px;
     font-weight: 600;
     color: #00eaff;
@@ -67,7 +61,7 @@
 }
 
 /* ======================================================
-   SOCIAL BUTTONS (BASE)
+   SOCIAL BUTTONS
 ====================================================== */
 .auth-social {
     display: flex;
@@ -87,11 +81,6 @@
     border: 1px solid #2b3040;
     color: #ffffff;
     font-size: 14px;
-    cursor: pointer;
-}
-
-.auth-social-btn:hover {
-    background: #1c2033;
 }
 
 .auth-social-icon {
@@ -128,8 +117,7 @@
     flex-direction: column;
 }
 
-.auth-field input,
-.auth-field select {
+.auth-field input {
     height: 40px;
     padding: 0 10px;
     border-radius: 8px;
@@ -139,20 +127,14 @@
     font-size: 14px;
 }
 
-.auth-field select {
-    appearance: none;
-}
-
 /* ======================================================
    CHECKBOX
 ====================================================== */
 .auth-checkbox {
     display: flex;
-    align-items: flex-start;
     gap: 8px;
     font-size: 12px;
     color: #cfd3df;
-    margin-top: 4px;
 }
 
 /* ======================================================
@@ -165,7 +147,6 @@
     background: #ffec00;
     color: #11141d;
     font-weight: 600;
-    cursor: pointer;
 }
 
 /* ======================================================
@@ -186,28 +167,15 @@
 }
 
 /* ======================================================
-   MOBILE SUPPORT (UNCHANGED)
+   MOBILE — FULLSCREEN AUTH MODAL (FIXED)
 ====================================================== */
 @media (max-width: 900px) {
-
-    .be-auth-overlay {
-        display: none;
-    }
-
-    .be-auth-overlay.show {
-        display: flex;
-    }
-
-    /* ======================================================
-       MOBILE — FULLSCREEN AUTH MODAL (FINAL POLISH)
-    ====================================================== */
 
     .be-auth-overlay {
         align-items: stretch;
         justify-content: stretch;
     }
 
-    /* Full-screen modal container */
     .be-auth-box {
         width: 100vw;
         height: 100dvh;
@@ -215,212 +183,41 @@
         border-radius: 0;
         display: flex;
         flex-direction: column;
-        background: #0f131c; /* slightly richer than body */
+        background: #0f131c;
     }
 
-    /* Header refinement */
+    /* HEADER */
     .auth-header {
-        padding: 16px 18px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
         background: #0c1018;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 16px 18px;
     }
 
-    /* Title prominence */
-    .auth-header-title,
-    .auth-title {
-        font-size: 16px;
-        font-weight: 600;
-    }
-
+    /* BODY — FLEX CONTAINER (CRITICAL FIX) */
     .auth-body {
         flex: 1;
-        overflow: hidden;   /* IMPORTANT */
-        padding: 0;         /* IMPORTANT */
+        display: flex;
+        overflow: hidden;
+        padding: 0;
     }
-   
+
+    /* SCROLL OWNER — SINGLE SOURCE OF TRUTH */
     .auth-scroll {
         flex: 1;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         padding: 18px;
     }
-
-    /* Inputs: clearer separation */
-    .auth-field {
-        gap: 6px;
-    }
-
-    .auth-field input,
-    .auth-field select {
-        background: #141a26;
-        border-color: rgba(255,255,255,0.12);
-    }
-
-    /* Divider spacing */
-    .auth-divider {
-        margin: 18px 0;
-    }
-
-    /* Primary button emphasis */
-    .auth-submit {
-        margin-top: 20px;
-        height: 48px;
-        font-size: 15px;
-    }
-
-    /* Footer text breathing room */
-    .auth-footer-text {
-        margin-top: 18px;
-    }
-
-    .be-auth-overlay {
-        align-items: stretch;
-        justify-content: stretch;
-    }
-
-    .be-auth-box {
-        width: 100vw;
-        height: 100dvh;
-        max-width: none;
-        border-radius: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .auth-field input,
-    .auth-field select {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .auth-field select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: none;
-        padding-right: 36px;
-    } 
-   
-    /* ======================================================
-   MOBILE AUTH — VISUAL POLISH (FINAL)
-   Scope: Mobile only | CSS only | No logic change
-====================================================== */
-
-/* 1) Sticky header for context */
-.be-auth-box .auth-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: #11141d;
-}
-
-/* 3) Subtle depth cue when scrolling */
-.be-auth-box .auth-body::before {
-    content: "";
-    position: sticky;
-    top: 0;
-    display: block;
-    height: 6px;
-    margin-top: -6px;
-    background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.35),
-        rgba(0,0,0,0)
-    );
-    pointer-events: none;
-}
-
-/* 4) Improved vertical rhythm */
-.auth-social {
-    margin-bottom: 18px;
-}
-
-.auth-divider {
-    margin: 18px 0;
-}
-
-.auth-form {
-    gap: 14px;
-}
-
-/* 5) Input focus refinement (premium, subtle) */
-.auth-field input:focus,
-.auth-field select:focus {
-    outline: none;
-    border-color: #00eaff;
-    box-shadow: 0 0 0 1px rgba(0,234,255,0.35);
-}
-
-/* 6) Safe-area support (iOS / modern devices) */
-.be-auth-box {
-    padding-bottom: env(safe-area-inset-bottom);
-}
-
-.auth-header {
-    padding-top: calc(14px + env(safe-area-inset-top));
 }
 
 /* ======================================================
-   DESKTOP UI POLISH (A + B + C)
-   SAFE PATCH — DESKTOP ONLY
+   DESKTOP (UNCHANGED)
 ====================================================== */
 @media (min-width: 901px) {
 
-    /* Modal breathing room */
-    .be-auth-box {
-        padding-bottom: 6px;
-    }
-
     .auth-body {
-        padding: 22px 22px 24px;
-    }
-
-    /* Header hierarchy */
-    .auth-header {
-        padding: 18px 22px;
-    }
-
-    .auth-header-title,
-    .auth-title {
-        font-size: 17px;
-    }
-
-    /* Social buttons refinement */
-    .auth-social-btn {
-        height: 46px;
-        border-radius: 12px;
-        font-weight: 500;
-    }
-
-    .auth-social-btn:hover {
-        background: #20243a;
-        border-color: rgba(255,255,255,0.18);
-    }
-
-    /* Divider spacing */
-    .auth-divider {
-        margin: 18px 0;
-    }
-
-    /* Form clarity */
-    .auth-form {
-        gap: 14px;
-    }
-
-    .auth-field input,
-    .auth-field select {
-        height: 42px;
-    }
-
-    /* Country select visual distinction */
-    .auth-field select {
-        cursor: pointer;
-    }
-
-    /* Footer breathing room */
-    .auth-footer-text {
-        margin-top: 18px;
+        padding: 22px;
     }
 }
-
-/* =============== END OF FILE =============== */
