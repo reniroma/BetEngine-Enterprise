@@ -201,6 +201,7 @@
         display: flex;
         overflow: hidden;
         padding: 0;
+        min-height: 0;
     }
 
     /* SCROLL OWNER — SINGLE SOURCE OF TRUTH */
