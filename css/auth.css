@@ -193,6 +193,19 @@
 }
 
 /* ======================================================
+   FORGOT PASSWORD — INLINE (GLOBAL DEFAULT)
+   Hidden by default, shown only via state class
+====================================================== */
+.auth-forgot-section {
+    display: none;
+    margin-top: 22px;
+}
+
+#login-modal.state-forgot-open .auth-forgot-section {
+    display: block;
+}
+
+/* ======================================================
    MOBILE SUPPORT (UNCHANGED)
 ====================================================== */
 @media (max-width: 900px) {
@@ -313,21 +326,5 @@
         margin-top: 18px;
     } 
 
-    /* =========================================
-   FORGOT PASSWORD — INLINE BELOW LOGIN
-========================================= */
-
-.auth-forgot-section {
-    display: none;
-    margin-top: 22px;
-}
-
-#login-modal.state-forgot-open .auth-forgot-section {
-    display: block;
-}
-
-    #login-modal.state-forgot-open .auth-form {
-        display: none;
-    }
-
+   
    
