@@ -525,6 +525,37 @@
         z-index: 4000;
     }
 
+    /* ==================================================
+   SLIDE-UP SHEET (Odds / Language only)
+   Scope: mobile-only, does not affect other modals
+================================================== */
+#mobile-odds-modal.be-modal-overlay.show,
+#mobile-language-modal.be-modal-overlay.show {
+    opacity: 0;
+    transition: opacity .22s ease;
+}
+
+#mobile-odds-modal.be-modal-overlay.show.is-open,
+#mobile-language-modal.be-modal-overlay.show.is-open {
+    opacity: 1;
+}
+
+#mobile-odds-modal .be-modal,
+#mobile-language-modal .be-modal {
+    transform: translateY(24px);
+    opacity: 0;
+    transition: transform .22s ease, opacity .22s ease;
+    will-change: transform, opacity;
+}
+
+#mobile-odds-modal.be-modal-overlay.show.is-open .be-modal,
+#mobile-language-modal.be-modal-overlay.show.is-open .be-modal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+   
+
        /* ======================================================
        MOBILE HEADER – SPORTS ROW (ROW 2)
        FINAL RULES:
