@@ -151,7 +151,20 @@
     gap: 8px;
     font-size: 12px;
     color: #cfd3df;
+} 
+.auth-checkbox span {
+    color: #ffffff;
 }
+.auth-legal-text {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+.auth-legal-text a {
+    color: #00eaff; /* ose accent-i yt zyrtar */
+    text-decoration: underline;
+}   
 
 /* ======================================================
    PRIMARY BUTTON
