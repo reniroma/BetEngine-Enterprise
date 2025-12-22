@@ -186,6 +186,14 @@
     display: none;
 }
 
+/* =========================================
+   FORGOT PASSWORD — INLINE (DESKTOP)
+   Enterprise fix
+========================================= */
+#login-modal.state-forgot-open .auth-forgot-section {
+    display: block;
+}
+
 /* ======================================================
    MOBILE ONLY — FORGOT PASSWORD LOGIC
    Shown ONLY after click via .state-forgot-open
