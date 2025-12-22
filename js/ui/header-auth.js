@@ -1,7 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v5.2)
- * Single source of truth for Login / Register overlays
- * FIX: Target real overlays (login-modal / register-modal)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.0)
+ * Single source of truth for Login / Register / Forgot
+ *
+ * ENTERPRISE FIX:
+ * - Event delegation for Forgot Password
+ * - Works with dynamically injected header + modals
+ * - ZERO HTML / CSS assumptions
  *********************************************************/
 
 /* =======================
@@ -15,57 +19,70 @@ const lockBody = (lock) => {
 };
 
 /* =======================
-   INIT AUTH
+   INIT AUTH (LOGIN / REGISTER)
 ======================= */
 function initAuth() {
-    const loginOverlay    = qs("#login-modal");
-    const registerOverlay = qs("#register-modal");
+    // Prevent double init
+    if (document.documentElement.dataset.beAuthInit === "1") return;
+    document.documentElement.dataset.beAuthInit = "1";
 
-    if (!loginOverlay || !registerOverlay) return;
+    const loginModal    = qs("#login-modal");
+    const registerModal = qs("#register-modal");
+
+    if (!loginModal || !registerModal) return;
 
     const closeAll = () => {
-        loginOverlay.classList.remove("show");
-        registerOverlay.classList.remove("show");
+        loginModal.classList.remove("show", "state-forgot-open");
+        registerModal.classList.remove("show");
         lockBody(false);
     };
 
     const openLogin = () => {
         closeAll();
-        loginOverlay.classList.add("show");
+        loginModal.classList.add("show");
         lockBody(true);
     };
 
     const openRegister = () => {
         closeAll();
-        registerOverlay.classList.add("show");
+        registerModal.classList.add("show");
         lockBody(true);
     };
 
-    /* Triggers (desktop) */
+    /* Desktop header buttons */
     on(qs(".btn-auth.login"), "click", (e) => {
         e.preventDefault();
         openLogin();
     });
+
     on(qs(".btn-auth.register"), "click", (e) => {
         e.preventDefault();
         openRegister();
     });
 
-    /* Triggers (mobile menu) */
-    on(qs(".menu-auth-login"), "click", openLogin);
-    on(qs(".menu-auth-register"), "click", openRegister);
+    /* Mobile menu buttons */
+    on(qs(".menu-auth-login"), "click", (e) => {
+        if (e) e.preventDefault();
+        openLogin();
+    });
 
-    /* Close handlers */
-    [loginOverlay, registerOverlay].forEach(overlay => {
-        on(overlay.querySelector(".auth-close"), "click", closeAll);
-        on(overlay, "click", (e) => {
-            if (e.target === overlay) closeAll();
+    on(qs(".menu-auth-register"), "click", (e) => {
+        if (e) e.preventDefault();
+        openRegister();
+    });
+
+    /* Close buttons + overlay click */
+    [loginModal, registerModal].forEach(modal => {
+        on(modal.querySelector(".auth-close"), "click", closeAll);
+        on(modal, "click", (e) => {
+            if (e.target === modal) closeAll();
         });
     });
 
-    /* Switch between modals */
+    /* Switch login ↔ register */
     document.querySelectorAll(".auth-switch").forEach(btn => {
-        on(btn, "click", () => {
+        on(btn, "click", (e) => {
+            e.preventDefault();
             const target = btn.dataset.authTarget;
             if (target === "login") openLogin();
             if (target === "register") openRegister();
@@ -74,19 +91,30 @@ function initAuth() {
 
     /* ESC */
     document.addEventListener("keydown", (e) => {
-        if (e.key !== "Escape") return;
-        if (
-            loginOverlay.classList.contains("show") ||
-            registerOverlay.classList.contains("show")
-        ) {
-            closeAll();
-        }
+        if (e.key === "Escape") closeAll();
     });
 
     /* Public API */
     window.BE_openLogin = openLogin;
     window.BE_openRegister = openRegister;
 }
+
+/* ======================================================
+   ENTERPRISE FIX — FORGOT PASSWORD (EVENT DELEGATION)
+   (THIS IS THE REAL BUG FIX)
+====================================================== */
+document.addEventListener("click", (e) => {
+    const forgotBtn = e.target.closest(".auth-forgot-link, .auth-forgot");
+    if (!forgotBtn) return;
+
+    const loginModal = document.getElementById("login-modal");
+    if (!loginModal) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    loginModal.classList.add("state-forgot-open");
+});
 
 /* =======================
    EVENT BINDING
@@ -97,3 +125,5 @@ document.addEventListener("headerLoaded", initAuth);
 if (window.__BE_HEADER_READY__ === true) {
     initAuth();
 }
+
+

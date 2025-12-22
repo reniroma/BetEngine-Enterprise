@@ -1,5 +1,7 @@
 <!-- ====================================================
-     LOGIN MODAL (BetEngine Enterprise – FINAL)
+     LOGIN MODAL (BetEngine Enterprise – FINAL / FIXED)
+     Master Developer – Single Source of Truth
+     Includes INLINE Forgot Password section
 ======================================================= -->
 <div class="be-auth-overlay" id="login-modal">
     <div class="be-auth-box">
@@ -16,7 +18,7 @@
         <div class="auth-body">
             <div class="auth-scroll">
 
-                <!-- Social login buttons -->
+                <!-- SOCIAL LOGIN -->
                 <div class="auth-social">
                     <button class="auth-social-btn facebook" type="button">
                         <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
@@ -36,7 +38,7 @@
 
                 <div class="auth-divider"><span>OR</span></div>
 
-                <!-- Login form -->
+                <!-- LOGIN FORM -->
                 <form class="auth-form" autocomplete="on">
                     <label class="auth-field">
                         <span class="auth-label">Username</span>
@@ -53,21 +55,46 @@
                         <span>Remember me</span>
                     </label>
 
-                    <button class="auth-submit primary" type="submit">Login</button>
+                    <button class="auth-submit primary" type="submit">
+                        Login
+                    </button>
 
                     <div class="auth-footer-text">
                         <span>Don't have an account?</span>
-                        <button type="button"
-                                class="auth-link auth-switch"
-                                data-auth-target="register">
+                        <button
+                            type="button"
+                            class="auth-link auth-switch"
+                            data-auth-target="register">
                             Create one for free
                         </button>
                     </div>
 
+                    <!-- FORGOT PASSWORD TRIGGER -->
                     <button type="button" class="auth-link auth-forgot-link">
                         Forgot password?
                     </button>
                 </form>
+
+                <!-- ====================================================
+                     FORGOT PASSWORD (INLINE – SAME MODAL)
+                ===================================================== -->
+                <div class="auth-forgot-section" aria-hidden="true">
+                    <h3 class="auth-forgot-title">Forgotten password</h3>
+
+                    <p class="auth-forgot-text">
+                        Fill in your email to get forgotten password.
+                        Additional information will be sent to your email.
+                    </p>
+
+                    <label class="auth-field">
+                        <span class="auth-label">Email *</span>
+                        <input type="email" name="forgot_email" autocomplete="email">
+                    </label>
+
+                    <button type="button" class="auth-submit primary">
+                        CONFIRM
+                    </button>
+                </div>
 
             </div>
         </div>
