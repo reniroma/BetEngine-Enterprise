@@ -238,7 +238,7 @@
         ================================================== */
         qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
-                e.preventDefault();
+                stop(e);
 
                 qa("#mobile-odds-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
                 item.classList.add("active");
@@ -253,24 +253,16 @@
                 const desktopLabel = qs(".header-desktop .odds-label");
                 if (desktopLabel) desktopLabel.textContent = label;
 
-                qa(".menu-odds, .menu-lang").forEach(el =>
-                    el.classList.remove("active")
-                );  
-                
-                if (oddsTrigger) {
-                    oddsTrigger.classList.add("active");
-                        }
-
-                        closeModal(oddsModal);
-                    });
-                });
+                closeModal(oddsModal);
+            });
+        });
 
         /* ==================================================
            LANGUAGE ACTIVE + SYNC
         ================================================== */
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
-                e.preventDefault();
+                stop(e);
 
                 qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
                 item.classList.add("active");
@@ -285,17 +277,9 @@
                 const desktopLang = qs(".header-desktop .lang-code");
                 if (desktopLang) desktopLang.textContent = label;
 
-                qa(".menu-odds, .menu-lang").forEach(el =>
-                    el.classList.remove("active")
-                );
-
-                if (langTrigger) {
-                    langTrigger.classList.add("active");
-                            }
-
-                        closeModal(langModal);
-                     });
-                });
+                closeModal(langModal);
+            });
+        });
 
         console.log("header-mobile.js v6.7 READY");
     }
