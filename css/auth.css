@@ -75,6 +75,35 @@
 }
 
 /* ======================================================
+   DESKTOP AUTH MODAL — INTERNAL SCROLL OWNER
+   Enterprise fix (mirrors mobile behaviour)
+====================================================== */
+
+/* Modal box becomes a flex container */
+.be-auth-box {
+    display: flex;
+    flex-direction: column;
+    max-height: 82vh; /* identical constraint as mobile */
+}
+
+/* Header never scrolls */
+.auth-header {
+    flex-shrink: 0;
+}
+
+/* Body becomes the scroll container */
+.auth-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent accidental outer scroll wrappers from breaking layout */
+.auth-scroll {
+    display: block;
+}
+
+/* ======================================================
    SOCIAL LOGIN
 ====================================================== */
 .auth-social {
