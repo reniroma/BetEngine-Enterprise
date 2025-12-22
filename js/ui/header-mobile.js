@@ -238,7 +238,7 @@
         ================================================== */
         qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
-                stop(e);
+                e.preventDefault();
 
                 qa("#mobile-odds-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
                 item.classList.add("active");
@@ -270,7 +270,7 @@
         ================================================== */
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
-                stop(e);
+                e.preventDefault();
 
                 qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
                 item.classList.add("active");
