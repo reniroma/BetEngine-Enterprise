@@ -236,50 +236,65 @@
         /* ==================================================
            ODDS ACTIVE + SYNC
         ================================================== */
-        qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
-            item.addEventListener("click", (e) => {
-                stop(e);
+qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
+    item.addEventListener("click", (e) => {
 
-                qa("#mobile-odds-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
-                item.classList.add("active");
+        
+        e.stopPropagation();
 
-                const oddsType = item.dataset.odds;
-                const label = item.textContent.trim();
+        
+        qa("#mobile-odds-modal .be-modal-item")
+            .forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
 
-                qa(".header-desktop .odds-dropdown .item").forEach((i) => {
-                    i.classList.toggle("active", i.dataset.odds === oddsType);
-                });
+        
+        const oddsType = item.dataset.odds;
+        const label = item.textContent.trim();
 
-                const desktopLabel = qs(".header-desktop .odds-label");
-                if (desktopLabel) desktopLabel.textContent = label;
+        const mobileValue = qs(".menu-odds .value");
+        if (mobileValue) mobileValue.textContent = label;
 
-                closeModal(oddsModal);
-            });
+        qa(".header-desktop .odds-dropdown .item").forEach((i) => {
+            i.classList.toggle("active", i.dataset.odds === oddsType);
         });
+
+        const desktopLabel = qs(".header-desktop .odds-label");
+        if (desktopLabel) desktopLabel.textContent = label;
+
+
+        closeModal(oddsModal);
+    });
+});
 
         /* ==================================================
            LANGUAGE ACTIVE + SYNC
         ================================================== */
-        qa("#mobile-language-modal .be-modal-item").forEach((item) => {
-            item.addEventListener("click", (e) => {
-                stop(e);
+ qa("#mobile-language-modal .be-modal-item").forEach((item) => {
+    item.addEventListener("click", (e) => {
 
-                qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
-                item.classList.add("active");
+        e.stopPropagation(); 
+        
 
-                const lang = item.dataset.lang;
-                const label = item.textContent.trim();
+        qa("#mobile-language-modal .be-modal-item")
+            .forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
 
-                qa(".header-desktop .language-dropdown .item").forEach((i) => {
-                    i.classList.toggle("active", i.dataset.lang === lang);
-                });
+        const lang = item.dataset.lang;
+        const label = item.textContent.trim();
 
-                const desktopLang = qs(".header-desktop .lang-code");
-                if (desktopLang) desktopLang.textContent = label;
+        const mobileValue = qs(".menu-lang .value");
+        if (mobileValue) mobileValue.textContent = label;
 
-                closeModal(langModal);
-            });
+        qa(".header-desktop .language-dropdown .item").forEach((i) => {
+            i.classList.toggle("active", i.dataset.lang === lang);
         });
+
+        const desktopLang = qs(".header-desktop .lang-code");
+        if (desktopLang) desktopLang.textContent = label;
+
+        closeModal(langModal);
+    });
+});
 
         console.log("header-mobile.js v6.7 READY");
     }
