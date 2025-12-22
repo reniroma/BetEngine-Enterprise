@@ -253,9 +253,17 @@
                 const desktopLabel = qs(".header-desktop .odds-label");
                 if (desktopLabel) desktopLabel.textContent = label;
 
-                closeModal(oddsModal);
-            });
-        });
+                qa(".menu-odds, .menu-lang").forEach(el =>
+                    el.classList.remove("active")
+                );  
+                
+                if (oddsTrigger) {
+                    oddsTrigger.classList.add("active");
+                        }
+
+                        closeModal(oddsModal);
+                    });
+                });
 
         /* ==================================================
            LANGUAGE ACTIVE + SYNC
@@ -277,9 +285,17 @@
                 const desktopLang = qs(".header-desktop .lang-code");
                 if (desktopLang) desktopLang.textContent = label;
 
-                closeModal(langModal);
-            });
-        });
+                qa(".menu-odds, .menu-lang").forEach(el =>
+                    el.classList.remove("active")
+                );
+
+                if (langTrigger) {
+                    langTrigger.classList.add("active");
+                            }
+
+                        closeModal(langModal);
+                     });
+                });
 
         console.log("header-mobile.js v6.7 READY");
     }
