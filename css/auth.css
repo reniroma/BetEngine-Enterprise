@@ -1,7 +1,11 @@
-0⁰/*********************************************************
- * BetEngine Enterprise – AUTH.CSS (FINAL v5.4 CLEAN)
+/*********************************************************
+ * BetEngine Enterprise – AUTH.CSS (FINAL v5.3)
  * Desktop + Mobile authentication modals
- * SINGLE SOURCE OF TRUTH
+ * UI POLISH (DESKTOP ONLY):
+ * - Improved Login & Register layout
+ * - Refined social buttons
+ * - Better spacing & hierarchy
+ * - ZERO mobile / HTML / JS impact
  *********************************************************/
 
 /* ======================================================
@@ -40,13 +44,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 22px;
+    padding: 14px 18px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .auth-header-title,
 .auth-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     color: #00eaff;
 }
@@ -66,11 +70,11 @@
    BODY
 ====================================================== */
 .auth-body {
-    padding: 22px;
+    padding: 18px;
 }
 
 /* ======================================================
-   SOCIAL
+   SOCIAL BUTTONS (BASE)
 ====================================================== */
 .auth-social {
     display: flex;
@@ -84,8 +88,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 46px;
-    border-radius: 12px;
+    height: 44px;
+    border-radius: 10px;
     background: #151827;
     border: 1px solid #2b3040;
     color: #ffffff;
@@ -94,8 +98,12 @@
 }
 
 .auth-social-btn:hover {
-    background: #20243a;
-    border-color: rgba(255,255,255,0.18);
+    background: #1c2033;
+}
+
+.auth-social-icon {
+    width: 18px;
+    height: 18px;
 }
 
 /* ======================================================
@@ -105,7 +113,7 @@
     text-align: center;
     font-size: 12px;
     color: #9aa0b5;
-    margin: 18px 0;
+    margin: 14px 0;
 }
 
 /* ======================================================
@@ -114,7 +122,7 @@
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 .auth-label {
@@ -129,7 +137,7 @@
 
 .auth-field input,
 .auth-field select {
-    height: 42px;
+    height: 40px;
     padding: 0 10px;
     border-radius: 8px;
     border: 1px solid #2b3040;
@@ -138,14 +146,20 @@
     font-size: 14px;
 }
 
+.auth-field select {
+    appearance: none;
+}
+
 /* ======================================================
    CHECKBOX
 ====================================================== */
 .auth-checkbox {
     display: flex;
+    align-items: flex-start;
     gap: 8px;
     font-size: 12px;
     color: #cfd3df;
+    margin-top: 4px;
 }
 
 /* ======================================================
@@ -162,10 +176,10 @@
 }
 
 /* ======================================================
-   FOOTER
+   FOOTER LINKS
 ====================================================== */
 .auth-footer-text {
-    margin-top: 18px;
+    margin-top: 14px;
     font-size: 12px;
     color: #9aa0b5;
     text-align: center;
@@ -179,46 +193,138 @@
 }
 
 /* ======================================================
-   FORGOT PASSWORD – DESKTOP
-   COMPLETELY DISABLED
+   FORGOT PASSWORD — INLINE (GLOBAL DEFAULT)
+   Hidden by default, shown only via state class
 ====================================================== */
-@media (min-width: 901px) {
-    .auth-forgot-section {
-        display: none !important;
-    }
+.auth-forgot-section {
+    display: none;
+    margin-top: 22px;
+}
+
+#login-modal.state-forgot-open .auth-forgot-section {
+    display: block;
 }
 
 /* ======================================================
-   MOBILE ONLY
+   MOBILE SUPPORT (UNCHANGED)
 ====================================================== */
 @media (max-width: 900px) {
 
+    .be-auth-overlay {
+        display: none;
+    }
+
+    .be-auth-overlay.show {
+        display: flex;
+    }
+
     .be-auth-box {
         max-width: 92%;
+    }
+
+    /* =========================================
+       AUTH MODAL — INTERNAL SCROLL OWNER
+       Mobile only | Root-cause fix
+    ========================================= */
+
+    .be-auth-box {
         max-height: 82vh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
-
-    /* FORGOT PASSWORD – MOBILE ONLY */
-    .auth-forgot-section {
-        display: none;
-        margin-top: 22px;
+    
+    .auth-field input,
+    .auth-field select {
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    #login-modal.state-forgot-open .auth-forgot-section {
-        display: block;
+    .auth-field select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: none;
+        padding-right: 36px;
     }
 
-    .auth-forgot-title {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
+    /* =========================================
+   FORGOT PASSWORD — INLINE (MOBILE ONLY)
+========================================= */
 
-    .auth-forgot-text {
-        font-size: 13px;
-        color: #cfd3df;
-        margin-bottom: 14px;
-    }
+.auth-forgot-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 6px;
 }
+
+.auth-forgot-text {
+    font-size: 13px;
+    color: #cfd3df;
+    margin-bottom: 14px;
+}
+
+/* ======================================================
+   DESKTOP UI POLISH (A + B + C)
+   SAFE PATCH — DESKTOP ONLY
+====================================================== */
+@media (min-width: 901px) {
+
+    /* Modal breathing room */
+    .be-auth-box {
+        padding-bottom: 6px;
+    }
+
+    .auth-body {
+        padding: 22px 22px 24px;
+    }
+
+    /* Header hierarchy */
+    .auth-header {
+        padding: 18px 22px;
+    }
+
+    .auth-header-title,
+    .auth-title {
+        font-size: 17px;
+    }
+
+    /* Social buttons refinement */
+    .auth-social-btn {
+        height: 46px;
+        border-radius: 12px;
+        font-weight: 500;
+    }
+
+    .auth-social-btn:hover {
+        background: #20243a;
+        border-color: rgba(255,255,255,0.18);
+    }
+
+    /* Divider spacing */
+    .auth-divider {
+        margin: 18px 0;
+    }
+
+    /* Form clarity */
+    .auth-form {
+        gap: 14px;
+    }
+
+    .auth-field input,
+    .auth-field select {
+        height: 42px;
+    }
+
+    /* Country select visual distinction */
+    .auth-field select {
+        cursor: pointer;
+    }
+
+    /* Footer breathing room */
+    .auth-footer-text {
+        margin-top: 18px;
+    } 
+
+   
+   
