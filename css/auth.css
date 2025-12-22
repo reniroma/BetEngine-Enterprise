@@ -321,4 +321,13 @@
         margin-top: 18px;
     } 
 
+    /* =========================================
+   LOGIN → FORGOT PASSWORD STATE
+   Global (Desktop + Mobile)
+========================================= */
+
+#login-modal.state-forgot-open .auth-form {
+    display: none;
+}
+
    
