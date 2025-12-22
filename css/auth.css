@@ -314,18 +314,17 @@
     } 
 
     /* =========================================
-       LOGIN → FORGOT PASSWORD STATE
-       FINAL – SINGLE SOURCE OF TRUTH
-    ========================================= */
+   FORGOT PASSWORD — INLINE BELOW LOGIN
+========================================= */
 
-    .auth-forgot-section {
-        display: none;
-        margin-top: 22px;
-    }
+.auth-forgot-section {
+    display: none;
+    margin-top: 22px;
+}
 
-    #login-modal.state-forgot-open .auth-forgot-section {
-        display: block;
-    }
+#login-modal.state-forgot-open .auth-forgot-section {
+    display: block;
+}
 
     #login-modal.state-forgot-open .auth-form {
         display: none;
