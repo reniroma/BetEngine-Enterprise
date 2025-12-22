@@ -190,6 +190,27 @@
 .auth-forgot-section {
     display: none;
 }
+.auth-forgot-section {
+    margin-top: 28px;
+    padding-top: 8px;
+}
+
+.auth-forgot-title {
+    margin-bottom: 10px;
+}
+
+.auth-forgot-text {
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+.auth-forgot-section .auth-submit {
+    width: 100%;
+    max-width: 260px;
+    margin: 18px auto 0;
+    height: 46px;
+    display: block;
+    text-align: center;
+}
 
 /* =========================================
    FORGOT PASSWORD — INLINE (DESKTOP)
