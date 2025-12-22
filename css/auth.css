@@ -237,14 +237,6 @@
     /* =========================================
    FORGOT PASSWORD — INLINE (MOBILE ONLY)
 ========================================= */
-.auth-forgot-section {
-    display: none;
-    margin-top: 22px;
-}
-
-#login-modal.state-forgot-open .auth-forgot-section {
-    display: block;
-}
 
 .auth-forgot-title {
     font-size: 16px;
@@ -322,12 +314,21 @@
     } 
 
     /* =========================================
-   LOGIN → FORGOT PASSWORD STATE
-   Global (Desktop + Mobile)
-========================================= */
+       LOGIN → FORGOT PASSWORD STATE
+       FINAL – SINGLE SOURCE OF TRUTH
+    ========================================= */
 
-#login-modal.state-forgot-open .auth-form {
-    display: none;
-}
+    .auth-forgot-section {
+        display: none;
+        margin-top: 22px;
+    }
+
+    #login-modal.state-forgot-open .auth-forgot-section {
+        display: block;
+    }
+
+    #login-modal.state-forgot-open .auth-form {
+        display: none;
+    }
 
    
