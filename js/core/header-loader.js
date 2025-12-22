@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         "header-desktop.html",
         "header-mobile.html",
         "header-modals.html",
+        "auth-login.html",
+        "auth-register.html"
     ];
 
     // ==================================================
