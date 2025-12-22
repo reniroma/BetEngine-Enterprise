@@ -160,6 +160,7 @@
     font-size: 12px;
     line-height: 1.5;
     text-align: center;
+    margin-bottom: 10px;
 }
 .auth-legal-text a {
     color: #00eaff; /* ose accent-i yt zyrtar */
