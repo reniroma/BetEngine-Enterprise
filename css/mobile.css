@@ -12,6 +12,8 @@
 .mobile-only,
 .mobile-menu-overlay,
 .mobile-menu-panel,
+.be-modal-overlay {
+    display: none;
 }
 
 /* ==================================================
@@ -435,6 +437,21 @@
     /* ==================================================
        MODALS
     ================================================== */
+    .be-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+        pointer-events: none;
+    }
+
+    .be-modal-overlay.show {
+        display: flex;
+        pointer-events: auto;
+    }
 
     /* Modal container sizing */
     .be-modal {
