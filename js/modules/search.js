@@ -8,13 +8,6 @@
  * - Clear button
  *********************************************************/
 
-(function () {
-    "use strict";
-
-    /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- *********************************************************/
 
 (function () {
     "use strict";
