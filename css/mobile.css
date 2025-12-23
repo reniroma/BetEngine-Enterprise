@@ -522,7 +522,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
+    padding: 16px 18px;
+    min-height: 56px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     background: #11141d;
     position: sticky;
@@ -539,8 +540,24 @@
     -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 12px;
+    gap: 8px;
+    padding: 16px 14px;
+}
+   
+/* ==================================================
+   SCROLL RULES — ENTERPRISE CLARITY
+   Odds: no scroll
+   Language: internal scroll
+================================================== */
+
+/* Odds list is short → no scroll */
+#mobile-odds-modal .be-modal-body {
+    overflow-y: hidden;
+}
+
+/* Language list is long → allow scroll */
+#mobile-language-modal .be-modal-body {
+    overflow-y: auto;
 }
 
 /* Extra comfort for long language lists */
@@ -548,20 +565,35 @@
     max-height: calc(82vh - 56px);
 }
 
+   /* Odds modal — fixed height, no internal scroll */
+.be-modal-body.modal-odds {
+    overflow: hidden;
+}
+
+/* Language modal — scroll enabled for long lists */
+.be-modal-body.modal-language {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* ==================================================
    9. MODAL ITEMS
 ================================================== */
 .be-modal-item {
     width: 100%;
-    padding: 14px 16px;
-    border-radius: 8px;
+    min-height: 48px;
+    padding: 14px 18px;
+    display: flex;
+    align-item: center;
+    border-radius: 10px;
     background: #151827;
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #ffffff;
     font-size: 14px;
+    font-weight: 500;
     text-align: left;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.08s;
 }
 
 .be-modal-item:hover {
@@ -574,6 +606,9 @@
     color: #11141d;
     border-color: #ffec00;
     font-weight: 600;
+}
+   .be-modal-item.active {
+    box-shadow: 0 6px 18px rgba(255,236,0,0.25);
 }
 
 /* ==================================================
@@ -602,7 +637,7 @@
 #mobile-language-modal .be-modal {
     transform: translateY(24px);
     opacity: 0;
-    transition: transform .22s ease, opacity .22s ease;
+    transition: transform .56s ease, opacity .35s ease-out;
     will-change: transform, opacity;
 }
 
@@ -620,7 +655,7 @@
 #mobile-odds-modal.be-modal-overlay.show,
 #mobile-language-modal.be-modal-overlay.show {
     opacity: 0;
-    transition: opacity .22s ease;
+    transition: opacity .30s ease;
 }
 
 #mobile-odds-modal.be-modal-overlay.show.is-open,
