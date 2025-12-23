@@ -1,15 +1,14 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER SEARCH
- * Desktop + Mobile binding
- * Triggered ONLY after headerLoaded
+ * BetEngine Enterprise – HEADER SEARCH (FINAL SAFE)
  *********************************************************/
 (function () {
     "use strict";
 
-    /* ======================================================
-       SAFE INIT AFTER HEADER INJECTION
-    ======================================================= */
-    document.addEventListener("headerLoaded", initHeaderSearch);
+    if (document.querySelector(".header-desktop")) {
+        initHeaderSearch();
+    } else {
+        document.addEventListener("headerLoaded", initHeaderSearch, { once: true });
+    }
 
     function initHeaderSearch() {
         initDesktopSearch();
@@ -17,79 +16,44 @@
         console.log("[HeaderSearch] READY");
     }
 
-    /* ======================================================
-       DESKTOP SEARCH
-    ======================================================= */
     function initDesktopSearch() {
-        const input = document.querySelector(
-            ".header-desktop .be-search-input"
-        );
-        const results = document.querySelector(
-            ".header-desktop .be-search-results--desktop"
-        );
+        const input = document.querySelector(".header-desktop .be-search-input");
+        const results = document.querySelector(".header-desktop .be-search-results--desktop");
 
-        if (!input || !results) {
-            console.warn("[HeaderSearch] Desktop search not found");
-            return;
-        }
+        if (!input || !results) return;
 
-        bindSearchLogic(input, results, "DESKTOP");
+        bind(input, results, "DESKTOP");
     }
 
-    /* ======================================================
-       MOBILE SEARCH
-    ======================================================= */
     function initMobileSearch() {
-        const input = document.querySelector(
-            "#mobile-search-modal .be-search-input"
-        );
-        const results = document.querySelector(
-            "#mobile-search-modal .be-search-results"
-        );
+        const input = document.querySelector("#mobile-search-modal .be-search-input");
+        const results = document.querySelector("#mobile-search-modal .be-search-results");
 
-        if (!input || !results) {
-            console.warn("[HeaderSearch] Mobile search not found");
-            return;
-        }
+        if (!input || !results) return;
 
-        bindSearchLogic(input, results, "MOBILE");
+        bind(input, results, "MOBILE");
     }
 
-    /* ======================================================
-       SHARED SEARCH LOGIC (MOCK)
-    ======================================================= */
-    function bindSearchLogic(input, resultsList, context) {
+    function bind(input, list, ctx) {
         const DATA = [
             "Manchester United",
             "Real Madrid",
             "Bayern Munich",
             "Barcelona",
-            "Liverpool",
             "Juventus",
-            "PSG",
-            "Champions League",
-            "Premier League"
+            "Champions League"
         ];
 
         input.addEventListener("input", () => {
-            const q = input.value.trim().toLowerCase();
-            resultsList.innerHTML = "";
-
+            const q = input.value.toLowerCase().trim();
+            list.innerHTML = "";
             if (!q) return;
 
-            const matches = DATA.filter(item =>
-                item.toLowerCase().includes(q)
-            );
-
-            matches.forEach(text => {
+            DATA.filter(v => v.toLowerCase().includes(q)).forEach(v => {
                 const li = document.createElement("li");
-                li.className = "be-search-result";
-                li.textContent = text;
-                li.addEventListener("click", () => {
-                    console.log(`[Search:${context}] Selected`, text);
-                    resultsList.innerHTML = "";
-                });
-                resultsList.appendChild(li);
+                li.textContent = v;
+                li.onclick = () => list.innerHTML = "";
+                list.appendChild(li);
             });
         });
     }
