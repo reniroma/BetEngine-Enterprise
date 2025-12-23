@@ -108,6 +108,23 @@
 })();
 
     /* ===============================================
+   PATCH A/7 — MOBILE SEARCH BUTTON OPENS MODAL
+=============================================== */
+(function () {
+    "use strict";
+
+    const openBtn = document.querySelector(".mobile-search-btn");
+    const modal   = document.getElementById("mobile-search-modal");
+
+    if (!openBtn || !modal) return;
+
+    openBtn.addEventListener("click", () => {
+        modal.classList.add("show", "is-open");
+        document.body.classList.add("modal-open");
+    });
+})();
+
+    /* ===============================================
        CORE BINDING
     =============================================== */
     function bindSearch(input, list, ctx) {
