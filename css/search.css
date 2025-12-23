@@ -180,6 +180,40 @@
 }
 
 /* ======================================================
+   HEADER INTEGRATION (MINIMAL, ISOLATED)
+   Keeps search usable when mounted inside headers.
+====================================================== */
+
+/* Desktop header: compact mount */
+.header-desktop .be-search {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.header-desktop .be-search-header {
+    display: none;
+}
+
+.header-desktop .be-search-results {
+    background: #11141d;
+}
+
+/* Mobile panel: dropdown-like container */
+.header-mobile .mobile-search-panel {
+    padding: 10px 12px;
+}
+
+.header-mobile .mobile-search-panel .be-search {
+    margin: 0;
+    max-width: none;
+}
+
+/* ======================================================
    MOBILE OVERRIDES (SAFE)
 ====================================================== */
 @media (max-width: 900px) {
