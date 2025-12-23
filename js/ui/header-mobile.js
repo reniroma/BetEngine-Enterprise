@@ -1,8 +1,13 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.7)
+ * BetEngine Enterprise – HEADER MOBILE JS (FINAL v6.8)
  * ACCESSIBILITY SAFE / PREMIUM STABLE
  *
- * MOBILE ONLY –  NO DESKTOP INTERFERENCE
+ * MOBILE ONLY – NO DESKTOP INTERFERENCE
+ *
+ * FIX:
+ * - Odds/Language modals behave as slide-up sheets
+ * - Selection becomes active and modal closes reliably
+ * - Preferences labels update after selection
  *********************************************************/
 
 (function () {
@@ -55,8 +60,6 @@
             blurActive();
             overlay.classList.add("show");
             panel.classList.add("open");
-
-            /* ===== FORCE ODDS ALWAYS OPEN ===== */
             forceOddsOpen();
 
             document.body.style.overflow = "hidden";
@@ -69,7 +72,6 @@
             panel.classList.remove("open");
             panel.classList.remove("premium-mode");
 
-            // close all submenus except odds
             qa(".submenu", panel).forEach((s) => {
                 if (s.dataset.subnav !== "odds") s.classList.remove("open");
             });
@@ -96,6 +98,8 @@
            MOBILE MODALS (ODDS / LANGUAGE / BOOKMARKS)
            Hamburger MUST stay open
         ================================================== */
+
+        // Generic open/close (no animation)
         const openModal = (modal) => {
             if (!modal) return;
             modal.classList.add("show");
@@ -106,29 +110,76 @@
             modal.classList.remove("show");
         };
 
+        // Slide-up sheet open/close (Odds/Language only)
+        const openSheet = (modal) => {
+            if (!modal) return;
+            modal.classList.add("show");
+            // next frame to allow transitions
+            requestAnimationFrame(() => modal.classList.add("is-open"));
+        };
+
+        const closeSheet = (modal) => {
+            if (!modal) return;
+
+            // start animation out
+            modal.classList.remove("is-open");
+
+            // remove .show after transition ends
+            const onEnd = (ev) => {
+                if (ev.target !== modal) return;
+                modal.removeEventListener("transitionend", onEnd);
+                modal.classList.remove("show");
+            };
+
+            modal.addEventListener("transitionend", onEnd);
+
+            // safety fallback (in case transitionend does not fire)
+            setTimeout(() => {
+                modal.removeEventListener("transitionend", onEnd);
+                modal.classList.remove("show");
+            }, 280);
+        };
+
+        // Close buttons
         qa(".be-modal-close").forEach((btn) => {
             btn.addEventListener("click", (e) => {
                 stop(e);
-                closeModal(btn.closest(".be-modal-overlay"));
+                const m = btn.closest(".be-modal-overlay");
+                if (!m) return;
+
+                if (m.id === "mobile-odds-modal" || m.id === "mobile-language-modal") {
+                    closeSheet(m);
+                } else {
+                    closeModal(m);
+                }
             });
         });
 
-        qa(".be-modal-overlay").forEach((modal) => {
-            modal.addEventListener("click", (e) => {
-                if (e.target === modal) closeModal(modal);
+        // Click outside modal closes it
+        qa(".be-modal-overlay").forEach((m) => {
+            m.addEventListener("click", (e) => {
+                if (e.target !== m) return;
+
+                if (m.id === "mobile-odds-modal" || m.id === "mobile-language-modal") {
+                    closeSheet(m);
+                } else {
+                    closeModal(m);
+                }
             });
         });
 
+        // Open Odds/Language as slide-up sheets
         qs(".menu-odds")?.addEventListener("click", (e) => {
             stop(e);
-            openModal(oddsModal);
+            openSheet(oddsModal);
         });
 
         qs(".menu-lang")?.addEventListener("click", (e) => {
             stop(e);
-            openModal(langModal);
+            openSheet(langModal);
         });
 
+        // Keep bookmarks as normal modal
         qs(".mobile-bookmarks-btn")?.addEventListener("click", (e) => {
             stop(e);
             openModal(bookmarksModal);
@@ -151,8 +202,6 @@
 
         /* ==================================================
            PREMIUM FOCUS MODE (TOGGLE FIXED)
-           - click 1: enter premium-mode, open premium submenu, close others (except odds)
-           - click 2: exit premium-mode, close premium submenu, keep odds open
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
 
@@ -162,13 +211,11 @@
             const isActive = panel.classList.contains("premium-mode");
 
             if (isActive) {
-                // EXIT premium-mode
                 panel.classList.remove("premium-mode");
 
                 const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
                 if (premiumSub) premiumSub.classList.remove("open");
 
-                // keep odds open; leave others closed
                 qa(".submenu", panel).forEach((s) => {
                     if (s.dataset.subnav !== "odds" && s.dataset.subnav !== "premium") {
                         s.classList.remove("open");
@@ -179,7 +226,6 @@
                 return;
             }
 
-            // ENTER premium-mode
             panel.classList.add("premium-mode");
 
             const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
@@ -195,18 +241,12 @@
 
         /* ==================================================
            NORMAL ACCORDION (NON-PREMIUM)
-           FIXED:
-           - Betting/Community/Bookmakers: click toggles open/close
-           - clicking another closes previous (except odds)
-           - leaving premium-mode when normal item clicked
-           - odds excluded (always open)
         ================================================== */
         qa('.menu-link:not([data-section="premium"]):not([data-section="odds"])', panel)
             .forEach((link) => {
                 link.addEventListener("click", (e) => {
                     stop(e);
 
-                    // exit premium-mode if active
                     panel.classList.remove("premium-mode");
                     const premiumSub = qs('.submenu[data-subnav="premium"]', panel);
                     if (premiumSub) premiumSub.classList.remove("open");
@@ -217,24 +257,19 @@
 
                     const isOpen = submenu.classList.contains("open");
 
-                    // close all submenus except odds
                     qa(".submenu", panel).forEach((s) => {
                         if (s.dataset.subnav !== "odds") s.classList.remove("open");
                     });
 
-                    // toggle current submenu
-                    if (!isOpen) {
-                        submenu.classList.add("open");
-                    } else {
-                        submenu.classList.remove("open");
-                    }
+                    if (!isOpen) submenu.classList.add("open");
+                    else submenu.classList.remove("open");
 
                     forceOddsOpen();
                 });
             });
 
         /* ==================================================
-           ODDS ACTIVE + SYNC
+           ODDS ACTIVE + SYNC + CLOSE
         ================================================== */
         qa("#mobile-odds-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -246,6 +281,11 @@
                 const oddsType = item.dataset.odds;
                 const label = item.textContent.trim();
 
+                // Update Preferences label in mobile menu
+                const oddsValue = qs(".menu-section.preferences .menu-item.menu-odds .value", panel);
+                if (oddsValue) oddsValue.textContent = label;
+
+                // Optional: sync desktop state label (no desktop logic changes)
                 qa(".header-desktop .odds-dropdown .item").forEach((i) => {
                     i.classList.toggle("active", i.dataset.odds === oddsType);
                 });
@@ -253,12 +293,12 @@
                 const desktopLabel = qs(".header-desktop .odds-label");
                 if (desktopLabel) desktopLabel.textContent = label;
 
-                closeModal(oddsModal);
+                closeSheet(oddsModal);
             });
         });
 
         /* ==================================================
-           LANGUAGE ACTIVE + SYNC
+           LANGUAGE ACTIVE + SYNC + CLOSE
         ================================================== */
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
             item.addEventListener("click", (e) => {
@@ -270,6 +310,11 @@
                 const lang = item.dataset.lang;
                 const label = item.textContent.trim();
 
+                // Update Preferences label in mobile menu
+                const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
+                if (langValue) langValue.textContent = label;
+
+                // Optional: sync desktop state label (no desktop logic changes)
                 qa(".header-desktop .language-dropdown .item").forEach((i) => {
                     i.classList.toggle("active", i.dataset.lang === lang);
                 });
@@ -277,11 +322,11 @@
                 const desktopLang = qs(".header-desktop .lang-code");
                 if (desktopLang) desktopLang.textContent = label;
 
-                closeModal(langModal);
+                closeSheet(langModal);
             });
         });
 
-        console.log("header-mobile.js v6.7 READY");
+        console.log("header-mobile.js v6.8 READY");
     }
 
     document.addEventListener("headerLoaded", initHeaderMobile);
