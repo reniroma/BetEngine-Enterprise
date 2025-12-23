@@ -113,15 +113,23 @@
 
         <div class="search-notify">
             <div class="search-box">
-                <img src="assets/icons/search.svg" class="search-icon" alt="">
-                <input type="search" placeholder="Search (team / player)">
-            </div>
+                 <img src="assets/icons/search.svg" class="search-icon" alt="">
 
-            <button class="notif-button" type="button">
-                <img src="assets/icons/notification.svg" class="notif-icon" alt="">
-            </button>
-        </div>
-    </div>
+                <input
+                   type="search"
+                   class="be-search-input"
+                   placeholder="Search (team / player)"
+                   autocomplete="off"
+                   spellcheck="false"
+               >
+
+                <ul
+                   class="be-search-results be-search-results--desktop"
+                   role="listbox"
+                   aria-live="polite"
+             ></ul>
+         </div>
+
 
     <div class="row-separator"></div>
 
