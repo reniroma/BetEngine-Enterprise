@@ -79,6 +79,35 @@
     }
 
     /* ===============================================
+   PATCH A/6 — MOBILE SEARCH AUTO-FOCUS ON OPEN
+=============================================== */
+(function () {
+    "use strict";
+
+    const modal = document.getElementById("mobile-search-modal");
+    if (!modal) return;
+
+    const input = modal.querySelector(".be-search-input");
+    if (!input) return;
+
+    const observer = new MutationObserver(() => {
+        if (
+            modal.classList.contains("show") &&
+            modal.classList.contains("is-open")
+        ) {
+            setTimeout(() => {
+                input.focus({ preventScroll: true });
+            }, 50);
+        }
+    });
+
+    observer.observe(modal, {
+        attributes: true,
+        attributeFilter: ["class"]
+    });
+})();
+
+    /* ===============================================
        CORE BINDING
     =============================================== */
     function bindSearch(input, list, ctx) {
