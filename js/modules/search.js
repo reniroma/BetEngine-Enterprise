@@ -8,19 +8,8 @@
  * - Clear button
  *********************************************************/
 
-
 (function () {
     "use strict";
-
-    /* ======================================================
-       ENTERPRISE GUARD — HEADER ISOLATION (B-3)
-       If header search is active, abort search.js entirely
-    ======================================================= */
-    if (window.__BE_HEADER_SEARCH_ACTIVE__ === true) {
-        console.log("[search.js] Header search active — aborting");
-        return;
-    }    
-
 
     /* ======================================================
        LOCAL HELPERS (NO GLOBALS)
