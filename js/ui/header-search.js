@@ -1,151 +1,96 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER SEARCH (DESKTOP + MOBILE)
- * Isolated from page search.js
- * Safe, deterministic, no globals
+ * BetEngine Enterprise – HEADER SEARCH
+ * Desktop + Mobile binding
+ * Triggered ONLY after headerLoaded
  *********************************************************/
-
 (function () {
     "use strict";
 
-    /* ===============================
-       MOCK DATA (TEMP / SAFE)
-    =============================== */
-    const DATA = [
-        { type: "Team", title: "Manchester United", meta: "England · Premier League" },
-        { type: "Team", title: "Real Madrid", meta: "Spain · La Liga" },
-        { type: "Team", title: "Bayern Munich", meta: "Germany · Bundesliga" },
-        { type: "Player", title: "Lionel Messi", meta: "Inter Miami · Forward" },
-        { type: "Player", title: "Cristiano Ronaldo", meta: "Al Nassr · Forward" },
-        { type: "League", title: "Premier League", meta: "England" },
-        { type: "League", title: "Champions League", meta: "UEFA" }
-    ];
+    /* ======================================================
+       SAFE INIT AFTER HEADER INJECTION
+    ======================================================= */
+    document.addEventListener("headerLoaded", initHeaderSearch);
 
-    /* ===============================
-       UTIL
-    =============================== */
-    const debounce = (fn, delay = 300) => {
-        let t;
-        return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...args), delay);
-        };
-    };
-
-    /* ===============================
-       CORE SEARCH LOGIC (REUSABLE)
-    =============================== */
-    function bindSearch(input, results) {
-        if (!input || !results) return;
-
-        let activeIndex = -1;
-        let current = [];
-
-        const clear = () => {
-            results.innerHTML = "";
-            current = [];
-            activeIndex = -1;
-        };
-
-        const render = (items) => {
-            clear();
-            items.forEach((item, i) => {
-                const li = document.createElement("li");
-                li.className = "be-search-result";
-                li.setAttribute("role", "option");
-                li.innerHTML = `
-                    <span class="be-search-result-icon">${item.type[0]}</span>
-                    <div class="be-search-result-content">
-                        <div class="be-search-result-title">${item.title}</div>
-                        <div class="be-search-result-meta">${item.meta}</div>
-                    </div>
-                `;
-                li.addEventListener("click", () => {
-                    console.log("[HEADER SEARCH]", item);
-                });
-                results.appendChild(li);
-            });
-            current = items;
-        };
-
-        const search = debounce((value) => {
-            const q = value.trim().toLowerCase();
-            if (!q) {
-                clear();
-                return;
-            }
-
-            const matches = DATA.filter(x =>
-                x.title.toLowerCase().includes(q)
-            );
-
-            render(matches);
-        }, 300);
-
-        input.addEventListener("input", e => search(e.target.value));
-
-        input.addEventListener("keydown", e => {
-            if (!current.length) return;
-
-            const items = results.querySelectorAll(".be-search-result");
-
-            if (e.key === "ArrowDown") {
-                e.preventDefault();
-                activeIndex = (activeIndex + 1) % items.length;
-            }
-
-            if (e.key === "ArrowUp") {
-                e.preventDefault();
-                activeIndex = (activeIndex - 1 + items.length) % items.length;
-            }
-
-            if (e.key === "Enter" && activeIndex >= 0) {
-                e.preventDefault();
-                console.log("[HEADER SEARCH]", current[activeIndex]);
-            }
-
-            items.forEach(el => el.classList.remove("is-active"));
-            if (items[activeIndex]) {
-                items[activeIndex].classList.add("is-active");
-            }
-        });
+    function initHeaderSearch() {
+        initDesktopSearch();
+        initMobileSearch();
+        console.log("[HeaderSearch] READY");
     }
 
-    /* ===============================
-       DESKTOP BINDING
-    =============================== */
-    function initDesktop() {
-        const input   = document.querySelector(".header-desktop .be-search-input");
-        const results = document.querySelector(".header-desktop .be-search-results--desktop");
-        bindSearch(input, results);
-    }
+    /* ======================================================
+       DESKTOP SEARCH
+    ======================================================= */
+    function initDesktopSearch() {
+        const input = document.querySelector(
+            ".header-desktop .be-search-input"
+        );
+        const results = document.querySelector(
+            ".header-desktop .be-search-results--desktop"
+        );
 
-    /* ===============================
-       MOBILE BINDING
-    =============================== */
-    function initMobile() {
-        const modal = document.querySelector("#mobile-search-modal");
-        if (!modal) return;
-
-        let input   = modal.querySelector("input[type='search']");
-        let results = modal.querySelector(".be-search-results");
-
-        if (!results) {
-            results = document.createElement("ul");
-            results.className = "be-search-results";
-            results.setAttribute("role", "listbox");
-            modal.querySelector(".be-modal-body").appendChild(results);
+        if (!input || !results) {
+            console.warn("[HeaderSearch] Desktop search not found");
+            return;
         }
 
-        bindSearch(input, results);
+        bindSearchLogic(input, results, "DESKTOP");
     }
 
-    /* ===============================
-       INIT (AFTER HEADER LOADED)
-    =============================== */
-    document.addEventListener("headerLoaded", () => {
-        initDesktop();
-        initMobile();
-        console.log("HEADER_SEARCH_READY");
-    });
+    /* ======================================================
+       MOBILE SEARCH
+    ======================================================= */
+    function initMobileSearch() {
+        const input = document.querySelector(
+            "#mobile-search-modal .be-search-input"
+        );
+        const results = document.querySelector(
+            "#mobile-search-modal .be-search-results"
+        );
 
+        if (!input || !results) {
+            console.warn("[HeaderSearch] Mobile search not found");
+            return;
+        }
+
+        bindSearchLogic(input, results, "MOBILE");
+    }
+
+    /* ======================================================
+       SHARED SEARCH LOGIC (MOCK)
+    ======================================================= */
+    function bindSearchLogic(input, resultsList, context) {
+        const DATA = [
+            "Manchester United",
+            "Real Madrid",
+            "Bayern Munich",
+            "Barcelona",
+            "Liverpool",
+            "Juventus",
+            "PSG",
+            "Champions League",
+            "Premier League"
+        ];
+
+        input.addEventListener("input", () => {
+            const q = input.value.trim().toLowerCase();
+            resultsList.innerHTML = "";
+
+            if (!q) return;
+
+            const matches = DATA.filter(item =>
+                item.toLowerCase().includes(q)
+            );
+
+            matches.forEach(text => {
+                const li = document.createElement("li");
+                li.className = "be-search-result";
+                li.textContent = text;
+                li.addEventListener("click", () => {
+                    console.log(`[Search:${context}] Selected`, text);
+                    resultsList.innerHTML = "";
+                });
+                resultsList.appendChild(li);
+            });
+        });
+    }
 })();
