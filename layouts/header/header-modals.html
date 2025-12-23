@@ -282,12 +282,45 @@
         </div>
 
         <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Search teams, players, leagues or competitions.
-            </div>
+
+    <section class="be-search" aria-labelledby="be-search-title">
+
+        <header class="be-search-header">
+            <h2 id="be-search-title" class="be-search-title">Search</h2>
+            <p class="be-search-subtitle">
+                Find teams, players, leagues, or competitions.
+            </p>
+        </header>
+
+        <div class="be-search-input-wrapper">
+            <input
+                type="search"
+                class="be-search-input"
+                placeholder="Search teams, players, leagues..."
+                aria-label="Search"
+                autocomplete="off"
+                spellcheck="false"
+            />
+
+            <button
+                type="button"
+                class="be-search-clear"
+                aria-label="Clear search"
+                hidden
+            >
+                Clear
+            </button>
         </div>
 
-    </div>
+        <div class="be-search-states">
+            <div class="be-search-loading" hidden>Searching...</div>
+            <div class="be-search-empty" hidden>No results found.</div>
+        </div>
+
+        <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
+
+    </section>
+
 </div>
 
 <!-- ============================
