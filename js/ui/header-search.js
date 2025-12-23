@@ -1,190 +1,151 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- * Features:
- * - Debounced input
- * - Loading / empty / results states
- * - Keyboard navigation (↑ ↓ Enter)
- * - Clear button
+ * BetEngine Enterprise – HEADER SEARCH (DESKTOP + MOBILE)
+ * Isolated from page search.js
+ * Safe, deterministic, no globals
  *********************************************************/
 
 (function () {
     "use strict";
 
-    /* ======================================================
-       LOCAL HELPERS (NO GLOBALS)
-    ======================================================= */
-    const $  = (sel, scope = document) => scope.querySelector(sel);
-    const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+    /* ===============================
+       MOCK DATA (TEMP / SAFE)
+    =============================== */
+    const DATA = [
+        { type: "Team", title: "Manchester United", meta: "England · Premier League" },
+        { type: "Team", title: "Real Madrid", meta: "Spain · La Liga" },
+        { type: "Team", title: "Bayern Munich", meta: "Germany · Bundesliga" },
+        { type: "Player", title: "Lionel Messi", meta: "Inter Miami · Forward" },
+        { type: "Player", title: "Cristiano Ronaldo", meta: "Al Nassr · Forward" },
+        { type: "League", title: "Premier League", meta: "England" },
+        { type: "League", title: "Champions League", meta: "UEFA" }
+    ];
 
+    /* ===============================
+       UTIL
+    =============================== */
     const debounce = (fn, delay = 300) => {
         let t;
         return (...args) => {
             clearTimeout(t);
-            t = setTimeout(() => fn.apply(null, args), delay);
+            t = setTimeout(() => fn(...args), delay);
         };
     };
 
-    /* ======================================================
-       DOM REFERENCES
-    ======================================================= */
-    const root        = $(".be-search");
-    if (!root) return;
+    /* ===============================
+       CORE SEARCH LOGIC (REUSABLE)
+    =============================== */
+    function bindSearch(input, results) {
+        if (!input || !results) return;
 
-    const input       = $(".be-search-input", root);
-    const clearBtn    = $(".be-search-clear", root);
-    const resultsList = $(".be-search-results", root);
-    const loadingEl   = $(".be-search-loading", root);
-    const emptyEl     = $(".be-search-empty", root);
+        let activeIndex = -1;
+        let current = [];
 
-    /* ======================================================
-       MOCK DATA (SAFE)
-    ======================================================= */
-    const MOCK_DATA = [
-        { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
-        { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
-        { type: "Team",   title: "Bayern Munich",     meta: "Germany · Bundesliga" },
-        { type: "Player", title: "Lionel Messi",      meta: "Inter Miami · Forward" },
-        { type: "Player", title: "Cristiano Ronaldo", meta: "Al Nassr · Forward" },
-        { type: "League", title: "Premier League",    meta: "England" },
-        { type: "League", title: "Champions League",  meta: "UEFA" }
-    ];
+        const clear = () => {
+            results.innerHTML = "";
+            current = [];
+            activeIndex = -1;
+        };
 
-    /* ======================================================
-       STATE
-    ======================================================= */
-    let activeIndex = -1;
-    let currentResults = [];
+        const render = (items) => {
+            clear();
+            items.forEach((item, i) => {
+                const li = document.createElement("li");
+                li.className = "be-search-result";
+                li.setAttribute("role", "option");
+                li.innerHTML = `
+                    <span class="be-search-result-icon">${item.type[0]}</span>
+                    <div class="be-search-result-content">
+                        <div class="be-search-result-title">${item.title}</div>
+                        <div class="be-search-result-meta">${item.meta}</div>
+                    </div>
+                `;
+                li.addEventListener("click", () => {
+                    console.log("[HEADER SEARCH]", item);
+                });
+                results.appendChild(li);
+            });
+            current = items;
+        };
 
-    /* ======================================================
-       RENDER HELPERS
-    ======================================================= */
-    function clearResults() {
-        resultsList.innerHTML = "";
-        currentResults = [];
-        activeIndex = -1;
-    }
-
-    function showLoading(show) {
-        loadingEl.hidden = !show;
-    }
-
-    function showEmpty(show) {
-        emptyEl.hidden = !show;
-    }
-
-    function renderResults(items) {
-        clearResults();
-
-        items.forEach((item, idx) => {
-            const li = document.createElement("li");
-            li.className = "be-search-result";
-            li.setAttribute("role", "option");
-            li.dataset.index = String(idx);
-
-            li.innerHTML = `
-                <span class="be-search-result-icon">${item.type[0]}</span>
-                <div class="be-search-result-content">
-                    <div class="be-search-result-title">${item.title}</div>
-                    <div class="be-search-result-meta">${item.meta}</div>
-                </div>
-            `;
-
-            li.addEventListener("click", () => selectIndex(idx));
-            resultsList.appendChild(li);
-        });
-
-        currentResults = items;
-    }
-
-    function setActive(index) {
-        const items = $$(".be-search-result", resultsList);
-        items.forEach(el => el.classList.remove("is-active"));
-        if (items[index]) {
-            items[index].classList.add("is-active");
-            items[index].scrollIntoView({ block: "nearest" });
-        }
-        activeIndex = index;
-    }
-
-    function selectIndex(index) {
-        const item = currentResults[index];
-        if (!item) return;
-        console.log("[SEARCH] Selected:", item);
-    }
-
-    /* ======================================================
-       SEARCH LOGIC
-    ======================================================= */
-    function performSearch(query) {
-        showLoading(true);
-        showEmpty(false);
-        clearResults();
-
-        setTimeout(() => {
-            const q = query.toLowerCase();
-            const matches = MOCK_DATA.filter(item =>
-                item.title.toLowerCase().includes(q)
-            );
-
-            showLoading(false);
-
-            if (!matches.length) {
-                showEmpty(true);
+        const search = debounce((value) => {
+            const q = value.trim().toLowerCase();
+            if (!q) {
+                clear();
                 return;
             }
 
-            renderResults(matches);
-        }, 250);
+            const matches = DATA.filter(x =>
+                x.title.toLowerCase().includes(q)
+            );
+
+            render(matches);
+        }, 300);
+
+        input.addEventListener("input", e => search(e.target.value));
+
+        input.addEventListener("keydown", e => {
+            if (!current.length) return;
+
+            const items = results.querySelectorAll(".be-search-result");
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                activeIndex = (activeIndex + 1) % items.length;
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                activeIndex = (activeIndex - 1 + items.length) % items.length;
+            }
+
+            if (e.key === "Enter" && activeIndex >= 0) {
+                e.preventDefault();
+                console.log("[HEADER SEARCH]", current[activeIndex]);
+            }
+
+            items.forEach(el => el.classList.remove("is-active"));
+            if (items[activeIndex]) {
+                items[activeIndex].classList.add("is-active");
+            }
+        });
     }
 
-    const debouncedSearch = debounce((value) => {
-        if (!value.trim()) {
-            showLoading(false);
-            showEmpty(false);
-            clearResults();
-            clearBtn.hidden = true;
-            return;
-        }
-        clearBtn.hidden = false;
-        performSearch(value);
-    }, 300);
+    /* ===============================
+       DESKTOP BINDING
+    =============================== */
+    function initDesktop() {
+        const input   = document.querySelector(".header-desktop .be-search-input");
+        const results = document.querySelector(".header-desktop .be-search-results--desktop");
+        bindSearch(input, results);
+    }
 
-    /* ======================================================
-       EVENTS
-    ======================================================= */
-    input.addEventListener("input", (e) => {
-        debouncedSearch(e.target.value);
+    /* ===============================
+       MOBILE BINDING
+    =============================== */
+    function initMobile() {
+        const modal = document.querySelector("#mobile-search-modal");
+        if (!modal) return;
+
+        let input   = modal.querySelector("input[type='search']");
+        let results = modal.querySelector(".be-search-results");
+
+        if (!results) {
+            results = document.createElement("ul");
+            results.className = "be-search-results";
+            results.setAttribute("role", "listbox");
+            modal.querySelector(".be-modal-body").appendChild(results);
+        }
+
+        bindSearch(input, results);
+    }
+
+    /* ===============================
+       INIT (AFTER HEADER LOADED)
+    =============================== */
+    document.addEventListener("headerLoaded", () => {
+        initDesktop();
+        initMobile();
+        console.log("HEADER_SEARCH_READY");
     });
 
-    clearBtn.addEventListener("click", () => {
-        input.value = "";
-        clearBtn.hidden = true;
-        showLoading(false);
-        showEmpty(false);
-        clearResults();
-        input.focus();
-    });
-
-    input.addEventListener("keydown", (e) => {
-        const itemsCount = currentResults.length;
-        if (!itemsCount) return;
-
-        if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActive((activeIndex + 1) % itemsCount);
-        }
-
-        if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActive((activeIndex - 1 + itemsCount) % itemsCount);
-        }
-
-        if (e.key === "Enter" && activeIndex >= 0) {
-            e.preventDefault();
-            selectIndex(activeIndex);
-        }
-    });
-
-    console.log("search.js READY (isolated)");
 })();
