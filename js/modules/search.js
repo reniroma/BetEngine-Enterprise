@@ -38,7 +38,8 @@
     /* ======================================================
        DESKTOP GUARD (DO NOT TOUCH MOBILE)
     ======================================================= */
-    const isDesktopContext = !!document.querySelector(".header-desktop .search-box");
+    const isDesktopContext = !!
+    document.querySelector(".header-desktop .search-box");F
     if (!isDesktopContext) return;
 
     /* ======================================================
