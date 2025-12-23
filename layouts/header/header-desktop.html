@@ -9,6 +9,7 @@
         <div class="left"></div>
 
         <div class="right">
+
             <!-- Odds format -->
             <div class="odds-format">
                 <button class="odds-toggle" type="button">
@@ -16,6 +17,7 @@
                     <span class="value odds-label">Decimal Odds</span>
                     <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
+
                 <div class="odds-dropdown">
                     <div class="item active" data-odds="decimal">Decimal Odds (1.50)</div>
                     <div class="item" data-odds="fractional">Fractional Odds (1/2)</div>
@@ -33,14 +35,57 @@
                     <span class="lang-code">English</span>
                     <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
                 </button>
+
                 <div class="language-dropdown">
-                    <!-- language items unchanged -->
+                    <div class="item" data-lang="sq">Albanian</div>
+                    <div class="item" data-lang="ar">Arabic</div>
+                    <div class="item" data-lang="zh">Chinese</div>
+                    <div class="item" data-lang="nl">Dutch</div>
+                    <div class="item active" data-lang="en">English</div>
+                    <div class="item" data-lang="fr">French</div>
+                    <div class="item" data-lang="de">German</div>
+                    <div class="item" data-lang="el">Greek</div>
+                    <div class="item" data-lang="hi">Hindi</div>
+                    <div class="item" data-lang="id">Indonesian</div>
+                    <div class="item" data-lang="it">Italian</div>
+                    <div class="item" data-lang="ja">Japanese</div>
+                    <div class="item" data-lang="ko">Korean</div>
+                    <div class="item" data-lang="pl">Polish</div>
+                    <div class="item" data-lang="pt">Portuguese</div>
+                    <div class="item" data-lang="ro">Romanian</div>
+                    <div class="item" data-lang="ru">Russian</div>
+                    <div class="item" data-lang="sr">Serbian</div>
+                    <div class="item" data-lang="es">Spanish</div>
+                    <div class="item" data-lang="tr">Turkish</div>
+                    <div class="item" data-lang="uk">Ukrainian</div>
                 </div>
             </div>
 
-            <!-- Auth buttons -->
-            <button class="btn-auth login" type="button"><span>LOGIN</span></button>
-            <button class="btn-auth register" type="button"><span>REGISTER</span></button>
+             <!-- Auth buttons -->
+            <button class="btn-auth login" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                    <polyline points="10 17 15 12 10 7"></polyline>
+                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+                <span>LOGIN</span>
+            </button>
+
+            <button class="btn-auth register" type="button">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <circle cx="12" cy="7" r="4"></circle>
+                    <path d="M5 21v-2a5 5 0 0 1 5-5h4"></path>
+                    <line x1="19" y1="16" x2="19" y2="22"></line>
+                    <line x1="16" y1="19" x2="22" y2="19"></line>
+                </svg>
+                <span>REGISTER</span>
+            </button>
         </div>
     </div>
 
@@ -58,15 +103,17 @@
         </div>
 
         <nav class="main-nav" aria-label="Main navigation">
-            <a href="#" class="nav-item active">ODDS COMPARISON</a>
-            <a href="#" class="nav-item">COMMUNITY</a>
-            <a href="#" class="nav-item">BOOKMAKERS</a>
-            <a href="#" class="nav-item premium-link">PREMIUM ★</a>
+            <a href="#" class="nav-item active" data-section="odds">ODDS COMPARISON</a>
+            <a href="#" class="nav-item" data-section="community">COMMUNITY</a>
+            <a href="#" class="nav-item" data-section="bookmakers">BOOKMAKERS</a>
+            <a href="#" class="nav-item premium-link" data-section="premium">
+                PREMIUM <span class="premium-star">★</span>
+            </a>
         </nav>
 
         <div class="search-notify">
 
-            <!-- SEARCH SYSTEM (DESKTOP CLEAN VERSION) -->
+           !-- SEARCH SYSTEM (DESKTOP CLEAN VERSION) -->
             <div class="be-search">
 
                 <div class="be-search-input-wrapper">
@@ -109,6 +156,65 @@
     </div>
 
     <div class="row-separator"></div>
+    <!-- ROW 3: SUB NAVIGATION -->
+    <nav class="header-row row-sub" aria-label="Secondary navigation">
 
-    <!-- ROW 3 unchanged -->
+        <!-- ODDS SUBNAV -->
+        <div class="subnav-group active" data-subnav="odds">
+            <a href="#" class="sub-item">HOME</a>
+            <a href="#" class="sub-item">NEXT MATCHES</a>
+            <a href="#" class="sub-item">DROPPING ODDS</a>
+            <a href="#" class="sub-item">SURE BETS</a>
+            <a href="#" class="sub-item">IN PLAY ODDS</a>
+            <a href="#" class="sub-item">ALL EVENTS</a>
+
+            <div class="sub-item sub-item-tools">
+                BETTING TOOLS
+                <img src="assets/icons/caret-down.svg" class="caret" alt="">
+                <div class="tools-dropdown">
+                    <div class="item">Blocked Odds</div>
+                    <div class="item">Value Bets</div>
+                    <div class="item">Hot Matches</div>
+                    <div class="item">Archived Results</div>
+                    <div class="item">Standings</div>
+                    <div class="item">Bet Calculator</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMMUNITY SUBNAV -->
+        <div class="subnav-group" data-subnav="community">
+            <a href="#" class="sub-item">HOME</a>
+            <a href="#" class="sub-item">FEED</a>
+            <a href="#" class="sub-item">USERS</a>
+            <a href="#" class="sub-item">TOP PREDICTIONS</a>
+            <a href="#" class="sub-item">MY STATISTICS</a>
+            <a href="#" class="sub-item">MY PROFILE</a>
+            <a href="#" class="sub-item">MY PREDICTIONS</a>
+            <a href="#" class="sub-item">MY COUPONS</a>
+        </div>
+
+        <!-- BOOKMAKERS SUBNAV -->
+        <div class="subnav-group" data-subnav="bookmakers">
+            <a href="#" class="sub-item">BOOKIE INFO</a>
+            <a href="#" class="sub-item">BONUS OFFERS</a>
+            <a href="#" class="sub-item">ODDS QUALITY</a>
+            <a href="#" class="sub-item">BETTING APPS</a>
+        </div>
+
+        <!-- PREMIUM SUBNAV -->
+        <div class="subnav-group" data-subnav="premium">
+            <a href="#" class="sub-item">Premium Dashboard</a>
+            <a href="#" class="sub-item">Market Insights</a>
+            <a href="#" class="sub-item">Fair Odds Engine</a>
+            <a href="#" class="sub-item">AI Predictions</a>
+            <a href="#" class="sub-item">Smart H2H Insights</a>
+            <a href="#" class="sub-item">Value Finder</a>
+            <a href="#" class="sub-item">Sharp vs Public Money</a>
+            <a href="#" class="sub-item">Shock Alerts</a>
+            <a href="#" class="sub-item">AI Live Momentum</a>
+            <a href="#" class="sub-item">Fake Trend Detector</a>
+        </div>
+
+    </nav>
 </header>
