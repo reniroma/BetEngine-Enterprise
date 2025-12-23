@@ -1,60 +1,122 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER SEARCH (FINAL SAFE)
+ * BetEngine Enterprise – HEADER SEARCH (FINAL v1.0)
+ * Scope:
+ * - Desktop header inline search
+ * - Mobile search modal
+ * - NO dependency on search.js
+ * - Safe with headerLoaded
  *********************************************************/
+
 (function () {
     "use strict";
 
-    if (document.querySelector(".header-desktop")) {
-        initHeaderSearch();
+    /* ===============================================
+       INIT CONTROL
+    =============================================== */
+    if (window.__BE_HEADER_READY__ === true) {
+        init();
     } else {
-        document.addEventListener("headerLoaded", initHeaderSearch, { once: true });
+        document.addEventListener("headerLoaded", init, { once: true });
     }
 
-    function initHeaderSearch() {
-        initDesktopSearch();
-        initMobileSearch();
-        console.log("[HeaderSearch] READY");
+    function init() {
+        initDesktop();
+        initMobile();
+        console.log("[HeaderSearch] initialized");
     }
 
-    function initDesktopSearch() {
-        const input = document.querySelector(".header-desktop .be-search-input");
-        const results = document.querySelector(".header-desktop .be-search-results--desktop");
+    /* ===============================================
+       SHARED DATA (TEMP / MOCK)
+    =============================================== */
+    const DATA = [
+        "Manchester United",
+        "Real Madrid",
+        "Barcelona",
+        "Bayern Munich",
+        "Juventus",
+        "Paris Saint-Germain",
+        "Champions League",
+        "Premier League",
+        "La Liga",
+        "Bundesliga"
+    ];
 
-        if (!input || !results) return;
+    /* ===============================================
+       DESKTOP SEARCH
+    =============================================== */
+    function initDesktop() {
+        const input = document.querySelector(
+            ".header-desktop .be-search-input"
+        );
+        const list = document.querySelector(
+            ".header-desktop .be-search-results--desktop"
+        );
 
-        bind(input, results, "DESKTOP");
+        if (!input || !list) {
+            console.warn("[HeaderSearch] desktop elements missing");
+            return;
+        }
+
+        bindSearch(input, list, "DESKTOP");
     }
 
-    function initMobileSearch() {
-        const input = document.querySelector("#mobile-search-modal .be-search-input");
-        const results = document.querySelector("#mobile-search-modal .be-search-results");
+    /* ===============================================
+       MOBILE SEARCH (MODAL)
+    =============================================== */
+    function initMobile() {
+        const modal = document.querySelector("#mobile-search-modal");
+        if (!modal) return;
 
-        if (!input || !results) return;
+        const input = modal.querySelector(".be-search-input");
+        const list  = modal.querySelector(".be-search-results");
 
-        bind(input, results, "MOBILE");
+        if (!input || !list) {
+            console.warn("[HeaderSearch] mobile elements missing");
+            return;
+        }
+
+        bindSearch(input, list, "MOBILE");
     }
 
-    function bind(input, list, ctx) {
-        const DATA = [
-            "Manchester United",
-            "Real Madrid",
-            "Bayern Munich",
-            "Barcelona",
-            "Juventus",
-            "Champions League"
-        ];
+    /* ===============================================
+       CORE BINDING
+    =============================================== */
+    function bindSearch(input, list, ctx) {
+        let timer = null;
 
         input.addEventListener("input", () => {
-            const q = input.value.toLowerCase().trim();
-            list.innerHTML = "";
-            if (!q) return;
+            clearTimeout(timer);
 
-            DATA.filter(v => v.toLowerCase().includes(q)).forEach(v => {
-                const li = document.createElement("li");
-                li.textContent = v;
-                li.onclick = () => list.innerHTML = "";
-                list.appendChild(li);
-            });
+            timer = setTimeout(() => {
+                const q = input.value.trim().toLowerCase();
+                list.innerHTML = "";
+
+                if (!q) return;
+
+                DATA
+                    .filter(v => v.toLowerCase().includes(q))
+                    .forEach(v => {
+                        const li = document.createElement("li");
+                        li.className = "be-search-result";
+                        li.textContent = v;
+
+                        li.addEventListener("click", () => {
+                            input.value = v;
+                            list.innerHTML = "";
+                        });
+
+                        list.appendChild(li);
+                    });
+            }, 200);
+        });
+
+        // ESC clears results
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                list.innerHTML = "";
+                input.blur();
+            }
         });
     }
+
 })();
