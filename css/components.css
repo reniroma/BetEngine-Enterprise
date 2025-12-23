@@ -1,17 +1,20 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.1)
- * Desktop-only components + shared base buttons.
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.2)
+ * Desktop-only components + scoped safe controls.
  * FIX:
- * - SVG icons now render correctly inside auth buttons
- * - ZERO side effects
+ * - NO global button reset (prevents side effects)
+ * - Search UI scoped to header desktop + mobile search modal only
+ * - Auth icons (svg/img) safe on desktop
  *********************************************************/
 
 
 /* =======================================================
-   BASE BUTTONS / CONTROLS (SHARED, SAFE)
+   SAFE CONTROL RESET (SCOPED ONLY)
+   IMPORTANT: Never use global button resets in enterprise.
 ======================================================= */
 
-button {
+/* Desktop header controls */
+.header-desktop button {
     font-family: inherit;
     border: none;
     outline: none;
@@ -19,10 +22,24 @@ button {
     background: none;
 }
 
-.btn-auth,
-.odds-toggle,
-.language-toggle,
-.notif-button {
+/* Mobile search modal controls (only inside search modal) */
+#mobile-search-modal button {
+    font-family: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background: none;
+}
+
+
+/* =======================================================
+   SHARED HEADER CONTROLS (SCOPED)
+======================================================= */
+
+.header-desktop .btn-auth,
+.header-desktop .odds-toggle,
+.header-desktop .language-toggle,
+.header-desktop .notif-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -45,19 +62,19 @@ button {
     /*******************************************************
      * AUTH BUTTONS (DESKTOP)
      *******************************************************/
-    .btn-auth.login {
+    .header-desktop .btn-auth.login {
         background: var(--bg-button-secondary, #222236);
         color: var(--text-secondary, #00eaff);
     }
 
-    .btn-auth.register {
+    .header-desktop .btn-auth.register {
         background: var(--bg-button-primary, #ffec00);
         color: #000;
     }
 
     /* FIX: support BOTH img AND svg icons */
-    .btn-auth img,
-    .btn-auth svg {
+    .header-desktop .btn-auth img,
+    .header-desktop .btn-auth svg {
         width: 14px;
         height: 14px;
         flex-shrink: 0;
@@ -68,9 +85,10 @@ button {
     /*******************************************************
      * NOTIFICATION BUTTON
      *******************************************************/
-    .notif-button {
+    .header-desktop .notif-button {
         width: 34px;
         height: 34px;
+        flex: 0 0 34px;
         border-radius: 50%;
         background: var(--bg-panel-soft, #181824);
         display: inline-flex;
@@ -78,16 +96,17 @@ button {
         justify-content: center;
     }
 
-    .notif-icon {
+    .header-desktop .notif-icon {
         width: 18px;
         height: 18px;
+        display: block;
     }
 
 
     /*******************************************************
      * DESKTOP ROW TOP
      *******************************************************/
-    .header-row.row-top .right {
+    .header-desktop .header-row.row-top .right {
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -98,45 +117,45 @@ button {
     /*******************************************************
      * BRAND BLOCK (DESKTOP)
      *******************************************************/
-    .brand {
+    .header-desktop .brand {
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .brand .logo {
+    .header-desktop .brand .logo {
         width: 34px;
         height: 34px;
     }
 
-    .brand-text {
+    .header-desktop .brand-text {
         display: flex;
         flex-direction: column;
         line-height: 1.05;
     }
 
-    .brand-text .name {
+    .header-desktop .brand-text .name {
         font-size: 15px;
         font-weight: 700;
         color: var(--text-primary, #ffec00);
     }
 
-    .brand-text .tagline {
+    .header-desktop .brand-text .tagline {
         font-size: 11px;
         color: var(--text-muted, #b3b3b3);
     }
 
 
     /*******************************************************
-     * DESKTOP SEARCH BOX
+     * DESKTOP SEARCH BOX (VISUAL)
      *******************************************************/
-    .search-notify {
+    .header-desktop .search-notify {
         display: flex;
         align-items: center;
         gap: 8px;
     }
 
-    .search-box {
+    .header-desktop .search-box {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -144,31 +163,256 @@ button {
         border-radius: 999px;
         background: var(--bg-panel-soft, #181824);
         min-width: 220px;
+        position: relative; /* anchor for dropdown */
     }
 
-    .search-icon {
+    .header-desktop .search-icon {
         width: 14px;
         height: 14px;
+        display: block;
     }
 
-    .search-box input {
+    .header-desktop .search-box input {
         border: none;
         outline: none;
         background: transparent;
         color: var(--text-secondary, #00eaff);
         font-size: 13px;
+        width: 100%;
     }
 
+
     /* ======================================================
-   SEARCH RESULTS – SHARED (DESKTOP + MOBILE)
-   Enterprise single-source UI
+       DESKTOP SEARCH RESULTS (SCOPED ONLY)
+    ======================================================= */
+
+    .header-desktop .be-search-results--desktop {
+        margin: 6px 0 0 0;
+        padding: 0;
+        list-style: none;
+        border-radius: 10px;
+        background: #11141d;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+        overflow: hidden;
+
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+
+        max-height: 320px;
+        overflow-y: auto;
+
+        z-index: 2000;
+
+        display: none; /* shown only when has items */
+    }
+
+    .header-desktop .be-search-results--desktop:not(:empty) {
+        display: block;
+    }
+
+    .header-desktop .be-search-results--desktop .be-search-result,
+    .header-desktop .be-search-results--desktop li {
+        padding: 12px 14px;
+        font-size: 13px;
+        color: #ffffff;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .header-desktop .be-search-results--desktop .be-search-result:last-child,
+    .header-desktop .be-search-results--desktop li:last-child {
+        border-bottom: none;
+    }
+
+    .header-desktop .be-search-results--desktop .be-search-result:hover,
+    .header-desktop .be-search-results--desktop li:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .header-desktop .be-search-results--desktop .be-search-result.is-active,
+    .header-desktop .be-search-results--desktop li.is-active {
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+
+    /*******************************************************
+     * MAIN NAV (DESKTOP)
+     *******************************************************/
+    .header-desktop .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .header-desktop .main-nav .nav-item {
+        position: relative;
+        font-size: 13px;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted, #b3b3b3);
+        padding: 6px 0;
+    }
+
+    .header-desktop .main-nav .nav-item.active {
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .header-desktop .main-nav .nav-item.active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 100%;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--text-secondary, #00eaff);
+    }
+
+
+    /*******************************************************
+     * PREMIUM STAR – Desktop alignment
+     *******************************************************/
+    .header-desktop .premium-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--bg-badge-premium, #ff9800);
+    }
+
+    .header-desktop .premium-link .premium-star {
+        font-size: 14px;
+        position: relative;
+        top: -1px;
+    }
+
+
+    /*******************************************************
+     * DESKTOP SUB NAVIGATION
+     *******************************************************/
+    .header-desktop .row-sub {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-desktop .row-sub .subnav-group {
+        display: none;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .header-desktop .row-sub .subnav-group.active {
+        display: flex;
+    }
+
+    .header-desktop .sub-item {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted, #b3b3b3);
+        padding: 4px 0;
+        cursor: pointer;
+    }
+
+    .header-desktop .sub-item:hover {
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .header-desktop .sub-item-tools {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+    }
+
+    .header-desktop .sub-item-tools .caret {
+        width: 10px;
+        height: 10px;
+    }
+
+
+    /*******************************************************
+     * DESKTOP DROPDOWNS
+     *******************************************************/
+    .header-desktop .odds-dropdown,
+    .header-desktop .language-dropdown,
+    .header-desktop .tools-dropdown {
+        position: absolute;
+        top: 110%;
+        right: 0;
+        min-width: 210px;
+        padding: 6px 0;
+        border-radius: 8px;
+        background: var(--bg-panel, #11141d);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(6px);
+        transition: all 0.15s ease;
+        z-index: 300;
+    }
+
+    .header-desktop .sub-item-tools .tools-dropdown {
+        left: 0;
+        right: auto;
+    }
+
+    .header-desktop .odds-dropdown.show,
+    .header-desktop .language-dropdown.show,
+    .header-desktop .tools-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .header-desktop .odds-dropdown .item,
+    .header-desktop .language-dropdown .item,
+    .header-desktop .tools-dropdown .item {
+        padding: 8px 12px;
+        font-size: 13px;
+        color: var(--text-muted, #b3b3b3);
+    }
+
+    .header-desktop .odds-dropdown .item:hover,
+    .header-desktop .language-dropdown .item:hover,
+    .header-desktop .tools-dropdown .item:hover {
+        background: var(--bg-panel-soft, #181824);
+        color: var(--text-secondary, #00eaff);
+    }
+
+    .header-desktop .language-dropdown {
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .header-desktop .language-dropdown .item.active,
+    .header-desktop .odds-dropdown .item.active {
+        color: var(--text-secondary, #00eaff);
+    }
+
+    /*******************************************************
+     * AUTH MODALS (DESKTOP)
+     *******************************************************/
+    .be-auth-overlay {
+        /* untouched */
+    }
+}
+
+
+/* ======================================================
+   MOBILE SEARCH (SCOPED TO MODAL ONLY)
 ====================================================== */
 
-.be-search-results,
-.be-search-results--desktop {
-    margin: 6px 0 0 0;
+#mobile-search-modal .be-search-results {
+    margin: 8px 0 0 0;
     padding: 0;
     list-style: none;
+    max-height: 55vh;
+    overflow-y: auto;
     border-radius: 10px;
     background: #11141d;
     border: 1px solid rgba(255,255,255,0.08);
@@ -176,79 +420,7 @@ button {
     overflow: hidden;
 }
 
-.be-search-result {
-    padding: 12px 14px;
-    font-size: 13px;
-    color: #ffffff;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    transition: background 0.15s ease;
-}
-
-.be-search-result:last-child {
-    border-bottom: none;
-}
-
-.be-search-result:hover,
-.be-search-result.is-active {
-    background: #151827;
-}
-
-   /* ======================================================
-   PATCH A/2 — DESKTOP SEARCH RESULTS POSITIONING
-====================================================== */
-
-.header-desktop .search-box {
-    position: relative;
-}
-
-.header-desktop .be-search-results--desktop {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
-
-    max-height: 320px;
-    overflow-y: auto;
-
-    z-index: 2000;
-
-    display: none;
-}
-
-.header-desktop .be-search-results--desktop:not(:empty) {
-    display: block;
-}
-
-   /* ======================================================
-   PATCH A/3 — DESKTOP SEARCH RESULTS INTERACTION
-====================================================== */
-
-.header-desktop .be-search-results--desktop li {
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.header-desktop .be-search-results--desktop li:hover {
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.header-desktop .be-search-results--desktop li.is-active {
-    background: rgba(255, 255, 255, 0.12);
-}
-
-   /* ======================================================
-   PATCH A/4 — MOBILE SEARCH RESULTS
-====================================================== */
-
-#mobile-search-modal .be-search-results {
-    margin-top: 8px;
-    list-style: none;
-    padding: 0;
-    max-height: 55vh;
-    overflow-y: auto;
-}
-
+#mobile-search-modal .be-search-results .be-search-result,
 #mobile-search-modal .be-search-results li {
     display: flex;
     align-items: center;
@@ -257,29 +429,23 @@ button {
     cursor: pointer;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     transition: background-color 0.15s ease;
+    color: #ffffff;
 }
 
+#mobile-search-modal .be-search-results .be-search-result:last-child,
+#mobile-search-modal .be-search-results li:last-child {
+    border-bottom: none;
+}
+
+#mobile-search-modal .be-search-results .be-search-result:hover,
 #mobile-search-modal .be-search-results li:hover {
     background: rgba(255, 255, 255, 0.06);
 }
 
+#mobile-search-modal .be-search-results .be-search-result.is-active,
 #mobile-search-modal .be-search-results li.is-active {
     background: rgba(255, 255, 255, 0.12);
 }
-
-#mobile-search-modal .be-search-result-title {
-    font-size: 14px;
-    font-weight: 500;
-}
-
-#mobile-search-modal .be-search-result-meta {
-    font-size: 12px;
-    opacity: 0.7;
-}
-
-   /* ======================================================
-   PATCH A/5 — MOBILE SEARCH INPUT ENABLE & FOCUS
-====================================================== */
 
 /* Ensure input is interactive inside modal */
 #mobile-search-modal .be-search-input {
@@ -291,7 +457,7 @@ button {
     touch-action: manipulation;
 }
 
-/* Prevent modal overlays from blocking typing */
+/* Prevent overlays from blocking typing */
 #mobile-search-modal .be-search-input-wrapper {
     position: relative;
     z-index: 2;
@@ -308,168 +474,5 @@ button {
     appearance: none;
 }
 
-
-    /*******************************************************
-     * MAIN NAV (DESKTOP)
-     *******************************************************/
-    .main-nav {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-    }
-
-    .main-nav .nav-item {
-        position: relative;
-        font-size: 13px;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--text-muted, #b3b3b3);
-        padding: 6px 0;
-    }
-
-    .main-nav .nav-item.active {
-        color: var(--text-secondary, #00eaff);
-    }
-
-    .main-nav .nav-item.active::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -4px;
-        width: 100%;
-        height: 2px;
-        border-radius: 999px;
-        background: var(--text-secondary, #00eaff);
-    }
-
-
-    /*******************************************************
-     * PREMIUM STAR – Desktop alignment
-     *******************************************************/
-    .premium-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        color: var(--bg-badge-premium, #ff9800);
-    }
-
-    .premium-link .premium-star {
-        font-size: 14px;
-        position: relative;
-        top: -1px;
-    }
-
-
-    /*******************************************************
-     * DESKTOP SUB NAVIGATION
-     *******************************************************/
-    .row-sub {
-        display: flex;
-        align-items: center;
-    }
-
-    .row-sub .subnav-group {
-        display: none;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .row-sub .subnav-group.active {
-        display: flex;
-    }
-
-    .sub-item {
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted, #b3b3b3);
-        padding: 4px 0;
-        cursor: pointer;
-    }
-
-    .sub-item:hover {
-        color: var(--text-secondary, #00eaff);
-    }
-
-    .sub-item-tools {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        position: relative;
-    }
-
-    .sub-item-tools .caret {
-        width: 10px;
-        height: 10px;
-    }
-
-
-    /*******************************************************
-     * DESKTOP DROPDOWNS
-     *******************************************************/
-    .odds-dropdown,
-    .language-dropdown,
-    .tools-dropdown {
-        position: absolute;
-        top: 110%;
-        right: 0;
-        min-width: 210px;
-        padding: 6px 0;
-        border-radius: 8px;
-        background: var(--bg-panel, #11141d);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(6px);
-        transition: all 0.15s ease;
-        z-index: 300;
-    }
-
-    .sub-item-tools .tools-dropdown {
-        left: 0;
-        right: auto;
-    }
-
-    .odds-dropdown.show,
-    .language-dropdown.show,
-    .tools-dropdown.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
-    }
-
-    .odds-dropdown .item,
-    .language-dropdown .item,
-    .tools-dropdown .item {
-        padding: 8px 12px;
-        font-size: 13px;
-        color: var(--text-muted, #b3b3b3);
-    }
-
-    .odds-dropdown .item:hover,
-    .language-dropdown .item:hover,
-    .tools-dropdown .item:hover {
-        background: var(--bg-panel-soft, #181824);
-        color: var(--text-secondary, #00eaff);
-    }
-
-    .language-dropdown {
-        max-height: 260px;
-        overflow-y: auto;
-    }
-
-    .language-dropdown .item.active,
-    .odds-dropdown .item.active {
-        color: var(--text-secondary, #00eaff);
-    }
-
-    /*******************************************************
-     * AUTH MODALS (DESKTOP)
-     *******************************************************/
-    .be-auth-overlay {
-        /* untouched */
-    }
-}
 
 /* =============== END OF FILE =============== */
