@@ -433,123 +433,185 @@
     .menu-section.preferences .menu-item.menu-lang::after {
         border-top-color: #f4a11a;
     }
+/* ==================================================
+   MODALS — MOBILE (Enterprise Order)
+   Scope:
+   - Base overlay
+   - Overlay states
+   - Bottom-sheet containers (Odds / Language)
+   - Generic modal container
+   - Header / Body behavior
+   - Items UI
+   - Z-index rules
+================================================== */
 
-    /* ==================================================
-       MODALS
-    ================================================== */
-    .be-modal-overlay {
-        display: flex;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.65);
-        align-items: center;
-        justify-content: center;
-        z-index: 3000;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity .22s ease;
-    }
+/* ==================================================
+   1. BASE MODAL OVERLAY
+================================================== */
+.be-modal-overlay {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .22s ease;
+}
 
-    #mobile-odds-modal,
-    #mobile-language-modal {
-        align-items: flex-end !important;
-    }    
+/* ==================================================
+   2. OVERLAY ALIGNMENT (Bottom Sheet Only)
+================================================== */
+#mobile-odds-modal,
+#mobile-language-modal {
+    align-items: flex-end !important;
+}
 
-    .be-modal-overlay.show {
-        display: flex;
-        pointer-events: auto;
-        opacity: 1;
-        pointer-events: auto;
-    }
-   
-    #mobile-odds-modal .be-modal,
-    #mobile-language-modal .be-modal {
-       width: 100vw;
-       max-width: 100vw;
-       max-height: 92vh;
-       border-radius: 18px 18px 0 0;
-       transform: translateY(100%);
-       transition: transform .75s cubic-bezier(.22, 1, .36, 1);
-       will-change: transform;
+/* ==================================================
+   3. OVERLAY ACTIVE STATE
+================================================== */
+.be-modal-overlay.show {
+    display: flex;
+    pointer-events: auto;
+    opacity: 1;
+}
 
-    }
-   
-    #mobile-odds-modal.show.is-open .be-modal,
-    #mobile-language-modal.show.is-open .be-modal {
-        transform: translateY(0);
-    }
+/* ==================================================
+   4. BOTTOM-SHEET CONTAINER (Odds / Language)
+================================================== */
+#mobile-odds-modal .be-modal,
+#mobile-language-modal .be-modal {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 92vh;
+    border-radius: 18px 18px 0 0;
+    transform: translateY(100%);
+    transition: transform .75s cubic-bezier(.22, 1, .36, 1);
+    will-change: transform;
+}
 
-    /* Modal container sizing */
-    .be-modal {
-        width: 92%;
-        max-width: 360px;
-        max-height: 82vh;
-        display: flex;
-        flex-direction: column;
-        background: #11141d;
-        border-radius: 12px;
-        overflow: hidden;
-    }
+/* ==================================================
+   5. BOTTOM-SHEET OPEN STATE
+================================================== */
+#mobile-odds-modal.show.is-open .be-modal,
+#mobile-language-modal.show.is-open .be-modal {
+    transform: translateY(0);
+}
 
-    /* Header always visible */
-    .be-modal-header {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        background: #11141d;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
+/* ==================================================
+   6. GENERIC MODAL CONTAINER
+================================================== */
+.be-modal {
+    width: 92%;
+    max-width: 360px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    background: #11141d;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-    /* Modal body scrolls, not whole modal */
-    .be-modal-body {
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding: 12px;
-    }
+/* ==================================================
+   7. MODAL HEADER (Sticky)
+================================================== */
+.be-modal-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: #11141d;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
 
-    /* Extra comfort for long language lists */
-    .be-modal-body.modal-language {
-        max-height: calc(82vh - 56px);
-    }
+/* ==================================================
+   8. MODAL BODY (Scrollable)
+================================================== */
+.be-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+}
 
-    .be-modal-item {
-        width: 100%;
-        padding: 14px 16px;
-        border-radius: 8px;
-        background: #151827;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: #ffffff;
-        font-size: 14px;
-        text-align: left;
-        cursor: pointer;
-        transition: background 0.15s ease, border-color 0.15s ease;
-    }
+/* Extra comfort for long language lists */
+.be-modal-body.modal-language {
+    max-height: calc(82vh - 56px);
+}
 
-    .be-modal-item:hover {
-        background: #1c2033;
-        border-color: rgba(255, 255, 255, 0.18);
-    }
+/* ==================================================
+   9. MODAL ITEMS
+================================================== */
+.be-modal-item {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: #151827;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
 
-    .be-modal-item.active {
-        background: #ffec00;
-        color: #11141d;
-        border-color: #ffec00;
-        font-weight: 600;
-    }
+.be-modal-item:hover {
+    background: #1c2033;
+    border-color: rgba(255, 255, 255, 0.18);
+}
 
-    /* Keep auth overlays above everything if ever enabled on mobile */
-    .be-auth-overlay {
-        z-index: 4000;
-    }
+.be-modal-item.active {
+    background: #ffec00;
+    color: #11141d;
+    border-color: #ffec00;
+    font-weight: 600;
+}
+
+/* ==================================================
+   10. AUTH OVERLAY PRIORITY
+================================================== */
+.be-auth-overlay {
+    z-index: 4000;
+}
+
+/* ==================================================
+   11. SLIDE-UP SHEET PATCH (Odds / Language ONLY)
+   Does NOT affect other modals
+================================================== */
+#mobile-odds-modal.be-modal-overlay.show,
+#mobile-language-modal.be-modal-overlay.show {
+    opacity: 0;
+    transition: opacity .22s ease;
+}
+
+#mobile-odds-modal.be-modal-overlay.show.is-open,
+#mobile-language-modal.be-modal-overlay.show.is-open {
+    opacity: 1;
+}
+
+#mobile-odds-modal .be-modal,
+#mobile-language-modal .be-modal {
+    transform: translateY(24px);
+    opacity: 0;
+    transition: transform .22s ease, opacity .22s ease;
+    will-change: transform, opacity;
+}
+
+#mobile-odds-modal.be-modal-overlay.show.is-open .be-modal,
+#mobile-language-modal.be-modal-overlay.show.is-open .be-modal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
 
     /* ==================================================
    SLIDE-UP SHEET (Odds / Language only)
