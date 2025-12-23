@@ -1,11 +1,9 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- * Features:
- * - Debounced input
- * - Loading / empty / results states
- * - Keyboard navigation (↑ ↓ Enter)
- * - Clear button
+ * BetEngine Enterprise – SEARCH MODULE (DESKTOP PATCH 1/3)
+ * Desktop-only binding to header search input
+ * - No HTML/CSS changes
+ * - No globals
+ * - Mobile untouched
  *********************************************************/
 
 (function () {
@@ -26,16 +24,42 @@
     };
 
     /* ======================================================
-       DOM REFERENCES
+       ROOT DETECTION (ENTERPRISE FALLBACK)
+       Priority:
+       1) .be-search (page module)
+       2) Desktop header .search-box
     ======================================================= */
-    const root        = $(".be-search");
-    if (!root) return;
+    const root =
+        document.querySelector(".be-search") ||
+        document.querySelector(".header-desktop .search-box");
 
-    const input       = $(".be-search-input", root);
-    const clearBtn    = $(".be-search-clear", root);
-    const resultsList = $(".be-search-results", root);
-    const loadingEl   = $(".be-search-loading", root);
-    const emptyEl     = $(".be-search-empty", root);
+    if (!root) return; // nothing to bind
+
+    /* ======================================================
+       DESKTOP GUARD (DO NOT TOUCH MOBILE)
+    ======================================================= */
+    const isDesktopContext = !!document.querySelector(".header-desktop .search-box");
+    if (!isDesktopContext) return;
+
+    /* ======================================================
+       INPUT DETECTION (DESKTOP HEADER)
+    ======================================================= */
+    const input = root.querySelector("input[type='search']");
+    if (!input) return;
+
+    /* ======================================================
+       RESULTS CONTAINER (DESKTOP-ONLY, INJECTED)
+    ======================================================= */
+    let resultsList = root.querySelector(".be-search-results--desktop");
+
+    if (!resultsList) {
+        resultsList = document.createElement("ul");
+        resultsList.className = "be-search-results be-search-results--desktop";
+        resultsList.setAttribute("role", "listbox");
+
+        // Insert results just after the search box
+        root.appendChild(resultsList);
+    }
 
     /* ======================================================
        MOCK DATA (SAFE)
@@ -63,14 +87,6 @@
         resultsList.innerHTML = "";
         currentResults = [];
         activeIndex = -1;
-    }
-
-    function showLoading(show) {
-        loadingEl.hidden = !show;
-    }
-
-    function showEmpty(show) {
-        emptyEl.hidden = !show;
     }
 
     function renderResults(items) {
@@ -110,60 +126,39 @@
     function selectIndex(index) {
         const item = currentResults[index];
         if (!item) return;
-        console.log("[SEARCH] Selected:", item);
+        // Placeholder action for desktop test
+        console.log("[DESKTOP SEARCH] Selected:", item);
+        clearResults();
     }
 
     /* ======================================================
-       SEARCH LOGIC
+       SEARCH LOGIC (DESKTOP)
     ======================================================= */
     function performSearch(query) {
-        showLoading(true);
-        showEmpty(false);
         clearResults();
 
-        setTimeout(() => {
-            const q = query.toLowerCase();
-            const matches = MOCK_DATA.filter(item =>
-                item.title.toLowerCase().includes(q)
-            );
+        const q = query.toLowerCase();
+        const matches = MOCK_DATA.filter(item =>
+            item.title.toLowerCase().includes(q)
+        );
 
-            showLoading(false);
-
-            if (!matches.length) {
-                showEmpty(true);
-                return;
-            }
-
-            renderResults(matches);
-        }, 250);
+        if (!matches.length) return;
+        renderResults(matches);
     }
 
     const debouncedSearch = debounce((value) => {
         if (!value.trim()) {
-            showLoading(false);
-            showEmpty(false);
             clearResults();
-            clearBtn.hidden = true;
             return;
         }
-        clearBtn.hidden = false;
         performSearch(value);
     }, 300);
 
     /* ======================================================
-       EVENTS
+       EVENTS (DESKTOP INPUT ONLY)
     ======================================================= */
     input.addEventListener("input", (e) => {
         debouncedSearch(e.target.value);
-    });
-
-    clearBtn.addEventListener("click", () => {
-        input.value = "";
-        clearBtn.hidden = true;
-        showLoading(false);
-        showEmpty(false);
-        clearResults();
-        input.focus();
     });
 
     input.addEventListener("keydown", (e) => {
@@ -186,5 +181,10 @@
         }
     });
 
-    console.log("search.js READY (isolated)");
+    // Close results when clicking outside the search box
+    document.addEventListener("click", (e) => {
+        if (!root.contains(e.target)) clearResults();
+    });
+
+    console.log("DESKTOP search.js READY (PATCH 1/3)");
 })();
