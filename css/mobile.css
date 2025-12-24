@@ -695,7 +695,8 @@
         padding: 8px 10px;
         background: #131826; /* darker grey to visually separate from Row 1 */
         border-bottom: 1px solid rgba(255,255,255,0.06);
-        overflow-x: auto;
+        height: 48px;
+        overflow-x: visible;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -762,7 +763,7 @@
         height: 20px;
     }
 
-   /* Ensure search is clickable above mobile UI */
+    /* Ensure search is clickable above mobile UI */
     .be-search {
         position: relative;
         z-index: 5;
