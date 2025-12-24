@@ -219,6 +219,10 @@
 .header-desktop .be-search-results {
     background: #11141d;
 }
+.header-desktop .be-search-input-wrapper {
+    margin-top: 0;
+    height: 100;
+}
 
 /* Mobile panel: dropdown-like container */
 .header-mobile .mobile-search-panel {
