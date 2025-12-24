@@ -1,11 +1,10 @@
 /*********************************************************
  * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
  * Isolated behavior with mock data (no API)
- * Features:
- * - Debounced input
- * - Loading / empty / results states
- * - Keyboard navigation (↑ ↓ Enter)
- * - Clear button
+ * FIX:
+ * - Initializes AFTER header-loader injection via "headerLoaded"
+ * - Supports multiple .be-search roots (desktop + mobile)
+ * - Prevents double-binding per root
  *********************************************************/
 
 (function () {
@@ -41,26 +40,22 @@
     /* ======================================================
        INIT PER ROOT (.be-search)
     ======================================================= */
-    function initSearch(root) {
+    function initSearchRoot(root) {
+        if (!root || root.dataset.beSearchInit === "1") return;
+
         const input       = $(".be-search-input", root);
         const clearBtn    = $(".be-search-clear", root);
         const resultsList = $(".be-search-results", root);
         const loadingEl   = $(".be-search-loading", root);
         const emptyEl     = $(".be-search-empty", root);
 
-        if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) {
-            return;
-        }
+        if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) return;
 
-        /* ======================================================
-           STATE
-        ======================================================= */
+        root.dataset.beSearchInit = "1";
+
         let activeIndex = -1;
         let currentResults = [];
 
-        /* ======================================================
-           RENDER HELPERS
-        ======================================================= */
         function clearResults() {
             resultsList.innerHTML = "";
             currentResults = [];
@@ -73,6 +68,22 @@
 
         function showEmpty(show) {
             emptyEl.hidden = !show;
+        }
+
+        function setActive(index) {
+            const items = $$(".be-search-result", resultsList);
+            items.forEach(el => el.classList.remove("is-active"));
+            if (items[index]) {
+                items[index].classList.add("is-active");
+                items[index].scrollIntoView({ block: "nearest" });
+            }
+            activeIndex = index;
+        }
+
+        function selectIndex(index) {
+            const item = currentResults[index];
+            if (!item) return;
+            console.log("[SEARCH] Selected:", item);
         }
 
         function renderResults(items) {
@@ -99,25 +110,6 @@
             currentResults = items;
         }
 
-        function setActive(index) {
-            const items = $$(".be-search-result", resultsList);
-            items.forEach(el => el.classList.remove("is-active"));
-            if (items[index]) {
-                items[index].classList.add("is-active");
-                items[index].scrollIntoView({ block: "nearest" });
-            }
-            activeIndex = index;
-        }
-
-        function selectIndex(index) {
-            const item = currentResults[index];
-            if (!item) return;
-            console.log("[SEARCH] Selected:", item);
-        }
-
-        /* ======================================================
-           SEARCH LOGIC
-        ======================================================= */
         function performSearch(query) {
             showLoading(true);
             showEmpty(false);
@@ -148,13 +140,11 @@
                 clearBtn.hidden = true;
                 return;
             }
+
             clearBtn.hidden = false;
             performSearch(value);
         }, 300);
 
-        /* ======================================================
-           EVENTS (SCOPED)
-        ======================================================= */
         input.addEventListener("input", (e) => {
             debouncedSearch(e.target.value);
         });
@@ -189,33 +179,24 @@
         });
     }
 
-    /* ======================================================
-       DOM REFERENCES (SUPPORT MULTIPLE ROOTS)
-    ======================================================= */
-    const roots = $$(".be-search");
-    if (!roots.length) return;
-
-    roots.forEach(root => initSearch(root));
-
-    /* ======================================================
-       MOBILE TRIGGER (SAFE, GUARDED)
-       Toggles .mobile-search-panel if present
-    ======================================================= */
-    const mobileBtn = $(".mobile-search-btn");
-    const mobilePanel = $(".mobile-search-panel");
-
-    if (mobileBtn && mobilePanel) {
-        mobileBtn.addEventListener("click", () => {
-            const isHidden = mobilePanel.hidden === true;
-            mobilePanel.hidden = !isHidden;
-
-            if (isHidden) {
-                const mobileRoot = $(".be-search", mobilePanel);
-                const mobileInput = mobileRoot ? $(".be-search-input", mobileRoot) : null;
-                if (mobileInput) mobileInput.focus();
-            }
-        });
+    function initAllSearch() {
+        const roots = $$(".be-search");
+        if (!roots.length) return;
+        roots.forEach(initSearchRoot);
     }
 
-    console.log("search.js READY (isolated)");
+    /* ======================================================
+       INIT TRIGGERS (GUARDED)
+       - DOMContentLoaded: if header is already in DOM
+       - headerLoaded: for header-loader injected DOM
+    ======================================================= */
+    document.addEventListener("DOMContentLoaded", initAllSearch);
+    document.addEventListener("headerLoaded", initAllSearch);
+
+    // Fallback: if header-loader already flagged readiness
+    if (window.__BE_HEADER_READY__ === true) {
+        initAllSearch();
+    }
+
+    console.log("search.js READY (init via DOMContentLoaded/headerLoaded)");
 })();
