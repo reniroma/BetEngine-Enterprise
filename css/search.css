@@ -214,6 +214,35 @@
 }
 
 /* ======================================================
+   SEARCH — LAYOUT ISOLATION (DESKTOP SAFE FIX)
+   Prevents header row deformation
+====================================================== */
+
+.header-desktop .be-search {
+    position: relative;        /* anchor for absolute results */
+    height: 40px;              /* fixed input height */
+    flex-shrink: 0;
+}
+
+.header-desktop .be-search-results {
+    position: absolute;
+    top: calc(100% + 6px);     /* below input */
+    left: 0;
+    right: 0;
+
+    max-height: 320px;
+    overflow-y: auto;
+
+    z-index: 2000;             /* above header rows */
+}
+
+/* Ensure results do NOT affect header row height */
+.header-desktop .be-search-results[hidden] {
+    display: none;
+}
+
+
+/* ======================================================
    MOBILE OVERRIDES (SAFE)
 ====================================================== */
 @media (max-width: 900px) {
