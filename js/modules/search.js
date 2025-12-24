@@ -177,20 +177,6 @@
                 selectIndex(activeIndex);
             }
         });
-
-        /* ======================================================
-           DESKTOP OUTSIDE CLICK CLOSE (ROOT-SCOPED, SAFE)
-        ======================================================= */
-        document.addEventListener("click", (e) => {
-            if (!root.contains(e.target)) {
-                resultsList.setAttribute("hidden", "");
-                input.blur();
-            }
-        });
-
-        root.addEventListener("click", (e) => {
-            e.stopPropagation();
-        });
     }
 
     function initAllSearch() {
@@ -201,10 +187,13 @@
 
     /* ======================================================
        INIT TRIGGERS (GUARDED)
+       - DOMContentLoaded: if header is already in DOM
+       - headerLoaded: for header-loader injected DOM
     ======================================================= */
     document.addEventListener("DOMContentLoaded", initAllSearch);
     document.addEventListener("headerLoaded", initAllSearch);
 
+    // Fallback: if header-loader already flagged readiness
     if (window.__BE_HEADER_READY__ === true) {
         initAllSearch();
     }
