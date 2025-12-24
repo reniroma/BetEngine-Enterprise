@@ -1,164 +1,134 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- * FIX:
- * - Initializes AFTER header-loader injection via "headerLoaded"
- * - Supports multiple .be-search roots (desktop + mobile)
- * - Prevents double-binding per root
+ * BetEngine Enterprise – SEARCH MODULE (FINAL)
+ * Single source of truth for Desktop + Mobile search
+ * Scope: ONLY elements inside each .be-search root
+ * No global listeners, no side effects
  *********************************************************/
-
-(function () {
+(() => {
     "use strict";
 
-    /* ======================================================
-       LOCAL HELPERS (NO GLOBALS)
-    ======================================================= */
-    const $  = (sel, scope = document) => scope.querySelector(sel);
-    const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+    const qs = (sel, scope = document) => scope.querySelector(sel);
+    const qsa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
+    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-    const debounce = (fn, delay = 300) => {
-        let t;
-        return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn.apply(null, args), delay);
-        };
-    };
-
-    /* ======================================================
-       MOCK DATA (SAFE)
-    ======================================================= */
-    const MOCK_DATA = [
-        { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
-        { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
-        { type: "Team",   title: "Bayern Munich",     meta: "Germany · Bundesliga" },
-        { type: "Player", title: "Lionel Messi",      meta: "Inter Miami · Forward" },
-        { type: "Player", title: "Cristiano Ronaldo", meta: "Al Nassr · Forward" },
-        { type: "League", title: "Premier League",    meta: "England" },
-        { type: "League", title: "Champions League",  meta: "UEFA" }
+    /* =========================================
+       MOCK DATA (PLACEHOLDER)
+       Replace with API later without changing UI
+    ========================================= */
+    const DATA = [
+        { type: "Team", name: "Manchester United", meta: "England · Premier League" },
+        { type: "Team", name: "Real Madrid", meta: "Spain · La Liga" },
+        { type: "League", name: "Premier League", meta: "England" },
+        { type: "League", name: "La Liga", meta: "Spain" },
+        { type: "Competition", name: "UEFA Champions League", meta: "Europe" },
     ];
 
-    /* ======================================================
-       INIT PER ROOT (.be-search)
-    ======================================================= */
-    function initSearchRoot(root) {
-        if (!root || root.dataset.beSearchInit === "1") return;
-
-        const input       = $(".be-search-input", root);
-        const clearBtn    = $(".be-search-clear", root);
-        const resultsList = $(".be-search-results", root);
-        const loadingEl   = $(".be-search-loading", root);
-        const emptyEl     = $(".be-search-empty", root);
+    function initSearchInstance(root) {
+        const input       = qs(".be-search-input", root);
+        const clearBtn    = qs(".be-search-clear", root);
+        const resultsList = qs(".be-search-results", root);
+        const loadingEl   = qs(".be-search-loading", root);
+        const emptyEl     = qs(".be-search-empty", root);
 
         if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) return;
 
-        root.dataset.beSearchInit = "1";
-
-        let activeIndex = -1;
         let currentResults = [];
+        let activeIndex = -1;
 
-        function clearResults() {
-            resultsList.innerHTML = "";
-            currentResults = [];
+        const showEl = (el) => el && el.classList.add("is-visible");
+        const hideEl = (el) => el && el.classList.remove("is-visible");
+
+        const closePanel = () => {
+            hideEl(resultsList);
+            hideEl(loadingEl);
+            hideEl(emptyEl);
             activeIndex = -1;
-        }
+        };
 
-        function showLoading(show) {
-            loadingEl.hidden = !show;
-        }
-
-        function showEmpty(show) {
-            emptyEl.hidden = !show;
-        }
-
-        function setActive(index) {
-            const items = $$(".be-search-result", resultsList);
-            items.forEach(el => el.classList.remove("is-active"));
-            if (items[index]) {
-                items[index].classList.add("is-active");
-                items[index].scrollIntoView({ block: "nearest" });
+        const openPanel = () => {
+            if (!input.value.trim()) {
+                closePanel();
+                return;
             }
-            activeIndex = index;
-        }
+            showEl(resultsList);
+        };
 
-        function selectIndex(index) {
-            const item = currentResults[index];
-            if (!item) return;
-            console.log("[SEARCH] Selected:", item);
-        }
+        const setActive = (idx) => {
+            activeIndex = idx;
+            qsa("li", resultsList).forEach((li, i) => {
+                li.classList.toggle("active", i === idx);
+            });
+        };
 
-        function renderResults(items) {
-            clearResults();
+        const renderResults = (items) => {
+            resultsList.innerHTML = "";
 
-            items.forEach((item, idx) => {
+            items.forEach((item) => {
                 const li = document.createElement("li");
                 li.className = "be-search-result";
-                li.setAttribute("role", "option");
-                li.dataset.index = String(idx);
 
                 li.innerHTML = `
-                    <span class="be-search-result-icon">${item.type[0]}</span>
-                    <div class="be-search-result-content">
-                        <div class="be-search-result-title">${item.title}</div>
-                        <div class="be-search-result-meta">${item.meta}</div>
+                    <div class="be-search-icon">${item.type.slice(0, 1)}</div>
+                    <div class="be-search-text">
+                        <div class="be-search-name">${item.name}</div>
+                        <div class="be-search-meta">${item.meta}</div>
                     </div>
                 `;
 
-                li.addEventListener("click", () => selectIndex(idx));
+                on(li, "click", () => {
+                    input.value = item.name;
+                    closePanel();
+                });
+
                 resultsList.appendChild(li);
             });
 
-            currentResults = items;
-        }
+            showEl(resultsList);
+        };
 
-        function performSearch(query) {
-            showLoading(true);
-            showEmpty(false);
-            clearResults();
-
-            setTimeout(() => {
-                const q = query.toLowerCase();
-                const matches = MOCK_DATA.filter(item =>
-                    item.title.toLowerCase().includes(q)
-                );
-
-                showLoading(false);
-
-                if (!matches.length) {
-                    showEmpty(true);
-                    return;
-                }
-
-                renderResults(matches);
-            }, 250);
-        }
-
-        const debouncedSearch = debounce((value) => {
-            if (!value.trim()) {
-                showLoading(false);
-                showEmpty(false);
-                clearResults();
-                clearBtn.hidden = true;
+        const runSearch = (query) => {
+            const q = query.trim().toLowerCase();
+            if (!q) {
+                closePanel();
                 return;
             }
 
-            clearBtn.hidden = false;
-            performSearch(value);
-        }, 300);
+            showEl(loadingEl);
+            hideEl(resultsList);
+            hideEl(emptyEl);
 
-        input.addEventListener("input", (e) => {
-            debouncedSearch(e.target.value);
-        });
+            window.setTimeout(() => {
+                currentResults = DATA.filter((x) =>
+                    x.name.toLowerCase().includes(q) || x.meta.toLowerCase().includes(q)
+                );
 
-        clearBtn.addEventListener("click", () => {
+                hideEl(loadingEl);
+
+                if (!currentResults.length) {
+                    hideEl(resultsList);
+                    showEl(emptyEl);
+                    return;
+                }
+
+                hideEl(emptyEl);
+                renderResults(currentResults);
+                setActive(-1);
+            }, 140);
+        };
+
+        /* =========================
+           EVENTS (SCOPED)
+        ========================= */
+        on(input, "input", () => runSearch(input.value));
+        on(input, "focus", () => openPanel());
+
+        on(clearBtn, "click", () => {
             input.value = "";
-            clearBtn.hidden = true;
-            showLoading(false);
-            showEmpty(false);
-            clearResults();
             input.focus();
+            closePanel();
         });
 
-        input.addEventListener("keydown", (e) => {
+        on(input, "keydown", (e) => {
             const itemsCount = currentResults.length;
             if (!itemsCount) return;
 
@@ -174,29 +144,49 @@
 
             if (e.key === "Enter" && activeIndex >= 0) {
                 e.preventDefault();
-                selectIndex(activeIndex);
+                const item = currentResults[activeIndex];
+                if (!item) return;
+                input.value = item.name;
+                closePanel();
+            }
+
+            if (e.key === "Escape") {
+                closePanel();
+                input.blur();
             }
         });
     }
 
-    function initAllSearch() {
-        const roots = $$(".be-search");
-        if (!roots.length) return;
-        roots.forEach(initSearchRoot);
+    function initMobileSearchModalTrigger() {
+        const trigger = qs(".mobile-search-btn");
+        const overlay = qs("#mobile-search-modal");
+        if (!trigger || !overlay) return;
+
+        const modalInput = qs(".be-search-input", overlay);
+        const closeBtn = qs("#mobile-search-modal .be-modal-close");
+
+        const open = () => {
+            overlay.classList.add("show");
+            if (modalInput) modalInput.focus();
+        };
+
+        const close = () => {
+            overlay.classList.remove("show");
+        };
+
+        on(trigger, "click", open);
+        on(closeBtn, "click", close);
+
+        on(overlay, "click", (e) => {
+            if (e.target === overlay) close();
+        });
     }
 
-    /* ======================================================
-       INIT TRIGGERS (GUARDED)
-       - DOMContentLoaded: if header is already in DOM
-       - headerLoaded: for header-loader injected DOM
-    ======================================================= */
-    document.addEventListener("DOMContentLoaded", initAllSearch);
-    document.addEventListener("headerLoaded", initAllSearch);
+    const roots = qsa(".be-search");
+    if (!roots.length) return;
 
-    // Fallback: if header-loader already flagged readiness
-    if (window.__BE_HEADER_READY__ === true) {
-        initAllSearch();
-    }
+    roots.forEach(initSearchInstance);
+    initMobileSearchModalTrigger();
 
-    console.log("search.js READY (init via DOMContentLoaded/headerLoaded)");
+    console.log("search.js READY (isolated)");
 })();
