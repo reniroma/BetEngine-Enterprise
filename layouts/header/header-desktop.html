@@ -114,40 +114,33 @@
         <div class="search-notify">
 
            
-            <div class="be-search">
-
-                <div class="be-search-input-wrapper">
-                    <input
-                        type="search"
-                        class="be-search-input"
-                        placeholder="Search teams, players, leagues..."
-                        aria-label="Search"
-                        autocomplete="off"
-                        spellcheck="false"
-                    />
-
-                    <button
-                        type="button"
-                        class="be-search-clear"
-                        aria-label="Clear search"
-                        hidden
-                    >
-                        Clear
-                    </button>
+            <!-- Search (compact, Row 2 safe) -->
+            <section class="be-search be-search--compact" aria-labelledby="be-search-title">
+                <div class="be-search-header">
+                    <h2 class="be-search-title" id="be-search-title">Search</h2>
+                    <p class="be-search-subtitle">Find teams, players, leagues, or competitions.</p>
                 </div>
 
-                <div class="be-search-states">
-                    <div class="be-search-loading" hidden>
-                        <span class="be-search-loading-text">Searching...</span>
+                <div class="be-search-bar">
+                    <div class="be-search-input-wrap">
+                        <input
+                            class="be-search-input"
+                            type="search"
+                            placeholder="Search teams, players, leagues..."
+                            autocomplete="off"
+                        />
+                        <button class="be-search-clear" type="button" aria-label="Clear">×</button>
                     </div>
-                    <div class="be-search-empty" hidden>
-                        <span class="be-search-empty-text">No results found.</span>
+
+                    <div class="be-search-actions">
+                        <button class="be-search-btn" type="button">Clear</button>
                     </div>
                 </div>
 
-                <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
-
-            </div>
+                <div class="be-search-loading">Searching…</div>
+                <div class="be-search-empty">No results found.</div>
+                <ul class="be-search-results"></ul>
+            </section>
 
             <button class="notif-button" type="button">
                 <img src="assets/icons/notification.svg" class="notif-icon" alt="">
