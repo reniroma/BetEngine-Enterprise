@@ -198,8 +198,8 @@
 
 .header-desktop .be-search-input {
     height: 100%;
-    padding: 6px 14px;
-    line-height: 1.2;
+    padding: 0 14px;
+    line-height: 1.4;
 }
 
 .header-desktop .be-search-header {
