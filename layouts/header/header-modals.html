@@ -274,21 +274,28 @@
 <div class="be-modal-overlay" id="mobile-search-modal">
     <div class="be-modal" role="dialog" aria-modal="true">
 
-        <div class="be-modal-header">
-            <span class="be-modal-title">Search</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
+       <div class="be-modal-body">
+    <section class="be-search be-search--compact be-search--modal" aria-labelledby="be-search-title">
+        <div class="be-search-header">
+            <h2 class="be-search-title" id="be-search-title">Search</h2>
+            <p class="be-search-subtitle">Find teams, players, leagues, or competitions.</p>
         </div>
 
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Search teams, players, leagues or competitions.
+        <div class="be-search-bar">
+            <div class="be-search-input-wrap">
+                <input
+                    class="be-search-input"
+                    type="search"
+                    placeholder="Search teams, players, leagues..."
+                    autocomplete="off"
+                />
+                <button class="be-search-clear" type="button" aria-label="Clear">×</button>
+            </div>
+
+            <div class="be-search-actions">
+                <button class="be-search-btn" type="button">Clear</button>
             </div>
         </div>
-
-    </div>
-</div>
 
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)
