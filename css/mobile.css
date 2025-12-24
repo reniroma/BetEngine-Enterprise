@@ -715,6 +715,7 @@
         background: none;
         border: 0;
         cursor: pointer;
+        z-index: 1;
     }
 
     /* Icons stay neutral (do not change on active) */
