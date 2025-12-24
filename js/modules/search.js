@@ -176,9 +176,7 @@
                 e.preventDefault();
                 selectIndex(activeIndex);
             }
-        });
-    }
-
+       
     // =======================================
 // DESKTOP SAFE CLOSE ON FOCUS OUT (NO RISK)
 // =======================================
