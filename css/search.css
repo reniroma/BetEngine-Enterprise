@@ -56,6 +56,17 @@
     font-size: 14px;
     outline: none;
 }
+/* Disable native browser clear button */
+.be-search-input::-webkit-search-decoration,
+.be-search-input::-webkit-search-cancel-button,
+.be-search-input::-webkit-search-results-button,
+.be-search-input::-webkit-search-results-decoration {
+    display: none;
+}
+/* Hide custom Clear button – keep only native X behavior */
+.be-search-clear {
+    display: none;
+}
 
 .be-search-input::placeholder {
     color: rgba(255, 255, 255, 0.40);
