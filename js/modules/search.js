@@ -176,18 +176,8 @@
                 e.preventDefault();
                 selectIndex(activeIndex);
             }
-       
-    // =======================================
-// DESKTOP SAFE CLOSE ON FOCUS OUT (NO RISK)
-// =======================================
-input.addEventListener("blur", () => {
-    requestAnimationFrame(() => {
-        if (!root.contains(document.activeElement)) {
-            resultsList.setAttribute("hidden", "");
-            activeIndex = -1;
-        }
-    });
-});
+        });
+    }
 
     function initAllSearch() {
         const roots = $$(".be-search");
