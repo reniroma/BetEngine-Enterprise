@@ -199,7 +199,7 @@
 .header-desktop .be-search-input {
     height: 100%;
     padding: 6px 14px;
-    line-height: normal;
+    line-height: 1.2;
 }
 
 .header-desktop .be-search-header {
