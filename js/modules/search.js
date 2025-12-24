@@ -1,18 +1,15 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- * FIX:
- * - Initializes AFTER header-loader injection via "headerLoaded"
- * - Supports multiple .be-search roots (desktop + mobile)
- * - Prevents double-binding per root
+ * BetEngine Enterprise – SEARCH MODULE (FINAL)
+ * Enterprise-grade click-outside handling
+ * NO blur, NO hacks, NO race conditions
  *********************************************************/
 
 (function () {
     "use strict";
 
-   /* ======================================================
-       LOCAL HELPERS (NO GLOBALS)
-    ======================================================= */
+    /* =======================
+       LOCAL HELPERS
+    ======================= */
     const $  = (sel, scope = document) => scope.querySelector(sel);
     const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
@@ -24,9 +21,9 @@
         };
     };
 
-    /* ======================================================
+    /* =======================
        MOCK DATA (SAFE)
-    ======================================================= */
+    ======================= */
     const MOCK_DATA = [
         { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
         { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
@@ -37,9 +34,9 @@
         { type: "League", title: "Champions League",  meta: "UEFA" }
     ];
 
-    /* ======================================================
-       INIT PER ROOT (.be-search)
-    ======================================================= */
+    /* =======================
+       INIT PER ROOT
+    ======================= */
     function initSearchRoot(root) {
         if (!root || root.dataset.beSearchInit === "1") return;
 
@@ -56,6 +53,9 @@
         let activeIndex = -1;
         let currentResults = [];
 
+        /* =======================
+           CORE HELPERS
+        ======================= */
         function clearResults() {
             resultsList.innerHTML = "";
             currentResults = [];
@@ -83,16 +83,23 @@
         function selectIndex(index) {
             const item = currentResults[index];
             if (!item) return;
+
             console.log("[SEARCH] Selected:", item);
+
+            input.value = "";
+            clearBtn.hidden = true;
+            clearResults();
         }
 
+        /* =======================
+           RENDER RESULTS
+        ======================= */
         function renderResults(items) {
             clearResults();
 
             items.forEach((item, idx) => {
                 const li = document.createElement("li");
                 li.className = "be-search-result";
-                li.setAttribute("role", "option");
                 li.dataset.index = String(idx);
 
                 li.innerHTML = `
@@ -103,13 +110,25 @@
                     </div>
                 `;
 
-                li.addEventListener("click", () => selectIndex(idx));
+                /* ⛔ KRITIKE:
+                   Ndalo mbylljen nga document.mousedown */
+                li.addEventListener("mousedown", (e) => {
+                    e.stopPropagation();
+                });
+
+                li.addEventListener("click", () => {
+                    selectIndex(idx);
+                });
+
                 resultsList.appendChild(li);
             });
 
             currentResults = items;
         }
 
+        /* =======================
+           SEARCH LOGIC
+        ======================= */
         function performSearch(query) {
             showLoading(true);
             showEmpty(false);
@@ -129,7 +148,7 @@
                 }
 
                 renderResults(matches);
-            }, 250);
+            }, 200);
         }
 
         const debouncedSearch = debounce((value) => {
@@ -143,8 +162,11 @@
 
             clearBtn.hidden = false;
             performSearch(value);
-        }, 300);
+        }, 250);
 
+        /* =======================
+           EVENTS
+        ======================= */
         input.addEventListener("input", (e) => {
             debouncedSearch(e.target.value);
         });
@@ -177,26 +199,35 @@
                 selectIndex(activeIndex);
             }
         });
+
+        /* =======================
+           CLICK OUTSIDE → CLOSE
+           (ENTERPRISE STANDARD)
+        ======================= */
+        document.addEventListener("mousedown", (e) => {
+            if (root.contains(e.target)) return;
+
+            input.value = "";
+            clearBtn.hidden = true;
+            clearResults();
+        });
     }
 
+    /* =======================
+       INIT ALL SEARCH ROOTS
+    ======================= */
     function initAllSearch() {
         const roots = $$(".be-search");
         if (!roots.length) return;
         roots.forEach(initSearchRoot);
     }
 
-    /* ======================================================
-       INIT TRIGGERS (GUARDED)
-       - DOMContentLoaded: if header is already in DOM
-       - headerLoaded: for header-loader injected DOM
-    ======================================================= */
     document.addEventListener("DOMContentLoaded", initAllSearch);
     document.addEventListener("headerLoaded", initAllSearch);
 
-    // Fallback: if header-loader already flagged readiness
     if (window.__BE_HEADER_READY__ === true) {
         initAllSearch();
     }
 
-    console.log("search.js READY (init via DOMContentLoaded/headerLoaded)");
+    console.log("search.js READY – enterprise stable");
 })();
