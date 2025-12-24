@@ -778,6 +778,11 @@
         pointer-events: auto;
     }
 
+   /* FIX: Disable desktop header in mobile to release pointer events */
+   .header-desktop {
+        display: none !important;
+        pointer-events: none !important;
+   }
 
     /* =====================================================
        BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
