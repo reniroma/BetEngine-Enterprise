@@ -58,7 +58,6 @@
 }
 /* Disable native browser clear button */
 .be-search-input::-webkit-search-decoration,
-.be-search-input::-webkit-search-cancel-button,
 .be-search-input::-webkit-search-results-button,
 .be-search-input::-webkit-search-results-decoration {
     display: none;
