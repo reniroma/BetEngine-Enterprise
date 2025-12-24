@@ -769,6 +769,16 @@
         z-index: 5;
     }
 
+    /* FIX: prevent sports row container from blocking clicks */
+    .mobile-sports-row {
+        pointer-events: none;
+    }
+
+    .mobile-sports-row .mobile-sport-item {
+        pointer-events: auto;
+    }
+
+
     /* =====================================================
        BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
        Explicit navigation targeting (FINAL)
