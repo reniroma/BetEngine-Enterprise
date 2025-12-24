@@ -762,6 +762,12 @@
         height: 20px;
     }
 
+   /* Ensure search is clickable above mobile UI */
+    .be-search {
+        position: relative;
+        z-index: 5;
+    }
+
     /* =====================================================
        BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
        Explicit navigation targeting (FINAL)
