@@ -1,19 +1,15 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (JS ONLY)
- * Isolated behavior with mock data (no API)
- * Features:
- * - Debounced input
- * - Loading / empty / results states
- * - Keyboard navigation (↑ ↓ Enter)
- * - Clear button
+ * BetEngine Enterprise – SEARCH MODULE (FINAL)
+ * Enterprise-grade click-outside handling
+ * NO blur, NO hacks, NO race conditions
  *********************************************************/
 
 (function () {
     "use strict";
 
-    /* ======================================================
-       LOCAL HELPERS (NO GLOBALS)
-    ======================================================= */
+    /* =======================
+       LOCAL HELPERS
+    ======================= */
     const $  = (sel, scope = document) => scope.querySelector(sel);
     const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
@@ -25,21 +21,9 @@
         };
     };
 
-    /* ======================================================
-       DOM REFERENCES
-    ======================================================= */
-    const root        = $(".be-search");
-    if (!root) return;
-
-    const input       = $(".be-search-input", root);
-    const clearBtn    = $(".be-search-clear", root);
-    const resultsList = $(".be-search-results", root);
-    const loadingEl   = $(".be-search-loading", root);
-    const emptyEl     = $(".be-search-empty", root);
-
-    /* ======================================================
+    /* =======================
        MOCK DATA (SAFE)
-    ======================================================= */
+    ======================= */
     const MOCK_DATA = [
         { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
         { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
@@ -50,141 +34,200 @@
         { type: "League", title: "Champions League",  meta: "UEFA" }
     ];
 
-    /* ======================================================
-       STATE
-    ======================================================= */
-    let activeIndex = -1;
-    let currentResults = [];
+    /* =======================
+       INIT PER ROOT
+    ======================= */
+    function initSearchRoot(root) {
+        if (!root || root.dataset.beSearchInit === "1") return;
 
-    /* ======================================================
-       RENDER HELPERS
-    ======================================================= */
-    function clearResults() {
-        resultsList.innerHTML = "";
-        currentResults = [];
-        activeIndex = -1;
-    }
+        const input       = $(".be-search-input", root);
+        const clearBtn    = $(".be-search-clear", root);
+        const resultsList = $(".be-search-results", root);
+        const loadingEl   = $(".be-search-loading", root);
+        const emptyEl     = $(".be-search-empty", root);
 
-    function showLoading(show) {
-        loadingEl.hidden = !show;
-    }
+        if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) return;
 
-    function showEmpty(show) {
-        emptyEl.hidden = !show;
-    }
+        root.dataset.beSearchInit = "1";
 
-    function renderResults(items) {
-        clearResults();
+        let activeIndex = -1;
+        let currentResults = [];
 
-        items.forEach((item, idx) => {
-            const li = document.createElement("li");
-            li.className = "be-search-result";
-            li.setAttribute("role", "option");
-            li.dataset.index = String(idx);
-
-            li.innerHTML = `
-                <span class="be-search-result-icon">${item.type[0]}</span>
-                <div class="be-search-result-content">
-                    <div class="be-search-result-title">${item.title}</div>
-                    <div class="be-search-result-meta">${item.meta}</div>
-                </div>
-            `;
-
-            li.addEventListener("click", () => selectIndex(idx));
-            resultsList.appendChild(li);
-        });
-
-        currentResults = items;
-    }
-
-    function setActive(index) {
-        const items = $$(".be-search-result", resultsList);
-        items.forEach(el => el.classList.remove("is-active"));
-        if (items[index]) {
-            items[index].classList.add("is-active");
-            items[index].scrollIntoView({ block: "nearest" });
+        /* =======================
+           CORE HELPERS
+        ======================= */
+        function clearResults() {
+            resultsList.innerHTML = "";
+            currentResults = [];
+            activeIndex = -1;
         }
-        activeIndex = index;
-    }
 
-    function selectIndex(index) {
-        const item = currentResults[index];
-        if (!item) return;
-        console.log("[SEARCH] Selected:", item);
-    }
+        function showLoading(show) {
+            loadingEl.hidden = !show;
+        }
 
-    /* ======================================================
-       SEARCH LOGIC
-    ======================================================= */
-    function performSearch(query) {
-        showLoading(true);
-        showEmpty(false);
-        clearResults();
+        function showEmpty(show) {
+            emptyEl.hidden = !show;
+        }
 
-        setTimeout(() => {
-            const q = query.toLowerCase();
-            const matches = MOCK_DATA.filter(item =>
-                item.title.toLowerCase().includes(q)
-            );
+        function setActive(index) {
+            const items = $$(".be-search-result", resultsList);
+            items.forEach(el => el.classList.remove("is-active"));
+            if (items[index]) {
+                items[index].classList.add("is-active");
+                items[index].scrollIntoView({ block: "nearest" });
+            }
+            activeIndex = index;
+        }
 
-            showLoading(false);
+        function selectIndex(index) {
+            const item = currentResults[index];
+            if (!item) return;
 
-            if (!matches.length) {
-                showEmpty(true);
+            console.log("[SEARCH] Selected:", item);
+
+            input.value = "";
+            clearBtn.hidden = true;
+            clearResults();
+        }
+
+        /* =======================
+           RENDER RESULTS
+        ======================= */
+        function renderResults(items) {
+            clearResults();
+
+            items.forEach((item, idx) => {
+                const li = document.createElement("li");
+                li.className = "be-search-result";
+                li.dataset.index = String(idx);
+
+                li.innerHTML = `
+                    <span class="be-search-result-icon">${item.type[0]}</span>
+                    <div class="be-search-result-content">
+                        <div class="be-search-result-title">${item.title}</div>
+                        <div class="be-search-result-meta">${item.meta}</div>
+                    </div>
+                `;
+
+                /* ⛔ KRITIKE:
+                   Ndalo mbylljen nga document.mousedown */
+                li.addEventListener("mousedown", (e) => {
+                    e.stopPropagation();
+                });
+
+                li.addEventListener("click", () => {
+                    selectIndex(idx);
+                });
+
+                resultsList.appendChild(li);
+            });
+
+            currentResults = items;
+        }
+
+        /* =======================
+           SEARCH LOGIC
+        ======================= */
+        function performSearch(query) {
+            showLoading(true);
+            showEmpty(false);
+            clearResults();
+
+            setTimeout(() => {
+                const q = query.toLowerCase();
+                const matches = MOCK_DATA.filter(item =>
+                    item.title.toLowerCase().includes(q)
+                );
+
+                showLoading(false);
+
+                if (!matches.length) {
+                    showEmpty(true);
+                    return;
+                }
+
+                renderResults(matches);
+            }, 200);
+        }
+
+        const debouncedSearch = debounce((value) => {
+            if (!value.trim()) {
+                showLoading(false);
+                showEmpty(false);
+                clearResults();
+                clearBtn.hidden = true;
                 return;
             }
 
-            renderResults(matches);
+            clearBtn.hidden = false;
+            performSearch(value);
         }, 250);
-    }
 
-    const debouncedSearch = debounce((value) => {
-        if (!value.trim()) {
+        /* =======================
+           EVENTS
+        ======================= */
+        input.addEventListener("input", (e) => {
+            debouncedSearch(e.target.value);
+        });
+
+        clearBtn.addEventListener("click", () => {
+            input.value = "";
+            clearBtn.hidden = true;
             showLoading(false);
             showEmpty(false);
             clearResults();
+            input.focus();
+        });
+
+        input.addEventListener("keydown", (e) => {
+            const itemsCount = currentResults.length;
+            if (!itemsCount) return;
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActive((activeIndex + 1) % itemsCount);
+            }
+
+            if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActive((activeIndex - 1 + itemsCount) % itemsCount);
+            }
+
+            if (e.key === "Enter" && activeIndex >= 0) {
+                e.preventDefault();
+                selectIndex(activeIndex);
+            }
+        });
+
+        /* =======================
+           CLICK OUTSIDE → CLOSE
+           (ENTERPRISE STANDARD)
+        ======================= */
+        document.addEventListener("mousedown", (e) => {
+            if (root.contains(e.target)) return;
+
+            input.value = "";
             clearBtn.hidden = true;
-            return;
-        }
-        clearBtn.hidden = false;
-        performSearch(value);
-    }, 300);
+            clearResults();
+        });
+    }
 
-    /* ======================================================
-       EVENTS
-    ======================================================= */
-    input.addEventListener("input", (e) => {
-        debouncedSearch(e.target.value);
-    });
+    /* =======================
+       INIT ALL SEARCH ROOTS
+    ======================= */
+    function initAllSearch() {
+        const roots = $$(".be-search");
+        if (!roots.length) return;
+        roots.forEach(initSearchRoot);
+    }
 
-    clearBtn.addEventListener("click", () => {
-        input.value = "";
-        clearBtn.hidden = true;
-        showLoading(false);
-        showEmpty(false);
-        clearResults();
-        input.focus();
-    });
+    document.addEventListener("DOMContentLoaded", initAllSearch);
+    document.addEventListener("headerLoaded", initAllSearch);
 
-    input.addEventListener("keydown", (e) => {
-        const itemsCount = currentResults.length;
-        if (!itemsCount) return;
+    if (window.__BE_HEADER_READY__ === true) {
+        initAllSearch();
+    }
 
-        if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActive((activeIndex + 1) % itemsCount);
-        }
-
-        if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActive((activeIndex - 1 + itemsCount) % itemsCount);
-        }
-
-        if (e.key === "Enter" && activeIndex >= 0) {
-            e.preventDefault();
-            selectIndex(activeIndex);
-        }
-    });
-
-    console.log("search.js READY (isolated)");
+    console.log("search.js READY – enterprise stable");
 })();

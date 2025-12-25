@@ -1,19 +1,15 @@
 <!-- ====================================================
      BetEngine Enterprise – SEARCH COMPONENT (HTML ONLY)
+     Canonical DOM contract root: .be-search
      Isolated, standalone markup (no CSS / no JS inline)
 ==================================================== -->
 
-<section class="be-search" aria-labelledby="be-search-title">
+<div class="be-search" aria-labelledby="be-search-title">
 
     <!-- HEADER -->
     <header class="be-search-header">
-        <h2 id="be-search-title" class="be-search-title">
-            Search
-        </h2>
-
-        <p class="be-search-subtitle">
-            Find teams, players, leagues, or competitions.
-        </p>
+        <h2 id="be-search-title" class="be-search-title">Search</h2>
+        <p class="be-search-subtitle">Find teams, players, leagues, or competitions.</p>
     </header>
 
     <!-- INPUT -->
@@ -27,14 +23,6 @@
             spellcheck="false"
         />
 
-        <button
-            type="button"
-            class="be-search-clear"
-            aria-label="Clear search"
-            hidden
-        >
-            Clear
-        </button>
     </div>
 
     <!-- STATES -->
@@ -42,16 +30,12 @@
 
         <!-- LOADING STATE -->
         <div class="be-search-loading" hidden>
-            <span class="be-search-loading-text">
-                Searching...
-            </span>
+            <span class="be-search-loading-text">Searching...</span>
         </div>
 
         <!-- EMPTY STATE -->
         <div class="be-search-empty" hidden>
-            <span class="be-search-empty-text">
-                No results found.
-            </span>
+            <span class="be-search-empty-text">No results found.</span>
         </div>
 
     </div>
@@ -61,4 +45,4 @@
         <!-- Results injected by search.js -->
     </ul>
 
-</section>
+</div>

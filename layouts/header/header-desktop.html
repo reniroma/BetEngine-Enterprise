@@ -31,6 +31,7 @@
             <!-- Language -->
             <div class="language-selector">
                 <button class="language-toggle" type="button">
+                    <span class="label">Language:</span>
                     <img src="assets/icons/language.svg" class="icon-lang" alt="">
                     <span class="lang-code">English</span>
                     <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
@@ -112,9 +113,50 @@
         </nav>
 
         <div class="search-notify">
-            <div class="search-box">
-                <img src="assets/icons/search.svg" class="search-icon" alt="">
-                <input type="search" placeholder="Search (team / player)">
+             <div class="be-search">
+
+                <div class="be-search-input-wrapper">
+                    <input
+                       type="search"
+                       class="be-search-input"
+                       placeholder="Search teams, players, leagues..."
+                       aria-label="Search"
+                       autocomplete="off"
+                       spellcheck="false"
+                />
+
+                 <!-- SEARCH ICON (NEW) -->
+                 <button
+                     type="button"
+                     class="be-search-icon"
+                     aria-hidden="true"
+                     tabindex="-1"
+                 >
+                     <img src="assets/icons/search.svg" alt="">
+                 </button>
+
+                 <button
+                      type="button"
+                      class="be-search-clear"
+                      aria-label="Clear search"
+                      hidden
+                 >
+                      Clear
+                 </button>
+
+             </div>
+                  
+                <div class="be-search-states">
+                    <div class="be-search-loading" hidden>
+                        <span class="be-search-loading-text">Searching...</span>
+                    </div>
+                    <div class="be-search-empty" hidden>
+                        <span class="be-search-empty-text">No results found.</span>
+                    </div>
+                </div>
+
+                <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
+
             </div>
 
             <button class="notif-button" type="button">
@@ -124,7 +166,6 @@
     </div>
 
     <div class="row-separator"></div>
-
     <!-- ROW 3: SUB NAVIGATION -->
     <nav class="header-row row-sub" aria-label="Secondary navigation">
 

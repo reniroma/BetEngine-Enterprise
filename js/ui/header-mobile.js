@@ -186,6 +186,33 @@
         });
 
         /* ==================================================
+           MOBILE SEARCH (TOGGLE PANEL)
+        ================================================== */
+
+         const searchBtn   = qs(".mobile-search-btn");
+         const searchPanel = qs(".mobile-search-panel");
+
+            if (searchBtn && searchPanel) {
+               searchBtn.addEventListener("click", (e) => {
+               stop(e);
+
+        const isOpen = searchPanel.hidden === false;
+
+        // close any open modals/sheets first
+        closeModal(bookmarksModal);
+        closeSheet?.(oddsModal);
+        closeSheet?.(langModal);
+
+        searchPanel.hidden = !isOpen;
+
+        if (!isOpen) {
+            const input = qs(".be-search-input", searchPanel);
+            if (input) input.focus();
+        }
+    });
+}
+
+        /* ==================================================
            AUTH
         ================================================== */
         qs(".menu-auth-login")?.addEventListener("click", (e) => {

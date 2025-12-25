@@ -81,6 +81,46 @@
         </div>
     </div>
 
+     <!-- ============================
+     MOBILE SEARCH MODAL (CANONICAL)
+============================ -->
+<div class="be-modal-overlay" id="mobile-search-modal">
+  <div class="be-modal" role="dialog" aria-modal="true">
+
+    <div class="be-modal-header">
+      <span class="be-modal-title">Search</span>
+      <button class="be-modal-close" type="button" aria-label="Close">
+        <img src="assets/icons/close.svg" alt="">
+      </button>
+    </div>
+
+    <div class="be-modal-body">
+      <!-- REUSE SAME COMPONENT -->
+      <div class="be-search">
+        <div class="be-search-input-wrapper">
+          <input
+            type="search"
+            class="be-search-input"
+            placeholder="Search teams, players, leagues..."
+            aria-label="Search"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" class="be-search-clear" aria-label="Clear search" hidden>Clear</button>
+        </div>
+
+        <div class="be-search-states">
+          <div class="be-search-loading" hidden><span class="be-search-loading-text">Searching...</span></div>
+          <div class="be-search-empty" hidden><span class="be-search-empty-text">No results found.</span></div>
+        </div>
+
+        <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
     <!-- ============================
          HAMBURGER OVERLAY
     ============================ -->
@@ -268,27 +308,6 @@
     </div>
 </div>
 
-<!-- ============================
-     MOBILE SEARCH MODAL (GLOBAL)
-============================ -->
-<div class="be-modal-overlay" id="mobile-search-modal">
-    <div class="be-modal" role="dialog" aria-modal="true">
-
-        <div class="be-modal-header">
-            <span class="be-modal-title">Search</span>
-            <button class="be-modal-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="">
-            </button>
-        </div>
-
-        <div class="be-modal-body">
-            <div class="be-modal-placeholder">
-                Search teams, players, leagues or competitions.
-            </div>
-        </div>
-
-    </div>
-</div>
 
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)

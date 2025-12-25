@@ -6,7 +6,7 @@
 /* Root container */
 .be-search {
     width: 100%;
-    max-width: 720px;
+    max-width: 1100px;
     margin: 24px auto;
     padding: 18px;
     border-radius: 14px;
@@ -55,6 +55,16 @@
     color: #ffffff;
     font-size: 14px;
     outline: none;
+}
+/* Disable native browser clear button */
+.be-search-input::-webkit-search-decoration,
+.be-search-input::-webkit-search-results-button,
+.be-search-input::-webkit-search-results-decoration {
+    display: none;
+}
+/* Hide custom Clear button – keep only native X behavior */
+.be-search-clear {
+    display: none;
 }
 
 .be-search-input::placeholder {
@@ -178,6 +188,101 @@
 .be-search-results:empty {
     border: none;
 }
+
+/* ======================================================
+   HEADER INTEGRATION (MINIMAL, ISOLATED)
+   Keeps search usable when mounted inside headers.
+====================================================== */
+
+/* Desktop header: compact mount */
+.header-desktop .be-search {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    height: 100%;
+}
+
+.header-desktop .be-search-input {
+    height: 100%;
+    padding: 0.44px 0.16px;
+    display: flex;
+    line-height: normal;
+    align-items: center;
+    box-sizing:inherit border-box
+    font-size: 11px;
+    padding-right: 15px;
+}
+
+.header-desktop .be-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.header-desktop .be-search-header {
+    display: none;
+}
+
+.header-desktop .be-search-results {
+    background: #11141d;
+}
+
+.header-desktop .be-search-input-wrapper {
+    margin-top: 0;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    position: relative
+}
+
+/* Mobile panel: dropdown-like container */
+.header-mobile .mobile-search-panel {
+    padding: 10px 12px;
+}
+
+.header-mobile .mobile-search-panel .be-search {
+    margin: 0;
+    max-width: none;
+}
+
+/* ======================================================
+   SEARCH — LAYOUT ISOLATION (DESKTOP SAFE FIX)
+   Prevents header row deformation
+====================================================== */
+
+.header-desktop .be-search {
+    position: relative;        /* anchor for absolute results */
+    height: 48px;              /* fixed input height */
+    flex-shrink: 0;
+    width: 240px;
+}
+
+.header-desktop .be-search-results {
+    position: absolute;
+    top: calc(100% + 6px);     /* below input */
+    left: 0;
+    right: 0;
+
+    max-height: 320px;
+    overflow-y: auto;
+
+    z-index: 2000;             /* above header rows */
+}
+
+/* Ensure results do NOT affect header row height */
+.header-desktop .be-search-results[hidden] {
+    display: none;
+}
+
 
 /* ======================================================
    MOBILE OVERRIDES (SAFE)

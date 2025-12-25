@@ -73,7 +73,7 @@
 .row-main {
     min-height: 58px;
     display: grid;
-    grid-template-columns: 240px 1fr auto; /* SINGLE SOURCE */
+    grid-template-columns: 240px 1fr 360px; /* SINGLE SOURCE */
     align-items: center;
     gap: 18px;
     position: relative;
@@ -98,8 +98,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 22px;
+    gap: 60px;
     white-space: nowrap;
+    padding-right: 80;
+}
+.row-main .main-nav .nav-item {
+    font-size: 15px;
+    letter-spacing: 0.06em;
 }
 
 /* =======================================================
@@ -117,6 +122,7 @@
 /* Search box – fixed footprint */
 .header-desktop .search-box {
     width: 210px;
+    height: 40px
     flex: 0 0 210px;
     overflow: hidden;
 }
@@ -133,9 +139,9 @@
 
 /* Notification – unshrinkable */
 .header-desktop .notif-button {
-    width: 34px;
-    height: 34px;
-    flex: 0 0 34px;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
     border-radius: 50%;
     background: var(--bg-panel-soft, #181824);
     display: flex;

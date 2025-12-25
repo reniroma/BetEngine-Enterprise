@@ -695,7 +695,8 @@
         padding: 8px 10px;
         background: #131826; /* darker grey to visually separate from Row 1 */
         border-bottom: 1px solid rgba(255,255,255,0.06);
-        overflow-x: auto;
+        height: 48px;
+        overflow-x: visible;
         -webkit-overflow-scrolling: touch;
     }
 
@@ -715,6 +716,7 @@
         background: none;
         border: 0;
         cursor: pointer;
+        z-index: 1;
     }
 
     /* Icons stay neutral (do not change on active) */
@@ -760,6 +762,27 @@
         width: 20px;
         height: 20px;
     }
+
+    /* Ensure search is clickable above mobile UI */
+    .be-search {
+        position: relative;
+        z-index: 5;
+    }
+
+    /* FIX: prevent sports row container from blocking clicks */
+    .mobile-sports-row {
+        pointer-events: none;
+    }
+
+    .mobile-sports-row .mobile-sport-item {
+        pointer-events: auto;
+    }
+
+   /* FIX: Disable desktop header in mobile to release pointer events */
+   .header-desktop {
+        display: none !important;
+        pointer-events: none !important;
+   }
 
     /* =====================================================
        BETENGINE – PREMIUM FOCUS MODE (MOBILE ONLY)
