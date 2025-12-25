@@ -244,6 +244,7 @@
     position: relative;        /* anchor for absolute results */
     height: 48px;              /* fixed input height */
     flex-shrink: 0;
+    width: 240px;
 }
 
 .header-desktop .be-search-results {
