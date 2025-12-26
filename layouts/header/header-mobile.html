@@ -11,6 +11,55 @@
     ============================ -->
     <div class="mobile-top-bar">
 
+         <!-- ==================================================
+     MOBILE SEARCH PANEL (ENTERPRISE INLINE)
+     Scope: Mobile only
+     Behavior: toggled by JS (.is-active / [hidden])
+     NOT a modal, NOT absolute, NOT overlay
+================================================== -->
+<div class="mobile-search-panel" hidden>
+
+    <!-- Canonical Search Component -->
+    <div class="be-search">
+
+        <!-- Optional header (mobile UX) -->
+        <div class="be-search-header">
+            <h3 class="be-search-title">Search</h3>
+            <p class="be-search-subtitle">
+                Search team or player (min. 3 characters)
+            </p>
+        </div>
+
+        <!-- Input -->
+        <div class="be-search-input-wrapper">
+            <input
+                type="search"
+                class="be-search-input"
+                placeholder="Search team / player"
+                aria-label="Search"
+                autocomplete="off"
+            />
+        </div>
+
+        <!-- States -->
+        <div class="be-search-states">
+            <div class="be-search-loading" hidden>
+                <span class="be-search-loading-text">Searching…</span>
+            </div>
+
+            <div class="be-search-empty" hidden>
+                <span class="be-search-empty-text">
+                    Minimum 3 characters required
+                </span>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <ul class="be-search-results" role="listbox"></ul>
+
+    </div>
+</div>
+
         <!-- HAMBURGER -->
         <button class="mobile-menu-toggle" type="button" aria-label="Menu">
             <svg width="22" height="22" viewBox="0 0 24 24"
@@ -66,51 +115,6 @@
 
         </div>
     </div>
-<!-- ==================================================
-     MOBILE SEARCH OVERLAY (ABOVE brand & sports row)
-     Enterprise: overlay only (NO layout shift)
-================================================== -->
-<div class="mobile-search-overlay" hidden>
-
-    <!-- Top overlay bar (matches OddsPortal behavior) -->
-    <div class="mobile-search-overlay-bar">
-
-        <!-- Search input -->
-        <input
-            class="mobile-search-overlay-input be-search-input"
-            type="search"
-            placeholder="Search team / player"
-            aria-label="Search"
-            autocomplete="off"
-        />
-
-        <!-- Close (X) -->
-        <button class="mobile-search-close" type="button" aria-label="Close search">
-            <img src="/assets/icons/close.svg" alt="" width="20" height="20" draggable="false" />
-        </button>
-
-    </div>
-
-    <!-- Results mount (canonical be-search list) -->
-    <div class="mobile-search-overlay-body">
-        <div class="be-search-states" hidden>
-            <div class="be-search-loading" hidden>
-                <span class="be-search-loading-text">Searching…</span>
-            </div>
-
-            <div class="be-search-empty" hidden>
-                <span class="be-search-empty-text">
-                    Searched word is too short (min. 3 chars).
-                </span>
-            </div>
-        </div>
-
-        <ul class="be-search-results" hidden></ul>
-    </div>
-
-</div>
-<!-- /mobile-search-overlay -->
-
 
 
     <!-- ============================
