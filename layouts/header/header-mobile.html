@@ -31,17 +31,6 @@
         <!-- ACTIONS -->
         <div class="mobile-actions">
 
-            <!-- SEARCH (TRIGGER) -->
-            <button class="mobile-search-btn" type="button" aria-label="Search">
-              <img
-                    src="/assets/icons/search.svg"
-                    alt=""
-                    width="20"
-                    height="20"
-                    draggable="false"
-                    />
-           </button>
-
             <!-- BOOKMARKS -->
             <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
                 <svg width="20" height="20" viewBox="0 0 24 24"
@@ -78,14 +67,56 @@
         </div>
     </div>
 
-              <!-- ============================
-                   MOBILE SEARCH CONTAINER
-                   (Enterprise isolated mount)
-              ============================ -->
-              <div class="mobile-search-panel" hidden>
-              <!-- Mount canonical search component -->
-              <!-- @include components/search/search.html -->
-          </div>
+            <!-- ==================================================
+     MOBILE SEARCH CONTAINER
+     Enterprise REAL mount (NO include, NO build)
+     Order: Hamburger → Brand → Search → Sports Row
+================================================== -->
+<div class="mobile-search-panel" hidden>
+
+    <!-- Canonical Search Component (FULL MOUNT) -->
+    <div class="be-search">
+
+        <!-- Header (optional, mobile-friendly) -->
+        <div class="be-search-header">
+            <h3 class="be-search-title">Next Match Search</h3>
+            <p class="be-search-subtitle">
+                Search team or player (min. 3 characters)
+            </p>
+        </div>
+
+        <!-- Input -->
+        <div class="be-search-input-wrapper">
+            <input
+                class="be-search-input"
+                type="search"
+                placeholder="Search team / player"
+                aria-label="Search"
+                autocomplete="off"
+            />
+        </div>
+
+        <!-- States -->
+        <div class="be-search-states" hidden>
+            <div class="be-search-loading" hidden>
+                <span class="be-search-loading-text">Searching…</span>
+            </div>
+
+            <div class="be-search-empty" hidden>
+                <span class="be-search-empty-text">
+                    Searched word is too short (min. 3 chars).
+                </span>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <ul class="be-search-results" hidden></ul>
+
+    </div>
+    <!-- /be-search -->
+
+</div>
+
 
 
     <!-- ============================
