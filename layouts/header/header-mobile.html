@@ -66,37 +66,33 @@
 
         </div>
     </div>
-
-            <!-- ==================================================
-     MOBILE SEARCH CONTAINER
-     Enterprise REAL mount (NO include, NO build)
-     Order: Hamburger → Brand → Search → Sports Row
+<!-- ==================================================
+     MOBILE SEARCH OVERLAY (ABOVE brand & sports row)
+     Enterprise: overlay only (NO layout shift)
 ================================================== -->
-<div class="mobile-search-panel" hidden>
+<div class="mobile-search-overlay" hidden>
 
-    <!-- Canonical Search Component (FULL MOUNT) -->
-    <div class="be-search">
+    <!-- Top overlay bar (matches OddsPortal behavior) -->
+    <div class="mobile-search-overlay-bar">
 
-        <!-- Header (optional, mobile-friendly) -->
-        <div class="be-search-header">
-            <h3 class="be-search-title">Next Match Search</h3>
-            <p class="be-search-subtitle">
-                Search team or player (min. 3 characters)
-            </p>
-        </div>
+        <!-- Search input -->
+        <input
+            class="mobile-search-overlay-input be-search-input"
+            type="search"
+            placeholder="Search team / player"
+            aria-label="Search"
+            autocomplete="off"
+        />
 
-        <!-- Input -->
-        <div class="be-search-input-wrapper">
-            <input
-                class="be-search-input"
-                type="search"
-                placeholder="Search team / player"
-                aria-label="Search"
-                autocomplete="off"
-            />
-        </div>
+        <!-- Close (X) -->
+        <button class="mobile-search-close" type="button" aria-label="Close search">
+            <img src="/assets/icons/close.svg" alt="" width="20" height="20" draggable="false" />
+        </button>
 
-        <!-- States -->
+    </div>
+
+    <!-- Results mount (canonical be-search list) -->
+    <div class="mobile-search-overlay-body">
         <div class="be-search-states" hidden>
             <div class="be-search-loading" hidden>
                 <span class="be-search-loading-text">Searching…</span>
@@ -109,13 +105,11 @@
             </div>
         </div>
 
-        <!-- Results -->
         <ul class="be-search-results" hidden></ul>
-
     </div>
-    <!-- /be-search -->
 
 </div>
+<!-- /mobile-search-overlay -->
 
 
 
