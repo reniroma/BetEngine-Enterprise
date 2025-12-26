@@ -229,5 +229,29 @@
         initAllSearch();
     }
 
+    /* =======================
+       MOBILE SEARCH TOGGLE
+    ======================= */
+    function initMobileSearchToggle() {
+    const btn   = document.querySelector(".mobile-search-btn");
+    const panel = document.querySelector(".mobile-search-panel");
+
+    if (!btn || !panel) return;
+
+    btn.addEventListener("click", () => {
+        panel.hidden = !panel.hidden;
+        panel.classList.toggle("is-active");
+
+        const input = panel.querySelector(".be-search-input");
+        if (!panel.hidden && input) {
+            input.focus();
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", initMobileSearchToggle);
+document.addEventListener("headerLoaded", initMobileSearchToggle);
+
+
     console.log("search.js READY – enterprise stable");
 })();
