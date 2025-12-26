@@ -244,16 +244,6 @@
     position: relative
 }
 
-/* Mobile panel: dropdown-like container */
-.header-mobile .mobile-search-panel {
-    padding: 10px 12px;
-}
-
-.header-mobile .mobile-search-panel .be-search {
-    margin: 0;
-    max-width: none;
-}
-
 /* ======================================================
    SEARCH — LAYOUT ISOLATION (DESKTOP SAFE FIX)
    Prevents header row deformation
