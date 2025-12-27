@@ -1,19 +1,20 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (FINAL – STANDALONE MOBILE SAFE)
+ * BetEngine Enterprise – SEARCH MODULE
+ * FINAL – MOBILE SAFE (DIRECT BUTTON BINDING)
  *
- * RULES GUARANTEED
- * - header-mobile.js is NOT touched and NOT depended on
- * - hamburger / bookmarks / modals remain 100% intact
- * - mobile search logic lives ONLY here
- * - desktop search behavior is preserved exactly
+ * GUARANTEES
+ * - header-mobile.js is NOT touched
+ * - hamburger & bookmarks remain intact
+ * - mobile search handled ONLY here
+ * - desktop search behavior preserved
  *********************************************************/
 
 (function () {
     "use strict";
 
-    /* ==================================================
+    /* =========================
        HELPERS
-    ================================================== */
+    ========================= */
     const $  = (sel, scope = document) => scope.querySelector(sel);
     const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
@@ -25,9 +26,9 @@
         };
     };
 
-    /* ==================================================
+    /* =========================
        MOCK DATA (PLACEHOLDER)
-    ================================================== */
+    ========================= */
     const MOCK_DATA = [
         { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
         { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
@@ -38,9 +39,9 @@
         { type: "League", title: "Champions League",  meta: "UEFA" }
     ];
 
-    /* ==================================================
+    /* =========================
        SEARCH CORE (DESKTOP + MOBILE)
-    ================================================== */
+    ========================= */
     function initSearchRoot(root) {
         if (!root || root.dataset.beSearchInit === "1") return;
 
@@ -200,16 +201,17 @@
     document.addEventListener("DOMContentLoaded", initAllSearch);
     document.addEventListener("headerLoaded", initAllSearch);
 
-    /* ==================================================
-       MOBILE SEARCH – STANDALONE (NO HEADER DEPENDENCY)
-    ================================================== */
+    /* =========================
+       MOBILE SEARCH – DIRECT BUTTON (SAFE)
+    ========================= */
     function initMobileSearchStandalone() {
-        document.addEventListener("click", e => {
-            const btn = e.target.closest(".mobile-search-btn");
-            if (!btn) return;
+        const btn   = document.querySelector(".mobile-search-btn");
+        const panel = document.querySelector(".mobile-search-inline");
 
-            const panel = document.querySelector(".mobile-search-inline");
-            if (!panel) return;
+        if (!btn || !panel) return;
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
 
             const isHidden = panel.hasAttribute("hidden");
 
