@@ -28,51 +28,78 @@
             <span class="name">BetEngine</span>
         </div>
 
-        <!-- MOBILE SEARCH INLINE (ROW 1 OVERLAY – CANONICAL) -->
-        <div class="mobile-search-inline" hidden>
-            <div class="be-search">
-                <div class="be-search-input-wrapper">
-                    <input
-                        type="search"
-                        class="be-search-input"
-                        placeholder="Search teams, players, leagues..."
-                        aria-label="Search"
-                        autocomplete="off"
-                        spellcheck="false"
-                    />
+       <!-- MOBILE SEARCH INLINE (ROW 1 OVERLAY – CANONICAL) -->
+<div class="mobile-search-inline" hidden>
 
-                    <!-- SEARCH ICON -->
-                    <button
-                        type="button"
-                        class="be-search-icon"
-                        aria-hidden="true"
-                        tabindex="-1"
-                    >
-                        <img src="assets/icons/search.svg" alt="">
-                    </button>
+    <!-- OVERLAY (CLICK OUTSIDE TO CLOSE – JS LATER) -->
+    <div class="mobile-search-overlay" aria-hidden="true"></div>
 
-                    <button
-                        type="button"
-                        class="be-search-clear"
-                        aria-label="Clear search"
-                        hidden
-                    >
-                        Clear
-                    </button>
-                </div>
+    <div class="be-search">
 
-                <div class="be-search-states">
-                    <div class="be-search-loading" hidden>
-                        <span class="be-search-loading-text">Searching...</span>
-                    </div>
-                    <div class="be-search-empty" hidden>
-                        <span class="be-search-empty-text">No results found.</span>
-                    </div>
-                </div>
+        <!-- HEADER ROW (INPUT + CLOSE) -->
+        <div class="be-search-input-wrapper">
 
-                <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
+            <input
+                type="search"
+                class="be-search-input"
+                placeholder="Search teams, players, leagues..."
+                aria-label="Search"
+                autocomplete="off"
+                spellcheck="false"
+            />
+
+            <!-- SEARCH ICON (STATIC) -->
+            <button
+                type="button"
+                class="be-search-icon"
+                aria-hidden="true"
+                tabindex="-1"
+            >
+                <img src="assets/icons/search.svg" alt="">
+            </button>
+
+            <!-- CLEAR BUTTON (TEXT / X LOGIC LATER IN JS) -->
+            <button
+                type="button"
+                class="be-search-clear"
+                aria-label="Clear search"
+                hidden
+            >
+                Clear
+            </button>
+
+            <!-- CLOSE SEARCH (VISIBLE ONLY WHEN ACTIVE – JS LATER) -->
+            <button
+                type="button"
+                class="be-search-close"
+                aria-label="Close search"
+                hidden
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <!-- STATES -->
+        <div class="be-search-states">
+            <div class="be-search-loading" hidden>
+                <span class="be-search-loading-text">Searching...</span>
+            </div>
+            <div class="be-search-empty" hidden>
+                <span class="be-search-empty-text">No results found.</span>
             </div>
         </div>
+
+        <!-- RESULTS -->
+        <ul
+            class="be-search-results"
+            role="listbox"
+            aria-live="polite"
+        ></ul>
+
+    </div>
+</div>
+
 
         <!-- ACTIONS -->
         <div class="mobile-actions">
