@@ -1,12 +1,13 @@
 /*********************************************************
  * BetEngine Enterprise – SEARCH MODULE
- * FINAL – MOBILE SAFE (DIRECT BUTTON BINDING)
+ * FINAL – DESKTOP SAFE + MOBILE OVERLAY FIX
  *
  * GUARANTEES
- * - header-mobile.js is NOT touched
- * - hamburger & bookmarks remain intact
- * - mobile search handled ONLY here
- * - desktop search behavior preserved
+ * - Desktop search behavior preserved 100%
+ * - Mobile search handled ONLY here
+ * - header-mobile.js NOT touched
+ * - Hamburger & bookmarks untouched
+ * - Single, predictable mobile open/close logic
  *********************************************************/
 
 (function () {
@@ -40,7 +41,7 @@
     ];
 
     /* =========================
-       SEARCH CORE (DESKTOP + MOBILE)
+       SEARCH CORE (DESKTOP + MOBILE ROOTS)
     ========================= */
     function initSearchRoot(root) {
         if (!root || root.dataset.beSearchInit === "1") return;
@@ -185,13 +186,6 @@
                 selectIndex(activeIndex);
             }
         });
-
-        document.addEventListener("mousedown", e => {
-            if (root.contains(e.target)) return;
-            input.value = "";
-            clearBtn.hidden = true;
-            clearResults();
-        });
     }
 
     function initAllSearch() {
@@ -202,31 +196,64 @@
     document.addEventListener("headerLoaded", initAllSearch);
 
     /* =========================
-       MOBILE SEARCH – DIRECT BUTTON (SAFE)
+       MOBILE SEARCH OVERLAY (SINGLE SOURCE OF TRUTH)
     ========================= */
-    function initMobileSearchStandalone() {
-        const btn   = document.querySelector(".mobile-search-btn");
-        const panel = document.querySelector(".mobile-search-inline");
+    function initMobileSearchOverlay() {
+        const btn     = document.querySelector(".mobile-search-btn");
+        const panel   = document.querySelector(".mobile-search-inline");
+        const closeX  = panel ? panel.querySelector(".mobile-search-close") : null;
 
         if (!btn || !panel) return;
+        if (panel.dataset.mobileSearchInit === "1") return;
+
+        panel.dataset.mobileSearchInit = "1";
+
+        function open() {
+            panel.removeAttribute("hidden");
+            panel.setAttribute("aria-hidden", "false");
+            document.body.classList.add("mobile-search-open");
+
+            const input = panel.querySelector(".be-search-input");
+            if (input) input.focus();
+        }
+
+        function close() {
+            panel.setAttribute("hidden", "");
+            panel.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("mobile-search-open");
+
+            const input = panel.querySelector(".be-search-input");
+            if (input) input.value = "";
+        }
 
         btn.addEventListener("click", (e) => {
             e.preventDefault();
+            if (panel.hasAttribute("hidden")) open();
+            else close();
+        });
 
-            const isHidden = panel.hasAttribute("hidden");
+        if (closeX) {
+            closeX.addEventListener("click", (e) => {
+                e.preventDefault();
+                close();
+            });
+        }
 
-            if (isHidden) {
-                panel.removeAttribute("hidden");
-                const input = panel.querySelector(".be-search-input");
-                if (input) input.focus();
-            } else {
-                panel.setAttribute("hidden", "");
+        document.addEventListener("mousedown", (e) => {
+            if (panel.hasAttribute("hidden")) return;
+            if (panel.contains(e.target) || btn.contains(e.target)) return;
+            close();
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !panel.hasAttribute("hidden")) {
+                close();
             }
         });
     }
 
-    document.addEventListener("DOMContentLoaded", initMobileSearchStandalone);
-    document.addEventListener("headerLoaded", initMobileSearchStandalone);
+    document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
+    document.addEventListener("headerLoaded", initMobileSearchOverlay);
 
-    console.log("search.js STANDALONE MOBILE SAFE READY");
+    console.log("search.js ENTERPRISE READY");
 })();
