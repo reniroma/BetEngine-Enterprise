@@ -30,7 +30,48 @@
 
         <!-- MOBILE SEARCH INLINE (ROW 1 OVERLAY – CANONICAL) -->
         <div class="mobile-search-inline" hidden>
-            <div class="be-search"></div>
+            <div class="be-search">
+                <div class="be-search-input-wrapper">
+                    <input
+                        type="search"
+                        class="be-search-input"
+                        placeholder="Search teams, players, leagues..."
+                        aria-label="Search"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+
+                    <!-- SEARCH ICON -->
+                    <button
+                        type="button"
+                        class="be-search-icon"
+                        aria-hidden="true"
+                        tabindex="-1"
+                    >
+                        <img src="assets/icons/search.svg" alt="">
+                    </button>
+
+                    <button
+                        type="button"
+                        class="be-search-clear"
+                        aria-label="Clear search"
+                        hidden
+                    >
+                        Clear
+                    </button>
+                </div>
+
+                <div class="be-search-states">
+                    <div class="be-search-loading" hidden>
+                        <span class="be-search-loading-text">Searching...</span>
+                    </div>
+                    <div class="be-search-empty" hidden>
+                        <span class="be-search-empty-text">No results found.</span>
+                    </div>
+                </div>
+
+                <ul class="be-search-results" role="listbox" aria-live="polite"></ul>
+            </div>
         </div>
 
         <!-- ACTIONS -->
