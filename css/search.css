@@ -302,6 +302,61 @@
     .be-search-result {
         padding: 11px 10px;
     }
+   
+/* =====================================================
+   MOBILE HEADER – INLINE SEARCH (ROW 1)
+   File: search.css
+===================================================== */
+
+@media (max-width: 900px) {
+
+    /* real parent of search */
+    .header-mobile .mobile-top-bar {
+        position: relative;
+    }
+
+    /* inline search container */
+    .header-mobile .mobile-search-inline {
+        position: absolute;
+        left: 52px;
+        right: 96px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 40;
+    }
+
+    .header-mobile .mobile-search-field {
+        position: relative;
+        width: 100%;
+    }
+
+    .header-mobile .be-search-input {
+        width: 100%;
+        height: 36px;
+        padding: 0 40px 0 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(255,255,255,0.25);
+        background: #12161f;
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    .header-mobile .mobile-search-close {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #f4a11a;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    /* hide header text inside search */
+    .header-mobile .be-search-header {
+        display: none;
+    }
 }
 
 /* =============== END OF FILE =============== */
