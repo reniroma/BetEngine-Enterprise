@@ -1,7 +1,8 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (FINAL)
- * Enterprise-grade click-outside handling
- * NO blur, NO hacks, NO race conditions
+ * BetEngine Enterprise – SEARCH MODULE (FINAL v1.1)
+ * Desktop-safe, Mobile-safe
+ * FIX: Prevent mobile toggle click from triggering
+ *      document-level click-outside reset.
  *********************************************************/
 
 (function () {
@@ -110,15 +111,9 @@
                     </div>
                 `;
 
-                /* ⛔ KRITIKE:
-                   Ndalo mbylljen nga document.mousedown */
-                li.addEventListener("mousedown", (e) => {
-                    e.stopPropagation();
-                });
-
-                li.addEventListener("click", () => {
-                    selectIndex(idx);
-                });
+                /* Prevent document mousedown close */
+                li.addEventListener("mousedown", (e) => e.stopPropagation());
+                li.addEventListener("click", () => selectIndex(idx));
 
                 resultsList.appendChild(li);
             });
@@ -202,10 +197,13 @@
 
         /* =======================
            CLICK OUTSIDE → CLOSE
-           (ENTERPRISE STANDARD)
+           (MOBILE-SAFE FIX)
         ======================= */
         document.addEventListener("mousedown", (e) => {
             if (root.contains(e.target)) return;
+
+            /* Ignore mobile search toggle button */
+            if (e.target.closest(".mobile-search-btn")) return;
 
             input.value = "";
             clearBtn.hidden = true;
@@ -229,29 +227,5 @@
         initAllSearch();
     }
 
-    /* =======================
-       MOBILE SEARCH TOGGLE
-    ======================= */
-    function initMobileSearchToggle() {
-    const btn   = document.querySelector(".mobile-search-btn");
-    const panel = document.querySelector(".mobile-search-panel");
-
-    if (!btn || !panel) return;
-
-    btn.addEventListener("click", () => {
-        panel.hidden = !panel.hidden;
-        panel.classList.toggle("is-active");
-
-        const input = panel.querySelector(".be-search-input");
-        if (!panel.hidden && input) {
-            input.focus();
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", initMobileSearchToggle);
-document.addEventListener("headerLoaded", initMobileSearchToggle);
-
-
-    console.log("search.js READY – enterprise stable");
+    console.log("search.js READY – enterprise stable v1.1");
 })();
