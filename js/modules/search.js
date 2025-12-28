@@ -210,17 +210,19 @@
         if (panel.dataset.mobileInit === "1") return;
         panel.dataset.mobileInit = "1";
 
-        let searchInitialized = false;
+        
 
         function open() {
             panel.hidden = false;
             panel.setAttribute("aria-hidden", "false");
             document.body.classList.add("mobile-search-open");
+            
+            // FORCE INIT — mobile search MUST be initialized on open
+            const root = panel.querySelector(".be-search");
+            if (root) {
+           initSearchRoot(root); // safe: guarded internally by dataset flag
 
-            if (!searchInitialized) {
-                const root = panel.querySelector(".be-search");
-                if (root) initSearchRoot(root);
-                searchInitialized = true;
+
             }
 
             const input = panel.querySelector(".be-search-input");
