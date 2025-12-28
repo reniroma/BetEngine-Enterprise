@@ -212,25 +212,39 @@
 
         let searchInitialized = false;
 
-        function open() {
-            panel.hidden = false;
-            panel.setAttribute("aria-hidden", "false");
-            document.body.classList.add("mobile-search-open");
+       function open() {
+    lockedScrollY = window.scrollY;
 
-            if (!searchInitialized) {
-                const root = panel.querySelector(".be-search");
-                if (root) initSearchRoot(root);
-                searchInitialized = true;
-            }
+    panel.hidden = false;
+    panel.setAttribute("aria-hidden", "false");
+    document.body.classList.add("mobile-search-open");
 
+    if (!searchInitialized) {
+        const searchRoot = panel.querySelector(".be-search");
+        if (searchRoot) initSearchRoot(searchRoot);
+        searchInitialized = true;
+    }
+
+    // Delay focus and restore scroll
+    requestAnimationFrame(() => {
+        const input = panel.querySelector(".be-search-input");
+        if (input) {
+            input.focus({ preventScroll: true });
+            window.scrollTo(0, lockedScrollY);
+        }
+    });
+}
+            
             const input = panel.querySelector(".be-search-input");
             input && input.focus();
         }
 
-        function close() {
+     let lockedScrollY = 0;
+
+function close() {
     const input = panel.querySelector(".be-search-input");
 
-    // CRITICAL: release focus BEFORE hiding
+    // Release focus first (prevents keyboard-triggered scroll)
     if (input && document.activeElement === input) {
         input.blur();
     }
@@ -238,6 +252,9 @@
     panel.hidden = true;
     panel.setAttribute("aria-hidden", "true");
     document.body.classList.remove("mobile-search-open");
+
+    // Restore scroll position
+    window.scrollTo(0, lockedScrollY);
 
     const root = panel.querySelector(".be-search");
     if (!root) return;
@@ -247,10 +264,10 @@
     const loading = root.querySelector(".be-search-loading");
     const empty   = root.querySelector(".be-search-empty");
 
-    if (clear) clear.hidden = true;
-    if (results) results.innerHTML = "";
+    if (clear)   clear.hidden = true;
+    if (results) results.hidden = true;
     if (loading) loading.hidden = true;
-    if (empty) empty.hidden = true;
+    if (empty)   empty.hidden = true;
 }
 
         btn.addEventListener("click", (e) => {
