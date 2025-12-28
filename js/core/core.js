@@ -1,16 +1,27 @@
 /*********************************************************
- * BetEngine Enterprise – CORE.JS (FINAL)
- * Global helpers + safe init bus.
- * IMPORTANT: Does NOT dispatch "headerLoaded".
- * That event is dispatched ONLY by header-loader.js.
+ * BetEngine Enterprise – CORE.JS (CANONICAL FINAL)
+ * Global helpers + deterministic init orchestrator.
+ *
+ * RULES
+ * - Core is the ONLY init orchestrator
+ * - Modules MUST register via window.BeInit
+ * - Core runs init on:
+ *   1) DOMContentLoaded
+ *   2) headerLoaded
+ * - No double initialization
+ * - headerLoaded is dispatched ONLY by header-loader.js
  *********************************************************/
 
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
+    "use strict";
 
+    /* =====================================================
+       GLOBAL HELPERS (SINGLE SOURCE)
+    ===================================================== */
     const qs = (sel, scope = document) => scope.querySelector(sel);
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
-    const on  = (el, event, handler) => el?.addEventListener(event, handler);
+    const on  = (el, event, handler, opts) => el?.addEventListener(event, handler, opts);
     const off = (el, event, handler) => el?.removeEventListener(event, handler);
 
     const addClass    = (el, cls) => el?.classList.add(cls);
@@ -21,8 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const lockScroll   = () => { document.body.style.overflow = "hidden"; };
     const unlockScroll = () => { document.body.style.overflow = ""; };
 
-    const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+    const scrollTop = () =>
+        window.scrollTo({ top: 0, behavior: "smooth" });
 
+    /* =====================================================
+       EXPOSE GLOBAL API (window.Be)
+    ===================================================== */
     window.Be = {
         qs, qa, on, off,
         addClass, removeClass, toggleClass, hasClass,
@@ -30,16 +45,40 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollTop
     };
 
-    // Optional init bus
+    /* =====================================================
+       INIT BUS (CANONICAL)
+    ===================================================== */
     window.BeInit = window.BeInit || [];
-    window.BeInit.push({
-        name: "core",
-        init: () => console.log("[Core] Initialized")
+
+    const initialized = new Set();
+
+    function runInitBus(source) {
+        window.BeInit.forEach(mod => {
+            if (!mod || typeof mod.init !== "function" || !mod.name) return;
+            if (initialized.has(mod.name)) return;
+
+            try {
+                mod.init();
+                initialized.add(mod.name);
+                console.log(`[Core] Init → ${mod.name} (${source})`);
+            } catch (err) {
+                console.warn(`[Core] Init failed → ${mod.name}`, err);
+            }
+        });
+    }
+
+    /* =====================================================
+       BOOTSTRAP
+    ===================================================== */
+
+    // 1) Initial DOM ready
+    document.addEventListener("DOMContentLoaded", () => {
+        runInitBus("DOMContentLoaded");
     });
 
-    // Run what is already registered at this point
-    window.BeInit.forEach(mod => {
-        try { mod.init(); }
-        catch (err) { console.warn("[Core] Init error:", mod.name, err); }
+    // 2) Header injected & ready (from header-loader.js)
+    document.addEventListener("headerLoaded", () => {
+        runInitBus("headerLoaded");
     });
-});
+
+})();
