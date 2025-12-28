@@ -52,6 +52,38 @@
         const loadingEl   = $(".be-search-loading", root);
         const emptyEl     = $(".be-search-empty", root);
 
+        /* =========================
+   CLOSE BUTTON (X) – MOBILE + DESKTOP SAFE
+========================= */
+const closeBtn = root.querySelector('.be-search-close');
+
+/* Show close button when search becomes active */
+function showCloseButton() {
+    if (closeBtn) {
+        closeBtn.hidden = false;
+    }
+}
+
+/* Hide close button when search is cleared or closed */
+function hideCloseButton() {
+    if (closeBtn) {
+        closeBtn.hidden = true;
+    }
+}
+
+/* Bind close button behavior */
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        input.value = '';
+        resultsList.innerHTML = '';
+        loadingEl.hidden = true;
+        emptyEl.hidden = true;
+        hideCloseButton();
+        input.blur();
+    });
+}
+
+
         if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) return;
 
         root.dataset.beSearchInit = "1";
