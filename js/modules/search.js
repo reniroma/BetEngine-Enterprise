@@ -204,7 +204,7 @@
     ========================= */
     function initMobileSearchOverlay() {
         const btn   = document.querySelector(".mobile-search-btn");
-        const panel = document.querySelector(".mobile-search-inline");
+        const panel = document.querySelector(".mobile-search-overlay-root");
 
         if (!btn || !panel) return;
         if (panel.dataset.mobileInit === "1") return;
