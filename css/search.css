@@ -310,53 +310,51 @@
 
 @media (max-width: 900px) {
 
-    /* real parent of search */
+    /* Anchor container */
     .header-mobile .mobile-top-bar {
         position: relative;
+        overflow: hidden; /* CLIPS shadow */
+
     }
 
-    /* inline search container */
+    /* Mobile search container (visibility controlled ONLY by [hidden]) */
     .header-mobile .mobile-search-inline {
         position: absolute;
-        left: 52px;
-        right: 96px;
-        top: 50%;
-        transform: translateY(-50%);
+        left: 25px;
+        right: 190px;
+        top: 0;
+        height: 48px; /* EXACT height of top bar */
         z-index: 40;
     }
 
-    .header-mobile .mobile-search-field {
-        position: relative;
+    /* IMPORTANT: respect hidden attribute */
+    .header-mobile .mobile-search-inline[hidden] {
+        display: none !important;
+    }
+
+    /* Visible state ONLY when JS removes [hidden] */
+    .header-mobile .mobile-search-inline:not([hidden]) {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Prevent height expansion */
+    .header-mobile .mobile-search-inline .be-search {
         width: 100%;
+        
+        
+    }
+
+    .header-mobile .be-search-input-wrapper {
+        width: 100%;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        
     }
 
     .header-mobile .be-search-input {
-        width: 100%;
         height: 36px;
-        padding: 0 40px 0 12px;
-        border-radius: 6px;
-        border: 1px solid rgba(255,255,255,0.25);
-        background: #12161f;
-        color: #ffffff;
-        font-size: 14px;
-    }
-
-    .header-mobile .mobile-search-close {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #f4a11a;
-        font-size: 18px;
-        cursor: pointer;
-    }
-
-    /* hide header text inside search */
-    .header-mobile .be-search-header {
-        display: none;
+        line-height: 36px;
     }
 }
-
-/* =============== END OF FILE =============== */
