@@ -228,25 +228,30 @@
         }
 
         function close() {
-            panel.hidden = true;
-            panel.setAttribute("aria-hidden", "true");
-            document.body.classList.remove("mobile-search-open");
+    const input = panel.querySelector(".be-search-input");
 
-            const root = panel.querySelector(".be-search");
-            if (!root) return;
+    // CRITICAL: release focus BEFORE hiding
+    if (input && document.activeElement === input) {
+        input.blur();
+    }
 
-            const input   = $(".be-search-input", root);
-            const clear   = $(".be-search-clear", root);
-            const results = $(".be-search-results", root);
-            const loading = $(".be-search-loading", root);
-            const empty   = $(".be-search-empty", root);
+    panel.hidden = true;
+    panel.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("mobile-search-open");
 
-            if (input) input.value = "";
-            if (clear) clear.hidden = true;
-            if (results) results.innerHTML = "";
-            if (loading) loading.hidden = true;
-            if (empty) empty.hidden = true;
-        }
+    const root = panel.querySelector(".be-search");
+    if (!root) return;
+
+    const clear   = root.querySelector(".be-search-clear");
+    const results = root.querySelector(".be-search-results");
+    const loading = root.querySelector(".be-search-loading");
+    const empty   = root.querySelector(".be-search-empty");
+
+    if (clear) clear.hidden = true;
+    if (results) results.innerHTML = "";
+    if (loading) loading.hidden = true;
+    if (empty) empty.hidden = true;
+}
 
         btn.addEventListener("click", (e) => {
             e.preventDefault();
