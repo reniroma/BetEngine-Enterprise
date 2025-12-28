@@ -189,9 +189,11 @@
     }
 
     function initAllSearch() {
+    // Desktop only
+    if (!isMobile()) {
         $$(".be-search").forEach(initSearchRoot);
     }
-
+}
     document.addEventListener("DOMContentLoaded", initAllSearch);
     document.addEventListener("headerLoaded", initAllSearch);
 
@@ -199,59 +201,57 @@
        MOBILE SEARCH OVERLAY (SINGLE SOURCE OF TRUTH)
     ========================= */
     function initMobileSearchOverlay() {
-        const btn     = document.querySelector(".mobile-search-btn");
-        const panel   = document.querySelector(".mobile-search-inline");
-        const closeX  = panel ? panel.querySelector(".mobile-search-close") : null;
+    const btn   = document.querySelector(".mobile-search-btn");
+    const panel = document.querySelector(".mobile-search-inline");
 
-        if (!btn || !panel) return;
-        if (panel.dataset.mobileSearchInit === "1") return;
+    if (!btn || !panel) return;
+    if (panel.dataset.mobileInit === "1") return;
+    panel.dataset.mobileInit = "1";
 
-        panel.dataset.mobileSearchInit = "1";
+    let searchInitialized = false;
 
-        function open() {
-            panel.removeAttribute("hidden");
-            panel.setAttribute("aria-hidden", "false");
-            document.body.classList.add("mobile-search-open");
+    function open() {
+        panel.hidden = false;
+        panel.setAttribute("aria-hidden", "false");
+        document.body.classList.add("mobile-search-open");
 
-            const input = panel.querySelector(".be-search-input");
-            if (input) input.focus();
+        if (!searchInitialized) {
+            const searchRoot = panel.querySelector(".be-search");
+            if (searchRoot) initSearchRoot(searchRoot);
+            searchInitialized = true;
         }
 
-        function close() {
-            panel.setAttribute("hidden", "");
-            panel.setAttribute("aria-hidden", "true");
-            document.body.classList.remove("mobile-search-open");
-
-            const input = panel.querySelector(".be-search-input");
-            if (input) input.value = "";
-        }
-
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (panel.hasAttribute("hidden")) open();
-            else close();
-        });
-
-        if (closeX) {
-            closeX.addEventListener("click", (e) => {
-                e.preventDefault();
-                close();
-            });
-        }
-
-        document.addEventListener("mousedown", (e) => {
-            if (panel.hasAttribute("hidden")) return;
-            if (panel.contains(e.target) || btn.contains(e.target)) return;
-            close();
-        });
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && !panel.hasAttribute("hidden")) {
-                close();
-            }
-        });
+        const input = panel.querySelector(".be-search-input");
+        input && input.focus();
     }
 
+    function close() {
+        panel.hidden = true;
+        panel.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("mobile-search-open");
+    }
+
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        panel.hidden ? open() : close();
+    });
+
+    // Close with X
+    panel.querySelector(".be-search-close")?.addEventListener("click", close);
+
+    // Click outside (touch + mouse)
+    document.addEventListener("pointerdown", (e) => {
+        if (panel.hidden) return;
+        if (panel.contains(e.target) || btn.contains(e.target)) return;
+        close();
+    });
+
+    // ESC
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !panel.hidden) close();
+    });
+}
+    
     document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
     document.addEventListener("headerLoaded", initMobileSearchOverlay);
 
