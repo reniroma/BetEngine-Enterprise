@@ -1,13 +1,13 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE
- * FINAL – DESKTOP SAFE + MOBILE OVERLAY FIX
+ * BetEngine Enterprise – SEARCH MODULE (CANONICAL FINAL)
+ * Desktop + Mobile (single source of truth)
  *
- * GUARANTEES
- * - Desktop search behavior preserved 100%
- * - Mobile search handled ONLY here
- * - header-mobile.js NOT touched
- * - Hamburger & bookmarks untouched
- * - Single, predictable mobile open/close logic
+ * Guarantees:
+ * - Desktop search preserved
+ * - Mobile overlay open/close handled here only
+ * - No dependency on header-mobile.js
+ * - Pointer-safe (touch + mouse)
+ * - No global exports
  *********************************************************/
 
 (function () {
@@ -16,7 +16,7 @@
     /* =========================
        HELPERS
     ========================= */
-    const $  = (sel, scope = document) => scope.querySelector(sel);
+    const $ = (sel, scope = document) => scope.querySelector(sel);
     const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
     const debounce = (fn, delay = 300) => {
@@ -27,85 +27,68 @@
         };
     };
 
+    const isMobileViewport = () => window.matchMedia("(max-width: 900px)").matches;
+
+    const closestSearchRoot = (node) => {
+        if (!node) return null;
+        if (node.classList && node.classList.contains("be-search")) return node;
+        return node.closest ? node.closest(".be-search") : null;
+    };
+
     /* =========================
        MOCK DATA (PLACEHOLDER)
     ========================= */
     const MOCK_DATA = [
-        { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
-        { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
-        { type: "Team",   title: "Bayern Munich",     meta: "Germany · Bundesliga" },
-        { type: "Player", title: "Lionel Messi",      meta: "Inter Miami · Forward" },
+        { type: "Team", title: "Manchester United", meta: "England · Premier League" },
+        { type: "Team", title: "Real Madrid", meta: "Spain · La Liga" },
+        { type: "Team", title: "Bayern Munich", meta: "Germany · Bundesliga" },
+        { type: "Player", title: "Lionel Messi", meta: "Inter Miami · Forward" },
         { type: "Player", title: "Cristiano Ronaldo", meta: "Al Nassr · Forward" },
-        { type: "League", title: "Premier League",    meta: "England" },
-        { type: "League", title: "Champions League",  meta: "UEFA" }
+        { type: "League", title: "Premier League", meta: "England" },
+        { type: "League", title: "Champions League", meta: "UEFA" }
     ];
 
     /* =========================
-       SEARCH CORE (DESKTOP + MOBILE ROOTS)
+       CORE SEARCH (PER ROOT)
     ========================= */
     function initSearchRoot(root) {
-        if (!root || root.dataset.beSearchInit === "1") return;
+        const searchRoot = closestSearchRoot(root);
+        if (!searchRoot || searchRoot.dataset.beSearchInit === "1") return;
 
-        const input       = $(".be-search-input", root);
-        const clearBtn    = $(".be-search-clear", root);
-        const resultsList = $(".be-search-results", root);
-        const loadingEl   = $(".be-search-loading", root);
-        const emptyEl     = $(".be-search-empty", root);
-
-        /* =========================
-   CLOSE BUTTON (X) – MOBILE + DESKTOP SAFE
-========================= */
-const closeBtn = root.querySelector('.be-search-close');
-
-/* Show close button when search becomes active */
-function showCloseButton() {
-    if (closeBtn) {
-        closeBtn.hidden = false;
-    }
-}
-
-/* Hide close button when search is cleared or closed */
-function hideCloseButton() {
-    if (closeBtn) {
-        closeBtn.hidden = true;
-    }
-}
-
-/* Bind close button behavior */
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-        input.value = '';
-        resultsList.innerHTML = '';
-        loadingEl.hidden = true;
-        emptyEl.hidden = true;
-        hideCloseButton();
-        input.blur();
-    });
-}
-
+        const input = $(".be-search-input", searchRoot);
+        const clearBtn = $(".be-search-clear", searchRoot);
+        const closeBtn = $(".be-search-close", searchRoot);
+        const resultsList = $(".be-search-results", searchRoot);
+        const loadingEl = $(".be-search-loading", searchRoot);
+        const emptyEl = $(".be-search-empty", searchRoot);
 
         if (!input || !clearBtn || !resultsList || !loadingEl || !emptyEl) return;
 
-        root.dataset.beSearchInit = "1";
+        searchRoot.dataset.beSearchInit = "1";
 
         let activeIndex = -1;
         let currentResults = [];
 
-        function clearResults() {
+        const showClose = (show) => {
+            if (!closeBtn) return;
+            closeBtn.hidden = !show;
+        };
+
+        const clearResults = () => {
             resultsList.innerHTML = "";
             currentResults = [];
             activeIndex = -1;
-        }
+        };
 
-        function showLoading(show) {
+        const showLoading = (show) => {
             loadingEl.hidden = !show;
-        }
+        };
 
-        function showEmpty(show) {
+        const showEmpty = (show) => {
             emptyEl.hidden = !show;
-        }
+        };
 
-        function setActive(index) {
+        const setActive = (index) => {
             const items = $$(".be-search-result", resultsList);
             items.forEach(el => el.classList.remove("is-active"));
             if (items[index]) {
@@ -113,20 +96,25 @@ if (closeBtn) {
                 items[index].scrollIntoView({ block: "nearest" });
             }
             activeIndex = index;
-        }
+        };
 
-        function selectIndex(index) {
+        const selectIndex = (index) => {
             const item = currentResults[index];
             if (!item) return;
 
-            console.log("[SEARCH] Selected:", item);
+            // Placeholder selection behavior
+            // console.log("[SEARCH] Selected:", item);
 
             input.value = "";
             clearBtn.hidden = true;
+            showClose(false);
+            showLoading(false);
+            showEmpty(false);
             clearResults();
-        }
+            input.blur();
+        };
 
-        function renderResults(items) {
+        const renderResults = (items) => {
             clearResults();
 
             items.forEach((item, idx) => {
@@ -142,16 +130,16 @@ if (closeBtn) {
                     </div>
                 `;
 
-                li.addEventListener("mousedown", e => e.stopPropagation());
+                li.addEventListener("pointerdown", (e) => e.stopPropagation(), { passive: true });
                 li.addEventListener("click", () => selectIndex(idx));
 
                 resultsList.appendChild(li);
             });
 
             currentResults = items;
-        }
+        };
 
-        function performSearch(query) {
+        const performSearch = (query) => {
             showLoading(true);
             showEmpty(false);
             clearResults();
@@ -171,121 +159,207 @@ if (closeBtn) {
 
                 renderResults(matches);
             }, 200);
-        }
+        };
 
         const debouncedSearch = debounce((value) => {
-            if (!value.trim()) {
+            const v = String(value || "").trim();
+
+            if (!v) {
                 showLoading(false);
                 showEmpty(false);
                 clearResults();
                 clearBtn.hidden = true;
+                showClose(false);
                 return;
             }
 
             clearBtn.hidden = false;
-            performSearch(value);
+            showClose(true);
+            performSearch(v);
         }, 250);
 
-        input.addEventListener("input", e => {
+        // Input lifecycle
+        input.addEventListener("focus", () => {
+            // Only show close if there is state (value or results)
+            const hasValue = !!String(input.value || "").trim();
+            const hasResults = resultsList.children.length > 0;
+            showClose(hasValue || hasResults);
+        });
+
+        input.addEventListener("input", (e) => {
             debouncedSearch(e.target.value);
         });
 
-        clearBtn.addEventListener("click", () => {
-            input.value = "";
-            clearBtn.hidden = true;
-            showLoading(false);
-            showEmpty(false);
-            clearResults();
-            input.focus();
-        });
-
-        input.addEventListener("keydown", e => {
+        input.addEventListener("keydown", (e) => {
             const count = currentResults.length;
             if (!count) return;
 
             if (e.key === "ArrowDown") {
                 e.preventDefault();
                 setActive((activeIndex + 1) % count);
-            }
-
-            if (e.key === "ArrowUp") {
+            } else if (e.key === "ArrowUp") {
                 e.preventDefault();
                 setActive((activeIndex - 1 + count) % count);
-            }
-
-            if (e.key === "Enter" && activeIndex >= 0) {
+            } else if (e.key === "Enter" && activeIndex >= 0) {
                 e.preventDefault();
                 selectIndex(activeIndex);
             }
         });
+
+        // Clear button
+        clearBtn.addEventListener("click", () => {
+            input.value = "";
+            clearBtn.hidden = true;
+            showClose(false);
+            showLoading(false);
+            showEmpty(false);
+            clearResults();
+            input.focus();
+        });
+
+        // Close (X) button: close state + (if mobile overlay is open) close overlay
+        if (closeBtn) {
+            closeBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+
+                input.value = "";
+                clearBtn.hidden = true;
+                showClose(false);
+                showLoading(false);
+                showEmpty(false);
+                clearResults();
+                input.blur();
+
+                const mobilePanel = searchRoot.closest(".mobile-search-inline");
+                if (mobilePanel) {
+                    closeMobileOverlay();
+                }
+            });
+        }
     }
 
     function initAllSearch() {
         $$(".be-search").forEach(initSearchRoot);
     }
 
-    document.addEventListener("DOMContentLoaded", initAllSearch);
-    document.addEventListener("headerLoaded", initAllSearch);
-
     /* =========================
-       MOBILE SEARCH OVERLAY (SINGLE SOURCE OF TRUTH)
+       MOBILE OVERLAY (CANONICAL)
     ========================= */
-    function initMobileSearchOverlay() {
-        const btn     = document.querySelector(".mobile-search-btn");
-        const panel   = document.querySelector(".mobile-search-inline");
-        const closeX  = panel ? panel.querySelector(".mobile-search-close") : null;
+    function getMobilePanel() {
+        return document.querySelector(".mobile-search-inline");
+    }
 
+    function getMobileButton() {
+        return document.querySelector(".mobile-search-btn");
+    }
+
+    function openMobileOverlay() {
+        const panel = getMobilePanel();
+        if (!panel) return;
+
+        panel.removeAttribute("hidden");
+        panel.setAttribute("aria-hidden", "false");
+        document.body.classList.add("mobile-search-open");
+
+        const input = panel.querySelector(".be-search-input");
+        if (input) {
+            input.focus();
+        }
+    }
+
+    function closeMobileOverlay() {
+        const panel = getMobilePanel();
+        if (!panel) return;
+
+        panel.setAttribute("hidden", "");
+        panel.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("mobile-search-open");
+
+        const searchRoot = panel.querySelector(".be-search");
+        if (searchRoot) {
+            const input = $(".be-search-input", searchRoot);
+            const clearBtn = $(".be-search-clear", searchRoot);
+            const closeBtn = $(".be-search-close", searchRoot);
+            const resultsList = $(".be-search-results", searchRoot);
+            const loadingEl = $(".be-search-loading", searchRoot);
+            const emptyEl = $(".be-search-empty", searchRoot);
+
+            if (input) input.value = "";
+            if (clearBtn) clearBtn.hidden = true;
+            if (closeBtn) closeBtn.hidden = true;
+            if (loadingEl) loadingEl.hidden = true;
+            if (emptyEl) emptyEl.hidden = true;
+            if (resultsList) resultsList.innerHTML = "";
+        }
+    }
+
+    function initMobileOverlayController() {
+        const btn = getMobileButton();
+        const panel = getMobilePanel();
         if (!btn || !panel) return;
-        if (panel.dataset.mobileSearchInit === "1") return;
 
+        if (panel.dataset.mobileSearchInit === "1") return;
         panel.dataset.mobileSearchInit = "1";
 
-        function open() {
-            panel.removeAttribute("hidden");
-            panel.setAttribute("aria-hidden", "false");
-            document.body.classList.add("mobile-search-open");
+        // Ensure search root init inside panel
+        initAllSearch();
 
-            const input = panel.querySelector(".be-search-input");
-            if (input) input.focus();
-        }
-
-        function close() {
-            panel.setAttribute("hidden", "");
-            panel.setAttribute("aria-hidden", "true");
-            document.body.classList.remove("mobile-search-open");
-
-            const input = panel.querySelector(".be-search-input");
-            if (input) input.value = "";
-        }
-
+        // Toggle by button
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            if (panel.hasAttribute("hidden")) open();
-            else close();
+
+            // Only manage overlay in mobile viewport
+            if (!isMobileViewport()) return;
+
+            if (panel.hasAttribute("hidden")) openMobileOverlay();
+            else closeMobileOverlay();
         });
 
-        if (closeX) {
-            closeX.addEventListener("click", (e) => {
-                e.preventDefault();
-                close();
-            });
-        }
-
-        document.addEventListener("mousedown", (e) => {
+        // Click outside to close (pointer-safe)
+        document.addEventListener("pointerdown", (e) => {
+            if (!isMobileViewport()) return;
             if (panel.hasAttribute("hidden")) return;
-            if (panel.contains(e.target) || btn.contains(e.target)) return;
-            close();
-        });
 
+            const target = e.target;
+            const clickedInside = panel.contains(target);
+            const clickedButton = btn.contains(target);
+
+            if (clickedInside || clickedButton) return;
+
+            closeMobileOverlay();
+        }, { passive: true });
+
+        // ESC to close
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && !panel.hasAttribute("hidden")) {
-                close();
-            }
+            if (!isMobileViewport()) return;
+            if (e.key !== "Escape") return;
+            if (panel.hasAttribute("hidden")) return;
+
+            closeMobileOverlay();
         });
     }
 
-    document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
-    document.addEventListener("headerLoaded", initMobileSearchOverlay);
+    /* =========================
+       BOOT
+    ========================= */
+    document.addEventListener("DOMContentLoaded", () => {
+        initAllSearch();
+        initMobileOverlayController();
+    });
 
-    console.log("search.js ENTERPRISE READY");
+    document.addEventListener("headerLoaded", () => {
+        initAllSearch();
+        initMobileOverlayController();
+    });
+
+    // Optional: close overlay if viewport leaves mobile while open
+    window.addEventListener("resize", debounce(() => {
+        if (!isMobileViewport()) {
+            if (document.body.classList.contains("mobile-search-open")) {
+                closeMobileOverlay();
+            }
+        }
+    }, 150));
+
+    // console.log("search.js CANONICAL FINAL loaded");
 })();
