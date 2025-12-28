@@ -232,8 +232,8 @@
             input.focus({ preventScroll: true });
             window.scrollTo(0, lockedScrollY);
         }
-    });
-}
+    
+
             
             const input = panel.querySelector(".be-search-input");
             input && input.focus();
