@@ -1,13 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH UI
+ * BetEngine Enterprise – HEADER AUTH UI (FINAL FIX)
  * Desktop + Mobile auth rendering layer
  *
- * RESPONSIBILITY:
- * - Listen to auth:changed
- * - Toggle Login/Register ↔ User UI
- * - Populate username
- * - Handle logout
- * - CONTROL user dropdown (desktop)
+ * FIX:
+ * - Force dropdown to be absolute (no CSS change)
+ * - Prevent Row 1 vertical expansion
+ * - Deterministic toggle
  *
  * RULES:
  * - UI ONLY
@@ -19,9 +17,6 @@
 (() => {
     "use strict";
 
-    /* ============================
-       HELPERS
-    ============================ */
     const qs = (sel, scope = document) => scope.querySelector(sel);
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
@@ -29,20 +24,25 @@
        DESKTOP UI
     ============================ */
     function applyDesktop(state) {
-        const root        = qs(".header-desktop");
-        if (!root) return;
+        const loginBtns    = qa(".header-desktop .btn-auth.login");
+        const registerBtns = qa(".header-desktop .btn-auth.register");
+        const userBox      = qs(".header-desktop .auth-user");
+        const userToggle   = qs(".header-desktop .auth-user-toggle");
+        const dropdown     = qs(".header-desktop .auth-user-dropdown");
+        const userName     = qs(".header-desktop .auth-user-name");
+        const logoutBtn    = qs(".header-desktop .auth-user-logout");
 
-        const loginBtns   = qa(".btn-auth.login", root);
-        const registerBtns= qa(".btn-auth.register", root);
-        const userBox     = qs(".auth-user", root);
-        const userToggle  = qs(".auth-user-toggle", root);
-        const userName    = qs(".auth-user-name", root);
-        const dropdown    = qs(".auth-user-dropdown", root);
-        const logoutBtn   = qs(".auth-user-logout", root);
+        if (!userBox || !dropdown || !userToggle) return;
 
-        if (!userBox || !dropdown) return;
+        /* --- FORCE LAYOUT (CRITICAL FIX) --- */
+        userBox.style.position = "relative";
+        dropdown.style.position = "absolute";
+        dropdown.style.top = "100%";
+        dropdown.style.right = "0";
+        dropdown.style.zIndex = "9999";
+        dropdown.style.display = "none";
+        dropdown.style.setProperty("display", "none", "important");
 
-        /* ---- AUTH STATE ---- */
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
             registerBtns.forEach(b => b.style.display = "none");
@@ -55,32 +55,30 @@
         } else {
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
-
             userBox.hidden = true;
-            dropdown.hidden = true;
+            dropdown.style.display = "none";
+            return;
         }
 
-        /* ---- DROPDOWN CONTROL ---- */
-        dropdown.hidden = true;
+        /* --- TOGGLE DROPDOWN --- */
+        userToggle.onclick = (e) => {
+            e.stopPropagation();
+            const isOpen = dropdown.style.display === "block";
+            dropdown.style.setProperty(
+                "display",
+                isOpen ? "none" : "block",
+                "important"
+            );
+        };
 
-        if (userToggle) {
-            userToggle.onclick = (e) => {
-                e.stopPropagation();
-                dropdown.hidden = !dropdown.hidden;
-            };
-        }
-
-        document.addEventListener("click", (e) => {
-            if (!userBox.contains(e.target)) {
-                dropdown.hidden = true;
-            }
+        /* --- CLICK OUTSIDE CLOSE --- */
+        document.addEventListener("click", () => {
+            dropdown.style.setProperty("display", "none", "important");
         });
 
-        /* ---- LOGOUT ---- */
+        /* --- LOGOUT --- */
         if (logoutBtn) {
-            logoutBtn.onclick = (e) => {
-                e.preventDefault();
-                dropdown.hidden = true;
+            logoutBtn.onclick = () => {
                 window.BEAuth?.clearAuth();
             };
         }
@@ -90,13 +88,10 @@
        MOBILE UI
     ============================ */
     function applyMobile(state) {
-        const root = qs(".header-mobile");
-        if (!root) return;
-
-        const guestBox = qs(".mobile-auth-guest", root);
-        const userBox  = qs(".mobile-auth-user", root);
-        const userName = qs(".mobile-auth-user .username", root);
-        const logout   = qs(".mobile-auth-user .logout", root);
+        const guestBox = qs(".header-mobile .mobile-auth-guest");
+        const userBox  = qs(".header-mobile .mobile-auth-user");
+        const userName = qs(".header-mobile .mobile-auth-user .username");
+        const logout   = qs(".header-mobile .mobile-auth-user .logout");
 
         if (!guestBox || !userBox) return;
 
@@ -135,7 +130,6 @@
         apply(e.detail);
     });
 
-    // Initial hydrate
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
