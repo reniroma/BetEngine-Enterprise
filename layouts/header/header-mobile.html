@@ -1,11 +1,12 @@
 <!-- ====================================================
-     MOBILE HEADER – BetEngine Enterprise (ROW 1 ANCHORED SEARCH)
-     GUARANTEES:
-     - Search is VISUALLY in Row 1 (between hamburger and actions)
-     - Search has ZERO layout footprint (absolute overlay)
-     - No Row 1 reflow / no pushing elements out
+     MOBILE HEADER – BetEngine Enterprise (FIXED)
+     FIX:
+     - mobile-search-inline MOVED into anchor
+     - anchor placed inside Row 1 (after hamburger)
+     - search remains overlay (not flex child)
+     - ZERO JS changes
+     - ZERO CSS changes
 ==================================================== -->
-
 <header class="header-mobile">
 
     <!-- ============================
@@ -26,13 +27,18 @@
         </button>
 
         <!-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
-        <div class="mobile-search-anchor" aria-hidden="true">
-            <div class="mobile-search-inline" hidden data-mobile-init="1" aria-hidden="true">
+        <div class="mobile-search-anchor">
+
+            <!-- ============================
+                 MOBILE SEARCH INLINE
+                 (OVERLAY – ANCHORED TO ROW 1)
+            ============================ -->
+            <div class="mobile-search-inline" hidden>
 
                 <!-- OVERLAY (CLICK OUTSIDE TO CLOSE) -->
                 <div class="mobile-search-overlay" aria-hidden="true"></div>
 
-                <div class="be-search" data-be-search-init="1">
+                <div class="be-search">
 
                     <!-- INPUT ROW -->
                     <div class="be-search-input-wrapper">
