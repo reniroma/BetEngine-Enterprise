@@ -7,6 +7,7 @@
  * - Toggle Login/Register ↔ User UI
  * - Populate username
  * - Handle logout
+ * - Handle desktop user dropdown (FIX)
  *
  * RULES:
  * - UI ONLY
@@ -28,11 +29,16 @@
        DESKTOP UI
     ============================ */
     function applyDesktop(state) {
-        const loginBtns    = qa(".header-desktop .btn-auth.login");
-        const registerBtns = qa(".header-desktop .btn-auth.register");
-        const userBox      = qs(".header-desktop .auth-user");
-        const userName     = qs(".header-desktop .auth-user-name");
-        const logoutBtn    = qs(".header-desktop .auth-user-logout");
+        const root         = qs(".header-desktop");
+        if (!root) return;
+
+        const loginBtns    = qa(".btn-auth.login", root);
+        const registerBtns = qa(".btn-auth.register", root);
+        const userBox      = qs(".auth-user", root);
+        const userToggle   = qs(".auth-user-toggle", root);
+        const userDropdown = qs(".auth-user-dropdown", root);
+        const userName     = qs(".auth-user-name", root);
+        const logoutBtn    = qs(".auth-user-logout", root);
 
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
@@ -47,6 +53,24 @@
             registerBtns.forEach(b => b.style.display = "");
 
             if (userBox) userBox.hidden = true;
+            if (userDropdown) userDropdown.hidden = true;
+            return;
+        }
+
+        /* ---------- DROPDOWN FIX ---------- */
+        if (userDropdown) {
+            userDropdown.hidden = true;
+        }
+
+        if (userToggle && userDropdown) {
+            userToggle.onclick = (e) => {
+                e.stopPropagation();
+                userDropdown.hidden = !userDropdown.hidden;
+            };
+
+            document.addEventListener("click", () => {
+                userDropdown.hidden = true;
+            });
         }
 
         if (logoutBtn) {
@@ -60,10 +84,13 @@
        MOBILE UI
     ============================ */
     function applyMobile(state) {
-        const guestBox = qs(".header-mobile .mobile-auth-guest");
-        const userBox  = qs(".header-mobile .mobile-auth-user");
-        const userName = qs(".header-mobile .mobile-auth-user .username");
-        const logout   = qs(".header-mobile .mobile-auth-user .logout");
+        const root = qs(".header-mobile");
+        if (!root) return;
+
+        const guestBox = qs(".mobile-auth-guest", root);
+        const userBox  = qs(".mobile-auth-user", root);
+        const userName = qs(".mobile-auth-user .username", root);
+        const logout   = qs(".mobile-auth-user .logout", root);
 
         if (!guestBox || !userBox) return;
 
@@ -102,7 +129,7 @@
         apply(e.detail);
     });
 
-    // Initial hydrate (in case auth loaded before UI)
+    // Initial hydrate
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
