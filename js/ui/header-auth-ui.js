@@ -7,7 +7,7 @@
  * - Toggle Login/Register ↔ User UI
  * - Populate username
  * - Handle logout
- * - Handle desktop user dropdown (FIX)
+ * - CONTROL user dropdown (desktop)
  *
  * RULES:
  * - UI ONLY
@@ -29,22 +29,26 @@
        DESKTOP UI
     ============================ */
     function applyDesktop(state) {
-        const root         = qs(".header-desktop");
+        const root        = qs(".header-desktop");
         if (!root) return;
 
-        const loginBtns    = qa(".btn-auth.login", root);
-        const registerBtns = qa(".btn-auth.register", root);
-        const userBox      = qs(".auth-user", root);
-        const userToggle   = qs(".auth-user-toggle", root);
-        const userDropdown = qs(".auth-user-dropdown", root);
-        const userName     = qs(".auth-user-name", root);
-        const logoutBtn    = qs(".auth-user-logout", root);
+        const loginBtns   = qa(".btn-auth.login", root);
+        const registerBtns= qa(".btn-auth.register", root);
+        const userBox     = qs(".auth-user", root);
+        const userToggle  = qs(".auth-user-toggle", root);
+        const userName    = qs(".auth-user-name", root);
+        const dropdown    = qs(".auth-user-dropdown", root);
+        const logoutBtn   = qs(".auth-user-logout", root);
 
+        if (!userBox || !dropdown) return;
+
+        /* ---- AUTH STATE ---- */
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
             registerBtns.forEach(b => b.style.display = "none");
 
-            if (userBox) userBox.hidden = false;
+            userBox.hidden = false;
+
             if (userName && state.user) {
                 userName.textContent = state.user.username || "";
             }
@@ -52,29 +56,31 @@
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
 
-            if (userBox) userBox.hidden = true;
-            if (userDropdown) userDropdown.hidden = true;
-            return;
+            userBox.hidden = true;
+            dropdown.hidden = true;
         }
 
-        /* ---------- DROPDOWN FIX ---------- */
-        if (userDropdown) {
-            userDropdown.hidden = true;
-        }
+        /* ---- DROPDOWN CONTROL ---- */
+        dropdown.hidden = true;
 
-        if (userToggle && userDropdown) {
+        if (userToggle) {
             userToggle.onclick = (e) => {
                 e.stopPropagation();
-                userDropdown.hidden = !userDropdown.hidden;
+                dropdown.hidden = !dropdown.hidden;
             };
-
-            document.addEventListener("click", () => {
-                userDropdown.hidden = true;
-            });
         }
 
+        document.addEventListener("click", (e) => {
+            if (!userBox.contains(e.target)) {
+                dropdown.hidden = true;
+            }
+        });
+
+        /* ---- LOGOUT ---- */
         if (logoutBtn) {
-            logoutBtn.onclick = () => {
+            logoutBtn.onclick = (e) => {
+                e.preventDefault();
+                dropdown.hidden = true;
                 window.BEAuth?.clearAuth();
             };
         }
