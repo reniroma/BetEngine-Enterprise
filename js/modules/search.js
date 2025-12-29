@@ -1,15 +1,13 @@
 /*********************************************************
  * BetEngine Enterprise – SEARCH MODULE
- * FINAL – DESKTOP SAFE + MOBILE + TOUCH-LAPTOP FIX
+ * FINAL – DESKTOP SAFE + HYBRID TOUCH-LAPTOP FIX
  *
  * GUARANTEES
- * - Desktop search behavior preserved 100%
- * - Mobile real device works
- * - Touch laptops work correctly
- * - NO mousedown usage
- * - pointerdown handled safely with pointerType filter
- * - No Core.js changes
- * - No Widgets.js changes
+ * - Desktop search behavior preserved
+ * - Mobile overlay handled only here
+ * - Hybrid touch laptops supported (touch + mouse)
+ * - No legacy mousedown dependency
+ * - Outside-close logic uses composedPath (robust)
  *********************************************************/
 
 (function () {
@@ -27,6 +25,18 @@
             clearTimeout(t);
             t = setTimeout(() => fn.apply(null, args), delay);
         };
+    };
+
+    const getPath = (e) => {
+        if (typeof e.composedPath === "function") return e.composedPath();
+        const path = [];
+        let n = e.target;
+        while (n) {
+            path.push(n);
+            n = n.parentNode;
+        }
+        path.push(window);
+        return path;
     };
 
     /* =========================
@@ -112,7 +122,14 @@
                     </div>
                 `;
 
-                li.addEventListener("click", () => selectIndex(idx));
+                const onSelect = (e) => {
+                    if (e && typeof e.preventDefault === "function") e.preventDefault();
+                    selectIndex(idx);
+                };
+
+                li.addEventListener("click", onSelect);
+                li.addEventListener("pointerup", onSelect);
+
                 resultsList.appendChild(li);
             });
 
@@ -225,14 +242,12 @@
             }
 
             const input = panel.querySelector(".be-search-input");
-            input && input.focus();
+            if (input) input.focus();
         }
 
         function close() {
             const input = panel.querySelector(".be-search-input");
-            if (input && document.activeElement === input) {
-                input.blur();
-            }
+            if (input && document.activeElement === input) input.blur();
 
             panel.hidden = true;
             panel.setAttribute("aria-hidden", "true");
@@ -262,12 +277,11 @@
         document.addEventListener("pointerdown", (e) => {
             if (panel.hidden) return;
 
-            // Ignore mouse clicks (desktop)
-            if (e.pointerType === "mouse") return;
+            const path = getPath(e);
+            if (path.includes(panel) || path.includes(btn)) return;
 
-            if (panel.contains(e.target) || btn.contains(e.target)) return;
             close();
-        });
+        }, true);
 
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && !panel.hidden) close();
