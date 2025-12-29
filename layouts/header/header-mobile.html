@@ -1,28 +1,25 @@
 <!-- ====================================================
-     BetEngine Enterprise – MOBILE HEADER (FINAL)
-     STRUCTURE GUARANTEES:
-     - Row 1 is NEVER resized
-     - Search is VISUALLY in Row 1
-     - Search has ZERO layout footprint
-     - No JS changes required
+     MOBILE HEADER – BetEngine Enterprise (FIXED)
+     FIX:
+     - mobile-search-inline MOVED into anchor
+     - anchor placed inside Row 1 (after hamburger)
+     - search remains overlay (not flex child)
+     - ZERO JS changes
+     - ZERO CSS changes
 ==================================================== -->
-
 <header class="header-mobile">
 
     <!-- ============================
-         TOP BAR (ROW 1 – FIXED)
+         TOP BAR (ROW 1)
     ============================ -->
     <div class="mobile-top-bar">
 
         <!-- HAMBURGER -->
-        <button
-            class="mobile-menu-toggle"
-            type="button"
-            aria-label="Menu"
-        >
+        <button class="mobile-menu-toggle" type="button" aria-label="Menu">
             <svg width="22" height="22" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round">
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -32,9 +29,13 @@
         <!-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
         <div class="mobile-search-anchor">
 
+            <!-- ============================
+                 MOBILE SEARCH INLINE
+                 (OVERLAY – ANCHORED TO ROW 1)
+            ============================ -->
             <div class="mobile-search-inline" hidden>
 
-                <!-- CLICK-OUTSIDE OVERLAY -->
+                <!-- OVERLAY (CLICK OUTSIDE TO CLOSE) -->
                 <div class="mobile-search-overlay" aria-hidden="true"></div>
 
                 <div class="be-search">
@@ -51,15 +52,27 @@
                             spellcheck="false"
                         />
 
+                        <!-- SEARCH ICON -->
+                        <button
+                            type="button"
+                            class="be-search-icon"
+                            aria-hidden="true"
+                            tabindex="-1"
+                        >
+                            <img src="assets/icons/search.svg" alt="">
+                        </button>
+
+                        <!-- CLEAR -->
                         <button
                             type="button"
                             class="be-search-clear"
-                            hidden
                             aria-label="Clear search"
+                            hidden
                         >
                             Clear
                         </button>
 
+                        <!-- CLOSE -->
                         <button
                             type="button"
                             class="be-search-close"
@@ -73,10 +86,10 @@
                     <!-- STATES -->
                     <div class="be-search-states">
                         <div class="be-search-loading" hidden>
-                            Searching…
+                            <span class="be-search-loading-text">Searching...</span>
                         </div>
                         <div class="be-search-empty" hidden>
-                            No results found.
+                            <span class="be-search-empty-text">No results found.</span>
                         </div>
                     </div>
 
@@ -99,7 +112,7 @@
         <!-- ACTIONS -->
         <div class="mobile-actions">
 
-            <!-- SEARCH BUTTON -->
+            <!-- SEARCH -->
             <button
                 class="mobile-search-btn"
                 type="button"
@@ -115,27 +128,21 @@
             </button>
 
             <!-- BOOKMARKS -->
-            <button
-                class="mobile-bookmarks-btn"
-                type="button"
-                aria-label="Bookmarks"
-            >
+            <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
             </button>
 
-            <!-- COUPON -->
-            <button
-                class="mobile-coupon-btn"
-                type="button"
-                aria-label="My Coupon"
-            >
+            <!-- MY COUPON -->
+            <button class="mobile-coupon-btn" type="button" aria-label="My Coupon">
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
                     <rect x="3" y="5" width="18" height="14" rx="2"></rect>
                     <line x1="8" y1="9" x2="16" y2="9"></line>
                     <line x1="8" y1="13" x2="16" y2="13"></line>
@@ -143,14 +150,11 @@
             </button>
 
             <!-- NOTIFICATIONS -->
-            <button
-                class="mobile-notifications-btn"
-                type="button"
-                aria-label="Notifications"
-            >
+            <button class="mobile-notifications-btn" type="button" aria-label="Notifications">
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round">
+                     stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
                     <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
@@ -165,26 +169,42 @@
     <div class="mobile-sports-row">
 
         <button class="mobile-sport-item active">
+            <img src="assets/icons/sport-football.svg" alt="Football">
             <span class="sport-label">Football</span>
         </button>
 
         <button class="mobile-sport-item">
+            <img src="assets/icons/sport-basketball.svg" alt="Basketball">
             <span class="sport-label">Basketball</span>
         </button>
 
         <button class="mobile-sport-item">
+            <img src="assets/icons/sport-tennis.svg" alt="Tennis">
             <span class="sport-label">Tennis</span>
         </button>
 
         <button class="mobile-sport-item">
+            <img src="assets/icons/sport-hockey.svg" alt="Hockey">
             <span class="sport-label">Hockey</span>
         </button>
 
         <button class="mobile-sport-item">
+            <img src="assets/icons/sport-volleyball.svg" alt="Volleyball">
             <span class="sport-label">Volleyball</span>
         </button>
 
-        <button class="mobile-sport-item mobile-sport-more">
+        <button class="mobile-sport-item mobile-sport-more" type="button">
+            <svg class="sport-icon" width="20" height="20"
+                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <path d="M12 5H2"></path>
+                <path d="M6 12h12"></path>
+                <path d="M9 19h6"></path>
+                <path d="M16 5h6"></path>
+                <path d="M19 8V2"></path>
+            </svg>
             <span class="sport-label">More</span>
         </button>
 
