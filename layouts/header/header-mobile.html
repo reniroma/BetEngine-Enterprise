@@ -1,30 +1,95 @@
 <!-- ====================================================
-     MOBILE HEADER – BetEngine Enterprise (FIXED)
-     FIX:
-     - mobile-search-inline REMOVED from mobile-top-bar
-     - mobile-search-inline is now a sibling (overlay, not Row 1)
-     - ZERO CSS changes
-     - ZERO JS changes
-     - Row 1 conflicts eliminated
+     BetEngine Enterprise – MOBILE HEADER (FINAL)
+     STRUCTURE GUARANTEES:
+     - Row 1 is NEVER resized
+     - Search is VISUALLY in Row 1
+     - Search has ZERO layout footprint
+     - No JS changes required
 ==================================================== -->
+
 <header class="header-mobile">
 
     <!-- ============================
-         TOP BAR (ROW 1)
+         TOP BAR (ROW 1 – FIXED)
     ============================ -->
     <div class="mobile-top-bar">
 
         <!-- HAMBURGER -->
-        <button class="mobile-menu-toggle" type="button" aria-label="Menu">
+        <button
+            class="mobile-menu-toggle"
+            type="button"
+            aria-label="Menu"
+        >
             <svg width="22" height="22" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round"
-                 aria-hidden="true">
+                 stroke-linecap="round" stroke-linejoin="round">
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
         </button>
+
+        <!-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
+        <div class="mobile-search-anchor">
+
+            <div class="mobile-search-inline" hidden>
+
+                <!-- CLICK-OUTSIDE OVERLAY -->
+                <div class="mobile-search-overlay" aria-hidden="true"></div>
+
+                <div class="be-search">
+
+                    <!-- INPUT ROW -->
+                    <div class="be-search-input-wrapper">
+
+                        <input
+                            type="search"
+                            class="be-search-input"
+                            placeholder="Search teams/player"
+                            aria-label="Search"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+
+                        <button
+                            type="button"
+                            class="be-search-clear"
+                            hidden
+                            aria-label="Clear search"
+                        >
+                            Clear
+                        </button>
+
+                        <button
+                            type="button"
+                            class="be-search-close"
+                            aria-label="Close search"
+                        >
+                            ✕
+                        </button>
+
+                    </div>
+
+                    <!-- STATES -->
+                    <div class="be-search-states">
+                        <div class="be-search-loading" hidden>
+                            Searching…
+                        </div>
+                        <div class="be-search-empty" hidden>
+                            No results found.
+                        </div>
+                    </div>
+
+                    <!-- RESULTS -->
+                    <ul
+                        class="be-search-results"
+                        role="listbox"
+                        aria-live="polite"
+                    ></ul>
+
+                </div>
+            </div>
+        </div>
 
         <!-- BRAND -->
         <div class="mobile-brand">
@@ -34,7 +99,7 @@
         <!-- ACTIONS -->
         <div class="mobile-actions">
 
-            <!-- SEARCH -->
+            <!-- SEARCH BUTTON -->
             <button
                 class="mobile-search-btn"
                 type="button"
@@ -50,21 +115,27 @@
             </button>
 
             <!-- BOOKMARKS -->
-            <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
+            <button
+                class="mobile-bookmarks-btn"
+                type="button"
+                aria-label="Bookmarks"
+            >
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true">
+                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
                 </svg>
             </button>
 
-            <!-- MY COUPON -->
-            <button class="mobile-coupon-btn" type="button" aria-label="My Coupon">
+            <!-- COUPON -->
+            <button
+                class="mobile-coupon-btn"
+                type="button"
+                aria-label="My Coupon"
+            >
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true">
+                     stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="5" width="18" height="14" rx="2"></rect>
                     <line x1="8" y1="9" x2="16" y2="9"></line>
                     <line x1="8" y1="13" x2="16" y2="13"></line>
@@ -72,89 +143,18 @@
             </button>
 
             <!-- NOTIFICATIONS -->
-            <button class="mobile-notifications-btn" type="button" aria-label="Notifications">
+            <button
+                class="mobile-notifications-btn"
+                type="button"
+                aria-label="Notifications"
+            >
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round"
-                     aria-hidden="true">
+                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                 </svg>
             </button>
-
-        </div>
-    </div>
-
-    <!-- ============================
-         MOBILE SEARCH INLINE
-         (OVERLAY – OUT OF ROW 1)
-    ============================ -->
-    <div class="mobile-search-inline" hidden>
-
-        <!-- OVERLAY (CLICK OUTSIDE TO CLOSE) -->
-        <div class="mobile-search-overlay" aria-hidden="true"></div>
-
-        <div class="be-search">
-
-            <!-- INPUT ROW -->
-            <div class="be-search-input-wrapper">
-
-                <input
-                    type="search"
-                    class="be-search-input"
-                    placeholder="Search teams/player"
-                    aria-label="Search"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-
-                <!-- SEARCH ICON -->
-                <button
-                    type="button"
-                    class="be-search-icon"
-                    aria-hidden="true"
-                    tabindex="-1"
-                >
-                    <img src="assets/icons/search.svg" alt="">
-                </button>
-
-                <!-- CLEAR -->
-                <button
-                    type="button"
-                    class="be-search-clear"
-                    aria-label="Clear search"
-                    hidden
-                >
-                    Clear
-                </button>
-
-                <!-- CLOSE -->
-                <button
-                    type="button"
-                    class="be-search-close"
-                    aria-label="Close search"
-                >
-                    ✕
-                </button>
-
-            </div>
-
-            <!-- STATES -->
-            <div class="be-search-states">
-                <div class="be-search-loading" hidden>
-                    <span class="be-search-loading-text">Searching...</span>
-                </div>
-                <div class="be-search-empty" hidden>
-                    <span class="be-search-empty-text">No results found.</span>
-                </div>
-            </div>
-
-            <!-- RESULTS -->
-            <ul
-                class="be-search-results"
-                role="listbox"
-                aria-live="polite"
-            ></ul>
 
         </div>
     </div>
@@ -165,42 +165,26 @@
     <div class="mobile-sports-row">
 
         <button class="mobile-sport-item active">
-            <img src="assets/icons/sport-football.svg" alt="Football">
             <span class="sport-label">Football</span>
         </button>
 
         <button class="mobile-sport-item">
-            <img src="assets/icons/sport-basketball.svg" alt="Basketball">
             <span class="sport-label">Basketball</span>
         </button>
 
         <button class="mobile-sport-item">
-            <img src="assets/icons/sport-tennis.svg" alt="Tennis">
             <span class="sport-label">Tennis</span>
         </button>
 
         <button class="mobile-sport-item">
-            <img src="assets/icons/sport-hockey.svg" alt="Hockey">
             <span class="sport-label">Hockey</span>
         </button>
 
         <button class="mobile-sport-item">
-            <img src="assets/icons/sport-volleyball.svg" alt="Volleyball">
             <span class="sport-label">Volleyball</span>
         </button>
 
-        <button class="mobile-sport-item mobile-sport-more" type="button">
-            <svg class="sport-icon" width="20" height="20"
-                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round"
-                 aria-hidden="true">
-                <path d="M12 5H2"></path>
-                <path d="M6 12h12"></path>
-                <path d="M9 19h6"></path>
-                <path d="M16 5h6"></path>
-                <path d="M19 8V2"></path>
-            </svg>
+        <button class="mobile-sport-item mobile-sport-more">
             <span class="sport-label">More</span>
         </button>
 
