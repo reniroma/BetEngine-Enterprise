@@ -68,6 +68,23 @@
     }
 
     /* =====================================================
+       PATCH: AUTH SERVICE + MOCK LOADER (MINIMAL / SAFE)
+       (NO SIDE EFFECTS, NO INIT COUPLING)
+    ===================================================== */
+    function loadScriptOnce(src) {
+        if ([...document.scripts].some(s => s.src.includes(src))) return;
+
+        const s = document.createElement("script");
+        s.src = src;
+        s.defer = true;
+        document.head.appendChild(s);
+    }
+
+    // Load auth stack immediately (before any UI reacts)
+    loadScriptOnce("/js/core/auth.service.js");
+    loadScriptOnce("/js/auth-mock.js");
+
+    /* =====================================================
        BOOTSTRAP
     ===================================================== */
 
