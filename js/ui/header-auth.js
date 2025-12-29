@@ -101,7 +101,6 @@ function initAuth() {
 
 /* ======================================================
    ENTERPRISE FIX — FORGOT PASSWORD (EVENT DELEGATION)
-   (THIS IS THE REAL BUG FIX)
 ====================================================== */
 document.addEventListener("click", (e) => {
     const forgotBtn = e.target.closest(".auth-forgot-link, .auth-forgot");
@@ -126,4 +125,28 @@ if (window.__BE_HEADER_READY__ === true) {
     initAuth();
 }
 
+/* ======================================================
+   AUTH UI STATE BINDING (HEADER)
+   PATCH IMPLEMENTED – DO NOT MODIFY
+====================================================== */
+function applyAuthState(state) {
+    const loginBtns = document.querySelectorAll(
+        ".btn-auth.login, .menu-auth-login"
+    );
+    const registerBtns = document.querySelectorAll(
+        ".btn-auth.register, .menu-auth-register"
+    );
 
+    loginBtns.forEach(el => {
+        el.style.display = state.authenticated ? "none" : "";
+    });
+
+    registerBtns.forEach(el => {
+        el.style.display = state.authenticated ? "none" : "";
+    });
+}
+
+// React to auth state changes
+document.addEventListener("auth:changed", (e) => {
+    applyAuthState(e.detail);
+});
