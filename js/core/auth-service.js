@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE (FINAL)
+ * BetEngine Enterprise – AUTH SERVICE (FINAL FIX)
  * Single source of truth for auth state
  * Persistence: localStorage
  * Emits: auth:changed
@@ -16,12 +16,38 @@
     premium: false
   };
 
+  /* ==================================================
+     USER NORMALIZATION (GLOBAL INVARIANT)
+     authenticated === true => user.username MUST exist
+  ================================================== */
+  function normalizeUser(user) {
+    if (!user || typeof user !== "object") {
+      return { username: "testuser" };
+    }
+    if (!user.username) {
+      return { ...user, username: "testuser" };
+    }
+    return user;
+  }
+
+  function normalizeState(state) {
+    if (state.authenticated === true) {
+      return {
+        ...state,
+        user: normalizeUser(state.user)
+      };
+    }
+    return state;
+  }
+
   function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw
+      const parsed = raw
         ? { ...defaultState, ...JSON.parse(raw) }
         : { ...defaultState };
+
+      return normalizeState(parsed);
     } catch {
       return { ...defaultState };
     }
@@ -34,40 +60,18 @@
   }
 
   function emit() {
+    state = normalizeState(state);
     document.dispatchEvent(
-      new CustomEvent("auth:changed", {
-        detail: { ...state }
-      })
+      new CustomEvent("auth:changed", { detail: { ...state } })
     );
   }
 
-  /* ==================================================
-     CRITICAL GUARANTEE
-     - If authenticated === true
-     - user.username MUST exist
-     - UI NEVER receives empty user
-  ================================================== */
-  function normalizeUser(user) {
-    if (!user || typeof user !== "object") {
-      return { username: "testuser" };
-    }
-
-    if (!user.username) {
-      return { ...user, username: "testuser" };
-    }
-
-    return user;
-  }
-
   function setAuth(payload = {}) {
-    const user = normalizeUser(payload.user);
-
-    state = {
+    state = normalizeState({
       ...state,
       ...payload,
-      authenticated: true,
-      user
-    };
+      authenticated: true
+    });
 
     persist();
     emit();
@@ -80,7 +84,7 @@
   }
 
   function getState() {
-    return { ...state };
+    return normalizeState({ ...state });
   }
 
   // Public API
@@ -90,6 +94,6 @@
     getState
   };
 
-  // Initial hydrate (important for mobile header)
+  // Initial hydrate
   emit();
 })();
