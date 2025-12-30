@@ -2,22 +2,22 @@
  * BetEngine Enterprise – AUTH MOCK
  * UI-only mock backend for development
  *
- * Purpose:
- * - Simulate successful login
- * - Feed BEAuth service
- * - NO coupling with header logic
- * - SAFE to delete when real API is wired
+ * STRICT RULES:
+ * - ONLY triggered by explicit login submit
+ * - NEVER auto-login on page load
+ * - SAFE for desktop & mobile
  *********************************************************/
 (function () {
   "use strict";
 
   document.addEventListener("submit", (e) => {
-    const form = e.target.closest("#login-modal .auth-form");
-    if (!form) return;
+    const form = e.target;
+
+    // STRICT: only real login form
+    if (!form || form.id !== "login-form") return;
 
     e.preventDefault();
 
-    // MOCK USER PAYLOAD
     if (!window.BEAuth || typeof window.BEAuth.setAuth !== "function") {
       console.warn("BEAuth service not available");
       return;
@@ -32,7 +32,6 @@
       premium: false
     });
 
-    // Close login modal safely
     const loginModal = document.getElementById("login-modal");
     if (loginModal) {
       loginModal.classList.remove("show", "state-forgot-open");
