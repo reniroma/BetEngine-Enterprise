@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE (FIXED)
+ * BetEngine Enterprise – AUTH SERVICE (FINAL)
  * Single source of truth for auth state
  * Persistence: localStorage
  * Emits: auth:changed
@@ -19,7 +19,9 @@
   function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? { ...defaultState, ...JSON.parse(raw) } : { ...defaultState };
+      return raw
+        ? { ...defaultState, ...JSON.parse(raw) }
+        : { ...defaultState };
     } catch {
       return { ...defaultState };
     }
@@ -33,21 +35,27 @@
 
   function emit() {
     document.dispatchEvent(
-      new CustomEvent("auth:changed", { detail: { ...state } })
+      new CustomEvent("auth:changed", {
+        detail: { ...state }
+      })
     );
   }
 
-  /* ============================
-     CRITICAL FIX
-     - authenticated === true MUST have user
-  ============================ */
+  /* ==================================================
+     CRITICAL GUARANTEE
+     - If authenticated === true
+     - user.username MUST exist
+     - UI NEVER receives empty user
+  ================================================== */
   function normalizeUser(user) {
     if (!user || typeof user !== "object") {
       return { username: "testuser" };
     }
+
     if (!user.username) {
       return { ...user, username: "testuser" };
     }
+
     return user;
   }
 
@@ -75,13 +83,13 @@
     return { ...state };
   }
 
-  // Expose API
+  // Public API
   window.BEAuth = {
     setAuth,
     clearAuth,
     getState
   };
 
-  // Emit on boot (hydrate UI)
+  // Initial hydrate (important for mobile header)
   emit();
 })();
