@@ -1,11 +1,13 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.0)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.1)
  * Single source of truth for Login / Register / Forgot
  *
  * ENTERPRISE FIX:
+ * - Robust binding for multiple triggers
+ * - Mobile menu close before opening auth modals
+ * - Auth UI hydration to prevent initial state desync
+ * - Mobile Account section Guest ↔ User sync (username + logout)
  * - Event delegation for Forgot Password
- * - Works with dynamically injected header + modals
- * - ZERO HTML / CSS assumptions
  *********************************************************/
 
 /* =======================
@@ -19,6 +21,31 @@ const lockBody = (lock) => {
     document.body.style.overflow = lock ? "hidden" : "";
 };
 
+/* ======================================================
+   MOBILE MENU CLOSE (SAFE)
+====================================================== */
+function closeMobileMenuIfOpen() {
+    // Prefer existing handlers (header-mobile.js) to preserve behavior
+    const closeBtn = qs(".mobile-menu-close");
+    const overlay  = qs(".mobile-menu-overlay");
+
+    if (closeBtn) {
+        closeBtn.click();
+        return;
+    }
+    if (overlay) {
+        overlay.click();
+        return;
+    }
+
+    // Fallback cleanup (safe)
+    const panel = qs(".mobile-menu-panel");
+    overlay?.classList.remove("show");
+    panel?.classList.remove("open", "premium-mode");
+    document.body.style.overflow = "";
+    document.body.classList.remove("menu-open");
+}
+
 /* =======================
    INIT AUTH (LOGIN / REGISTER)
 ======================= */
@@ -31,28 +58,6 @@ function initAuth() {
     const registerModal = qs("#register-modal");
 
     if (!loginModal || !registerModal) return;
-
-    const closeMobileMenuIfOpen = () => {
-        // Prefer existing mobile handlers (header-mobile.js) to preserve behavior
-        const closeBtn = qs(".mobile-menu-close");
-        const overlay  = qs(".mobile-menu-overlay");
-
-        if (closeBtn) {
-            closeBtn.click();
-            return;
-        }
-        if (overlay) {
-            overlay.click();
-            return;
-        }
-
-        // Fallback cleanup (safe)
-        const panel = qs(".mobile-menu-panel");
-        overlay?.classList.remove("show");
-        panel?.classList.remove("open", "premium-mode");
-        document.body.style.overflow = "";
-        document.body.classList.remove("menu-open");
-    };
 
     const closeAll = () => {
         loginModal.classList.remove("show", "state-forgot-open");
@@ -72,7 +77,7 @@ function initAuth() {
         lockBody(true);
     };
 
-    /* Desktop header buttons */
+    /* Desktop header buttons (may exist multiple times) */
     qsa(".btn-auth.login").forEach((btn) => {
         on(btn, "click", (e) => {
             e.preventDefault();
@@ -87,7 +92,7 @@ function initAuth() {
         });
     });
 
-    /* Mobile menu buttons */
+    /* Mobile menu buttons (may exist multiple times) */
     qsa(".menu-auth-login").forEach((btn) => {
         on(btn, "click", (e) => {
             if (e) e.preventDefault();
@@ -133,7 +138,7 @@ function initAuth() {
 }
 
 /* ======================================================
-   ENTERPRISE FIX — FORGOT PASSWORD (EVENT DELEGATION)
+   FORGOT PASSWORD (EVENT DELEGATION)
 ====================================================== */
 document.addEventListener("click", (e) => {
     const forgotBtn = e.target.closest(".auth-forgot-link, .auth-forgot");
@@ -149,24 +154,42 @@ document.addEventListener("click", (e) => {
 });
 
 /* ======================================================
-   AUTH UI STATE BINDING (HEADER)
-   PATCH IMPLEMENTED – DO NOT MODIFY
+   AUTH UI STATE BINDING (HEADER + MOBILE ACCOUNT)
 ====================================================== */
 function applyAuthState(state) {
-    const loginBtns = document.querySelectorAll(
-        ".btn-auth.login, .menu-auth-login"
-    );
-    const registerBtns = document.querySelectorAll(
-        ".btn-auth.register, .menu-auth-register"
-    );
+    const isAuthed = !!state?.authenticated;
 
-    loginBtns.forEach(el => {
-        el.style.display = state.authenticated ? "none" : "";
-    });
+    /* Toggle auth triggers (desktop + mobile) */
+    const loginBtns = document.querySelectorAll(".btn-auth.login, .menu-auth-login");
+    const registerBtns = document.querySelectorAll(".btn-auth.register, .menu-auth-register");
 
-    registerBtns.forEach(el => {
-        el.style.display = state.authenticated ? "none" : "";
-    });
+    loginBtns.forEach(el => { el.style.display = isAuthed ? "none" : ""; });
+    registerBtns.forEach(el => { el.style.display = isAuthed ? "none" : ""; });
+
+    /* MOBILE ACCOUNT SECTION: Guest ↔ User + username + logout */
+    const mobileAccount = qs(".mobile-menu-panel .menu-section.account") || qs(".menu-section.account");
+    if (mobileAccount) {
+        const guestBox = qs(".mobile-auth-guest", mobileAccount);
+        const userBox  = qs(".mobile-auth-user", mobileAccount);
+
+        if (guestBox) guestBox.hidden = isAuthed;
+        if (userBox)  userBox.hidden  = !isAuthed;
+
+        if (isAuthed && userBox) {
+            const usernameEl = qs(".username", userBox);
+            const uname = state?.user?.username || "";
+            if (usernameEl) usernameEl.textContent = uname;
+
+            const logoutLink = qs(".logout", userBox);
+            if (logoutLink && !logoutLink.dataset.beLogoutBound) {
+                logoutLink.dataset.beLogoutBound = "1";
+                logoutLink.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    window.BEAuth?.clearAuth?.();
+                });
+            }
+        }
+    }
 }
 
 function hydrateAuthUI() {
@@ -175,7 +198,7 @@ function hydrateAuthUI() {
     }
 }
 
-// React to auth state changes
+/* React to auth state changes */
 document.addEventListener("auth:changed", (e) => {
     applyAuthState(e.detail);
 });
@@ -188,11 +211,11 @@ document.addEventListener("headerLoaded", () => {
     hydrateAuthUI();
 });
 
-// Fallback for late load
+/* Fallback for late load */
 if (window.__BE_HEADER_READY__ === true) {
     initAuth();
     hydrateAuthUI();
 }
 
-// Safe eager hydrate (no-op until elements exist)
+/* Safe eager hydrate (no-op until elements exist) */
 hydrateAuthUI();
