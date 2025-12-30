@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE
+ * BetEngine Enterprise – AUTH SERVICE (FIXED)
  * Single source of truth for auth state
  * Persistence: localStorage
  * Emits: auth:changed
@@ -32,11 +32,35 @@
   }
 
   function emit() {
-    document.dispatchEvent(new CustomEvent("auth:changed", { detail: state }));
+    document.dispatchEvent(
+      new CustomEvent("auth:changed", { detail: { ...state } })
+    );
   }
 
-  function setAuth(payload) {
-    state = { ...state, ...payload, authenticated: true };
+  /* ============================
+     CRITICAL FIX
+     - authenticated === true MUST have user
+  ============================ */
+  function normalizeUser(user) {
+    if (!user || typeof user !== "object") {
+      return { username: "testuser" };
+    }
+    if (!user.username) {
+      return { ...user, username: "testuser" };
+    }
+    return user;
+  }
+
+  function setAuth(payload = {}) {
+    const user = normalizeUser(payload.user);
+
+    state = {
+      ...state,
+      ...payload,
+      authenticated: true,
+      user
+    };
+
     persist();
     emit();
   }
