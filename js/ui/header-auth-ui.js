@@ -1,16 +1,16 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH UI (FINAL v2)
- * Desktop + Mobile auth rendering layer
+ * BetEngine Enterprise – HEADER AUTH UI (DESKTOP ONLY)
  *
- * FIX (ENTERPRISE):
- * - Re-apply auth state AFTER headerLoaded
- * - Solves mobile auth not updating after hamburger injection
+ * RESPONSIBILITY:
+ * - React to auth:changed
+ * - Toggle Login/Register ↔ User UI (DESKTOP)
+ * - Handle desktop user dropdown
  *
- * RULES:
- * - UI ONLY
- * - NO auth logic
- * - NO modal logic
- * - NO core logic
+ * DOES NOT:
+ * - Touch mobile UI
+ * - Touch hamburger
+ * - Touch modals
+ * - Handle auth logic
  *********************************************************/
 
 (() => {
@@ -33,7 +33,7 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
-        /* Force dropdown overlay (no CSS changes) */
+        /* Force dropdown overlay (NO CSS changes) */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
@@ -57,49 +57,21 @@
             return;
         }
 
+        /* Toggle dropdown */
         userToggle.onclick = (e) => {
             e.stopPropagation();
             dropdown.style.display =
                 dropdown.style.display === "block" ? "none" : "block";
         };
 
+        /* Click outside closes dropdown */
         document.addEventListener("click", () => {
             dropdown.style.display = "none";
         });
 
+        /* Logout */
         if (logoutBtn) {
             logoutBtn.onclick = () => {
-                window.BEAuth?.clearAuth();
-            };
-        }
-    }
-
-    /* ============================
-       MOBILE UI (HAMBURGER PANEL)
-    ============================ */
-    function applyMobile(state) {
-        const guestBox = qs(".mobile-menu-panel .mobile-auth-guest");
-        const userBox  = qs(".mobile-menu-panel .mobile-auth-user");
-        const userName = qs(".mobile-menu-panel .mobile-auth-user .username");
-        const logout   = qs(".mobile-menu-panel .mobile-auth-user .logout");
-
-        if (!guestBox || !userBox) return;
-
-        if (state.authenticated) {
-            guestBox.hidden = true;
-            userBox.hidden = false;
-
-            if (userName && state.user) {
-                userName.textContent = state.user.username || "";
-            }
-        } else {
-            guestBox.hidden = false;
-            userBox.hidden = true;
-        }
-
-        if (logout) {
-            logout.onclick = (e) => {
-                e.preventDefault();
                 window.BEAuth?.clearAuth();
             };
         }
@@ -110,26 +82,21 @@
     ============================ */
     function apply(state) {
         applyDesktop(state);
-        applyMobile(state);
     }
 
     /* ============================
        EVENTS
     ============================ */
-
-    // Auth state changed
     document.addEventListener("auth:changed", (e) => {
         apply(e.detail);
     });
 
-    // CRITICAL FIX: header injected AFTER auth
     document.addEventListener("headerLoaded", () => {
         if (window.BEAuth?.getState) {
             apply(window.BEAuth.getState());
         }
     });
 
-    // Initial hydrate (in case everything already exists)
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
