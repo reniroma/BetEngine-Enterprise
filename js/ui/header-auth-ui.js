@@ -3,8 +3,8 @@
  * Desktop + Mobile auth rendering layer
  *
  * FIX:
- * - Re-hydrate mobile auth UI when hamburger menu opens
- * - Mobile auth rendered ONLY inside hamburger panel
+ * - Bind MOBILE auth to ACTIVE hamburger panel only
+ * - Prevent targeting hidden / duplicate panels
  *
  * RULES:
  * - UI ONLY
@@ -38,7 +38,6 @@
         dropdown.style.top = "100%";
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
-        dropdown.style.display = "none";
         dropdown.style.setProperty("display", "none", "important");
 
         if (state.authenticated) {
@@ -53,7 +52,7 @@
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
             userBox.hidden = true;
-            dropdown.style.display = "none";
+            dropdown.style.setProperty("display", "none", "important");
             return;
         }
 
@@ -82,13 +81,19 @@
        MOBILE UI (FIXED)
     ============================ */
     function applyMobile(state) {
-        const panel    = qs(".mobile-menu-panel");
-        const guestBox = qs(".mobile-menu-panel .mobile-auth-guest");
-        const userBox  = qs(".mobile-menu-panel .mobile-auth-user");
-        const userName = qs(".mobile-menu-panel .mobile-auth-user .username");
-        const logout   = qs(".mobile-menu-panel .mobile-auth-user .logout");
+        // 🔴 CRITICAL FIX: target ACTIVE hamburger panel only
+        let panel =
+            qs(".mobile-menu-panel:not([hidden])") ||
+            qs(".mobile-menu-panel");
 
-        if (!panel || !guestBox || !userBox) return;
+        if (!panel) return;
+
+        const guestBox = qs(".mobile-auth-guest", panel);
+        const userBox  = qs(".mobile-auth-user", panel);
+        const userName = qs(".mobile-auth-user .username", panel);
+        const logout   = qs(".mobile-auth-user .logout", panel);
+
+        if (!guestBox || !userBox) return;
 
         if (state.authenticated) {
             guestBox.hidden = true;
@@ -125,21 +130,6 @@
         apply(e.detail);
     });
 
-    /* ============================
-       HAMBURGER RE-HYDRATION (FIX)
-    ============================ */
-    document.addEventListener("click", () => {
-        const panel = qs(".mobile-menu-panel");
-        if (!panel || panel.hasAttribute("hidden")) return;
-
-        if (window.BEAuth?.getState) {
-            applyMobile(window.BEAuth.getState());
-        }
-    });
-
-    /* ============================
-       INITIAL HYDRATE
-    ============================ */
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
