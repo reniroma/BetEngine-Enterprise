@@ -3,8 +3,7 @@
  * Desktop + Mobile auth rendering layer
  *
  * FIX:
- * - Bind MOBILE auth to ACTIVE hamburger panel only
- * - Prevent targeting hidden / duplicate panels
+ * - Mobile auth re-applied when hamburger menu opens
  *
  * RULES:
  * - UI ONLY
@@ -20,7 +19,7 @@
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
     /* ============================
-       DESKTOP UI (UNCHANGED)
+       DESKTOP UI
     ============================ */
     function applyDesktop(state) {
         const loginBtns    = qa(".header-desktop .btn-auth.login");
@@ -33,11 +32,13 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
+        /* Force dropdown out of flow */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
+        dropdown.style.display = "none";
         dropdown.style.setProperty("display", "none", "important");
 
         if (state.authenticated) {
@@ -52,16 +53,16 @@
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
             userBox.hidden = true;
-            dropdown.style.setProperty("display", "none", "important");
+            dropdown.style.display = "none";
             return;
         }
 
         userToggle.onclick = (e) => {
             e.stopPropagation();
-            const isOpen = dropdown.style.display === "block";
+            const open = dropdown.style.display === "block";
             dropdown.style.setProperty(
                 "display",
-                isOpen ? "none" : "block",
+                open ? "none" : "block",
                 "important"
             );
         };
@@ -78,20 +79,16 @@
     }
 
     /* ============================
-       MOBILE UI (FIXED)
+       MOBILE UI
     ============================ */
     function applyMobile(state) {
-        // 🔴 CRITICAL FIX: target ACTIVE hamburger panel only
-        let panel =
-            qs(".mobile-menu-panel:not([hidden])") ||
-            qs(".mobile-menu-panel");
-
+        const panel   = qs(".mobile-menu-panel:not([hidden])");
         if (!panel) return;
 
-        const guestBox = qs(".mobile-auth-guest", panel);
-        const userBox  = qs(".mobile-auth-user", panel);
-        const userName = qs(".mobile-auth-user .username", panel);
-        const logout   = qs(".mobile-auth-user .logout", panel);
+        const guestBox = panel.querySelector(".mobile-auth-guest");
+        const userBox  = panel.querySelector(".mobile-auth-user");
+        const userName = panel.querySelector(".mobile-auth-user .username");
+        const logout   = panel.querySelector(".mobile-auth-user .logout");
 
         if (!guestBox || !userBox) return;
 
@@ -130,6 +127,17 @@
         apply(e.detail);
     });
 
+    /* Re-apply auth when mobile menu opens */
+    document.addEventListener("click", (e) => {
+        const btn = e.target.closest(".mobile-menu-toggle");
+        if (!btn) return;
+
+        if (window.BEAuth?.getState) {
+            applyMobile(window.BEAuth.getState());
+        }
+    });
+
+    /* Initial hydrate */
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
