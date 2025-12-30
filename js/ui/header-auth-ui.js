@@ -2,9 +2,6 @@
  * BetEngine Enterprise – HEADER AUTH UI (FINAL FIX)
  * Desktop + Mobile auth rendering layer
  *
- * FIX:
- * - Mobile auth re-applied when hamburger menu opens
- *
  * RULES:
  * - UI ONLY
  * - NO auth logic
@@ -32,7 +29,7 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
-        /* Force dropdown out of flow */
+        /* --- FORCE LAYOUT (CRITICAL FIX) --- */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
@@ -44,6 +41,7 @@
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
             registerBtns.forEach(b => b.style.display = "none");
+
             userBox.hidden = false;
 
             if (userName && state.user) {
@@ -57,20 +55,23 @@
             return;
         }
 
+        /* --- TOGGLE DROPDOWN --- */
         userToggle.onclick = (e) => {
             e.stopPropagation();
-            const open = dropdown.style.display === "block";
+            const isOpen = dropdown.style.display === "block";
             dropdown.style.setProperty(
                 "display",
-                open ? "none" : "block",
+                isOpen ? "none" : "block",
                 "important"
             );
         };
 
+        /* --- CLICK OUTSIDE CLOSE --- */
         document.addEventListener("click", () => {
             dropdown.style.setProperty("display", "none", "important");
         });
 
+        /* --- LOGOUT --- */
         if (logoutBtn) {
             logoutBtn.onclick = () => {
                 window.BEAuth?.clearAuth();
@@ -79,29 +80,39 @@
     }
 
     /* ============================
-       MOBILE UI
+       MOBILE UI (FIXED TARGET)
+       Auth UI lives inside .mobile-menu-panel (header-modals.html)
     ============================ */
     function applyMobile(state) {
-        const panel   = qs(".mobile-menu-panel:not([hidden])");
-        if (!panel) return;
+        // Primary (current correct location)
+        const panel = qs(".mobile-menu-panel");
 
-        const guestBox = panel.querySelector(".mobile-auth-guest");
-        const userBox  = panel.querySelector(".mobile-auth-user");
-        const userName = panel.querySelector(".mobile-auth-user .username");
-        const logout   = panel.querySelector(".mobile-auth-user .logout");
+        // Auth blocks inside hamburger panel
+        const guestBox = panel ? qs(".mobile-auth-guest", panel) : null;
+        const userBox  = panel ? qs(".mobile-auth-user", panel)  : null;
 
-        if (!guestBox || !userBox) return;
+        // Safety fallback (old location, if exists in some builds)
+        const guestFallback = !guestBox ? qs(".header-mobile .mobile-auth-guest") : null;
+        const userFallback  = !userBox  ? qs(".header-mobile .mobile-auth-user")  : null;
+
+        const guest = guestBox || guestFallback;
+        const user  = userBox  || userFallback;
+
+        if (!guest || !user) return;
+
+        const nameEl = qs(".username", user);
+        const logout = qs(".logout", user);
 
         if (state.authenticated) {
-            guestBox.hidden = true;
-            userBox.hidden = false;
+            guest.hidden = true;
+            user.hidden = false;
 
-            if (userName && state.user) {
-                userName.textContent = state.user.username || "";
+            if (nameEl && state.user) {
+                nameEl.textContent = state.user.username || "";
             }
         } else {
-            guestBox.hidden = false;
-            userBox.hidden = true;
+            guest.hidden = false;
+            user.hidden = true;
         }
 
         if (logout) {
@@ -127,17 +138,6 @@
         apply(e.detail);
     });
 
-    /* Re-apply auth when mobile menu opens */
-    document.addEventListener("click", (e) => {
-        const btn = e.target.closest(".mobile-menu-toggle");
-        if (!btn) return;
-
-        if (window.BEAuth?.getState) {
-            applyMobile(window.BEAuth.getState());
-        }
-    });
-
-    /* Initial hydrate */
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
