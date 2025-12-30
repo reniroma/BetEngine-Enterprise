@@ -101,35 +101,9 @@
             <img src="assets/logos/logo.svg" class="logo" alt="">
             <span class="name">Smart betting</span>
         </div>
+   </div>
 
-        <!-- ============================
-             AUTH (MOBILE)
-        ============================ -->
-        <div class="mobile-auth">
-
-            <!-- GUEST -->
-            <div class="mobile-auth-guest">
-                <button class="btn-auth register" type="button">REGISTER</button>
-                <button class="btn-auth login" type="button">LOGIN</button>
-            </div>
-
-            <!-- USER -->
-            <div class="mobile-auth-user" hidden>
-                <div class="mobile-user-header">
-                    <span class="username"></span>
-                    <span class="roi">ROI +20.7%</span>
-                </div>
-                <nav class="mobile-user-nav">
-                    <a href="#">PROFILE</a>
-                    <a href="#">MY PREDICTIONS</a>
-                    <a href="#">SETTINGS</a>
-                    <a href="#">MY STATISTICS</a>
-                    <a href="#">MY COUPONS</a>
-                    <a href="#" class="logout">LOGOUT</a>
-                </nav>
-            </div>
-
-        </div>
+       
         <!-- ============================
              ACCOUNT
         ============================ -->
@@ -137,6 +111,31 @@
             <h4>Account</h4>
             <button class="menu-item menu-auth-register" type="button">Register</button>
             <button class="menu-item menu-auth-login" type="button">Login</button>
+        </div>
+
+     <!-- LOGGED OUT -->
+            <div class="mobile-auth-guest">
+                <button class="menu-item menu-auth-register" type="button">Register</button>
+                <button class="menu-item menu-auth-login" type="button">Login</button>
+            </div>
+
+            <!-- LOGGED IN -->
+            <div class="mobile-auth-user" hidden>
+
+                <button class="menu-item user-toggle" type="button">
+                    <span class="username"></span>
+                </button>
+
+                <div class="user-dropdown" hidden>
+                    <button class="submenu-item" type="button">Profile</button>
+                    <button class="submenu-item" type="button">My Predictions</button>
+                    <button class="submenu-item" type="button">Settings</button>
+                    <button class="submenu-item" type="button">My Statistics</button>
+                    <button class="submenu-item" type="button">My Coupons</button>
+                    <button class="submenu-item logout" type="button">Logout</button>
+                </div>
+
+            </div>
         </div>
 
      <!-- ============================
