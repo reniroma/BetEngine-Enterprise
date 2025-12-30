@@ -64,6 +64,9 @@
 
             document.body.style.overflow = "hidden";
             document.body.classList.add("menu-open");
+
+            // PATCH (UI SYNC HOOK) — notify auth UI layer that panel is now visible
+            document.dispatchEvent(new Event("be:mobileMenuOpened"));
         };
 
         const closeMenu = () => {
