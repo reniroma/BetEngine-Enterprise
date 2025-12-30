@@ -103,13 +103,14 @@
         </div>
         
        
-       <!-- ============================
-     ACCOUNT (AUTH CONTROLLED)
+      <!-- ============================
+     ACCOUNT (AUTH CONTROLLED – HARD ISOLATION)
 ============================ -->
 <div class="menu-section account">
+
     <h4>Account</h4>
 
-    <!-- GUEST -->
+    <!-- GUEST (VISIBLE BY DEFAULT) -->
     <div class="mobile-auth-guest">
         <button class="menu-item menu-auth-register" type="button">
             Register
@@ -119,22 +120,25 @@
         </button>
     </div>
 
-    <!-- USER -->
-    <div class="mobile-auth-user" hidden>
-        <div class="mobile-user-header">
-            <span class="username"></span>
-            <span class="roi">ROI +20.7%</span>
-        </div>
+    <!-- USER (HARD-HIDDEN CONTAINER) -->
+    <div class="mobile-auth-user-container" hidden>
+        <div class="mobile-auth-user">
+            <div class="mobile-user-header">
+                <span class="username"></span>
+                <span class="roi">ROI +20.7%</span>
+            </div>
 
-        <nav class="mobile-user-nav">
-            <a href="#">PROFILE</a>
-            <a href="#">MY PREDICTIONS</a>
-            <a href="#">SETTINGS</a>
-            <a href="#">MY STATISTICS</a>
-            <a href="#">MY COUPONS</a>
-            <a href="#" class="logout">LOGOUT</a>
-        </nav>
+            <nav class="mobile-user-nav">
+                <a href="#">PROFILE</a>
+                <a href="#">MY PREDICTIONS</a>
+                <a href="#">SETTINGS</a>
+                <a href="#">MY STATISTICS</a>
+                <a href="#">MY COUPONS</a>
+                <a href="#" class="logout">LOGOUT</a>
+            </nav>
+        </div>
     </div>
+
 </div>
      <!-- ============================
              NAVIGATION
