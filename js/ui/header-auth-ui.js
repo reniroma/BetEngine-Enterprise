@@ -1,6 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH UI (FINAL FIX)
+ * BetEngine Enterprise – HEADER AUTH UI (FINAL v2)
  * Desktop + Mobile auth rendering layer
+ *
+ * FIX (ENTERPRISE):
+ * - Re-apply auth state AFTER headerLoaded
+ * - Solves mobile auth not updating after hamburger injection
  *
  * RULES:
  * - UI ONLY
@@ -29,19 +33,17 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
-        /* --- FORCE LAYOUT (CRITICAL FIX) --- */
+        /* Force dropdown overlay (no CSS changes) */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
         dropdown.style.display = "none";
-        dropdown.style.setProperty("display", "none", "important");
 
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
             registerBtns.forEach(b => b.style.display = "none");
-
             userBox.hidden = false;
 
             if (userName && state.user) {
@@ -55,23 +57,16 @@
             return;
         }
 
-        /* --- TOGGLE DROPDOWN --- */
         userToggle.onclick = (e) => {
             e.stopPropagation();
-            const isOpen = dropdown.style.display === "block";
-            dropdown.style.setProperty(
-                "display",
-                isOpen ? "none" : "block",
-                "important"
-            );
+            dropdown.style.display =
+                dropdown.style.display === "block" ? "none" : "block";
         };
 
-        /* --- CLICK OUTSIDE CLOSE --- */
         document.addEventListener("click", () => {
-            dropdown.style.setProperty("display", "none", "important");
+            dropdown.style.display = "none";
         });
 
-        /* --- LOGOUT --- */
         if (logoutBtn) {
             logoutBtn.onclick = () => {
                 window.BEAuth?.clearAuth();
@@ -80,39 +75,26 @@
     }
 
     /* ============================
-       MOBILE UI (FIXED TARGET)
-       Auth UI lives inside .mobile-menu-panel (header-modals.html)
+       MOBILE UI (HAMBURGER PANEL)
     ============================ */
     function applyMobile(state) {
-        // Primary (current correct location)
-        const panel = qs(".mobile-menu-panel");
+        const guestBox = qs(".mobile-menu-panel .mobile-auth-guest");
+        const userBox  = qs(".mobile-menu-panel .mobile-auth-user");
+        const userName = qs(".mobile-menu-panel .mobile-auth-user .username");
+        const logout   = qs(".mobile-menu-panel .mobile-auth-user .logout");
 
-        // Auth blocks inside hamburger panel
-        const guestBox = panel ? qs(".mobile-auth-guest", panel) : null;
-        const userBox  = panel ? qs(".mobile-auth-user", panel)  : null;
-
-        // Safety fallback (old location, if exists in some builds)
-        const guestFallback = !guestBox ? qs(".header-mobile .mobile-auth-guest") : null;
-        const userFallback  = !userBox  ? qs(".header-mobile .mobile-auth-user")  : null;
-
-        const guest = guestBox || guestFallback;
-        const user  = userBox  || userFallback;
-
-        if (!guest || !user) return;
-
-        const nameEl = qs(".username", user);
-        const logout = qs(".logout", user);
+        if (!guestBox || !userBox) return;
 
         if (state.authenticated) {
-            guest.hidden = true;
-            user.hidden = false;
+            guestBox.hidden = true;
+            userBox.hidden = false;
 
-            if (nameEl && state.user) {
-                nameEl.textContent = state.user.username || "";
+            if (userName && state.user) {
+                userName.textContent = state.user.username || "";
             }
         } else {
-            guest.hidden = false;
-            user.hidden = true;
+            guestBox.hidden = false;
+            userBox.hidden = true;
         }
 
         if (logout) {
@@ -134,10 +116,20 @@
     /* ============================
        EVENTS
     ============================ */
+
+    // Auth state changed
     document.addEventListener("auth:changed", (e) => {
         apply(e.detail);
     });
 
+    // CRITICAL FIX: header injected AFTER auth
+    document.addEventListener("headerLoaded", () => {
+        if (window.BEAuth?.getState) {
+            apply(window.BEAuth.getState());
+        }
+    });
+
+    // Initial hydrate (in case everything already exists)
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
