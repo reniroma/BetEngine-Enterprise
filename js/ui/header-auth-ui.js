@@ -3,8 +3,8 @@
  * Desktop + Mobile auth rendering layer
  *
  * FIX:
- * - Desktop dropdown absolute (no CSS change)
- * - Mobile auth bound ONLY to hamburger panel (header-modals)
+ * - Re-hydrate mobile auth UI when hamburger menu opens
+ * - Mobile auth rendered ONLY inside hamburger panel
  *
  * RULES:
  * - UI ONLY
@@ -20,7 +20,7 @@
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
     /* ============================
-       DESKTOP UI
+       DESKTOP UI (UNCHANGED)
     ============================ */
     function applyDesktop(state) {
         const loginBtns    = qa(".header-desktop .btn-auth.login");
@@ -33,18 +33,17 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
-        /* --- FORCE LAYOUT (DESKTOP ONLY) --- */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
+        dropdown.style.display = "none";
         dropdown.style.setProperty("display", "none", "important");
 
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
             registerBtns.forEach(b => b.style.display = "none");
-
             userBox.hidden = false;
 
             if (userName && state.user) {
@@ -54,27 +53,24 @@
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
             userBox.hidden = true;
-            dropdown.style.setProperty("display", "none", "important");
+            dropdown.style.display = "none";
             return;
         }
 
-        /* --- TOGGLE DROPDOWN --- */
         userToggle.onclick = (e) => {
             e.stopPropagation();
-            const open = dropdown.style.display === "block";
+            const isOpen = dropdown.style.display === "block";
             dropdown.style.setProperty(
                 "display",
-                open ? "none" : "block",
+                isOpen ? "none" : "block",
                 "important"
             );
         };
 
-        /* --- CLICK OUTSIDE CLOSE --- */
         document.addEventListener("click", () => {
             dropdown.style.setProperty("display", "none", "important");
         });
 
-        /* --- LOGOUT --- */
         if (logoutBtn) {
             logoutBtn.onclick = () => {
                 window.BEAuth?.clearAuth();
@@ -83,18 +79,16 @@
     }
 
     /* ============================
-       MOBILE UI (HAMBURGER ONLY)
+       MOBILE UI (FIXED)
     ============================ */
     function applyMobile(state) {
         const panel    = qs(".mobile-menu-panel");
-        if (!panel) return;
+        const guestBox = qs(".mobile-menu-panel .mobile-auth-guest");
+        const userBox  = qs(".mobile-menu-panel .mobile-auth-user");
+        const userName = qs(".mobile-menu-panel .mobile-auth-user .username");
+        const logout   = qs(".mobile-menu-panel .mobile-auth-user .logout");
 
-        const guestBox = qs(".mobile-auth-guest", panel);
-        const userBox  = qs(".mobile-auth-user", panel);
-        const userName = qs(".mobile-auth-user .username", panel);
-        const logout   = qs(".mobile-auth-user .logout", panel);
-
-        if (!guestBox || !userBox) return;
+        if (!panel || !guestBox || !userBox) return;
 
         if (state.authenticated) {
             guestBox.hidden = true;
@@ -131,6 +125,21 @@
         apply(e.detail);
     });
 
+    /* ============================
+       HAMBURGER RE-HYDRATION (FIX)
+    ============================ */
+    document.addEventListener("click", () => {
+        const panel = qs(".mobile-menu-panel");
+        if (!panel || panel.hasAttribute("hidden")) return;
+
+        if (window.BEAuth?.getState) {
+            applyMobile(window.BEAuth.getState());
+        }
+    });
+
+    /* ============================
+       INITIAL HYDRATE
+    ============================ */
     if (window.BEAuth?.getState) {
         apply(window.BEAuth.getState());
     }
