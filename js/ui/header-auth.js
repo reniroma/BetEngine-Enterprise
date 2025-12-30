@@ -12,6 +12,7 @@
    UTILS
 ======================= */
 const qs = (sel, scope = document) => scope.querySelector(sel);
+const qsa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
 const lockBody = (lock) => {
@@ -30,6 +31,28 @@ function initAuth() {
     const registerModal = qs("#register-modal");
 
     if (!loginModal || !registerModal) return;
+
+    const closeMobileMenuIfOpen = () => {
+        // Prefer existing mobile handlers (header-mobile.js) to preserve behavior
+        const closeBtn = qs(".mobile-menu-close");
+        const overlay  = qs(".mobile-menu-overlay");
+
+        if (closeBtn) {
+            closeBtn.click();
+            return;
+        }
+        if (overlay) {
+            overlay.click();
+            return;
+        }
+
+        // Fallback cleanup (safe)
+        const panel = qs(".mobile-menu-panel");
+        overlay?.classList.remove("show");
+        panel?.classList.remove("open", "premium-mode");
+        document.body.style.overflow = "";
+        document.body.classList.remove("menu-open");
+    };
 
     const closeAll = () => {
         loginModal.classList.remove("show", "state-forgot-open");
@@ -50,25 +73,35 @@ function initAuth() {
     };
 
     /* Desktop header buttons */
-    on(qs(".btn-auth.login"), "click", (e) => {
-        e.preventDefault();
-        openLogin();
+    qsa(".btn-auth.login").forEach((btn) => {
+        on(btn, "click", (e) => {
+            e.preventDefault();
+            openLogin();
+        });
     });
 
-    on(qs(".btn-auth.register"), "click", (e) => {
-        e.preventDefault();
-        openRegister();
+    qsa(".btn-auth.register").forEach((btn) => {
+        on(btn, "click", (e) => {
+            e.preventDefault();
+            openRegister();
+        });
     });
 
     /* Mobile menu buttons */
-    on(qs(".menu-auth-login"), "click", (e) => {
-        if (e) e.preventDefault();
-        openLogin();
+    qsa(".menu-auth-login").forEach((btn) => {
+        on(btn, "click", (e) => {
+            if (e) e.preventDefault();
+            closeMobileMenuIfOpen();
+            openLogin();
+        });
     });
 
-    on(qs(".menu-auth-register"), "click", (e) => {
-        if (e) e.preventDefault();
-        openRegister();
+    qsa(".menu-auth-register").forEach((btn) => {
+        on(btn, "click", (e) => {
+            if (e) e.preventDefault();
+            closeMobileMenuIfOpen();
+            openRegister();
+        });
     });
 
     /* Close buttons + overlay click */
@@ -115,16 +148,6 @@ document.addEventListener("click", (e) => {
     loginModal.classList.add("state-forgot-open");
 });
 
-/* =======================
-   EVENT BINDING
-======================= */
-document.addEventListener("headerLoaded", initAuth);
-
-// Fallback for late load
-if (window.__BE_HEADER_READY__ === true) {
-    initAuth();
-}
-
 /* ======================================================
    AUTH UI STATE BINDING (HEADER)
    PATCH IMPLEMENTED – DO NOT MODIFY
@@ -146,7 +169,30 @@ function applyAuthState(state) {
     });
 }
 
+function hydrateAuthUI() {
+    if (window.BEAuth?.getState) {
+        applyAuthState(window.BEAuth.getState());
+    }
+}
+
 // React to auth state changes
 document.addEventListener("auth:changed", (e) => {
     applyAuthState(e.detail);
 });
+
+/* =======================
+   EVENT BINDING
+======================= */
+document.addEventListener("headerLoaded", () => {
+    initAuth();
+    hydrateAuthUI();
+});
+
+// Fallback for late load
+if (window.__BE_HEADER_READY__ === true) {
+    initAuth();
+    hydrateAuthUI();
+}
+
+// Safe eager hydrate (no-op until elements exist)
+hydrateAuthUI();
