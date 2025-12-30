@@ -188,22 +188,6 @@
             openModal(bookmarksModal);
         });
 
-
-        /* ==================================================
-           AUTH
-        ================================================== */
-        qs(".menu-auth-login")?.addEventListener("click", (e) => {
-            stop(e);
-            closeMenu();
-            window.BE_openLogin?.();
-        });
-
-        qs(".menu-auth-register")?.addEventListener("click", (e) => {
-            stop(e);
-            closeMenu();
-            window.BE_openRegister?.();
-        });
-
         /* ==================================================
            PREMIUM FOCUS MODE (TOGGLE FIXED)
         ================================================== */
