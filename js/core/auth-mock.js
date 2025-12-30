@@ -1,20 +1,17 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH MOCK
+ * BetEngine Enterprise – AUTH MOCK (FIXED)
  * UI-only mock backend for development
  *
- * STRICT RULES:
- * - ONLY triggered by explicit login submit
- * - NEVER auto-login on page load
- * - SAFE for desktop & mobile
+ * FIX:
+ * - Works for desktop AND mobile
+ * - No dependency on #login-modal ID
  *********************************************************/
 (function () {
   "use strict";
 
   document.addEventListener("submit", (e) => {
-    const form = e.target;
-
-    // STRICT: only real login form
-    if (!form || form.id !== "login-form") return;
+    const form = e.target.closest("form.auth-form");
+    if (!form) return;
 
     e.preventDefault();
 
@@ -32,10 +29,10 @@
       premium: false
     });
 
-    const loginModal = document.getElementById("login-modal");
-    if (loginModal) {
-      loginModal.classList.remove("show", "state-forgot-open");
-    }
+    // Close ANY open auth modal safely
+    document
+      .querySelectorAll(".be-auth-overlay.show")
+      .forEach(m => m.classList.remove("show"));
 
     document.body.style.overflow = "";
   });
