@@ -1,11 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH UI (FINAL v3)
+ * BetEngine Enterprise – HEADER AUTH UI (FINAL v2)
  * Desktop + Mobile auth rendering layer
  *
  * FIX (ENTERPRISE):
  * - Re-apply auth state AFTER headerLoaded
- * - Re-apply auth state AFTER mobile menu is ready
- * - Solves mobile auth not updating after hamburger open
+ * - Solves mobile auth not updating after hamburger injection
  *
  * RULES:
  * - UI ONLY
@@ -33,6 +32,14 @@
         const logoutBtn    = qs(".header-desktop .auth-user-logout");
 
         if (!userBox || !dropdown || !userToggle) return;
+
+        /* Force dropdown overlay (no CSS changes) */
+        userBox.style.position = "relative";
+        dropdown.style.position = "absolute";
+        dropdown.style.top = "100%";
+        dropdown.style.right = "0";
+        dropdown.style.zIndex = "9999";
+        dropdown.style.display = "none";
 
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
@@ -71,13 +78,10 @@
        MOBILE UI (HAMBURGER PANEL)
     ============================ */
     function applyMobile(state) {
-        const panel    = qs(".mobile-menu-panel");
-        if (!panel) return;
-
-        const guestBox = qs(".mobile-auth-guest", panel);
-        const userBox  = qs(".mobile-auth-user", panel);
-        const userName = qs(".mobile-auth-user .username", panel);
-        const logout   = qs(".mobile-auth-user .logout", panel);
+        const guestBox = qs(".mobile-menu-panel .mobile-auth-guest");
+        const userBox  = qs(".mobile-menu-panel .mobile-auth-user");
+        const userName = qs(".mobile-menu-panel .mobile-auth-user .username");
+        const logout   = qs(".mobile-menu-panel .mobile-auth-user .logout");
 
         if (!guestBox || !userBox) return;
 
@@ -102,30 +106,11 @@
     }
 
     /* ============================
-       SAFE APPLY (WITH RETRY)
+       APPLY STATE
     ============================ */
     function apply(state) {
         applyDesktop(state);
         applyMobile(state);
-    }
-
-    function applyWithRetry() {
-        if (!window.BEAuth?.getState) return;
-
-        const state = window.BEAuth.getState();
-
-        // immediate
-        apply(state);
-
-        // next frame
-        requestAnimationFrame(() => {
-            apply(state);
-
-            // safety frame (mobile panel open)
-            setTimeout(() => {
-                apply(state);
-            }, 0);
-        });
     }
 
     /* ============================
@@ -133,18 +118,20 @@
     ============================ */
 
     // Auth state changed
-    document.addEventListener("auth:changed", () => {
-        applyWithRetry();
+    document.addEventListener("auth:changed", (e) => {
+        apply(e.detail);
     });
 
-    // Header injected after auth
+    // CRITICAL FIX: header injected AFTER auth
     document.addEventListener("headerLoaded", () => {
-        applyWithRetry();
+        if (window.BEAuth?.getState) {
+            apply(window.BEAuth.getState());
+        }
     });
 
-    // Initial hydrate
+    // Initial hydrate (in case everything already exists)
     if (window.BEAuth?.getState) {
-        applyWithRetry();
+        apply(window.BEAuth.getState());
     }
 
 })();
