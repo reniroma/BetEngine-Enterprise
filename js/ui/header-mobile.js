@@ -189,6 +189,13 @@
         });
 
         /* ==================================================
+           AUTH
+           IMPORTANT:
+           - Auth triggers are handled by header-auth.js
+           - This avoids double-binding regressions
+        ================================================== */
+
+        /* ==================================================
            PREMIUM FOCUS MODE (TOGGLE FIXED)
         ================================================== */
         const premiumLink = qs('.menu-link[data-section="premium"]', panel);
