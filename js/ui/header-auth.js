@@ -1,16 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.1)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.0)
  * Single source of truth for Login / Register / Forgot
  *
- * RESPONSIBILITY:
- * - Open / close Login modal
- * - Open / close Register modal
- * - Handle Forgot Password UI
- *
- * DOES NOT:
- * - React to auth:changed
- * - Hide / show login-register
- * - Touch header UI state
+ * ENTERPRISE FIX:
+ * - Event delegation for Forgot Password
+ * - Works with dynamically injected header + modals
+ * - ZERO HTML / CSS assumptions
  *********************************************************/
 
 /* =======================
@@ -67,12 +62,12 @@ function initAuth() {
 
     /* Mobile menu buttons */
     on(qs(".menu-auth-login"), "click", (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         openLogin();
     });
 
     on(qs(".menu-auth-register"), "click", (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         openRegister();
     });
 
@@ -105,7 +100,7 @@ function initAuth() {
 }
 
 /* ======================================================
-   FORGOT PASSWORD (EVENT DELEGATION)
+   ENTERPRISE FIX — FORGOT PASSWORD (EVENT DELEGATION)
 ====================================================== */
 document.addEventListener("click", (e) => {
     const forgotBtn = e.target.closest(".auth-forgot-link, .auth-forgot");
@@ -129,3 +124,29 @@ document.addEventListener("headerLoaded", initAuth);
 if (window.__BE_HEADER_READY__ === true) {
     initAuth();
 }
+
+/* ======================================================
+   AUTH UI STATE BINDING (HEADER)
+   PATCH IMPLEMENTED – DO NOT MODIFY
+====================================================== */
+function applyAuthState(state) {
+    const loginBtns = document.querySelectorAll(
+        ".btn-auth.login, .menu-auth-login"
+    );
+    const registerBtns = document.querySelectorAll(
+        ".btn-auth.register, .menu-auth-register"
+    );
+
+    loginBtns.forEach(el => {
+        el.style.display = state.authenticated ? "none" : "";
+    });
+
+    registerBtns.forEach(el => {
+        el.style.display = state.authenticated ? "none" : "";
+    });
+}
+
+// React to auth state changes
+document.addEventListener("auth:changed", (e) => {
+    applyAuthState(e.detail);
+});
