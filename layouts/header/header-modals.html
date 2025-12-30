@@ -81,43 +81,39 @@
         </div>
     </div>
 
+    
     <!-- ============================
          HAMBURGER OVERLAY
     ============================ -->
     <div class="mobile-menu-overlay"></div>
-
-    <!-- ============================
-         HAMBURGER PANEL
+        
+        
+       <!-- ============================
+         HAMBURGER PANEL (SINGLE SOURCE OF TRUTH)
     ============================ -->
     <div class="mobile-menu-panel">
 
-        <button class="mobile-menu-close" type="button" aria-label="Close menu">
+        <button class="mobile-menu-close" type="button">
             <img src="assets/icons/close.svg" alt="">
         </button>
 
         <div class="menu-brand">
             <img src="assets/logos/logo.svg" class="logo" alt="">
-            <div class="brand-text">
-                <span class="name">Smart betting</span>
-            </div>
+            <span class="name">Smart betting</span>
         </div>
 
         <!-- ============================
-             ACCOUNT
+             AUTH (MOBILE)
         ============================ -->
-        <div class="menu-section account">
-             <h4>Account</h4>
-            <button class="menu-item menu-auth-register" type="button">Register</button>
-            <button class="menu-item menu-auth-login" type="button">Login</button>
-        </div>
+        <div class="mobile-auth">
 
-            <!-- LOGGED OUT (SINGLE SOURCE) -->
+            <!-- GUEST -->
             <div class="mobile-auth-guest">
-                <button class="menu-item menu-auth-register" type="button">Register</button>
-                <button class="menu-item menu-auth-login" type="button">Login</button>
+                <button class="btn-auth register" type="button">REGISTER</button>
+                <button class="btn-auth login" type="button">LOGIN</button>
             </div>
 
-            <!-- LOGGED IN -->
+            <!-- USER -->
             <div class="mobile-auth-user" hidden>
                 <div class="mobile-user-header">
                     <span class="username"></span>
@@ -132,9 +128,18 @@
                     <a href="#" class="logout">LOGOUT</a>
                 </nav>
             </div>
+
+        </div>
+        <!-- ============================
+             ACCOUNT
+        ============================ -->
+        <div class="menu-section account">
+            <h4>Account</h4>
+            <button class="menu-item menu-auth-register" type="button">Register</button>
+            <button class="menu-item menu-auth-login" type="button">Login</button>
         </div>
 
-        <!-- ============================
+     <!-- ============================
              NAVIGATION
         ============================ -->
         <div class="menu-section navigation">
@@ -226,26 +231,25 @@
 
         </div>
 
-        <!-- ============================
-             PREFERENCES
-        ============================ -->
-        <div class="menu-section preferences">
+                <!-- ============================
+                     PREFERENCES
+                ============================ -->
+                <div class="menu-section preferences">
 
-            <h4>Preferences</h4>
+                <h4>Preferences</h4>
 
-            <button class="menu-item menu-odds" type="button">
-                <span class="label">Odds format:</span>
-                <span class="value">Decimal Odds</span>
-            </button>
+                <button class="menu-item menu-odds" type="button">
+                     <span class="label">Odds format:</span>
+                     <span class="value">Decimal Odds</span>
+                </button>
 
-            <button class="menu-item menu-lang" type="button">
-                <span class="label">Language:</span>
-                <span class="value">English</span>
-            </button>
-
-        </div>
-
-    </div>
+                <button class="menu-item menu-lang" type="button">
+                    <span class="label">Language:</span>
+                     <span class="value">English</span>
+                </button>
+                     
+           </div>
+      </div>
 </div>
 
 <!-- ============================
@@ -291,6 +295,7 @@
 
     </div>
 </div>
+
 
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)
