@@ -300,6 +300,19 @@
         color: #fff;
         border: 1px solid rgba(255,255,255,0.25);
     }
+
+    /* =========================================
+   ACCOUNT – AUTH WRAPPERS FIX
+   Make guest buttons participate in grid
+========================================= */
+.menu-section.account .mobile-auth-guest {
+    display: contents;
+}
+
+/* Logged-in container stays isolated */
+.menu-section.account .mobile-auth-user-container {
+    grid-column: 1 / -1;
+}
     /* ==================================================
        PREFERENCES
     ================================================== */
