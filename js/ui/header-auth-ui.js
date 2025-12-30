@@ -3,9 +3,8 @@
  * Desktop + Mobile auth rendering layer
  *
  * FIX:
- * - Force dropdown to be absolute (no CSS change)
- * - Prevent Row 1 vertical expansion
- * - Deterministic toggle
+ * - Desktop dropdown absolute (no CSS change)
+ * - Mobile auth bound ONLY to hamburger panel (header-modals)
  *
  * RULES:
  * - UI ONLY
@@ -34,13 +33,12 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
-        /* --- FORCE LAYOUT (CRITICAL FIX) --- */
+        /* --- FORCE LAYOUT (DESKTOP ONLY) --- */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
         dropdown.style.top = "100%";
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
-        dropdown.style.display = "none";
         dropdown.style.setProperty("display", "none", "important");
 
         if (state.authenticated) {
@@ -56,17 +54,17 @@
             loginBtns.forEach(b => b.style.display = "");
             registerBtns.forEach(b => b.style.display = "");
             userBox.hidden = true;
-            dropdown.style.display = "none";
+            dropdown.style.setProperty("display", "none", "important");
             return;
         }
 
         /* --- TOGGLE DROPDOWN --- */
         userToggle.onclick = (e) => {
             e.stopPropagation();
-            const isOpen = dropdown.style.display === "block";
+            const open = dropdown.style.display === "block";
             dropdown.style.setProperty(
                 "display",
-                isOpen ? "none" : "block",
+                open ? "none" : "block",
                 "important"
             );
         };
@@ -85,13 +83,16 @@
     }
 
     /* ============================
-       MOBILE UI
+       MOBILE UI (HAMBURGER ONLY)
     ============================ */
     function applyMobile(state) {
-        const guestBox = qs(".header-mobile .mobile-auth-guest");
-        const userBox  = qs(".header-mobile .mobile-auth-user");
-        const userName = qs(".header-mobile .mobile-auth-user .username");
-        const logout   = qs(".header-mobile .mobile-auth-user .logout");
+        const panel    = qs(".mobile-menu-panel");
+        if (!panel) return;
+
+        const guestBox = qs(".mobile-auth-guest", panel);
+        const userBox  = qs(".mobile-auth-user", panel);
+        const userName = qs(".mobile-auth-user .username", panel);
+        const logout   = qs(".mobile-auth-user .logout", panel);
 
         if (!guestBox || !userBox) return;
 
