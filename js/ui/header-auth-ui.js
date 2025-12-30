@@ -20,6 +20,38 @@
     const qa = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
     /* ============================
+       INTERNAL STATE (SAFE)
+    ============================ */
+    let currentDropdown = null;
+    let documentClickBound = false;
+
+    const toggleHandlers = new WeakMap();
+
+    function bindDocumentClickOnce() {
+        if (documentClickBound) return;
+        documentClickBound = true;
+
+        document.addEventListener("click", () => {
+            if (currentDropdown) currentDropdown.style.display = "none";
+        });
+    }
+
+    function bindToggle(userToggle, dropdown) {
+        if (!userToggle || !dropdown) return;
+
+        const prev = toggleHandlers.get(userToggle);
+        if (prev) userToggle.removeEventListener("click", prev);
+
+        const handler = (e) => {
+            e.stopPropagation();
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        };
+
+        userToggle.addEventListener("click", handler);
+        toggleHandlers.set(userToggle, handler);
+    }
+
+    /* ============================
        DESKTOP UI
     ============================ */
     function applyDesktop(state) {
@@ -33,6 +65,8 @@
 
         if (!userBox || !dropdown || !userToggle) return;
 
+        bindDocumentClickOnce();
+
         /* Force dropdown overlay (NO CSS changes) */
         userBox.style.position = "relative";
         dropdown.style.position = "absolute";
@@ -40,6 +74,8 @@
         dropdown.style.right = "0";
         dropdown.style.zIndex = "9999";
         dropdown.style.display = "none";
+
+        currentDropdown = dropdown;
 
         if (state.authenticated) {
             loginBtns.forEach(b => b.style.display = "none");
@@ -58,16 +94,7 @@
         }
 
         /* Toggle dropdown */
-        userToggle.onclick = (e) => {
-            e.stopPropagation();
-            dropdown.style.display =
-                dropdown.style.display === "block" ? "none" : "block";
-        };
-
-        /* Click outside closes dropdown */
-        document.addEventListener("click", () => {
-            dropdown.style.display = "none";
-        });
+        bindToggle(userToggle, dropdown);
 
         /* Logout */
         if (logoutBtn) {
