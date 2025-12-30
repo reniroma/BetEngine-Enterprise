@@ -81,38 +81,34 @@
         </div>
     </div>
 
-    
     <!-- ============================
          HAMBURGER OVERLAY
     ============================ -->
     <div class="mobile-menu-overlay"></div>
-        
-        
-       <!-- ============================
-         HAMBURGER PANEL (SINGLE SOURCE OF TRUTH)
+
+    <!-- ============================
+         HAMBURGER PANEL
     ============================ -->
     <div class="mobile-menu-panel">
 
-        <button class="mobile-menu-close" type="button">
+        <button class="mobile-menu-close" type="button" aria-label="Close menu">
             <img src="assets/icons/close.svg" alt="">
         </button>
 
         <div class="menu-brand">
             <img src="assets/logos/logo.svg" class="logo" alt="">
-            <span class="name">Smart betting</span>
+            <div class="brand-text">
+                <span class="name">Smart betting</span>
+            </div>
         </div>
 
-       
         <!-- ============================
              ACCOUNT
         ============================ -->
         <div class="menu-section account">
             <h4>Account</h4>
-            <button class="menu-item menu-auth-register" type="button">Register</button>
-            <button class="menu-item menu-auth-login" type="button">Login</button>
-        </div>
 
-     <!-- LOGGED OUT -->
+            <!-- LOGGED OUT (SINGLE SOURCE) -->
             <div class="mobile-auth-guest">
                 <button class="menu-item menu-auth-register" type="button">Register</button>
                 <button class="menu-item menu-auth-login" type="button">Login</button>
@@ -120,24 +116,22 @@
 
             <!-- LOGGED IN -->
             <div class="mobile-auth-user" hidden>
-
-                <button class="menu-item user-toggle" type="button">
+                <div class="mobile-user-header">
                     <span class="username"></span>
-                </button>
-
-                <div class="user-dropdown" hidden>
-                    <button class="submenu-item" type="button">Profile</button>
-                    <button class="submenu-item" type="button">My Predictions</button>
-                    <button class="submenu-item" type="button">Settings</button>
-                    <button class="submenu-item" type="button">My Statistics</button>
-                    <button class="submenu-item" type="button">My Coupons</button>
-                    <button class="submenu-item logout" type="button">Logout</button>
+                    <span class="roi">ROI +20.7%</span>
                 </div>
-
+                <nav class="mobile-user-nav">
+                    <a href="#">PROFILE</a>
+                    <a href="#">MY PREDICTIONS</a>
+                    <a href="#">SETTINGS</a>
+                    <a href="#">MY STATISTICS</a>
+                    <a href="#">MY COUPONS</a>
+                    <a href="#" class="logout">LOGOUT</a>
+                </nav>
             </div>
         </div>
 
-     <!-- ============================
+        <!-- ============================
              NAVIGATION
         ============================ -->
         <div class="menu-section navigation">
@@ -229,25 +223,26 @@
 
         </div>
 
-                <!-- ============================
-                     PREFERENCES
-                ============================ -->
-                <div class="menu-section preferences">
+        <!-- ============================
+             PREFERENCES
+        ============================ -->
+        <div class="menu-section preferences">
 
-                <h4>Preferences</h4>
+            <h4>Preferences</h4>
 
-                <button class="menu-item menu-odds" type="button">
-                     <span class="label">Odds format:</span>
-                     <span class="value">Decimal Odds</span>
-                </button>
+            <button class="menu-item menu-odds" type="button">
+                <span class="label">Odds format:</span>
+                <span class="value">Decimal Odds</span>
+            </button>
 
-                <button class="menu-item menu-lang" type="button">
-                    <span class="label">Language:</span>
-                     <span class="value">English</span>
-                </button>
-                     
-           </div>
-      </div>
+            <button class="menu-item menu-lang" type="button">
+                <span class="label">Language:</span>
+                <span class="value">English</span>
+            </button>
+
+        </div>
+
+    </div>
 </div>
 
 <!-- ============================
@@ -293,7 +288,6 @@
 
     </div>
 </div>
-
 
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)
