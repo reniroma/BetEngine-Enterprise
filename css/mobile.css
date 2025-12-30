@@ -301,6 +301,44 @@
         border: 1px solid rgba(255,255,255,0.25);
     }
 
+    /* ==================================================
+       PATCH: MOBILE ACCOUNT ALIGN WITH NAV SUBMENU
+       Goal:
+       - Logged-in account items align visually with navigation submenu items
+       - Do not affect Login/Register button styling
+    ================================================== */
+
+    /* Reset possible list indentation inside account */
+    .mobile-menu-panel .menu-section.account ul,
+    .mobile-menu-panel .menu-section.account ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mobile-menu-panel .menu-section.account li {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Logged-in account items: same rhythm as .submenu-item */
+    .mobile-menu-panel .menu-section.account a:not(.menu-auth-login):not(.menu-auth-register),
+    .mobile-menu-panel .menu-section.account button:not(.menu-auth-login):not(.menu-auth-register),
+    .mobile-menu-panel .menu-section.account .menu-item:not(.menu-auth-login):not(.menu-auth-register) {
+        grid-column: 1 / -1;                 /* escape 2-col grid */
+        display: block;
+        width: 100%;
+        padding: 8px 0 8px 12px;             /* matches submenu indent */
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: none;
+        border: none;
+        text-align: left;
+    }
+
   
     /* ==================================================
        PREFERENCES
