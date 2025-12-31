@@ -232,8 +232,9 @@
     .row-main {
         grid-template-columns: 180px 1fr auto;
     }
-    .main-nav { gap: 14px; }
-}
+    .main-nav {  
+        gap: 14px;
+    }
 
 /* =======================================================
    FIX: Language dropdown width = trigger width (clean ASCII)
