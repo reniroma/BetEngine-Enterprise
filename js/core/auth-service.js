@@ -74,6 +74,41 @@
     };
   };
 
+  /* =========================
+     GitHub Pages persistence (safe)
+  ========================= */
+  const STORAGE_KEY = "BE_AUTH_STATE";
+
+  const isGitHubPagesHost = () => /(^|\.)github\.io$/i.test(location.hostname);
+
+  const loadPersisted = () => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const data = JSON.parse(raw);
+      return data && typeof data === "object" ? data : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const persistCurrent = () => {
+    if (!isGitHubPagesHost()) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
+    } catch {
+      // ignore
+    }
+  };
+
+  const clearPersisted = () => {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+  };
+
  /* =========================
      Public API
   ========================= */
@@ -83,7 +118,20 @@ async function hydrate() {
   const isGitHubPages = /(^|\.)github\.io$/i.test(location.hostname);
 
   if (isGitHubPages) {
-    state = { ...defaultState };
+    const persisted = loadPersisted();
+
+    if (persisted && persisted.authenticated && persisted.user) {
+      state = {
+        ...defaultState,
+        authenticated: true,
+        user: normalizeUser(persisted.user) || { username: "user" },
+        role: typeof persisted.role === "string" && persisted.role ? persisted.role : "user",
+        premium: !!persisted.premium
+      };
+    } else {
+      state = { ...defaultState };
+    }
+
     emit();
     return getState();
   }
@@ -130,6 +178,7 @@ async function hydrate() {
       role: typeof payload.role === "string" && payload.role ? payload.role : "user",
       premium: !!payload.premium
     };
+    persistCurrent();
     emit();
     return getState();
   }
@@ -151,6 +200,7 @@ async function hydrate() {
     }
 
     state = { ...defaultState };
+    clearPersisted();
     emit();
     return getState();
   }
