@@ -1,155 +1,230 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE (API HYDRATE)
- * Single source of truth for auth state
- * Persistence: localStorage
- * Hydrate: GET /api/auth/me (cookie-based)
- * Emits: auth:changed
+ * BetEngine Enterprise – AUTH API CLIENT (FINAL v1.0)
+ * Cookie-based session (HttpOnly) – Same-Origin
+ *
+ * Base URL:
+ *   Frontend: https://www.quantumoddsportal.com
+ *   API:      https://www.quantumoddsportal.com/api
+ *
+ * NOTES:
+ * - Uses fetch with credentials: "include" so cookies work.
+ * - No CORS required (same-origin).
+ * - Provides a normalized error shape for UI/back-end parity.
  *********************************************************/
 (() => {
   "use strict";
 
-  const STORAGE_KEY = "BE_AUTH_STATE";
-  const ME_ENDPOINT = "/api/auth/me";
+  const BASE = "/api";
+  const DEFAULT_TIMEOUT_MS = 12000;
 
-  const defaultState = {
-    authenticated: false,
-    user: null,
-    role: "user",
-    premium: false
+  class BEApiError extends Error {
+    constructor(payload) {
+      super(payload?.message || "Request failed");
+      this.name = "BEApiError";
+      this.status = payload?.status ?? 0;
+      this.code = payload?.code || "REQUEST_FAILED";
+      this.details = payload?.details ?? null;
+      this.requestId = payload?.requestId ?? null;
+      this.path = payload?.path ?? null;
+      this.method = payload?.method ?? null;
+      this.timestamp = payload?.timestamp ?? new Date().toISOString();
+    }
+  }
+
+  const getCookie = (name) => {
+    try {
+      const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+      return m ? decodeURIComponent(m[1]) : "";
+    } catch {
+      return "";
+    }
   };
 
-  /* ==================================================
-     USER NORMALIZATION (GLOBAL INVARIANT)
-     authenticated === true => user.username MUST exist
-  ================================================== */
-  function normalizeUser(user) {
-    if (!user || typeof user !== "object") return { username: "testuser" };
-    if (!user.username) return { ...user, username: "testuser" };
-    return user;
-  }
+  const buildHeaders = (extra = {}) => {
+    const headers = {
+      Accept: "application/json",
+      ...extra
+    };
 
-  function normalizeState(next) {
-    const s = next && typeof next === "object" ? next : { ...defaultState };
-    if (s.authenticated === true) {
-      return { ...s, user: normalizeUser(s.user) };
+    // Optional CSRF pattern (backend may implement later)
+    // If backend sets XSRF-TOKEN cookie, we echo it back.
+    const xsrf = getCookie("XSRF-TOKEN");
+    if (xsrf && !headers["X-CSRF-Token"]) headers["X-CSRF-Token"] = xsrf;
+
+    // Helpful for backend logs / WAF rules
+    if (!headers["X-Requested-With"]) headers["X-Requested-With"] = "XMLHttpRequest";
+
+    return headers;
+  };
+
+  const safeJson = async (res) => {
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (ct.includes("application/json")) {
+      try {
+        return await res.json();
+      } catch {
+        return null;
+      }
     }
-    return { ...defaultState, ...s, authenticated: false, user: null };
-  }
-
-  function safeJsonParse(raw) {
     try {
-      return JSON.parse(raw);
+      const text = await res.text();
+      return text ? { message: text } : null;
     } catch {
       return null;
     }
-  }
-
-  function load() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? safeJsonParse(raw) : null;
-      const merged = parsed ? { ...defaultState, ...parsed } : { ...defaultState };
-      return normalizeState(merged);
-    } catch {
-      return { ...defaultState };
-    }
-  }
-
-  let state = load();
-
-  function persist() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch {
-      /* noop */
-    }
-  }
-
-  function emit() {
-    state = normalizeState(state);
-    document.dispatchEvent(new CustomEvent("auth:changed", { detail: { ...state } }));
-  }
-
-  function setAuth(payload = {}) {
-    const next = normalizeState({
-      ...state,
-      ...payload,
-      authenticated: true
-    });
-
-    state = next;
-    persist();
-    emit();
-  }
-
-  function clearAuth() {
-    state = { ...defaultState };
-    persist();
-    emit();
-  }
-
-  function getState() {
-    return normalizeState({ ...state });
-  }
-
-  /* ==================================================
-     API HYDRATE (COOKIE-BASED)
-     - If /api/auth/me exists:
-       - 200 => setAuth(payload from server)
-       - 401/403 => clearAuth()
-     - If 404 or network error => keep local state (dev/static)
-  ================================================== */
-  async function hydrateFromAPI() {
-    try {
-      const res = await fetch(ME_ENDPOINT, {
-        method: "GET",
-        credentials: "include",
-        headers: { Accept: "application/json" }
-      });
-
-      if (res.status === 404) return; // API not mounted (static hosting)
-      if (res.status === 401 || res.status === 403) {
-        clearAuth();
-        return;
-      }
-      if (!res.ok) return;
-
-      const json = await res.json().catch(() => null);
-      if (!json) return;
-
-      // Supports either:
-      // A) { ok:true, data:{ authenticated:true, user, role, premium } }
-      // B) { authenticated:true, user, role, premium }
-      const payload = json.ok === true ? json.data : json;
-
-      if (payload && payload.authenticated === true) {
-        setAuth({
-          user: payload.user || null,
-          role: payload.role || "user",
-          premium: !!payload.premium
-        });
-        return;
-      }
-
-      // If server explicitly says not authenticated
-      if (payload && payload.authenticated === false) {
-        clearAuth();
-      }
-    } catch {
-      // Network error / offline => keep local state
-    }
-  }
-
-  // Public API
-  window.BEAuth = {
-    setAuth,
-    clearAuth,
-    getState
   };
 
-  // Initial hydrate from local storage (immediate UI sync)
-  emit();
+  const normalizeError = async ({ res, path, method, fallbackCode }) => {
+    const body = await safeJson(res);
 
-  // Then hydrate from server (cookie session), if available
-  hydrateFromAPI();
+    const payload = {
+      status: res?.status ?? 0,
+      code: body?.error?.code || body?.code || fallbackCode || "REQUEST_FAILED",
+      message:
+        body?.error?.message ||
+        body?.message ||
+        `HTTP ${res?.status ?? 0} ${res?.statusText || ""}`.trim(),
+      details: body?.error?.details || body?.details || null,
+      requestId: body?.error?.requestId || body?.requestId || res?.headers?.get("x-request-id") || null,
+      path,
+      method,
+      timestamp: body?.error?.timestamp || body?.timestamp || new Date().toISOString()
+    };
+
+    return new BEApiError(payload);
+  };
+
+  const request = async (path, options = {}) => {
+    const url = `${BASE}${path}`;
+    const method = (options.method || "GET").toUpperCase();
+
+    const controller = new AbortController();
+    const timeoutMs = Number.isFinite(options.timeoutMs) ? options.timeoutMs : DEFAULT_TIMEOUT_MS;
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+
+    const init = {
+      method,
+      credentials: "include",
+      cache: "no-store",
+      signal: controller.signal,
+      ...options,
+      headers: buildHeaders(options.headers || {})
+    };
+
+    try {
+      const res = await fetch(url, init);
+
+      // Success
+      if (res.ok) {
+        // 204 No Content
+        if (res.status === 204) return { ok: true, status: res.status, data: null };
+        const data = await safeJson(res);
+        return { ok: true, status: res.status, data };
+      }
+
+      // Error
+      throw await normalizeError({ res, path, method, fallbackCode: "HTTP_ERROR" });
+    } catch (err) {
+      // Network / timeout errors
+      if (err?.name === "AbortError") {
+        throw new BEApiError({
+          status: 0,
+          code: "TIMEOUT",
+          message: "Request timed out",
+          details: { timeoutMs },
+          path,
+          method
+        });
+      }
+
+      if (err instanceof BEApiError) throw err;
+
+      throw new BEApiError({
+        status: 0,
+        code: "NETWORK_ERROR",
+        message: err?.message || "Network error",
+        details: null,
+        path,
+        method
+      });
+    } finally {
+      clearTimeout(t);
+    }
+  };
+
+  /* ==================================================
+     AUTH ENDPOINTS (Cookie Session)
+  ================================================== */
+
+  // GET /api/auth/me
+  const me = async () => {
+    const r = await request("/auth/me", { method: "GET" });
+    return r.data;
+  };
+
+  // POST /api/auth/login
+  // body: { email, password }
+  const login = async ({ email, password } = {}) => {
+    const r = await request("/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    return r.data;
+  };
+
+  // POST /api/auth/register
+  // body: { username, email, password }
+  const register = async ({ username, email, password } = {}) => {
+    const r = await request("/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, email, password })
+    });
+    return r.data;
+  };
+
+  // POST /api/auth/logout
+  const logout = async () => {
+    const r = await request("/auth/logout", { method: "POST" });
+    return r.data;
+  };
+
+  // POST /api/auth/forgot-password
+  // body: { email }
+  const forgotPassword = async ({ email } = {}) => {
+    const r = await request("/auth/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+    return r.data;
+  };
+
+  // POST /api/auth/reset-password
+  // body: { token, newPassword }
+  const resetPassword = async ({ token, newPassword } = {}) => {
+    const r = await request("/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, newPassword })
+    });
+    return r.data;
+  };
+
+  /* ==================================================
+     PUBLIC API (Stable Namespace)
+  ================================================== */
+  window.BEAuthAPI = Object.freeze({
+    request,
+    me,
+    login,
+    register,
+    logout,
+    forgotPassword,
+    resetPassword,
+    BEApiError
+  });
+
+  console.log("auth-api.js v1.0 READY");
 })();
