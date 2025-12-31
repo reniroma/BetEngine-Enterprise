@@ -1,230 +1,167 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API CLIENT (FINAL v1.0)
- * Cookie-based session (HttpOnly) – Same-Origin
+ * BetEngine Enterprise – AUTH SERVICE (COOKIE SESSION)
+ * Single source of truth for auth state (frontend)
  *
- * Base URL:
- *   Frontend: https://www.quantumoddsportal.com
- *   API:      https://www.quantumoddsportal.com/api
+ * Session: HttpOnly cookie (server-side)
+ * Hydrate: GET /api/auth/me (same-origin)
+ * Emits: auth:changed (CustomEvent)
  *
- * NOTES:
- * - Uses fetch with credentials: "include" so cookies work.
- * - No CORS required (same-origin).
- * - Provides a normalized error shape for UI/back-end parity.
+ * IMPORTANT:
+ * - No localStorage persistence (cookie is the source of truth)
+ * - Safe on GitHub Pages: /api may 404 until backend exists
  *********************************************************/
 (() => {
   "use strict";
 
-  const BASE = "/api";
-  const DEFAULT_TIMEOUT_MS = 12000;
+  const API_BASE = "/api";
 
-  class BEApiError extends Error {
-    constructor(payload) {
-      super(payload?.message || "Request failed");
-      this.name = "BEApiError";
-      this.status = payload?.status ?? 0;
-      this.code = payload?.code || "REQUEST_FAILED";
-      this.details = payload?.details ?? null;
-      this.requestId = payload?.requestId ?? null;
-      this.path = payload?.path ?? null;
-      this.method = payload?.method ?? null;
-      this.timestamp = payload?.timestamp ?? new Date().toISOString();
-    }
-  }
-
-  const getCookie = (name) => {
-    try {
-      const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-      return m ? decodeURIComponent(m[1]) : "";
-    } catch {
-      return "";
-    }
+  const defaultState = {
+    authenticated: false,
+    user: null,
+    role: "user",
+    premium: false
   };
 
-  const buildHeaders = (extra = {}) => {
-    const headers = {
-      Accept: "application/json",
-      ...extra
-    };
+  let state = { ...defaultState };
 
-    // Optional CSRF pattern (backend may implement later)
-    // If backend sets XSRF-TOKEN cookie, we echo it back.
-    const xsrf = getCookie("XSRF-TOKEN");
-    if (xsrf && !headers["X-CSRF-Token"]) headers["X-CSRF-Token"] = xsrf;
+  /* =========================
+     Helpers
+  ========================= */
+  const normalizeUser = (user) => {
+    if (!user || typeof user !== "object") return null;
 
-    // Helpful for backend logs / WAF rules
-    if (!headers["X-Requested-With"]) headers["X-Requested-With"] = "XMLHttpRequest";
+    // Ensure username exists for UI (fallback is safe)
+    const username =
+      typeof user.username === "string" && user.username.trim()
+        ? user.username.trim()
+        : (typeof user.email === "string" && user.email.includes("@")
+            ? user.email.split("@")[0]
+            : "user");
 
-    return headers;
+    return { ...user, username };
+  };
+
+  const emit = () => {
+    document.dispatchEvent(
+      new CustomEvent("auth:changed", { detail: { ...state } })
+    );
   };
 
   const safeJson = async (res) => {
-    const ct = (res.headers.get("content-type") || "").toLowerCase();
-    if (ct.includes("application/json")) {
-      try {
-        return await res.json();
-      } catch {
-        return null;
-      }
-    }
     try {
-      const text = await res.text();
-      return text ? { message: text } : null;
+      return await res.json();
     } catch {
       return null;
     }
   };
 
-  const normalizeError = async ({ res, path, method, fallbackCode }) => {
-    const body = await safeJson(res);
+  const applyFromMePayload = (payload) => {
+    // Accept multiple backend shapes safely:
+    // A) { authenticated, user, role, premium }
+    // B) { user, role, premium }  (implies authenticated if user exists)
+    // C) { data: { user, ... } }  (some wrappers)
+    const p = payload && payload.data ? payload.data : payload;
 
-    const payload = {
-      status: res?.status ?? 0,
-      code: body?.error?.code || body?.code || fallbackCode || "REQUEST_FAILED",
-      message:
-        body?.error?.message ||
-        body?.message ||
-        `HTTP ${res?.status ?? 0} ${res?.statusText || ""}`.trim(),
-      details: body?.error?.details || body?.details || null,
-      requestId: body?.error?.requestId || body?.requestId || res?.headers?.get("x-request-id") || null,
-      path,
-      method,
-      timestamp: body?.error?.timestamp || body?.timestamp || new Date().toISOString()
+    const u = normalizeUser(p && p.user ? p.user : null);
+    const authenticated =
+      typeof p?.authenticated === "boolean" ? p.authenticated : !!u;
+
+    state = {
+      authenticated,
+      user: authenticated ? u : null,
+      role: typeof p?.role === "string" && p.role ? p.role : "user",
+      premium: !!p?.premium
     };
-
-    return new BEApiError(payload);
   };
 
-  const request = async (path, options = {}) => {
-    const url = `${BASE}${path}`;
-    const method = (options.method || "GET").toUpperCase();
+  /* =========================
+     Public API
+  ========================= */
 
-    const controller = new AbortController();
-    const timeoutMs = Number.isFinite(options.timeoutMs) ? options.timeoutMs : DEFAULT_TIMEOUT_MS;
-    const t = setTimeout(() => controller.abort(), timeoutMs);
-
-    const init = {
-      method,
-      credentials: "include",
-      cache: "no-store",
-      signal: controller.signal,
-      ...options,
-      headers: buildHeaders(options.headers || {})
-    };
-
+  async function hydrate() {
+    // Try using the dedicated API client if present
     try {
-      const res = await fetch(url, init);
-
-      // Success
-      if (res.ok) {
-        // 204 No Content
-        if (res.status === 204) return { ok: true, status: res.status, data: null };
-        const data = await safeJson(res);
-        return { ok: true, status: res.status, data };
+      if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
+        const payload = await window.BEAuthApi.me(); // should throw or return JSON
+        applyFromMePayload(payload);
+        emit();
+        return getState();
       }
 
-      // Error
-      throw await normalizeError({ res, path, method, fallbackCode: "HTTP_ERROR" });
-    } catch (err) {
-      // Network / timeout errors
-      if (err?.name === "AbortError") {
-        throw new BEApiError({
-          status: 0,
-          code: "TIMEOUT",
-          message: "Request timed out",
-          details: { timeoutMs },
-          path,
-          method
+      // Fallback direct fetch (same-origin cookie)
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        method: "GET",
+        credentials: "include",
+        headers: { Accept: "application/json" }
+      });
+
+      if (res.status === 200) {
+        const payload = await safeJson(res);
+        applyFromMePayload(payload || {});
+      } else if (res.status === 401 || res.status === 403) {
+        state = { ...defaultState };
+      } else {
+        // 404/500/etc. -> keep safe unauth state
+        state = { ...defaultState };
+      }
+
+      emit();
+      return getState();
+    } catch {
+      state = { ...defaultState };
+      emit();
+      return getState();
+    }
+  }
+
+  // Dev/Mock helper (does NOT set cookies; UI-only)
+  function setAuth(payload = {}) {
+    const user = normalizeUser(payload.user || payload);
+    state = {
+      authenticated: true,
+      user: user || { username: "testuser" },
+      role: typeof payload.role === "string" && payload.role ? payload.role : "user",
+      premium: !!payload.premium
+    };
+    emit();
+    return getState();
+  }
+
+  async function clearAuth() {
+    // Try to logout server-side (cookie)
+    try {
+      if (window.BEAuthApi && typeof window.BEAuthApi.logout === "function") {
+        await window.BEAuthApi.logout();
+      } else {
+        await fetch(`${API_BASE}/auth/logout`, {
+          method: "POST",
+          credentials: "include",
+          headers: { Accept: "application/json" }
         });
       }
-
-      if (err instanceof BEApiError) throw err;
-
-      throw new BEApiError({
-        status: 0,
-        code: "NETWORK_ERROR",
-        message: err?.message || "Network error",
-        details: null,
-        path,
-        method
-      });
-    } finally {
-      clearTimeout(t);
+    } catch {
+      // ignore (client must still reset UI)
     }
+
+    state = { ...defaultState };
+    emit();
+    return getState();
+  }
+
+  function getState() {
+    return { ...state };
+  }
+
+  window.BEAuth = {
+    hydrate,
+    setAuth,     // dev-only helper (kept for auth-mock.js)
+    clearAuth,
+    getState
   };
 
-  /* ==================================================
-     AUTH ENDPOINTS (Cookie Session)
-  ================================================== */
+  // Initial: emit safe default immediately, then hydrate async
+  emit();
+  hydrate();
 
-  // GET /api/auth/me
-  const me = async () => {
-    const r = await request("/auth/me", { method: "GET" });
-    return r.data;
-  };
-
-  // POST /api/auth/login
-  // body: { email, password }
-  const login = async ({ email, password } = {}) => {
-    const r = await request("/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-    return r.data;
-  };
-
-  // POST /api/auth/register
-  // body: { username, email, password }
-  const register = async ({ username, email, password } = {}) => {
-    const r = await request("/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password })
-    });
-    return r.data;
-  };
-
-  // POST /api/auth/logout
-  const logout = async () => {
-    const r = await request("/auth/logout", { method: "POST" });
-    return r.data;
-  };
-
-  // POST /api/auth/forgot-password
-  // body: { email }
-  const forgotPassword = async ({ email } = {}) => {
-    const r = await request("/auth/forgot-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
-    });
-    return r.data;
-  };
-
-  // POST /api/auth/reset-password
-  // body: { token, newPassword }
-  const resetPassword = async ({ token, newPassword } = {}) => {
-    const r = await request("/auth/reset-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, newPassword })
-    });
-    return r.data;
-  };
-
-  /* ==================================================
-     PUBLIC API (Stable Namespace)
-  ================================================== */
-  window.BEAuthAPI = Object.freeze({
-    request,
-    me,
-    login,
-    register,
-    logout,
-    forgotPassword,
-    resetPassword,
-    BEApiError
-  });
-
-  console.log("auth-api.js v1.0 READY");
+  console.log("auth-service.js v2.0 READY");
 })();
