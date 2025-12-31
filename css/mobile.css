@@ -290,7 +290,7 @@
 
     /* REGISTER – filled */
     .mobile-menu-panel .menu-auth-register {
-        background: #f4a11a; /* afër OddsPortal */
+        background: #f4a11a; 
         color: #111;
     }
 
@@ -338,6 +338,26 @@
         border: none;
         text-align: left;
     }
+
+   /* PATCH: ACCOUNT container must stay single-column (prevents conflicts) */
+.mobile-menu-panel .menu-section.account {
+    display: block;
+}
+
+/* PATCH: Guest auth buttons side-by-side (only inside .mobile-auth-guest) */
+.mobile-menu-panel .menu-section.account .mobile-auth-guest {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-register,
+.mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-login {
+    width: 100%;
+    min-width: 0;
+}
+
 
   
     /* ==================================================
