@@ -166,11 +166,6 @@
             });
         }
 
-        // React to auth changes
-        document.addEventListener("auth:changed", (e) => {
-            syncMobileAccountUI(e.detail);
-        });
-
         /* ==================================================
            HAMBURGER STATE (SAFE)
         ================================================== */
@@ -213,6 +208,23 @@
             document.body.style.overflow = "";
             document.body.classList.remove("menu-open");
         };
+
+        /* ==================================================
+           AUTH STATE → UI SYNC (STRICT FIX)
+           - On logout: close hamburger menu
+        ================================================== */
+        document.addEventListener("auth:changed", (e) => {
+            const s = e?.detail || window.BEAuth?.getState?.() || { authenticated: false };
+
+            syncMobileAccountUI(s);
+
+            if (!s.authenticated) {
+                // If menu is open during logout, force close
+                if (document.body.classList.contains("menu-open") || panel.classList.contains("open")) {
+                    closeMenu();
+                }
+            }
+        });
 
         /* ==================================================
            HAMBURGER EVENTS
