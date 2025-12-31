@@ -1,7 +1,9 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE (FINAL FIX)
+ * BetEngine Enterprise – AUTH SERVICE (FINAL v2.0)
  * Single source of truth for auth state
- * Persistence: localStorage
+ *
+ * Storage: localStorage (UI persistence)
+ * Server hydrate: GET /api/auth/me (cookie session)
  * Emits: auth:changed
  *********************************************************/
 (() => {
@@ -17,46 +19,57 @@
   };
 
   /* ==================================================
-     USER NORMALIZATION (GLOBAL INVARIANT)
-     authenticated === true => user.username MUST exist
+     NORMALIZATION
+     Invariant: authenticated === true => user.username exists
   ================================================== */
   function normalizeUser(user) {
     if (!user || typeof user !== "object") {
-      return { username: "testuser" };
+      return { username: "user" };
     }
     if (!user.username) {
-      return { ...user, username: "testuser" };
+      return { ...user, username: "user" };
     }
     return user;
   }
 
-  function normalizeState(state) {
+  function normalizeState(s) {
+    const state = s && typeof s === "object" ? s : {};
     if (state.authenticated === true) {
-      return {
-        ...state,
-        user: normalizeUser(state.user)
-      };
+      return { ...defaultState, ...state, user: normalizeUser(state.user) };
     }
-    return state;
+    return { ...defaultState, ...state, authenticated: false, user: null };
   }
 
-  function load() {
+  function safeLocalStorageGet(key) {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw
-        ? { ...defaultState, ...JSON.parse(raw) }
-        : { ...defaultState };
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
 
-      return normalizeState(parsed);
+  function safeLocalStorageSet(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  }
+
+  function loadFromStorage() {
+    try {
+      const raw = safeLocalStorageGet(STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return normalizeState(parsed || defaultState);
     } catch {
       return { ...defaultState };
     }
   }
 
-  let state = load();
+  let state = loadFromStorage();
 
   function persist() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    safeLocalStorageSet(STORAGE_KEY, JSON.stringify(state));
   }
 
   function emit() {
@@ -87,13 +100,65 @@
     return normalizeState({ ...state });
   }
 
+  /* ==================================================
+     SERVER HYDRATE (COOKIE SESSION)
+     - Attempts /api/auth/me
+     - If 200: overwrite state with server truth
+     - If 401/403: clear auth
+     - If 404/network: keep storage state (dev/Pages safe)
+  ================================================== */
+  async function hydrate() {
+    const url = "/api/auth/me";
+
+    try {
+      const res = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+        headers: { Accept: "application/json" }
+      });
+
+      if (res.status === 200) {
+        const data = await res.json().catch(() => ({}));
+
+        // Accept either:
+        // A) { authenticated, user, role, premium }
+        // B) { user, role, premium } (implies authenticated)
+        const next = {
+          ...defaultState,
+          ...data,
+          authenticated:
+            typeof data.authenticated === "boolean"
+              ? data.authenticated
+              : !!data.user
+        };
+
+        state = normalizeState(next);
+        persist();
+        return;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        state = { ...defaultState };
+        persist();
+        return;
+      }
+
+      // 404 or other: keep current (storage) state
+    } catch {
+      // Network / no backend: keep current (storage) state
+    }
+  }
+
   // Public API
   window.BEAuth = {
     setAuth,
     clearAuth,
-    getState
+    getState,
+    hydrate
   };
 
-  // Initial hydrate
-  emit();
+  // Initial hydrate then emit once (prevents flicker)
+  hydrate().finally(() => {
+    emit();
+  });
 })();
