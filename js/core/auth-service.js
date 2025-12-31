@@ -74,46 +74,53 @@
     };
   };
 
-  /* =========================
+ /* =========================
      Public API
   ========================= */
 
-  async function hydrate() {
-    // Try using the dedicated API client if present
-    try {
-      if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
-        const payload = await window.BEAuthApi.me(); // should throw or return JSON
-        applyFromMePayload(payload);
-        emit();
-        return getState();
-      }
+async function hydrate() {
+  // GitHub Pages is static (no backend). Never call /api there.
+  const isGitHubPages = /(^|\.)github\.io$/i.test(location.hostname);
 
-      // Fallback direct fetch (same-origin cookie)
-      const res = await fetch(`${API_BASE}/auth/me`, {
-        method: "GET",
-        credentials: "include",
-        headers: { Accept: "application/json" }
-      });
+  if (isGitHubPages) {
+    state = { ...defaultState };
+    emit();
+    return getState();
+  }
 
-      if (res.status === 200) {
-        const payload = await safeJson(res);
-        applyFromMePayload(payload || {});
-      } else if (res.status === 401 || res.status === 403) {
-        state = { ...defaultState };
-      } else {
-        // 404/500/etc. -> keep safe unauth state
-        state = { ...defaultState };
-      }
-
-      emit();
-      return getState();
-    } catch {
-      state = { ...defaultState };
+  // Try using the dedicated API client if present
+  try {
+    if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
+      const payload = await window.BEAuthApi.me(); // should throw or return JSON
+      applyFromMePayload(payload);
       emit();
       return getState();
     }
-  }
 
+    // Fallback direct fetch (same-origin cookie)
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" }
+    });
+
+    if (res.status === 200) {
+      const payload = await safeJson(res);
+      applyFromMePayload(payload || {});
+    } else {
+      // 401/403/404/500/etc. -> keep safe unauth state
+      state = { ...defaultState };
+    }
+
+    emit();
+    return getState();
+  } catch {
+    state = { ...defaultState };
+    emit();
+    return getState();
+  }
+}
+  
   // Dev/Mock helper (does NOT set cookies; UI-only)
   function setAuth(payload = {}) {
     const user = normalizeUser(payload.user || payload);
