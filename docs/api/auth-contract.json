@@ -1,218 +1,393 @@
 {
-  "service": "QuantumOddsPortal Auth API",
-  "baseUrl": "https://www.quantumoddsportal.com",
-  "apiBasePath": "/api",
-  "auth": {
-    "transport": "httpOnlyCookies",
+  "contract": {
+    "name": "QuantumOddsPortal Auth API Contract",
+    "version": "1.0.0",
+    "base": {
+      "frontend": "https://www.quantumoddsportal.com",
+      "api": "https://www.quantumoddsportal.com/api",
+      "sameOrigin": true,
+      "cors": "not-required"
+    },
     "cookiePolicy": {
-      "sessionCookie": {
-        "name": "qop_session",
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "Lax",
-        "path": "/",
-        "domain": "quantumoddsportal.com",
-        "maxAgeSeconds": 604800
-      },
-      "refreshCookie": {
-        "name": "qop_refresh",
-        "httpOnly": true,
-        "secure": true,
-        "sameSite": "Lax",
-        "path": "/api/auth",
-        "domain": "quantumoddsportal.com",
-        "maxAgeSeconds": 2592000
-      },
+      "sessionCookieName": "qop_session",
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax",
+      "path": "/",
+      "domain": "quantumoddsportal.com",
+      "maxAgeSeconds": 2592000,
       "notes": [
-        "Frontend and API are same-site: https://www.quantumoddsportal.com and https://www.quantumoddsportal.com/api",
-        "No CORS needed for production setup.",
-        "Cookies must be set by backend using Set-Cookie.",
-        "JS never stores tokens; JS relies on /api/auth/me for hydration."
+        "Cookie must be set by backend only (HttpOnly).",
+        "Frontend uses fetch(credentials: include).",
+        "SameSite=Lax is valid for same-origin / top-level navigation.",
+        "If you later move API to a subdomain, cookie policy must be revisited."
       ]
     },
     "csrf": {
-      "mode": "originCheckOrCsrfToken",
-      "recommended": [
-        "For state-changing requests (POST/PUT/PATCH/DELETE), backend MUST validate Origin/Referer.",
-        "Optionally require X-CSRF-Token with a double-submit cookie if you want stricter CSRF protection."
+      "enabled": "optional",
+      "mechanism": "double-submit-cookie",
+      "cookieName": "XSRF-TOKEN",
+      "headerName": "X-CSRF-Token",
+      "notes": [
+        "If enabled, backend sets XSRF-TOKEN (non-HttpOnly) and expects X-CSRF-Token header.",
+        "Client sends X-CSRF-Token automatically when XSRF-TOKEN cookie exists."
       ]
-    }
-  },
-  "responseEnvelope": {
-    "success": {
-      "ok": true,
-      "data": {},
-      "meta": {
-        "requestId": "string",
-        "timestamp": "ISO-8601"
-      }
     },
-    "error": {
-      "ok": false,
-      "error": {
-        "code": "string",
-        "message": "string",
-        "details": {},
-        "requestId": "string"
+    "errorSchema": {
+      "type": "object",
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "examples": [
+                "VALIDATION_ERROR",
+                "INVALID_CREDENTIALS",
+                "EMAIL_ALREADY_EXISTS",
+                "USERNAME_ALREADY_EXISTS",
+                "UNAUTHORIZED",
+                "FORBIDDEN",
+                "RATE_LIMITED",
+                "INTERNAL_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
       }
     }
   },
   "endpoints": [
     {
+      "name": "Auth Me",
       "method": "GET",
-      "path": "/api/auth/me",
-      "description": "Returns current authenticated user from cookies.",
-      "responses": {
-        "200": {
+      "path": "/auth/me",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "body": null
+      },
+      "responses": [
+        {
+          "status": 200,
           "body": {
-            "ok": true,
-            "data": {
-              "authenticated": true,
-              "user": {
-                "id": "string",
-                "username": "string",
-                "email": "string"
-              },
-              "role": "user",
-              "premium": false
-            }
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
           }
         },
-        "401": {
+        {
+          "status": 401,
           "body": {
-            "ok": true,
-            "data": {
-              "authenticated": false,
-              "user": null,
-              "role": "user",
-              "premium": false
-            }
+            "authenticated": false
           }
         }
-      }
+      ],
+      "notes": [
+        "If session cookie is valid, returns authenticated true.",
+        "If no session or invalid session, return 401 with authenticated false."
+      ]
     },
     {
+      "name": "Login",
       "method": "POST",
-      "path": "/api/auth/login",
-      "description": "Validates credentials, sets cookies, returns user payload.",
+      "path": "/auth/login",
+      "authRequired": false,
       "request": {
-        "contentType": "application/json",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         "body": {
           "email": "string",
           "password": "string"
         }
       },
-      "responses": {
-        "200": {
-          "setCookie": ["qop_session", "qop_refresh (optional)"],
+      "responses": [
+        {
+          "status": 200,
+          "setCookie": "qop_session",
           "body": {
-            "ok": true,
-            "data": {
-              "authenticated": true,
-              "user": { "id": "string", "username": "string", "email": "string" },
-              "role": "user",
-              "premium": false
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "email": "required|email",
+                  "password": "required|minLength"
+                }
+              }
             }
           }
         },
-        "400": {
-          "body": { "ok": false, "error": { "code": "VALIDATION_ERROR", "message": "Invalid input", "details": {} } }
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "INVALID_CREDENTIALS",
+              "message": "Invalid email or password"
+            }
+          }
         },
-        "401": {
-          "body": { "ok": false, "error": { "code": "INVALID_CREDENTIALS", "message": "Email or password incorrect", "details": {} } }
+        {
+          "status": 429,
+          "body": {
+            "error": {
+              "code": "RATE_LIMITED",
+              "message": "Too many attempts"
+            }
+          }
         }
-      }
+      ],
+      "notes": [
+        "Backend must set HttpOnly session cookie on success."
+      ]
     },
     {
+      "name": "Register",
       "method": "POST",
-      "path": "/api/auth/register",
-      "description": "Creates account, sets cookies, returns user payload.",
+      "path": "/auth/register",
+      "authRequired": false,
       "request": {
-        "contentType": "application/json",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         "body": {
           "username": "string",
           "email": "string",
           "password": "string"
         }
       },
-      "responses": {
-        "200": {
-          "setCookie": ["qop_session", "qop_refresh (optional)"],
+      "responses": [
+        {
+          "status": 201,
+          "setCookie": "qop_session",
           "body": {
-            "ok": true,
-            "data": {
-              "authenticated": true,
-              "user": { "id": "string", "username": "string", "email": "string" },
-              "role": "user",
-              "premium": false
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "username": "required|minLength|maxLength",
+                  "email": "required|email",
+                  "password": "required|minLength"
+                }
+              }
             }
           }
         },
-        "409": {
-          "body": { "ok": false, "error": { "code": "USER_EXISTS", "message": "User already exists", "details": {} } }
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/api/auth/logout",
-      "description": "Clears cookies and returns unauthenticated state.",
-      "responses": {
-        "200": {
-          "setCookie": ["qop_session=deleted", "qop_refresh=deleted"],
+        {
+          "status": 409,
           "body": {
-            "ok": true,
-            "data": { "authenticated": false, "user": null, "role": "user", "premium": false }
+            "error": {
+              "code": "EMAIL_ALREADY_EXISTS",
+              "message": "Email already exists"
+            }
+          }
+        },
+        {
+          "status": 409,
+          "body": {
+            "error": {
+              "code": "USERNAME_ALREADY_EXISTS",
+              "message": "Username already exists"
+            }
           }
         }
-      }
+      ],
+      "notes": [
+        "Backend may require email verification later; for this phase return authenticated true and set cookie."
+      ]
     },
     {
+      "name": "Logout",
       "method": "POST",
-      "path": "/api/auth/forgot-password",
-      "description": "Sends reset email (no info leak).",
+      "path": "/auth/logout",
+      "authRequired": true,
       "request": {
-        "contentType": "application/json",
-        "body": { "email": "string" }
-      },
-      "responses": {
-        "200": {
-          "body": { "ok": true, "data": { "accepted": true } }
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/api/auth/reset-password",
-      "description": "Resets password using a one-time token.",
-      "request": {
-        "contentType": "application/json",
-        "body": { "token": "string", "newPassword": "string" }
-      },
-      "responses": {
-        "200": {
-          "body": { "ok": true, "data": { "reset": true } }
+        "headers": {
+          "Accept": "application/json"
         },
-        "400": {
-          "body": { "ok": false, "error": { "code": "TOKEN_INVALID", "message": "Invalid or expired token", "details": {} } }
+        "body": null
+      },
+      "responses": [
+        {
+          "status": 200,
+          "clearCookie": "qop_session",
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "UNAUTHORIZED",
+              "message": "Not logged in"
+            }
+          }
         }
-      }
+      ],
+      "notes": [
+        "Backend should invalidate server session and clear cookie."
+      ]
+    },
+    {
+      "name": "Forgot Password",
+      "method": "POST",
+      "path": "/auth/forgot-password",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "email": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "email": "required|email"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Response must be generic (do not reveal if email exists)."
+      ]
+    },
+    {
+      "name": "Reset Password",
+      "method": "POST",
+      "path": "/auth/reset-password",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "token": "string",
+          "newPassword": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "token": "required",
+                  "newPassword": "required|minLength"
+                }
+              }
+            }
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "UNAUTHORIZED",
+              "message": "Invalid or expired token"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "This endpoint does not log the user in automatically unless backend decides so."
+      ]
     }
   ],
-  "errors": [
-    { "code": "VALIDATION_ERROR", "httpStatus": 400 },
-    { "code": "INVALID_CREDENTIALS", "httpStatus": 401 },
-    { "code": "UNAUTHORIZED", "httpStatus": 401 },
-    { "code": "FORBIDDEN", "httpStatus": 403 },
-    { "code": "NOT_FOUND", "httpStatus": 404 },
-    { "code": "USER_EXISTS", "httpStatus": 409 },
-    { "code": "RATE_LIMITED", "httpStatus": 429 },
-    { "code": "INTERNAL_ERROR", "httpStatus": 500 }
-  ],
-  "implementationNotesForBackend": [
-    "On login/register: set cookies via Set-Cookie; return 200 with auth payload.",
-    "On /auth/me: read cookies, validate session, return authenticated:true or 401 with authenticated:false payload.",
-    "On logout: clear cookies (Max-Age=0) and return authenticated:false payload.",
-    "Use consistent requestId in meta/error for tracing."
-  ]
+  "statusCodes": {
+    "200": "OK",
+    "201": "Created",
+    "204": "No Content",
+    "400": "Validation error",
+    "401": "Unauthenticated",
+    "403": "Forbidden",
+    "404": "Not found",
+    "409": "Conflict (duplicate)",
+    "429": "Rate limited",
+    "500": "Internal error"
+  }
 }
