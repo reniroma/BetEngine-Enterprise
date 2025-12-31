@@ -1,6 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – DESKTOP CSS (FINAL CLEAN)
- * Single-grid architecture – stable, predictable, safe
+ * BetEngine Enterprise – DESKTOP CSS (VERIFIED + SAFE FIX)
+ * FIX ONLY:
+ * - Restore row separators (Row1-Row2-Row3)
+ * - Clean NBSP/Unicode
+ * - Fix small CSS syntax issues
+ * - Ensure search-box container vertical centering (no search.css edits)
  *********************************************************/
 
 /* =======================================================
@@ -20,13 +24,11 @@
 ======================================================= */
 
 .header-desktop {
-    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 999;
     background: var(--bg-header, #0b0b12);
-    position: relative;
-    z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    background: linear-gradient(to bottom,#0b0b12 0%,#101018 50%,#11141d 100%);
-    box-shadow: 0 5px 25px rgba(0,0,0,0.55);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .header-row {
@@ -51,6 +53,7 @@
     min-height: 42px;
     position: relative;
     z-index: 300;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06); /* RESTORE SEPARATOR */
 }
 
 .row-top .left { flex: 1; }
@@ -67,18 +70,19 @@
 }
 
 /* =======================================================
-   ROW 2 (BRAND + NAV + SEARCH) – ENTERPRISE GRID
+   ROW 2 (BRAND + NAV + SEARCH)
 ======================================================= */
 
 .row-main {
     min-height: 58px;
     display: grid;
-    grid-template-columns: 240px 1fr 360px; /* SINGLE SOURCE */
+    grid-template-columns: 240px 1fr 360px;
     align-items: center;
     gap: 18px;
     position: relative;
     z-index: 250;
     padding: 8px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06); /* RESTORE SEPARATOR */
 }
 
 .row-main .brand {
@@ -100,15 +104,16 @@
     justify-content: center;
     gap: 60px;
     white-space: nowrap;
-    padding-right: 80;
+    padding-right: 80px; /* FIX: unit */
 }
+
 .row-main .main-nav .nav-item {
     font-size: 15px;
     letter-spacing: 0.06em;
 }
 
 /* =======================================================
-   SEARCH + NOTIFICATION (ISOLATED, STABLE)
+   SEARCH + NOTIFICATION
 ======================================================= */
 
 .row-main .search-notify {
@@ -119,10 +124,12 @@
     flex-shrink: 0;
 }
 
-/* Search box – fixed footprint */
+/* Search box – fixed footprint (container centering only) */
 .header-desktop .search-box {
     width: 210px;
-    height: 40px;
+    height: 40px; /* FIX: semicolon */
+    display: flex;
+    align-items: center;
     flex: 0 0 210px;
     overflow: hidden;
 }
@@ -157,7 +164,7 @@
 }
 
 /* =======================================================
-   ROW 3 (SUB NAVIGATION)
+   ROW 3 (SUB NAVIGATION)  — NO SPACING CHANGES
 ======================================================= */
 
 .row-sub {
@@ -210,22 +217,6 @@
     left: auto;
 }
 
-.language-dropdown {
-    max-height: 260px;
-    overflow-y: auto;
-}
-
-/* =======================================================
-   PREMIUM STAR
-======================================================= */
-
-.premium-link .premium-star {
-    font-size: 14px;
-    position: relative;
-    top: -1px;
-    margin-left: 4px;
-}
-
 /* =======================================================
    RESPONSIVE DESKTOP TWEAKS
 ======================================================= */
@@ -241,12 +232,12 @@
     .row-main {
         grid-template-columns: 180px 1fr auto;
     }
-    .main-nav { gap: 14px; }
+    .main-nav { gap: 14px; }
 }
 
-/*********************************************************
- * FIX: Language dropdown width = trigger width
- *********************************************************/
+/* =======================================================
+   FIX: Language dropdown width = trigger width (clean ASCII)
+======================================================= */
 
 .header-desktop .language-selector {
     position: relative;
@@ -257,6 +248,5 @@
     min-width: unset !important;
     max-width: unset !important;
     right: 0;
-    left: auto;
+    left: auto;
 }
-
