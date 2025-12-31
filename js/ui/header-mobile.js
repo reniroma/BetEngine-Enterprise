@@ -49,6 +49,129 @@
         initialized = true;
 
         /* ==================================================
+           MOBILE ACCOUNT UI SYNC + USER DROPDOWN (JS ONLY)
+           - Default: user nav closed
+           - Toggle on click "testuser" header row
+           - Sync username + guest/user visibility from BEAuth
+        ================================================== */
+        const accountSection = qs(".menu-section.account", panel);
+        const guestBox = qs(".mobile-auth-guest", accountSection || panel);
+        const userBox = qs(".mobile-auth-user", accountSection || panel);
+        const userHeader = qs(".mobile-user-header", userBox || panel);
+        const userNameEl = qs(".mobile-user-header .username", userBox || panel);
+        const userNav = qs(".mobile-user-nav", userBox || panel);
+
+        let userDropdownOpen = false;
+        let userCaretEl = null;
+
+        const getCaretColor = () => {
+            const anchor = qs(".menu-section.navigation .menu-group[data-group='odds'] > .menu-link", panel)
+                || qs(".menu-section.navigation .menu-link", panel);
+            if (!anchor) return "#f4a11a";
+            const c = getComputedStyle(anchor).color;
+            return c || "#f4a11a";
+        };
+
+        const ensureUserHeaderInlineLayout = () => {
+            if (!userHeader) return;
+
+            userHeader.style.display = "flex";
+            userHeader.style.alignItems = "center";
+            userHeader.style.justifyContent = "space-between";
+            userHeader.style.width = "100%";
+            userHeader.style.cursor = "pointer";
+            userHeader.style.userSelect = "none";
+        };
+
+        const ensureUserCaret = () => {
+            if (!userHeader) return;
+            if (userCaretEl && userCaretEl.isConnected) return;
+
+            userCaretEl = document.createElement("span");
+            userCaretEl.className = "be-user-caret";
+
+            userCaretEl.style.display = "inline-block";
+            userCaretEl.style.marginLeft = "10px";
+            userCaretEl.style.flex = "0 0 auto";
+
+            // Triangle caret (down by default)
+            userCaretEl.style.width = "0";
+            userCaretEl.style.height = "0";
+            userCaretEl.style.borderLeft = "6px solid transparent";
+            userCaretEl.style.borderRight = "6px solid transparent";
+            userCaretEl.style.borderTop = `6px solid ${getCaretColor()}`;
+
+            userHeader.appendChild(userCaretEl);
+        };
+
+        const setUserCaretDirection = (isOpen) => {
+            if (!userCaretEl) return;
+            const color = getCaretColor();
+
+            if (isOpen) {
+                userCaretEl.style.borderTop = "0";
+                userCaretEl.style.borderLeft = "6px solid transparent";
+                userCaretEl.style.borderRight = "6px solid transparent";
+                userCaretEl.style.borderBottom = `6px solid ${color}`;
+            } else {
+                userCaretEl.style.borderBottom = "0";
+                userCaretEl.style.borderLeft = "6px solid transparent";
+                userCaretEl.style.borderRight = "6px solid transparent";
+                userCaretEl.style.borderTop = `6px solid ${color}`;
+            }
+        };
+
+        const closeUserDropdown = () => {
+            userDropdownOpen = false;
+            if (userNav) userNav.style.display = "none";
+            setUserCaretDirection(false);
+        };
+
+        const toggleUserDropdown = () => {
+            userDropdownOpen = !userDropdownOpen;
+            if (userNav) userNav.style.display = userDropdownOpen ? "block" : "none";
+            setUserCaretDirection(userDropdownOpen);
+        };
+
+        const syncMobileAccountUI = (state) => {
+            const s = state || window.BEAuth?.getState?.() || { authenticated: false, user: null };
+
+            if (s.authenticated) {
+                if (guestBox) guestBox.style.display = "none";
+                if (userBox) userBox.hidden = false;
+
+                if (userNameEl) {
+                    const name = s.user && s.user.username ? s.user.username : "";
+                    userNameEl.textContent = name;
+                }
+
+                ensureUserHeaderInlineLayout();
+                ensureUserCaret();
+                closeUserDropdown();
+            } else {
+                if (guestBox) guestBox.style.display = "";
+                if (userBox) userBox.hidden = true;
+                closeUserDropdown();
+            }
+        };
+
+        // Default closed (safe)
+        if (userNav) userNav.style.display = "none";
+
+        // Toggle on header click
+        if (userHeader) {
+            userHeader.addEventListener("click", (e) => {
+                stop(e);
+                toggleUserDropdown();
+            });
+        }
+
+        // React to auth changes
+        document.addEventListener("auth:changed", (e) => {
+            syncMobileAccountUI(e.detail);
+        });
+
+        /* ==================================================
            HAMBURGER STATE (SAFE)
         ================================================== */
         const forceOddsOpen = () => {
@@ -65,6 +188,9 @@
             document.body.style.overflow = "hidden";
             document.body.classList.add("menu-open");
 
+            // Sync account UI on open (prevents stale state)
+            syncMobileAccountUI();
+
             // PATCH (UI SYNC HOOK) — notify auth UI layer that panel is now visible
             document.dispatchEvent(new Event("be:mobileMenuOpened"));
         };
@@ -80,6 +206,9 @@
             });
 
             forceOddsOpen();
+
+            // Close user dropdown when menu closes
+            closeUserDropdown();
 
             document.body.style.overflow = "";
             document.body.classList.remove("menu-open");
