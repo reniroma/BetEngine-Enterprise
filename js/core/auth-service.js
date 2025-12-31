@@ -1,15 +1,15 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH SERVICE (FINAL v2.0)
+ * BetEngine Enterprise – AUTH SERVICE (API HYDRATE)
  * Single source of truth for auth state
- *
- * Storage: localStorage (UI persistence)
- * Server hydrate: GET /api/auth/me (cookie session)
+ * Persistence: localStorage
+ * Hydrate: GET /api/auth/me (cookie-based)
  * Emits: auth:changed
  *********************************************************/
 (() => {
   "use strict";
 
   const STORAGE_KEY = "BE_AUTH_STATE";
+  const ME_ENDPOINT = "/api/auth/me";
 
   const defaultState = {
     authenticated: false,
@@ -19,73 +19,65 @@
   };
 
   /* ==================================================
-     NORMALIZATION
-     Invariant: authenticated === true => user.username exists
+     USER NORMALIZATION (GLOBAL INVARIANT)
+     authenticated === true => user.username MUST exist
   ================================================== */
   function normalizeUser(user) {
-    if (!user || typeof user !== "object") {
-      return { username: "user" };
-    }
-    if (!user.username) {
-      return { ...user, username: "user" };
-    }
+    if (!user || typeof user !== "object") return { username: "testuser" };
+    if (!user.username) return { ...user, username: "testuser" };
     return user;
   }
 
-  function normalizeState(s) {
-    const state = s && typeof s === "object" ? s : {};
-    if (state.authenticated === true) {
-      return { ...defaultState, ...state, user: normalizeUser(state.user) };
+  function normalizeState(next) {
+    const s = next && typeof next === "object" ? next : { ...defaultState };
+    if (s.authenticated === true) {
+      return { ...s, user: normalizeUser(s.user) };
     }
-    return { ...defaultState, ...state, authenticated: false, user: null };
+    return { ...defaultState, ...s, authenticated: false, user: null };
   }
 
-  function safeLocalStorageGet(key) {
+  function safeJsonParse(raw) {
     try {
-      return localStorage.getItem(key);
+      return JSON.parse(raw);
     } catch {
       return null;
     }
   }
 
-  function safeLocalStorageSet(key, value) {
+  function load() {
     try {
-      localStorage.setItem(key, value);
-    } catch {
-      // ignore
-    }
-  }
-
-  function loadFromStorage() {
-    try {
-      const raw = safeLocalStorageGet(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : null;
-      return normalizeState(parsed || defaultState);
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const parsed = raw ? safeJsonParse(raw) : null;
+      const merged = parsed ? { ...defaultState, ...parsed } : { ...defaultState };
+      return normalizeState(merged);
     } catch {
       return { ...defaultState };
     }
   }
 
-  let state = loadFromStorage();
+  let state = load();
 
   function persist() {
-    safeLocalStorageSet(STORAGE_KEY, JSON.stringify(state));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      /* noop */
+    }
   }
 
   function emit() {
     state = normalizeState(state);
-    document.dispatchEvent(
-      new CustomEvent("auth:changed", { detail: { ...state } })
-    );
+    document.dispatchEvent(new CustomEvent("auth:changed", { detail: { ...state } }));
   }
 
   function setAuth(payload = {}) {
-    state = normalizeState({
+    const next = normalizeState({
       ...state,
       ...payload,
       authenticated: true
     });
 
+    state = next;
     persist();
     emit();
   }
@@ -101,51 +93,50 @@
   }
 
   /* ==================================================
-     SERVER HYDRATE (COOKIE SESSION)
-     - Attempts /api/auth/me
-     - If 200: overwrite state with server truth
-     - If 401/403: clear auth
-     - If 404/network: keep storage state (dev/Pages safe)
+     API HYDRATE (COOKIE-BASED)
+     - If /api/auth/me exists:
+       - 200 => setAuth(payload from server)
+       - 401/403 => clearAuth()
+     - If 404 or network error => keep local state (dev/static)
   ================================================== */
-  async function hydrate() {
-    const url = "/api/auth/me";
-
+  async function hydrateFromAPI() {
     try {
-      const res = await fetch(url, {
+      const res = await fetch(ME_ENDPOINT, {
         method: "GET",
         credentials: "include",
         headers: { Accept: "application/json" }
       });
 
-      if (res.status === 200) {
-        const data = await res.json().catch(() => ({}));
-
-        // Accept either:
-        // A) { authenticated, user, role, premium }
-        // B) { user, role, premium } (implies authenticated)
-        const next = {
-          ...defaultState,
-          ...data,
-          authenticated:
-            typeof data.authenticated === "boolean"
-              ? data.authenticated
-              : !!data.user
-        };
-
-        state = normalizeState(next);
-        persist();
-        return;
-      }
-
+      if (res.status === 404) return; // API not mounted (static hosting)
       if (res.status === 401 || res.status === 403) {
-        state = { ...defaultState };
-        persist();
+        clearAuth();
+        return;
+      }
+      if (!res.ok) return;
+
+      const json = await res.json().catch(() => null);
+      if (!json) return;
+
+      // Supports either:
+      // A) { ok:true, data:{ authenticated:true, user, role, premium } }
+      // B) { authenticated:true, user, role, premium }
+      const payload = json.ok === true ? json.data : json;
+
+      if (payload && payload.authenticated === true) {
+        setAuth({
+          user: payload.user || null,
+          role: payload.role || "user",
+          premium: !!payload.premium
+        });
         return;
       }
 
-      // 404 or other: keep current (storage) state
+      // If server explicitly says not authenticated
+      if (payload && payload.authenticated === false) {
+        clearAuth();
+      }
     } catch {
-      // Network / no backend: keep current (storage) state
+      // Network error / offline => keep local state
     }
   }
 
@@ -153,12 +144,12 @@
   window.BEAuth = {
     setAuth,
     clearAuth,
-    getState,
-    hydrate
+    getState
   };
 
-  // Initial hydrate then emit once (prevents flicker)
-  hydrate().finally(() => {
-    emit();
-  });
+  // Initial hydrate from local storage (immediate UI sync)
+  emit();
+
+  // Then hydrate from server (cookie session), if available
+  hydrateFromAPI();
 })();
