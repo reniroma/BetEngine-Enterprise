@@ -1,0 +1,218 @@
+{
+  "service": "QuantumOddsPortal Auth API",
+  "baseUrl": "https://www.quantumoddsportal.com",
+  "apiBasePath": "/api",
+  "auth": {
+    "transport": "httpOnlyCookies",
+    "cookiePolicy": {
+      "sessionCookie": {
+        "name": "qop_session",
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/",
+        "domain": "quantumoddsportal.com",
+        "maxAgeSeconds": 604800
+      },
+      "refreshCookie": {
+        "name": "qop_refresh",
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax",
+        "path": "/api/auth",
+        "domain": "quantumoddsportal.com",
+        "maxAgeSeconds": 2592000
+      },
+      "notes": [
+        "Frontend and API are same-site: https://www.quantumoddsportal.com and https://www.quantumoddsportal.com/api",
+        "No CORS needed for production setup.",
+        "Cookies must be set by backend using Set-Cookie.",
+        "JS never stores tokens; JS relies on /api/auth/me for hydration."
+      ]
+    },
+    "csrf": {
+      "mode": "originCheckOrCsrfToken",
+      "recommended": [
+        "For state-changing requests (POST/PUT/PATCH/DELETE), backend MUST validate Origin/Referer.",
+        "Optionally require X-CSRF-Token with a double-submit cookie if you want stricter CSRF protection."
+      ]
+    }
+  },
+  "responseEnvelope": {
+    "success": {
+      "ok": true,
+      "data": {},
+      "meta": {
+        "requestId": "string",
+        "timestamp": "ISO-8601"
+      }
+    },
+    "error": {
+      "ok": false,
+      "error": {
+        "code": "string",
+        "message": "string",
+        "details": {},
+        "requestId": "string"
+      }
+    }
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "description": "Returns current authenticated user from cookies.",
+      "responses": {
+        "200": {
+          "body": {
+            "ok": true,
+            "data": {
+              "authenticated": true,
+              "user": {
+                "id": "string",
+                "username": "string",
+                "email": "string"
+              },
+              "role": "user",
+              "premium": false
+            }
+          }
+        },
+        "401": {
+          "body": {
+            "ok": true,
+            "data": {
+              "authenticated": false,
+              "user": null,
+              "role": "user",
+              "premium": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "description": "Validates credentials, sets cookies, returns user payload.",
+      "request": {
+        "contentType": "application/json",
+        "body": {
+          "email": "string",
+          "password": "string"
+        }
+      },
+      "responses": {
+        "200": {
+          "setCookie": ["qop_session", "qop_refresh (optional)"],
+          "body": {
+            "ok": true,
+            "data": {
+              "authenticated": true,
+              "user": { "id": "string", "username": "string", "email": "string" },
+              "role": "user",
+              "premium": false
+            }
+          }
+        },
+        "400": {
+          "body": { "ok": false, "error": { "code": "VALIDATION_ERROR", "message": "Invalid input", "details": {} } }
+        },
+        "401": {
+          "body": { "ok": false, "error": { "code": "INVALID_CREDENTIALS", "message": "Email or password incorrect", "details": {} } }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "description": "Creates account, sets cookies, returns user payload.",
+      "request": {
+        "contentType": "application/json",
+        "body": {
+          "username": "string",
+          "email": "string",
+          "password": "string"
+        }
+      },
+      "responses": {
+        "200": {
+          "setCookie": ["qop_session", "qop_refresh (optional)"],
+          "body": {
+            "ok": true,
+            "data": {
+              "authenticated": true,
+              "user": { "id": "string", "username": "string", "email": "string" },
+              "role": "user",
+              "premium": false
+            }
+          }
+        },
+        "409": {
+          "body": { "ok": false, "error": { "code": "USER_EXISTS", "message": "User already exists", "details": {} } }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "description": "Clears cookies and returns unauthenticated state.",
+      "responses": {
+        "200": {
+          "setCookie": ["qop_session=deleted", "qop_refresh=deleted"],
+          "body": {
+            "ok": true,
+            "data": { "authenticated": false, "user": null, "role": "user", "premium": false }
+          }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "description": "Sends reset email (no info leak).",
+      "request": {
+        "contentType": "application/json",
+        "body": { "email": "string" }
+      },
+      "responses": {
+        "200": {
+          "body": { "ok": true, "data": { "accepted": true } }
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "description": "Resets password using a one-time token.",
+      "request": {
+        "contentType": "application/json",
+        "body": { "token": "string", "newPassword": "string" }
+      },
+      "responses": {
+        "200": {
+          "body": { "ok": true, "data": { "reset": true } }
+        },
+        "400": {
+          "body": { "ok": false, "error": { "code": "TOKEN_INVALID", "message": "Invalid or expired token", "details": {} } }
+        }
+      }
+    }
+  ],
+  "errors": [
+    { "code": "VALIDATION_ERROR", "httpStatus": 400 },
+    { "code": "INVALID_CREDENTIALS", "httpStatus": 401 },
+    { "code": "UNAUTHORIZED", "httpStatus": 401 },
+    { "code": "FORBIDDEN", "httpStatus": 403 },
+    { "code": "NOT_FOUND", "httpStatus": 404 },
+    { "code": "USER_EXISTS", "httpStatus": 409 },
+    { "code": "RATE_LIMITED", "httpStatus": 429 },
+    { "code": "INTERNAL_ERROR", "httpStatus": 500 }
+  ],
+  "implementationNotesForBackend": [
+    "On login/register: set cookies via Set-Cookie; return 200 with auth payload.",
+    "On /auth/me: read cookies, validate session, return authenticated:true or 401 with authenticated:false payload.",
+    "On logout: clear cookies (Max-Age=0) and return authenticated:false payload.",
+    "Use consistent requestId in meta/error for tracing."
+  ]
+}
