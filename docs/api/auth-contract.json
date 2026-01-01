@@ -1,0 +1,393 @@
+{
+  "contract": {
+    "name": "QuantumOddsPortal Auth API Contract",
+    "version": "1.0.0",
+    "base": {
+      "frontend": "https://www.quantumoddsportal.com",
+      "api": "https://www.quantumoddsportal.com/api",
+      "sameOrigin": true,
+      "cors": "not-required"
+    },
+    "cookiePolicy": {
+      "sessionCookieName": "qop_session",
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax",
+      "path": "/",
+      "domain": "quantumoddsportal.com",
+      "maxAgeSeconds": 2592000,
+      "notes": [
+        "Cookie must be set by backend only (HttpOnly).",
+        "Frontend uses fetch(credentials: include).",
+        "SameSite=Lax is valid for same-origin / top-level navigation.",
+        "If you later move API to a subdomain, cookie policy must be revisited."
+      ]
+    },
+    "csrf": {
+      "enabled": "optional",
+      "mechanism": "double-submit-cookie",
+      "cookieName": "XSRF-TOKEN",
+      "headerName": "X-CSRF-Token",
+      "notes": [
+        "If enabled, backend sets XSRF-TOKEN (non-HttpOnly) and expects X-CSRF-Token header.",
+        "Client sends X-CSRF-Token automatically when XSRF-TOKEN cookie exists."
+      ]
+    },
+    "errorSchema": {
+      "type": "object",
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "type": "object",
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "examples": [
+                "VALIDATION_ERROR",
+                "INVALID_CREDENTIALS",
+                "EMAIL_ALREADY_EXISTS",
+                "USERNAME_ALREADY_EXISTS",
+                "UNAUTHORIZED",
+                "FORBIDDEN",
+                "RATE_LIMITED",
+                "INTERNAL_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string"
+            },
+            "details": {
+              "type": "object"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    }
+  },
+  "endpoints": [
+    {
+      "name": "Auth Me",
+      "method": "GET",
+      "path": "/auth/me",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "body": null
+      },
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "authenticated": false
+          }
+        }
+      ],
+      "notes": [
+        "If session cookie is valid, returns authenticated true.",
+        "If no session or invalid session, return 401 with authenticated false."
+      ]
+    },
+    {
+      "name": "Login",
+      "method": "POST",
+      "path": "/auth/login",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "email": "string",
+          "password": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 200,
+          "setCookie": "qop_session",
+          "body": {
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "email": "required|email",
+                  "password": "required|minLength"
+                }
+              }
+            }
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "INVALID_CREDENTIALS",
+              "message": "Invalid email or password"
+            }
+          }
+        },
+        {
+          "status": 429,
+          "body": {
+            "error": {
+              "code": "RATE_LIMITED",
+              "message": "Too many attempts"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Backend must set HttpOnly session cookie on success."
+      ]
+    },
+    {
+      "name": "Register",
+      "method": "POST",
+      "path": "/auth/register",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "username": "string",
+          "email": "string",
+          "password": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 201,
+          "setCookie": "qop_session",
+          "body": {
+            "authenticated": true,
+            "user": {
+              "id": "uuid-or-string",
+              "username": "string",
+              "email": "string"
+            },
+            "role": "user",
+            "premium": false
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "username": "required|minLength|maxLength",
+                  "email": "required|email",
+                  "password": "required|minLength"
+                }
+              }
+            }
+          }
+        },
+        {
+          "status": 409,
+          "body": {
+            "error": {
+              "code": "EMAIL_ALREADY_EXISTS",
+              "message": "Email already exists"
+            }
+          }
+        },
+        {
+          "status": 409,
+          "body": {
+            "error": {
+              "code": "USERNAME_ALREADY_EXISTS",
+              "message": "Username already exists"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Backend may require email verification later; for this phase return authenticated true and set cookie."
+      ]
+    },
+    {
+      "name": "Logout",
+      "method": "POST",
+      "path": "/auth/logout",
+      "authRequired": true,
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "body": null
+      },
+      "responses": [
+        {
+          "status": 200,
+          "clearCookie": "qop_session",
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "UNAUTHORIZED",
+              "message": "Not logged in"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Backend should invalidate server session and clear cookie."
+      ]
+    },
+    {
+      "name": "Forgot Password",
+      "method": "POST",
+      "path": "/auth/forgot-password",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "email": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "email": "required|email"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "notes": [
+        "Response must be generic (do not reveal if email exists)."
+      ]
+    },
+    {
+      "name": "Reset Password",
+      "method": "POST",
+      "path": "/auth/reset-password",
+      "authRequired": false,
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "token": "string",
+          "newPassword": "string"
+        }
+      },
+      "responses": [
+        {
+          "status": 200,
+          "body": {
+            "ok": true
+          }
+        },
+        {
+          "status": 400,
+          "body": {
+            "error": {
+              "code": "VALIDATION_ERROR",
+              "message": "Invalid payload",
+              "details": {
+                "fields": {
+                  "token": "required",
+                  "newPassword": "required|minLength"
+                }
+              }
+            }
+          }
+        },
+        {
+          "status": 401,
+          "body": {
+            "error": {
+              "code": "UNAUTHORIZED",
+              "message": "Invalid or expired token"
+            }
+          }
+        }
+      ],
+      "notes": [
+        "This endpoint does not log the user in automatically unless backend decides so."
+      ]
+    }
+  ],
+  "statusCodes": {
+    "200": "OK",
+    "201": "Created",
+    "204": "No Content",
+    "400": "Validation error",
+    "401": "Unauthenticated",
+    "403": "Forbidden",
+    "404": "Not found",
+    "409": "Conflict (duplicate)",
+    "429": "Rate limited",
+    "500": "Internal error"
+  }
+}

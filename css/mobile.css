@@ -290,7 +290,7 @@
 
     /* REGISTER – filled */
     .mobile-menu-panel .menu-auth-register {
-        background: #f4a11a; /* afër OddsPortal */
+        background: #f4a11a; 
         color: #111;
     }
 
@@ -300,6 +300,66 @@
         color: #fff;
         border: 1px solid rgba(255,255,255,0.25);
     }
+
+    /* ==================================================
+       PATCH: MOBILE ACCOUNT ALIGN WITH NAV SUBMENU
+       Goal:
+       - Logged-in account items align visually with navigation submenu items
+       - Do not affect Login/Register button styling
+    ================================================== */
+
+    /* Reset possible list indentation inside account */
+    .mobile-menu-panel .menu-section.account ul,
+    .mobile-menu-panel .menu-section.account ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .mobile-menu-panel .menu-section.account li {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Logged-in account items: same rhythm as .submenu-item */
+    .mobile-menu-panel .menu-section.account a:not(.menu-auth-login):not(.menu-auth-register),
+    .mobile-menu-panel .menu-section.account button:not(.menu-auth-login):not(.menu-auth-register),
+    .mobile-menu-panel .menu-section.account .menu-item:not(.menu-auth-login):not(.menu-auth-register) {
+        grid-column: 1 / -1;                 /* escape 2-col grid */
+        display: block;
+        width: 100%;
+        padding: 8px 0 8px 12px;             /* matches submenu indent */
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: none;
+        border: none;
+        text-align: left;
+    }
+
+   /* PATCH: ACCOUNT container must stay single-column (prevents conflicts) */
+.mobile-menu-panel .menu-section.account {
+    display: block;
+}
+
+/* PATCH: Guest auth buttons side-by-side (only inside .mobile-auth-guest) */
+.mobile-menu-panel .menu-section.account .mobile-auth-guest {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-register,
+.mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-login {
+    width: 100%;
+    min-width: 0;
+}
+
+
+  
     /* ==================================================
        PREFERENCES
     ================================================== */
@@ -359,7 +419,7 @@
         width: 16px;
         height: 16px;
         display: inline-block;
-        background-image: url("/assets/icons/language.svg");
+        background-image: url("../assets/icons/language.svg");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -761,12 +821,6 @@
         color: #ff9d00;
         width: 20px;
         height: 20px;
-    }
-
-    /* Ensure search is clickable above mobile UI */
-    .be-search {
-        position: relative;
-        z-index: 5;
     }
 
     /* FIX: prevent sports row container from blocking clicks */

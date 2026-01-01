@@ -1,13 +1,16 @@
 <!-- ====================================================
-     MOBILE HEADER – BetEngine Enterprise
-     Includes:
-     - Top Bar
-     - Sports Row (Icon + Label)
+     MOBILE HEADER – BetEngine Enterprise (FIXED)
+     FIX:
+     - mobile-search-inline MOVED into anchor
+     - anchor placed inside Row 1 (after hamburger)
+     - search remains overlay (not flex child)
+     - ZERO JS changes
+     - ZERO CSS changes
 ==================================================== -->
 <header class="header-mobile">
 
     <!-- ============================
-         TOP BAR
+         TOP BAR (ROW 1)
     ============================ -->
     <div class="mobile-top-bar">
 
@@ -23,6 +26,84 @@
             </svg>
         </button>
 
+        <!-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
+        <div class="mobile-search-anchor">
+
+            <!-- ============================
+                 MOBILE SEARCH INLINE
+                 (OVERLAY – ANCHORED TO ROW 1)
+            ============================ -->
+            <div class="mobile-search-inline" hidden>
+
+                <!-- OVERLAY (CLICK OUTSIDE TO CLOSE) -->
+                <div class="mobile-search-overlay" aria-hidden="true"></div>
+
+                <div class="be-search">
+
+                    <!-- INPUT ROW -->
+                    <div class="be-search-input-wrapper">
+
+                        <input
+                            type="search"
+                            class="be-search-input"
+                            placeholder="Search teams/player"
+                            aria-label="Search"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+
+                        <!-- SEARCH ICON -->
+                        <button
+                            type="button"
+                            class="be-search-icon"
+                            aria-hidden="true"
+                            tabindex="-1"
+                        >
+                            <img src="assets/icons/search.svg" alt="">
+                        </button>
+
+                        <!-- CLEAR -->
+                        <button
+                            type="button"
+                            class="be-search-clear"
+                            aria-label="Clear search"
+                            hidden
+                        >
+                            Clear
+                        </button>
+
+                        <!-- CLOSE -->
+                        <button
+                            type="button"
+                            class="be-search-close"
+                            aria-label="Close search"
+                        >
+                            ✕
+                        </button>
+
+                    </div>
+
+                    <!-- STATES -->
+                    <div class="be-search-states">
+                        <div class="be-search-loading" hidden>
+                            <span class="be-search-loading-text">Searching...</span>
+                        </div>
+                        <div class="be-search-empty" hidden>
+                            <span class="be-search-empty-text">No results found.</span>
+                        </div>
+                    </div>
+
+                    <!-- RESULTS -->
+                    <ul
+                        class="be-search-results"
+                        role="listbox"
+                        aria-live="polite"
+                    ></ul>
+
+                </div>
+            </div>
+        </div>
+
         <!-- BRAND -->
         <div class="mobile-brand">
             <span class="name">BetEngine</span>
@@ -31,16 +112,20 @@
         <!-- ACTIONS -->
         <div class="mobile-actions">
 
-            <!-- SEARCH (TRIGGER) -->
-            <button class="mobile-search-btn" type="button" aria-label="Search">
-              <img
-                    src="/assets/icons/search.svg"
+            <!-- SEARCH -->
+            <button
+                class="mobile-search-btn"
+                type="button"
+                aria-label="Search"
+            >
+                <img
+                    src="assets/icons/search.svg"
                     alt=""
                     width="20"
                     height="20"
                     draggable="false"
-                    />
-           </button>
+                />
+            </button>
 
             <!-- BOOKMARKS -->
             <button class="mobile-bookmarks-btn" type="button" aria-label="Bookmarks">
@@ -78,58 +163,9 @@
         </div>
     </div>
 
-    <!-- ====================================================
-         MOBILE SEARCH PANEL (CANONICAL .be-search MOUNT)
-         Hidden by default; toggled by mobile-search-btn
-    ===================================================== -->
-    <div class="mobile-search-panel" hidden>
-        <div class="be-search" aria-labelledby="be-search-title">
-
-            <header class="be-search-header">
-                <h2 id="be-search-title" class="be-search-title">Search</h2>
-                <p class="be-search-subtitle">Find teams, players, leagues, or competitions.</p>
-            </header>
-
-            <div class="be-search-input-wrapper">
-                <input
-                    type="search"
-                    class="be-search-input"
-                    placeholder="Search teams, players, leagues..."
-                    aria-label="Search"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-
-                <button
-                    type="button"
-                    class="be-search-clear"
-                    aria-label="Clear search"
-                    hidden
-                >
-                    Clear
-                </button>
-            </div>
-
-            <div class="be-search-states">
-                <div class="be-search-loading" hidden>
-                    <span class="be-search-loading-text">Searching...</span>
-                </div>
-
-                <div class="be-search-empty" hidden>
-                    <span class="be-search-empty-text">No results found.</span>
-                </div>
-            </div>
-
-            <ul class="be-search-results" role="listbox" aria-live="polite">
-                <!-- Results injected by search.js -->
-            </ul>
-
-        </div>
-    </div>
-
+    
     <!-- ============================
-         SPORTS ROW (ICON + LABEL)
-         (UNCHANGED)
+         SPORTS ROW (ROW 2)
     ============================ -->
     <div class="mobile-sports-row">
 

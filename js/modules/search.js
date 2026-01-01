@@ -1,15 +1,21 @@
 /*********************************************************
- * BetEngine Enterprise – SEARCH MODULE (FINAL)
- * Enterprise-grade click-outside handling
- * NO blur, NO hacks, NO race conditions
+ * BetEngine Enterprise – SEARCH MODULE
+ * FINAL – DESKTOP SAFE + HYBRID TOUCH-LAPTOP FIX
+ *
+ * GUARANTEES
+ * - Desktop search behavior preserved
+ * - Mobile overlay handled only here
+ * - Hybrid touch laptops supported (touch + mouse)
+ * - No legacy mousedown dependency
+ * - Outside-close logic uses composedPath (robust)
  *********************************************************/
 
 (function () {
     "use strict";
 
-    /* =======================
-       LOCAL HELPERS
-    ======================= */
+    /* =========================
+       HELPERS
+    ========================= */
     const $  = (sel, scope = document) => scope.querySelector(sel);
     const $$ = (sel, scope = document) => Array.from(scope.querySelectorAll(sel));
 
@@ -21,9 +27,21 @@
         };
     };
 
-    /* =======================
-       MOCK DATA (SAFE)
-    ======================= */
+    const getPath = (e) => {
+        if (typeof e.composedPath === "function") return e.composedPath();
+        const path = [];
+        let n = e.target;
+        while (n) {
+            path.push(n);
+            n = n.parentNode;
+        }
+        path.push(window);
+        return path;
+    };
+
+    /* =========================
+       MOCK DATA (PLACEHOLDER)
+    ========================= */
     const MOCK_DATA = [
         { type: "Team",   title: "Manchester United", meta: "England · Premier League" },
         { type: "Team",   title: "Real Madrid",       meta: "Spain · La Liga" },
@@ -34,9 +52,9 @@
         { type: "League", title: "Champions League",  meta: "UEFA" }
     ];
 
-    /* =======================
-       INIT PER ROOT
-    ======================= */
+    /* =========================
+       SEARCH CORE (DESKTOP + MOBILE ROOT)
+    ========================= */
     function initSearchRoot(root) {
         if (!root || root.dataset.beSearchInit === "1") return;
 
@@ -53,9 +71,6 @@
         let activeIndex = -1;
         let currentResults = [];
 
-        /* =======================
-           CORE HELPERS
-        ======================= */
         function clearResults() {
             resultsList.innerHTML = "";
             currentResults = [];
@@ -91,9 +106,6 @@
             clearResults();
         }
 
-        /* =======================
-           RENDER RESULTS
-        ======================= */
         function renderResults(items) {
             clearResults();
 
@@ -110,15 +122,13 @@
                     </div>
                 `;
 
-                /* ⛔ KRITIKE:
-                   Ndalo mbylljen nga document.mousedown */
-                li.addEventListener("mousedown", (e) => {
-                    e.stopPropagation();
-                });
-
-                li.addEventListener("click", () => {
+                const onSelect = (e) => {
+                    if (e && typeof e.preventDefault === "function") e.preventDefault();
                     selectIndex(idx);
-                });
+                };
+
+                li.addEventListener("click", onSelect);
+                li.addEventListener("pointerup", onSelect);
 
                 resultsList.appendChild(li);
             });
@@ -126,9 +136,6 @@
             currentResults = items;
         }
 
-        /* =======================
-           SEARCH LOGIC
-        ======================= */
         function performSearch(query) {
             showLoading(true);
             showEmpty(false);
@@ -164,10 +171,7 @@
             performSearch(value);
         }, 250);
 
-        /* =======================
-           EVENTS
-        ======================= */
-        input.addEventListener("input", (e) => {
+        input.addEventListener("input", e => {
             debouncedSearch(e.target.value);
         });
 
@@ -180,18 +184,18 @@
             input.focus();
         });
 
-        input.addEventListener("keydown", (e) => {
-            const itemsCount = currentResults.length;
-            if (!itemsCount) return;
+        input.addEventListener("keydown", e => {
+            const count = currentResults.length;
+            if (!count) return;
 
             if (e.key === "ArrowDown") {
                 e.preventDefault();
-                setActive((activeIndex + 1) % itemsCount);
+                setActive((activeIndex + 1) % count);
             }
 
             if (e.key === "ArrowUp") {
                 e.preventDefault();
-                setActive((activeIndex - 1 + itemsCount) % itemsCount);
+                setActive((activeIndex - 1 + count) % count);
             }
 
             if (e.key === "Enter" && activeIndex >= 0) {
@@ -199,35 +203,93 @@
                 selectIndex(activeIndex);
             }
         });
-
-        /* =======================
-           CLICK OUTSIDE → CLOSE
-           (ENTERPRISE STANDARD)
-        ======================= */
-        document.addEventListener("mousedown", (e) => {
-            if (root.contains(e.target)) return;
-
-            input.value = "";
-            clearBtn.hidden = true;
-            clearResults();
-        });
     }
 
-    /* =======================
-       INIT ALL SEARCH ROOTS
-    ======================= */
+    /* =========================
+       DESKTOP INIT ONLY
+    ========================= */
     function initAllSearch() {
-        const roots = $$(".be-search");
-        if (!roots.length) return;
-        roots.forEach(initSearchRoot);
+        if (window.matchMedia("(max-width: 900px)").matches) return;
+        $$(".be-search").forEach(initSearchRoot);
     }
 
     document.addEventListener("DOMContentLoaded", initAllSearch);
     document.addEventListener("headerLoaded", initAllSearch);
 
-    if (window.__BE_HEADER_READY__ === true) {
-        initAllSearch();
+    /* =========================
+       MOBILE SEARCH OVERLAY
+       SINGLE SOURCE OF TRUTH
+    ========================= */
+    function initMobileSearchOverlay() {
+        const btn   = document.querySelector(".mobile-search-btn");
+        const panel = document.querySelector(".mobile-search-inline");
+
+        if (!btn || !panel) return;
+        if (panel.dataset.mobileInit === "1") return;
+        panel.dataset.mobileInit = "1";
+
+        let searchInitialized = false;
+
+        function open() {
+            panel.hidden = false;
+            panel.setAttribute("aria-hidden", "false");
+            document.body.classList.add("mobile-search-open");
+
+            if (!searchInitialized) {
+                const root = panel.querySelector(".be-search");
+                if (root) initSearchRoot(root);
+                searchInitialized = true;
+            }
+
+            const input = panel.querySelector(".be-search-input");
+            if (input) input.focus();
+        }
+
+        function close() {
+            const input = panel.querySelector(".be-search-input");
+            if (input && document.activeElement === input) input.blur();
+
+            panel.hidden = true;
+            panel.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("mobile-search-open");
+
+            const root = panel.querySelector(".be-search");
+            if (!root) return;
+
+            const clear   = root.querySelector(".be-search-clear");
+            const results = root.querySelector(".be-search-results");
+            const loading = root.querySelector(".be-search-loading");
+            const empty   = root.querySelector(".be-search-empty");
+
+            if (clear) clear.hidden = true;
+            if (results) results.innerHTML = "";
+            if (loading) loading.hidden = true;
+            if (empty) empty.hidden = true;
+        }
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            panel.hidden ? open() : close();
+        });
+
+        panel.querySelector(".be-search-close")?.addEventListener("click", close);
+
+        document.addEventListener("pointerdown", (e) => {
+            if (panel.hidden) return;
+
+            const path = getPath(e);
+            if (path.includes(panel) || path.includes(btn)) return;
+
+            close();
+        }, true);
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !panel.hidden) close();
+        });
     }
 
-    console.log("search.js READY – enterprise stable");
+    document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
+    document.addEventListener("headerLoaded", initMobileSearchOverlay);
+
+    console.log("search.js ENTERPRISE FINAL READY");
 })();

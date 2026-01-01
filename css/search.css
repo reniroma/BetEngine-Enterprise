@@ -203,18 +203,18 @@
     border: none;
     box-shadow: none;
     border-radius: 0;
-    height: 100%;
+    height: 42px;
+    width: 210px;
+    flex-shrink: 0;
+    position: relative;
 }
 
 .header-desktop .be-search-input {
-    height: 100%;
-    padding: 0.44px 0.16px;
-    display: flex;
-    line-height: normal;
-    align-items: center;
-    box-sizing:inherit border-box
+    height: 42px;
+    line-height: 42px;
+    padding: 0 36px 0 12px;
+    box-sizing: border-box;
     font-size: 11px;
-    padding-right: 15px;
 }
 
 .header-desktop .be-search-icon {
@@ -241,17 +241,7 @@
     height: 42px;
     display: flex;
     align-items: center;
-    position: relative
-}
-
-/* Mobile panel: dropdown-like container */
-.header-mobile .mobile-search-panel {
-    padding: 10px 12px;
-}
-
-.header-mobile .mobile-search-panel .be-search {
-    margin: 0;
-    max-width: none;
+    position: relative;
 }
 
 /* ======================================================
@@ -261,9 +251,9 @@
 
 .header-desktop .be-search {
     position: relative;        /* anchor for absolute results */
-    height: 48px;              /* fixed input height */
+    height: 42px;              /* unified height (desktop) */
+    width: 210px;              /* unified width (desktop) */
     flex-shrink: 0;
-    width: 240px;
 }
 
 .header-desktop .be-search-results {
@@ -284,34 +274,84 @@
 }
 
 
-/* ======================================================
-   MOBILE OVERRIDES (SAFE)
-====================================================== */
+/* =====================================================
+   BETENGINE — SEARCH (MOBILE SAFE OVERRIDES)
+   Scope:
+   - Mobile ONLY
+   - NO layout control
+   - NO header positioning
+   - NO absolute / fixed
+   - Fully compatible with mobile.css
+===================================================== */
+
 @media (max-width: 900px) {
+
+    /* Root search container — passive */
     .be-search {
-        margin: 14px 12px;
-        padding: 14px;
-        border-radius: 12px;
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
     }
 
+    /* Input wrapper — fixed height, no growth */
     .be-search-input-wrapper {
-        gap: 8px;
+        width: 100%;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        flex-shrink: 0;
     }
 
+    /* Input itself — no line growth */
     .be-search-input {
-        height: 40px;
+        height: 36px;
+        line-height: 36px;
+        padding: 0 36px 0 12px;
         font-size: 14px;
+        border-radius: 10px;
+        box-sizing: border-box;
     }
 
-    .be-search-clear {
-        height: 40px;
-        padding: 0 12px;
-        font-size: 13px;
+    /* Results list — OVERLAY, not layout */
+    .be-search-results {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+
+        max-height: 320px;
+        overflow-y: auto;
+
+        background: #11141d;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+
+        z-index: 2000;
     }
 
+    /* Results hidden = no layout impact */
+    .be-search-results[hidden] {
+        display: none;
+    }
+
+    /* Result item touch-friendly */
     .be-search-result {
-        padding: 11px 10px;
+        padding: 12px 12px;
+        min-height: 44px;
+    }
+
+    /* States (loading / empty) */
+    .be-search-states {
+        margin-top: 6px;
+    }
+
+    .be-search-loading,
+    .be-search-empty {
+        background: rgba(21,24,39,0.9);
+        border-radius: 10px;
     }
 }
-
-/* =============== END OF FILE =============== */

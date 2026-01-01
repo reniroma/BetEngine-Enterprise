@@ -1,0 +1,22 @@
+<!-- File: assets/icons/user.svg (white) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Outer ring -->
+  <circle cx="32" cy="32" r="29" stroke="#FFFFFF" stroke-width="2"/>
+
+  <!-- Head -->
+  <path d="M32 33.5c5.6 0 10.1-4.5 10.1-10.1S37.6 13.3 32 13.3s-10.1 4.5-10.1 10.1S26.4 33.5 32 33.5Z"
+        stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Shoulders -->
+  <path d="M16.8 51.2c2.8-8 9.2-12.7 15.2-12.7s12.4 4.7 15.2 12.7"
+        stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Brand text -->
+  <text x="32" y="60"
+        text-anchor="middle"
+        font-size="8"
+        font-weight="700"
+        letter-spacing="0.6"
+        font-family="system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif"
+        fill="#FFFFFF">BETENGINE</text>
+</svg>
