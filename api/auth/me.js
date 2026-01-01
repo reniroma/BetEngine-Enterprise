@@ -3,7 +3,7 @@
  * GET /api/auth/me
  *
  * Phase 2 placeholder:
- * - Returns 401 by default (unauthenticated)
+ * - Returns 200 by default (unauthenticated) to avoid console noise
  * - Safe shape for frontend hydrate()
  *********************************************************/
 module.exports = (req, res) => {
@@ -14,7 +14,10 @@ module.exports = (req, res) => {
   }
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.statusCode = 401;
+  res.setHeader("Cache-Control", "no-store");
+
+  // IMPORTANT: 200 prevents "Failed to load resource" red noise in DevTools
+  res.statusCode = 200;
 
   return res.end(
     JSON.stringify({
