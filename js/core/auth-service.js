@@ -254,14 +254,7 @@
   };
 
   const readCreds = (form) => {
-    const e = pick(form, [
-      'input[name="email"]',
-      '#email',
-      'input[type="email"]',
-      'input[name="username"]',
-      '#username',
-      'input[type="text"]'
-    ]);
+    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]']);
     const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
     return {
       email: (e && e.value ? e.value.trim() : ""),
@@ -276,13 +269,13 @@
       return;
     }
 
-    // Prefer object signature: login({ email, password })
+    // Support both signatures: login(email, password) and login({email, password})
     try {
-      const r = api.login({ email, password });
+      const r = api.login(email, password);
       if (r && typeof r.then === "function") await r;
       return;
     } catch (_) {
-      const r2 = api.login(email, password);
+      const r2 = api.login({ email, password });
       if (r2 && typeof r2.then === "function") await r2;
     }
   };
