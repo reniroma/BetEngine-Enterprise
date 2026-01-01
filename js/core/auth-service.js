@@ -113,62 +113,62 @@
      Public API
   ========================= */
 
-async function hydrate() {
-  // GitHub Pages is static (no backend). Never call /api there.
-  const isGitHubPages = /(^|\.)github\.io$/i.test(location.hostname);
+  async function hydrate() {
+    // GitHub Pages is static (no backend). Never call /api there.
+    const isGitHubPages = /(^|\.)github\.io$/i.test(location.hostname);
 
-  if (isGitHubPages) {
-    const persisted = loadPersisted();
+    if (isGitHubPages) {
+      const persisted = loadPersisted();
 
-    if (persisted && persisted.authenticated && persisted.user) {
-      state = {
-        ...defaultState,
-        authenticated: true,
-        user: normalizeUser(persisted.user) || { username: "user" },
-        role: typeof persisted.role === "string" && persisted.role ? persisted.role : "user",
-        premium: !!persisted.premium
-      };
-    } else {
-      state = { ...defaultState };
-    }
+      if (persisted && persisted.authenticated && persisted.user) {
+        state = {
+          ...defaultState,
+          authenticated: true,
+          user: normalizeUser(persisted.user) || { username: "user" },
+          role: typeof persisted.role === "string" && persisted.role ? persisted.role : "user",
+          premium: !!persisted.premium
+        };
+      } else {
+        state = { ...defaultState };
+      }
 
-    emit();
-    return getState();
-  }
-
-  // Try using the dedicated API client if present
-  try {
-    if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
-      const payload = await window.BEAuthApi.me(); // should throw or return JSON
-      applyFromMePayload(payload);
       emit();
       return getState();
     }
 
-    // Fallback direct fetch (same-origin cookie)
-    const res = await fetch(`${API_BASE}/auth/me`, {
-      method: "GET",
-      credentials: "include",
-      headers: { Accept: "application/json" }
-    });
+    // Try using the dedicated API client if present
+    try {
+      if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
+        const payload = await window.BEAuthApi.me(); // should throw or return JSON
+        applyFromMePayload(payload);
+        emit();
+        return getState();
+      }
 
-    if (res.status === 200) {
-      const payload = await safeJson(res);
-      applyFromMePayload(payload || {});
-    } else {
-      // 401/403/404/500/etc. -> keep safe unauth state
+      // Fallback direct fetch (same-origin cookie)
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        method: "GET",
+        credentials: "include",
+        headers: { Accept: "application/json" }
+      });
+
+      if (res.status === 200) {
+        const payload = await safeJson(res);
+        applyFromMePayload(payload || {});
+      } else {
+        // 401/403/404/500/etc. -> keep safe unauth state
+        state = { ...defaultState };
+      }
+
+      emit();
+      return getState();
+    } catch {
       state = { ...defaultState };
+      emit();
+      return getState();
     }
-
-    emit();
-    return getState();
-  } catch {
-    state = { ...defaultState };
-    emit();
-    return getState();
   }
-}
-  
+
   // Dev/Mock helper (does NOT set cookies; UI-only)
   function setAuth(payload = {}) {
     const user = normalizeUser(payload.user || payload);
@@ -184,6 +184,14 @@ async function hydrate() {
   }
 
   async function clearAuth() {
+    // GitHub Pages is static (no backend). Never call /api there.
+    if (isGitHubPagesHost()) {
+      state = { ...defaultState };
+      clearPersisted();
+      emit();
+      return getState();
+    }
+
     // Try to logout server-side (cookie)
     try {
       if (window.BEAuthApi && typeof window.BEAuthApi.logout === "function") {
@@ -220,5 +228,5 @@ async function hydrate() {
   emit();
   hydrate();
 
-  console.log("auth-service.js v2.0 READY");
+  console.log("auth-service.js v2.1 READY");
 })();
