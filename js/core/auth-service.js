@@ -305,15 +305,9 @@
       return;
     }
 
-    // Support both signatures: login(email, password) and login({email, password})
-    try {
-      const r = api.login(email, password);
-      if (r && typeof r.then === "function") await r;
-      return;
-    } catch (_) {
-      const r2 = api.login({ email, password });
-      if (r2 && typeof r2.then === "function") await r2;
-    }
+    // STRICT: BEAuthAPI.login expects an object { email, password }
+    const r = api.login({ email, password });
+    if (r && typeof r.then === "function") await r;
   };
 
   document.addEventListener(
