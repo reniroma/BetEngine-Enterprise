@@ -234,3 +234,71 @@
 
   console.log("auth-service.js v2.2 READY");
 })();
+
+/* =========================================================
+   AUTH FORM DELEGATION (ENTERPRISE SAFE)
+   Fix: prevent native GET submit + call login API
+========================================================= */
+(function () {
+  "use strict";
+
+  if (window.__BE_AUTH_FORM_DELEGATION_INSTALLED__) return;
+  window.__BE_AUTH_FORM_DELEGATION_INSTALLED__ = true;
+
+  const pick = (root, sels) => {
+    for (const s of sels) {
+      const el = root.querySelector(s);
+      if (el) return el;
+    }
+    return null;
+  };
+
+  const readCreds = (form) => {
+    const u = pick(form, ['input[name="username"]', '#username', 'input[type="text"]']);
+    const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
+    return {
+      username: (u && u.value ? u.value.trim() : ""),
+      password: (p && p.value ? p.value : "")
+    };
+  };
+
+  const callLogin = async (username, password) => {
+    const api = window.BEAuthAPI || window.BEAuthApi || window.BEAuth;
+    if (!api || typeof api.login !== "function") {
+      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi/BEAuth");
+      return;
+    }
+
+    // Support both signatures: login(username, password) and login({username, password})
+    try {
+      const r = api.login(username, password);
+      if (r && typeof r.then === "function") await r;
+      return;
+    } catch (_) {
+      const r2 = api.login({ username, password });
+      if (r2 && typeof r2.then === "function") await r2;
+    }
+  };
+
+  document.addEventListener(
+    "submit",
+    (e) => {
+      const form = e.target && e.target.closest ? e.target.closest(".auth-form") : null;
+      if (!form) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const { username, password } = readCreds(form);
+      if (!username || !password) {
+        console.warn("[BEAuth] Missing username/password");
+        return;
+      }
+
+      callLogin(username, password).catch((err) => {
+        console.error("[BEAuth] Login failed:", err);
+      });
+    },
+    true
+  );
+})();
