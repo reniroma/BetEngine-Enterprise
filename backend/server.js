@@ -1,6 +1,6 @@
 /*********************************************************
  * BetEngine Enterprise – BACKEND SERVER (AUTH SKELETON)
- * Validation + Security Hardening (Enterprise Safe)
+ * FIX: Session Rotation + Cookie Hardening (Enterprise Safe)
  *
  * Auth:
  * - Cookie-based session (HttpOnly)
@@ -25,8 +25,6 @@ function setSecurityHeaders(res) {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "no-referrer");
   res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
-  // CSP is hard to set safely without knowing your asset structure.
-  // Keep minimal for now (avoid breaking UI). Add later when ready.
 }
 
 /* =========================
@@ -55,7 +53,6 @@ function isHttps(req) {
 }
 
 function getClientIp(req) {
-  // Vercel/Proxy-safe best effort
   const xf = req.headers["x-forwarded-for"];
   if (typeof xf === "string" && xf.trim()) return xf.split(",")[0].trim();
   return req.socket && req.socket.remoteAddress ? String(req.socket.remoteAddress) : "0.0.0.0";
@@ -64,7 +61,7 @@ function getClientIp(req) {
 /* =========================
    Body parsing + limits
 ========================= */
-const MAX_JSON_BODY_BYTES = 16 * 1024; // 16KB
+const MAX_JSON_BODY_BYTES = 16 * 1024;
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -136,7 +133,6 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
   const hash = crypto
     .pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST)
     .toString("hex");
-
   return { salt, hash };
 }
 
@@ -144,21 +140,17 @@ function verifyPassword(password, salt, expectedHash) {
   const hash = crypto
     .pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST)
     .toString("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(hash, "hex"),
-    Buffer.from(expectedHash, "hex")
-  );
+  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(expectedHash, "hex"));
 }
 
 /* =========================
-   Rate limiting (IP-based)
+   Rate limiting
 ========================= */
-const RATE_WINDOW_MS = 60_000; // 1 minute
-const RATE_LIMIT_LOGIN = 10;   // 10/min per IP
-const RATE_LIMIT_REGISTER = 5; // 5/min per IP
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT_LOGIN = 10;
+const RATE_LIMIT_REGISTER = 5;
 
-const rateStore = new Map(); // key -> { count, resetAt }
+const rateStore = new Map();
 
 function rateKey(req, route) {
   return `${getClientIp(req)}::${route}`;
@@ -184,7 +176,6 @@ function rateCheck(req, route, limit) {
 }
 
 function applyRateHeaders(res, check) {
-  // Minimal rate headers
   res.setHeader("X-RateLimit-Remaining", String(check.remaining ?? 0));
   if (check.resetAt) res.setHeader("X-RateLimit-Reset", String(check.resetAt));
 }
@@ -192,11 +183,51 @@ function applyRateHeaders(res, check) {
 /* =========================
    TEMP STORES (DB later)
 ========================= */
-const sessions = new Map();
-const users = new Map(); // email -> user
+const sessions = new Map(); // sessionId -> { user, role, premium, expiresAt }
+const users = new Map();    // email -> user
 
 /* =========================
-   Cookie helpers
+   Session helpers (FIX)
+========================= */
+const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
+
+function cleanupExpiredSessions() {
+  const now = Date.now();
+  for (const [sid, sess] of sessions.entries()) {
+    if (!sess || sess.expiresAt <= now) {
+      sessions.delete(sid);
+    }
+  }
+}
+
+function createSession(user) {
+  cleanupExpiredSessions();
+
+  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+  sessions.set(sessionId, {
+    user: { id: user.id, email: user.email, username: user.username },
+    role: user.role,
+    premium: user.premium,
+    expiresAt: Date.now() + SESSION_TTL_MS
+  });
+  return sessionId;
+}
+
+function rotateSession(req, res, user) {
+  // Invalidate existing session cookie if present (session fixation protection)
+  const cookies = parseCookie(req.headers.cookie || "");
+  const oldSid = cookies.be_session;
+  if (oldSid && sessions.has(oldSid)) {
+    sessions.delete(oldSid);
+  }
+
+  const newSid = createSession(user);
+  setSessionCookie(req, res, newSid);
+  return newSid;
+}
+
+/* =========================
+   Cookie helpers (HARDENED)
 ========================= */
 function setSessionCookie(req, res, sessionId) {
   const secure = isHttps(req);
@@ -207,7 +238,7 @@ function setSessionCookie(req, res, sessionId) {
       sameSite: "lax",
       path: "/",
       secure,
-      maxAge: 60 * 60 * 24 * 7 // 7 days
+      maxAge: Math.floor(SESSION_TTL_MS / 1000)
     })
   );
 }
@@ -232,16 +263,13 @@ function clearSessionCookie(req, res) {
 const server = http.createServer(async (req, res) => {
   const { method, url, headers } = req;
 
-  /* =========================
-     Health
-  ========================= */
   if (method === "GET" && url === "/health") {
     return sendJSON(res, 200, { ok: true });
   }
 
-  /* =====================================================
+  /* =========================
      AUTH: LOGIN
-  ===================================================== */
+  ========================= */
   if (method === "POST" && url === "/api/auth/login") {
     const rc = rateCheck(req, "login", RATE_LIMIT_LOGIN);
     applyRateHeaders(res, rc);
@@ -254,61 +282,40 @@ const server = http.createServer(async (req, res) => {
     let data = {};
     try {
       data = await readJsonBody(req);
-    } catch (e) {
-      if (e && e.code === "BODY_TOO_LARGE") {
-        return sendJSON(res, 413, { error: { code: "PAYLOAD_TOO_LARGE", message: "Request body too large" } });
-      }
+    } catch {
       return sendJSON(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON body" } });
     }
 
     const email = normalizeEmail(data.email);
     const password = typeof data.password === "string" ? data.password : "";
 
-    const ve = validateEmail(email);
-    const vp = validatePassword(password);
-    if (!ve.ok || !vp.ok) {
-      // Keep message generic (no enumeration)
+    if (!validateEmail(email).ok || !validatePassword(password).ok) {
       return sendJSON(res, 400, {
         error: { code: "VALIDATION_ERROR", message: "Email and password are required" }
       });
     }
 
     const user = users.get(email);
-
-    // Prevent user enumeration: always respond with same error for invalid creds
-    if (!user) {
+    if (!user || !verifyPassword(password, user.passwordSalt, user.passwordHash)) {
       return sendJSON(res, 401, {
         error: { code: "INVALID_CREDENTIALS", message: "Invalid email or password" }
       });
     }
 
-    const ok = verifyPassword(password, user.passwordSalt, user.passwordHash);
-    if (!ok) {
-      return sendJSON(res, 401, {
-        error: { code: "INVALID_CREDENTIALS", message: "Invalid email or password" }
-      });
-    }
-
-    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-    sessions.set(sessionId, {
-      user: { id: user.id, email: user.email, username: user.username },
-      role: user.role,
-      premium: user.premium
-    });
-
-    setSessionCookie(req, res, sessionId);
+    const sid = rotateSession(req, res, user);
+    const sess = sessions.get(sid);
 
     return sendJSON(res, 200, {
       authenticated: true,
-      user: sessions.get(sessionId).user,
-      role: user.role,
-      premium: user.premium
+      user: sess.user,
+      role: sess.role,
+      premium: sess.premium
     });
   }
 
-  /* =====================================================
+  /* =========================
      AUTH: REGISTER
-  ===================================================== */
+  ========================= */
   if (method === "POST" && url === "/api/auth/register") {
     const rc = rateCheck(req, "register", RATE_LIMIT_REGISTER);
     applyRateHeaders(res, rc);
@@ -321,10 +328,7 @@ const server = http.createServer(async (req, res) => {
     let data = {};
     try {
       data = await readJsonBody(req);
-    } catch (e) {
-      if (e && e.code === "BODY_TOO_LARGE") {
-        return sendJSON(res, 413, { error: { code: "PAYLOAD_TOO_LARGE", message: "Request body too large" } });
-      }
+    } catch {
       return sendJSON(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON body" } });
     }
 
@@ -335,13 +339,12 @@ const server = http.createServer(async (req, res) => {
         ? data.username.trim()
         : (email.includes("@") ? email.split("@")[0] : "user");
 
-    const ve = validateEmail(email);
-    if (!ve.ok) return sendJSON(res, 400, { error: { code: ve.code, message: ve.message } });
+    if (!validateEmail(email).ok || !validatePassword(password).ok) {
+      return sendJSON(res, 400, {
+        error: { code: "VALIDATION_ERROR", message: "Invalid registration data" }
+      });
+    }
 
-    const vp = validatePassword(password);
-    if (!vp.ok) return sendJSON(res, 400, { error: { code: vp.code, message: vp.message } });
-
-    // Prevent enumeration: if exists, use generic response
     if (users.has(email)) {
       return sendJSON(res, 409, {
         error: { code: "USER_EXISTS", message: "User already exists" }
@@ -349,7 +352,6 @@ const server = http.createServer(async (req, res) => {
     }
 
     const { salt, hash } = hashPassword(password);
-
     const newUser = {
       id: "u_" + crypto.randomBytes(10).toString("hex"),
       email,
@@ -362,31 +364,27 @@ const server = http.createServer(async (req, res) => {
 
     users.set(email, newUser);
 
-    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-    sessions.set(sessionId, {
-      user: { id: newUser.id, email: newUser.email, username: newUser.username },
-      role: newUser.role,
-      premium: newUser.premium
-    });
-
-    setSessionCookie(req, res, sessionId);
+    const sid = rotateSession(req, res, newUser);
+    const sess = sessions.get(sid);
 
     return sendJSON(res, 201, {
       authenticated: true,
-      user: sessions.get(sessionId).user,
-      role: newUser.role,
-      premium: newUser.premium
+      user: sess.user,
+      role: sess.role,
+      premium: sess.premium
     });
   }
 
-  /* =====================================================
+  /* =========================
      AUTH: ME
-  ===================================================== */
+  ========================= */
   if (method === "GET" && url === "/api/auth/me") {
-    const cookies = parseCookie(headers.cookie || "");
-    const sessionId = cookies.be_session;
+    cleanupExpiredSessions();
 
-    if (!sessionId || !sessions.has(sessionId)) {
+    const cookies = parseCookie(headers.cookie || "");
+    const sid = cookies.be_session;
+
+    if (!sid || !sessions.has(sid)) {
       return sendJSON(res, 200, {
         authenticated: false,
         user: null,
@@ -395,7 +393,7 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    const sess = sessions.get(sessionId);
+    const sess = sessions.get(sid);
     return sendJSON(res, 200, {
       authenticated: true,
       user: sess.user,
@@ -404,15 +402,15 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
-  /* =====================================================
+  /* =========================
      AUTH: LOGOUT
-  ===================================================== */
+  ========================= */
   if (method === "POST" && url === "/api/auth/logout") {
     const cookies = parseCookie(headers.cookie || "");
-    const sessionId = cookies.be_session;
+    const sid = cookies.be_session;
 
-    if (sessionId && sessions.has(sessionId)) {
-      sessions.delete(sessionId);
+    if (sid && sessions.has(sid)) {
+      sessions.delete(sid);
     }
 
     clearSessionCookie(req, res);
