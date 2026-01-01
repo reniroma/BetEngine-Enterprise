@@ -3,10 +3,10 @@
  * POST /api/auth/login
  *
  * Vercel Serverless Function (Node)
- * Sets HttpOnly cookie session compatible with /api/auth/me
+ * Sets HttpOnly cookie session (stub)
  *
- * COOKIE FORMAT (MUST MATCH /api/auth/me):
- *   be_session = base64url(JSON.stringify({ user, role, premium, exp }))
+ * Cookie format MUST match /api/auth/me expectations:
+ * base64url(JSON.stringify({ user, role, premium, exp }))
  *********************************************************/
 "use strict";
 
@@ -17,11 +17,6 @@ function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
   if (typeof proto === "string") return proto.toLowerCase().includes("https");
   return false;
-}
-
-function base64UrlEncodeString(str) {
-  const b64 = Buffer.from(str, "utf8").toString("base64");
-  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
 function setCookie(res, name, value, opts = {}) {
@@ -36,6 +31,12 @@ function setCookie(res, name, value, opts = {}) {
   res.setHeader("Set-Cookie", parts.join("; "));
 }
 
+function base64UrlEncodeJson(obj) {
+  const json = JSON.stringify(obj);
+  const b64 = Buffer.from(json, "utf8").toString("base64");
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
 async function readJsonBody(req) {
   try {
     const chunks = [];
@@ -45,14 +46,6 @@ async function readJsonBody(req) {
   } catch {
     return {};
   }
-}
-
-function normalizeUsernameFromEmail(email) {
-  if (typeof email !== "string") return "user";
-  const e = email.trim();
-  if (!e) return "user";
-  if (e.includes("@")) return e.split("@")[0] || "user";
-  return e || "user";
 }
 
 module.exports = async (req, res) => {
@@ -70,7 +63,6 @@ module.exports = async (req, res) => {
   const email = typeof body.email === "string" ? body.email.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
 
-  // Minimal validation (stub)
   if (!email || !password) {
     res.statusCode = 400;
     return res.end(
@@ -84,33 +76,24 @@ module.exports = async (req, res) => {
     );
   }
 
-  // STUB user (replace later with real auth lookup)
+  // STUB user (replace later with real credential check)
   const user = {
     id: "stub-1",
-    username: normalizeUsernameFromEmail(email),
+    username: email.includes("@") ? email.split("@")[0] : "user",
     email
   };
 
-  const sessionPayload = {
-    user,
-    role: "user",
-    premium: false,
-    exp: Date.now() + SESSION_TTL_MS
-  };
+  const exp = Date.now() + SESSION_TTL_MS;
 
-  const sessionValue = base64UrlEncodeString(JSON.stringify(sessionPayload));
+  const sessionPayload = { user, role: "user", premium: false, exp };
+  const cookieValue = base64UrlEncodeJson(sessionPayload);
 
-  const secure = isHttps(req);
-  const expires = new Date(sessionPayload.exp);
-  const maxAge = Math.floor(SESSION_TTL_MS / 1000);
-
-  setCookie(res, COOKIE_NAME, sessionValue, {
+  setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
     path: "/",
     httpOnly: true,
-    secure,
+    secure: isHttps(req),
     sameSite: "Lax",
-    expires,
-    maxAge
+    maxAge: Math.floor(SESSION_TTL_MS / 1000)
   });
 
   res.statusCode = 200;
