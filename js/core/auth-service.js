@@ -109,15 +109,13 @@
     }
   };
 
- /* =========================
+  /* =========================
      Public API
   ========================= */
 
   async function hydrate() {
     // GitHub Pages is static (no backend). Never call /api there.
-    const isGitHubPages = /(^|\.)github\.io$/i.test(location.hostname);
-
-    if (isGitHubPages) {
+    if (isGitHubPagesHost()) {
       const persisted = loadPersisted();
 
       if (persisted && persisted.authenticated && persisted.user) {
@@ -138,8 +136,11 @@
 
     // Try using the dedicated API client if present
     try {
-      if (window.BEAuthApi && typeof window.BEAuthApi.me === "function") {
-        const payload = await window.BEAuthApi.me(); // should throw or return JSON
+      // PATCH: support both names (BEAuthAPI is the canonical one)
+      const api = window.BEAuthAPI || window.BEAuthApi;
+
+      if (api && typeof api.me === "function") {
+        const payload = await api.me(); // should throw or return JSON
         applyFromMePayload(payload);
         emit();
         return getState();
@@ -194,8 +195,11 @@
 
     // Try to logout server-side (cookie)
     try {
-      if (window.BEAuthApi && typeof window.BEAuthApi.logout === "function") {
-        await window.BEAuthApi.logout();
+      // PATCH: support both names (BEAuthAPI is the canonical one)
+      const api = window.BEAuthAPI || window.BEAuthApi;
+
+      if (api && typeof api.logout === "function") {
+        await api.logout();
       } else {
         await fetch(`${API_BASE}/auth/logout`, {
           method: "POST",
@@ -228,5 +232,5 @@
   emit();
   hydrate();
 
-  console.log("auth-service.js v2.1 READY");
+  console.log("auth-service.js v2.2 READY");
 })();
