@@ -1,21 +1,52 @@
 /*********************************************************
- * BetEngine Enterprise – BACKEND SERVER (AUTH SKELETON)
- * FIX: Session Rotation + Cookie Hardening (Enterprise Safe)
+ * BetEngine Enterprise – BACKEND SERVER (AUTH)
+ * SQLite-backed + SESSION HARDENED + ACCOUNT LIFECYCLE
  *
- * Auth:
- * - Cookie-based session (HttpOnly)
- * - Endpoints:
+ * Endpoints:
  *   POST /api/auth/login
  *   POST /api/auth/register
  *   GET  /api/auth/me
  *   POST /api/auth/logout
+ *
+ * Account lifecycle:
+ *   POST /api/auth/change-password
+ *   POST /api/auth/forgot-password
+ *   POST /api/auth/reset-password
+ *   POST /api/auth/logout-all
  *********************************************************/
 
 const http = require("http");
 const crypto = require("crypto");
 const { serialize: serializeCookie, parse: parseCookie } = require("cookie");
 
+const {
+  getUserByEmail,
+  createUser,
+  createSession,
+  getSession,
+  deleteSession,
+  deleteAllSessionsForUser,
+  cleanupExpiredSessions,
+  refreshSessionExpiry,
+  updateUserPasswordById,
+  createPasswordResetToken,
+  getPasswordResetTokenBySelector,
+  consumePasswordResetToken
+} = require("./db");
+
 const PORT = process.env.PORT || 3001;
+
+/* =========================
+   SESSION CONFIG (SINGLE SOURCE)
+========================= */
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const SESSION_CLEANUP_INTERVAL_MS = 10 * 60 * 1000; // 10 minutes
+
+/* =========================
+   RESET TOKEN CONFIG
+========================= */
+const RESET_TOKEN_TTL_MS = 30 * 60 * 1000; // 30 minutes
+const RESET_TOKEN_BYTES = 32; // 256-bit
 
 /* =========================
    Security headers
@@ -24,7 +55,10 @@ function setSecurityHeaders(res) {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "no-referrer");
-  res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+  res.setHeader(
+    "Permissions-Policy",
+    "geolocation=(), microphone=(), camera=()"
+  );
 }
 
 /* =========================
@@ -52,43 +86,20 @@ function isHttps(req) {
   return proto.includes("https");
 }
 
-function getClientIp(req) {
-  const xf = req.headers["x-forwarded-for"];
-  if (typeof xf === "string" && xf.trim()) return xf.split(",")[0].trim();
-  return req.socket && req.socket.remoteAddress ? String(req.socket.remoteAddress) : "0.0.0.0";
-}
-
 /* =========================
-   Body parsing + limits
+   Body parsing
 ========================= */
-const MAX_JSON_BODY_BYTES = 16 * 1024;
-
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
-    let size = 0;
-    const chunks = [];
-
-    req.on("data", (chunk) => {
-      size += chunk.length;
-      if (size > MAX_JSON_BODY_BYTES) {
-        reject(Object.assign(new Error("Payload too large"), { code: "BODY_TOO_LARGE" }));
-        req.destroy();
-        return;
-      }
-      chunks.push(chunk);
-    });
-
+    let raw = "";
+    req.on("data", (c) => (raw += c));
     req.on("end", () => {
       try {
-        const raw = Buffer.concat(chunks).toString("utf8");
-        const data = raw ? JSON.parse(raw) : {};
-        resolve(data && typeof data === "object" ? data : {});
+        resolve(raw ? JSON.parse(raw) : {});
       } catch {
         reject(Object.assign(new Error("Invalid JSON"), { code: "INVALID_JSON" }));
       }
     });
-
-    req.on("error", (e) => reject(e));
   });
 }
 
@@ -101,129 +112,33 @@ function normalizeEmail(v) {
   return typeof v === "string" ? v.trim().toLowerCase() : "";
 }
 
-const PASSWORD_MIN = 8;
-const PASSWORD_MAX = 128;
-
-function validateEmail(email) {
-  if (!email) return { ok: false, code: "VALIDATION_ERROR", message: "Email is required" };
-  if (email.length > 254) return { ok: false, code: "VALIDATION_ERROR", message: "Email too long" };
-  if (!EMAIL_RE.test(email)) return { ok: false, code: "VALIDATION_ERROR", message: "Invalid email format" };
-  return { ok: true };
+function validateEmail(e) {
+  return !!(e && EMAIL_RE.test(e) && e.length <= 254);
 }
 
-function validatePassword(password) {
-  if (!password) return { ok: false, code: "VALIDATION_ERROR", message: "Password is required" };
-  if (password.length < PASSWORD_MIN) {
-    return { ok: false, code: "VALIDATION_ERROR", message: `Password must be at least ${PASSWORD_MIN} characters` };
-  }
-  if (password.length > PASSWORD_MAX) {
-    return { ok: false, code: "VALIDATION_ERROR", message: `Password must be at most ${PASSWORD_MAX} characters` };
-  }
-  return { ok: true };
+function validatePassword(p) {
+  return typeof p === "string" && p.length >= 8 && p.length <= 128;
 }
 
 /* =========================
-   PASSWORD HASHING
+   Password hashing
 ========================= */
-const HASH_ITERATIONS = 100_000;
-const HASH_KEYLEN = 64;
-const HASH_DIGEST = "sha512";
-
 function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
   const hash = crypto
-    .pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST)
+    .pbkdf2Sync(password, salt, 100000, 64, "sha512")
     .toString("hex");
   return { salt, hash };
 }
 
 function verifyPassword(password, salt, expectedHash) {
   const hash = crypto
-    .pbkdf2Sync(password, salt, HASH_ITERATIONS, HASH_KEYLEN, HASH_DIGEST)
+    .pbkdf2Sync(password, salt, 100000, 64, "sha512")
     .toString("hex");
-  return crypto.timingSafeEqual(Buffer.from(hash, "hex"), Buffer.from(expectedHash, "hex"));
-}
 
-/* =========================
-   Rate limiting
-========================= */
-const RATE_WINDOW_MS = 60_000;
-const RATE_LIMIT_LOGIN = 10;
-const RATE_LIMIT_REGISTER = 5;
-
-const rateStore = new Map();
-
-function rateKey(req, route) {
-  return `${getClientIp(req)}::${route}`;
-}
-
-function rateCheck(req, route, limit) {
-  const key = rateKey(req, route);
-  const now = Date.now();
-  const cur = rateStore.get(key);
-
-  if (!cur || now >= cur.resetAt) {
-    rateStore.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return { ok: true, remaining: limit - 1, resetAt: now + RATE_WINDOW_MS };
-  }
-
-  if (cur.count >= limit) {
-    return { ok: false, remaining: 0, resetAt: cur.resetAt };
-  }
-
-  cur.count += 1;
-  rateStore.set(key, cur);
-  return { ok: true, remaining: Math.max(0, limit - cur.count), resetAt: cur.resetAt };
-}
-
-function applyRateHeaders(res, check) {
-  res.setHeader("X-RateLimit-Remaining", String(check.remaining ?? 0));
-  if (check.resetAt) res.setHeader("X-RateLimit-Reset", String(check.resetAt));
-}
-
-/* =========================
-   TEMP STORES (DB later)
-========================= */
-const sessions = new Map(); // sessionId -> { user, role, premium, expiresAt }
-const users = new Map();    // email -> user
-
-/* =========================
-   Session helpers (FIX)
-========================= */
-const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
-
-function cleanupExpiredSessions() {
-  const now = Date.now();
-  for (const [sid, sess] of sessions.entries()) {
-    if (!sess || sess.expiresAt <= now) {
-      sessions.delete(sid);
-    }
-  }
-}
-
-function createSession(user) {
-  cleanupExpiredSessions();
-
-  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-  sessions.set(sessionId, {
-    user: { id: user.id, email: user.email, username: user.username },
-    role: user.role,
-    premium: user.premium,
-    expiresAt: Date.now() + SESSION_TTL_MS
-  });
-  return sessionId;
-}
-
-function rotateSession(req, res, user) {
-  // Invalidate existing session cookie if present (session fixation protection)
-  const cookies = parseCookie(req.headers.cookie || "");
-  const oldSid = cookies.be_session;
-  if (oldSid && sessions.has(oldSid)) {
-    sessions.delete(oldSid);
-  }
-
-  const newSid = createSession(user);
-  setSessionCookie(req, res, newSid);
-  return newSid;
+  return crypto.timingSafeEqual(
+    Buffer.from(hash, "hex"),
+    Buffer.from(expectedHash, "hex")
+  );
 }
 
 /* =========================
@@ -231,30 +146,62 @@ function rotateSession(req, res, user) {
 ========================= */
 function setSessionCookie(req, res, sessionId) {
   const secure = isHttps(req);
+
   res.setHeader(
     "Set-Cookie",
     serializeCookie("be_session", sessionId, {
       httpOnly: true,
-      sameSite: "lax",
-      path: "/",
+      sameSite: secure ? "strict" : "lax",
       secure,
-      maxAge: Math.floor(SESSION_TTL_MS / 1000)
+      path: "/",
+      maxAge: SESSION_TTL_MS / 1000
     })
   );
 }
 
 function clearSessionCookie(req, res) {
-  const secure = isHttps(req);
   res.setHeader(
     "Set-Cookie",
     serializeCookie("be_session", "", {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       path: "/",
-      secure,
       expires: new Date(0)
     })
   );
+}
+
+/* =========================
+   Session auth helper
+========================= */
+async function requireSession(req) {
+  const cookies = parseCookie(req.headers.cookie || "");
+  const sessionId = cookies.be_session;
+  if (!sessionId) return null;
+
+  const sess = await getSession(sessionId);
+  if (!sess) return null;
+
+  return { sessionId, sess };
+}
+
+/* =========================
+   Reset token helpers (selector + verifier)
+   Stored in DB as:
+     selector (public id)
+     verifier_hash (sha256 hex of verifier)
+========================= */
+function sha256Hex(input) {
+  return crypto.createHash("sha256").update(String(input), "utf8").digest("hex");
+}
+
+function makeResetToken() {
+  const selector = crypto.randomBytes(16).toString("hex"); // public
+  const verifier = crypto.randomBytes(RESET_TOKEN_BYTES).toString("hex"); // secret
+  const verifierHash = sha256Hex(verifier);
+  // Token sent to user (single string)
+  const token = `${selector}.${verifier}`;
+  return { selector, verifier, verifierHash, token };
 }
 
 /* =========================
@@ -263,128 +210,96 @@ function clearSessionCookie(req, res) {
 const server = http.createServer(async (req, res) => {
   const { method, url, headers } = req;
 
-  if (method === "GET" && url === "/health") {
-    return sendJSON(res, 200, { ok: true });
-  }
-
   /* =========================
-     AUTH: LOGIN
+     LOGIN
   ========================= */
   if (method === "POST" && url === "/api/auth/login") {
-    const rc = rateCheck(req, "login", RATE_LIMIT_LOGIN);
-    applyRateHeaders(res, rc);
-    if (!rc.ok) {
-      return sendJSON(res, 429, {
-        error: { code: "RATE_LIMITED", message: "Too many attempts. Please try again later." }
-      });
-    }
-
-    let data = {};
-    try {
-      data = await readJsonBody(req);
-    } catch {
-      return sendJSON(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON body" } });
-    }
+    const data = await readJsonBody(req).catch(() => null);
+    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
 
     const email = normalizeEmail(data.email);
-    const password = typeof data.password === "string" ? data.password : "";
+    const password = data.password;
 
-    if (!validateEmail(email).ok || !validatePassword(password).ok) {
-      return sendJSON(res, 400, {
-        error: { code: "VALIDATION_ERROR", message: "Email and password are required" }
-      });
+    if (!validateEmail(email) || !validatePassword(password)) {
+      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
     }
 
-    const user = users.get(email);
-    if (!user || !verifyPassword(password, user.passwordSalt, user.passwordHash)) {
-      return sendJSON(res, 401, {
-        error: { code: "INVALID_CREDENTIALS", message: "Invalid email or password" }
-      });
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
     }
 
-    const sid = rotateSession(req, res, user);
-    const sess = sessions.get(sid);
+    if (!verifyPassword(password, user.password_salt, user.password_hash)) {
+      return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
+    }
+
+    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+
+    await createSession({ sessionId, userId: user.id, expiresAt });
+    setSessionCookie(req, res, sessionId);
 
     return sendJSON(res, 200, {
       authenticated: true,
-      user: sess.user,
-      role: sess.role,
-      premium: sess.premium
+      user: { id: user.id, email: user.email, username: user.username },
+      role: user.role,
+      premium: !!user.premium
     });
   }
 
   /* =========================
-     AUTH: REGISTER
+     REGISTER (kept as-is)
   ========================= */
   if (method === "POST" && url === "/api/auth/register") {
-    const rc = rateCheck(req, "register", RATE_LIMIT_REGISTER);
-    applyRateHeaders(res, rc);
-    if (!rc.ok) {
-      return sendJSON(res, 429, {
-        error: { code: "RATE_LIMITED", message: "Too many attempts. Please try again later." }
-      });
-    }
-
-    let data = {};
-    try {
-      data = await readJsonBody(req);
-    } catch {
-      return sendJSON(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON body" } });
-    }
+    const data = await readJsonBody(req).catch(() => null);
+    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
 
     const email = normalizeEmail(data.email);
-    const password = typeof data.password === "string" ? data.password : "";
+    const password = data.password;
     const username =
       typeof data.username === "string" && data.username.trim()
         ? data.username.trim()
         : (email.includes("@") ? email.split("@")[0] : "user");
 
-    if (!validateEmail(email).ok || !validatePassword(password).ok) {
-      return sendJSON(res, 400, {
-        error: { code: "VALIDATION_ERROR", message: "Invalid registration data" }
-      });
+    if (!validateEmail(email) || !validatePassword(password)) {
+      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
     }
 
-    if (users.has(email)) {
-      return sendJSON(res, 409, {
-        error: { code: "USER_EXISTS", message: "User already exists" }
-      });
+    const existing = await getUserByEmail(email);
+    if (existing) {
+      return sendJSON(res, 409, { error: { code: "USER_EXISTS" } });
     }
 
     const { salt, hash } = hashPassword(password);
-    const newUser = {
-      id: "u_" + crypto.randomBytes(10).toString("hex"),
+    const user = await createUser({
       email,
       username,
       passwordSalt: salt,
-      passwordHash: hash,
-      role: "user",
-      premium: false
-    };
+      passwordHash: hash
+    });
 
-    users.set(email, newUser);
+    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + SESSION_TTL_MS;
 
-    const sid = rotateSession(req, res, newUser);
-    const sess = sessions.get(sid);
+    await createSession({ sessionId, userId: user.id, expiresAt });
+    setSessionCookie(req, res, sessionId);
 
     return sendJSON(res, 201, {
       authenticated: true,
-      user: sess.user,
-      role: sess.role,
-      premium: sess.premium
+      user: { id: user.id, email: user.email, username: user.username },
+      role: user.role,
+      premium: !!user.premium
     });
   }
 
   /* =========================
-     AUTH: ME
+     ME (SLIDING SESSION)
   ========================= */
   if (method === "GET" && url === "/api/auth/me") {
-    cleanupExpiredSessions();
-
     const cookies = parseCookie(headers.cookie || "");
-    const sid = cookies.be_session;
+    const sessionId = cookies.be_session;
 
-    if (!sid || !sessions.has(sid)) {
+    if (!sessionId) {
       return sendJSON(res, 200, {
         authenticated: false,
         user: null,
@@ -393,24 +308,232 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    const sess = sessions.get(sid);
+    const sess = await getSession(sessionId);
+    if (!sess) {
+      return sendJSON(res, 200, {
+        authenticated: false,
+        user: null,
+        role: "user",
+        premium: false
+      });
+    }
+
+    // Sliding expiration
+    await refreshSessionExpiry(sessionId, Date.now() + SESSION_TTL_MS);
+    setSessionCookie(req, res, sessionId);
+
     return sendJSON(res, 200, {
       authenticated: true,
-      user: sess.user,
+      user: { id: sess.id, email: sess.email, username: sess.username },
       role: sess.role,
-      premium: sess.premium
+      premium: !!sess.premium
     });
   }
 
   /* =========================
-     AUTH: LOGOUT
+     LOGOUT (single session)
   ========================= */
   if (method === "POST" && url === "/api/auth/logout") {
     const cookies = parseCookie(headers.cookie || "");
-    const sid = cookies.be_session;
+    const sessionId = cookies.be_session;
 
-    if (sid && sessions.has(sid)) {
-      sessions.delete(sid);
+    if (sessionId) await deleteSession(sessionId);
+    clearSessionCookie(req, res);
+
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  /* =====================================================
+     ACCOUNT LIFECYCLE
+  ===================================================== */
+
+  /* =========================
+     CHANGE PASSWORD (requires session)
+     body: { oldPassword, newPassword }
+     - verifies old password
+     - updates hash
+     - revokes ALL sessions (including current)
+     - creates new session (keeps user logged-in)
+  ========================= */
+  if (method === "POST" && url === "/api/auth/change-password") {
+    const auth = await requireSession(req);
+    if (!auth) {
+      return sendJSON(res, 401, { error: { code: "UNAUTHORIZED" } });
+    }
+
+    const data = await readJsonBody(req).catch(() => null);
+    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+
+    const oldPassword = typeof data.oldPassword === "string" ? data.oldPassword : "";
+    const newPassword = typeof data.newPassword === "string" ? data.newPassword : "";
+
+    if (!validatePassword(oldPassword) || !validatePassword(newPassword)) {
+      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
+    }
+
+    // Load current user from session snapshot
+    const currentEmail = auth.sess.email;
+    const user = await getUserByEmail(currentEmail);
+    if (!user) {
+      clearSessionCookie(req, res);
+      return sendJSON(res, 401, { error: { code: "UNAUTHORIZED" } });
+    }
+
+    if (!verifyPassword(oldPassword, user.password_salt, user.password_hash)) {
+      return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
+    }
+
+    const { salt, hash } = hashPassword(newPassword);
+    await updateUserPasswordById(user.id, { passwordSalt: salt, passwordHash: hash });
+
+    // Revoke all sessions, then create a fresh one
+    await deleteAllSessionsForUser(user.id);
+
+    const newSessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+    await createSession({ sessionId: newSessionId, userId: user.id, expiresAt });
+    setSessionCookie(req, res, newSessionId);
+
+    return sendJSON(res, 200, {
+      authenticated: true,
+      user: { id: user.id, email: user.email, username: user.username },
+      role: user.role,
+      premium: !!user.premium
+    });
+  }
+
+  /* =========================
+     FORGOT PASSWORD
+     body: { email }
+     - never reveals if user exists
+     - creates reset token (selector.verifier)
+     - logs token to server console (dev-mode)
+  ========================= */
+  if (method === "POST" && url === "/api/auth/forgot-password") {
+    const data = await readJsonBody(req).catch(() => null);
+    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+
+    const email = normalizeEmail(data.email);
+
+    // Always return OK (no enumeration)
+    if (!validateEmail(email)) {
+      return sendJSON(res, 200, { ok: true });
+    }
+
+    const user = await getUserByEmail(email);
+    if (!user) {
+      return sendJSON(res, 200, { ok: true });
+    }
+
+    const { selector, verifierHash, token } = makeResetToken();
+    const expiresAt = Date.now() + RESET_TOKEN_TTL_MS;
+
+    await createPasswordResetToken({
+      userId: user.id,
+      selector,
+      verifierHash,
+      expiresAt
+    });
+
+    // DEV: replace later with real email delivery
+    console.log(`[RESET TOKEN][DEV] email=${email} token=${token}`);
+
+    return sendJSON(res, 200, { ok: true });
+  }
+
+  /* =========================
+     RESET PASSWORD
+     body: { token, newPassword }
+     - token format: selector.verifier
+     - verifies verifier hash
+     - updates password
+     - consumes token
+     - revokes ALL sessions
+     - creates NEW session (auto-login)
+  ========================= */
+  if (method === "POST" && url === "/api/auth/reset-password") {
+    const data = await readJsonBody(req).catch(() => null);
+    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+
+    const token = typeof data.token === "string" ? data.token.trim() : "";
+    const newPassword = typeof data.newPassword === "string" ? data.newPassword : "";
+
+    if (!token || !validatePassword(newPassword)) {
+      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
+    }
+
+    const parts = token.split(".");
+    if (parts.length !== 2) {
+      return sendJSON(res, 400, { error: { code: "INVALID_TOKEN" } });
+    }
+
+    const selector = parts[0];
+    const verifier = parts[1];
+    const verifierHash = sha256Hex(verifier);
+
+    const row = await getPasswordResetTokenBySelector(selector);
+    if (!row) {
+      return sendJSON(res, 400, { error: { code: "INVALID_TOKEN" } });
+    }
+
+    if (Date.now() > row.expires_at) {
+      await consumePasswordResetToken(selector);
+      return sendJSON(res, 400, { error: { code: "TOKEN_EXPIRED" } });
+    }
+
+    // Timing safe compare
+    const ok = crypto.timingSafeEqual(
+      Buffer.from(String(row.verifier_hash), "hex"),
+      Buffer.from(String(verifierHash), "hex")
+    );
+
+    if (!ok) {
+      return sendJSON(res, 400, { error: { code: "INVALID_TOKEN" } });
+    }
+
+    const user = await getUserByEmail(row.email);
+    if (!user) {
+      await consumePasswordResetToken(selector);
+      return sendJSON(res, 400, { error: { code: "INVALID_TOKEN" } });
+    }
+
+    const { salt, hash } = hashPassword(newPassword);
+    await updateUserPasswordById(user.id, { passwordSalt: salt, passwordHash: hash });
+    await consumePasswordResetToken(selector);
+
+    // Revoke all sessions, then create a fresh one (auto-login)
+    await deleteAllSessionsForUser(user.id);
+
+    const newSessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+    const expiresAt = Date.now() + SESSION_TTL_MS;
+    await createSession({ sessionId: newSessionId, userId: user.id, expiresAt });
+    setSessionCookie(req, res, newSessionId);
+
+    return sendJSON(res, 200, {
+      authenticated: true,
+      user: { id: user.id, email: user.email, username: user.username },
+      role: user.role,
+      premium: !!user.premium
+    });
+  }
+
+  /* =========================
+     LOGOUT ALL (revoke all sessions)
+     - requires session
+     - deletes all sessions for user
+     - clears cookie
+  ========================= */
+  if (method === "POST" && url === "/api/auth/logout-all") {
+    const auth = await requireSession(req);
+    if (!auth) {
+      clearSessionCookie(req, res);
+      return sendJSON(res, 200, { ok: true });
+    }
+
+    const userEmail = auth.sess.email;
+    const user = await getUserByEmail(userEmail);
+    if (user) {
+      await deleteAllSessionsForUser(user.id);
     }
 
     clearSessionCookie(req, res);
@@ -419,6 +542,13 @@ const server = http.createServer(async (req, res) => {
 
   return notFound(res);
 });
+
+/* =========================
+   SESSION CLEANUP JOB
+========================= */
+setInterval(() => {
+  cleanupExpiredSessions().catch(() => {});
+}, SESSION_CLEANUP_INTERVAL_MS);
 
 /* =========================
    Listen
