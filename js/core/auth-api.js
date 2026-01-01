@@ -162,16 +162,19 @@
     return r.data;
   };
 
-  // POST /api/auth/login
-  // body: { email, password }
-  const login = async ({ email, password } = {}) => {
-    const r = await request("/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-    return r.data;
-  };
+ // POST /api/auth/login
+// body: { email, password }  (STRICT)
+const login = async ({ email, password } = {}) => {
+  const e = String(email ?? "").trim();
+  const p = String(password ?? "");
+
+  const r = await request("/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: e, password: p })
+  });
+  return r.data;
+};
 
   // POST /api/auth/register
   // body: { username, email, password }
