@@ -254,7 +254,14 @@
   };
 
   const readCreds = (form) => {
-    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]']);
+    const e = pick(form, [
+      'input[name="email"]',
+      '#email',
+      'input[type="email"]',
+      'input[name="username"]',
+      '#username',
+      'input[type="text"]'
+    ]);
     const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
     return {
       email: (e && e.value ? e.value.trim() : ""),
@@ -269,15 +276,28 @@
       return;
     }
 
-    // Support both signatures: login(email, password) and login({email, password})
+    // Support multiple signatures safely:
+    // - login({ email, password })  (canonical)
+    // - login(email, password)
+    // - legacy fallback: login({ username, password })
     try {
-      const r = api.login(email, password);
+      const r = api.login({ email, password });
       if (r && typeof r.then === "function") await r;
       return;
     } catch (_) {
-      const r2 = api.login({ email, password });
-      if (r2 && typeof r2.then === "function") await r2;
+      // continue
     }
+
+    try {
+      const r2 = api.login(email, password);
+      if (r2 && typeof r2.then === "function") await r2;
+      return;
+    } catch (_) {
+      // continue
+    }
+
+    const r3 = api.login({ username: email, password });
+    if (r3 && typeof r3.then === "function") await r3;
   };
 
   document.addEventListener(
