@@ -253,9 +253,23 @@
     return null;
   };
 
-  const readCreds = (form) => {
-    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]']);
-    const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
+ const readCreds = (form) => {
+    // Email first, fallback to existing username field (HTML unchanged)
+    const e = pick(form, [
+      'input[name="email"]',
+      '#email',
+      'input[type="email"]',
+      'input[name="username"]',
+      '#username',
+      'input[type="text"]'
+    ]);
+
+    const p = pick(form, [
+      'input[name="password"]',
+      '#password',
+      'input[type="password"]'
+    ]);
+
     return {
       email: (e && e.value ? e.value.trim() : ""),
       password: (p && p.value ? p.value : "")
