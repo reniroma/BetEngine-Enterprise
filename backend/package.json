@@ -11,6 +11,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "cookie": "^0.6.0"
+    "cookie": "^0.6.0",
+    "better-sqlite3": "^11.0.0"
   }
 }
