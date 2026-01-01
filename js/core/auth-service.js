@@ -263,21 +263,18 @@
   };
 
   const callLogin = async (email, password) => {
-    const api = window.BEAuthAPI || window.BEAuthApi || window.BEAuth;
+    const api = window.BEAuthAPI || window.BEAuthApi;
     if (!api || typeof api.login !== "function") {
-      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi/BEAuth");
+      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi");
       return;
     }
 
-    // Strict: prefer object signature { email, password }
-    try {
-      const r = api.login({ email, password });
-      if (r && typeof r.then === "function") await r;
-      return;
-    } catch (_) {
-      // Backward compatibility (older clients might accept (email, password))
-      const r2 = api.login(email, password);
-      if (r2 && typeof r2.then === "function") await r2;
+    // STRICT signature: login({ email, password })
+    await api.login({ email, password });
+
+    // Refresh UI state immediately (avoid requiring reload)
+    if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
+      await window.BEAuth.hydrate();
     }
   };
 
