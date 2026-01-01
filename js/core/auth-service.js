@@ -253,8 +253,7 @@
     return null;
   };
 
- const readCreds = (form) => {
-    // Email first, fallback to existing username field (HTML unchanged)
+  const readCreds = (form) => {
     const e = pick(form, [
       'input[name="email"]',
       '#email',
@@ -263,13 +262,7 @@
       '#username',
       'input[type="text"]'
     ]);
-
-    const p = pick(form, [
-      'input[name="password"]',
-      '#password',
-      'input[type="password"]'
-    ]);
-
+    const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
     return {
       email: (e && e.value ? e.value.trim() : ""),
       password: (p && p.value ? p.value : "")
@@ -283,13 +276,13 @@
       return;
     }
 
-    // Support both signatures: login(email, password) and login({email, password})
+    // Prefer object signature: login({ email, password })
     try {
-      const r = api.login(email, password);
+      const r = api.login({ email, password });
       if (r && typeof r.then === "function") await r;
       return;
     } catch (_) {
-      const r2 = api.login({ email, password });
+      const r2 = api.login(email, password);
       if (r2 && typeof r2.then === "function") await r2;
     }
   };
@@ -297,15 +290,15 @@
   document.addEventListener(
     "submit",
     (e) => {
-     const { email, password } = readCreds(form);
+      const form = e.target && e.target.closest ? e.target.closest(".auth-form") : null;
+      if (!form) return;
 
+      e.preventDefault();
+      e.stopPropagation();
+
+      const { email, password } = readCreds(form);
       if (!email || !password) {
         console.warn("[BEAuth] Missing email/password");
-        return;
-      }
-
-      if (!email.includes("@")) {
-        console.warn("[BEAuth] Invalid email (must contain @)");
         return;
       }
 
