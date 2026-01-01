@@ -289,9 +289,30 @@
     document.body.style.overflow = "";
   };
 
-  const readCreds = (form) => {
-    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]', 'input[type="text"]']);
-    const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
+  const readCreds = (formEl) => {
+    // Source of truth: submitted form element
+    try {
+      const fd = new FormData(formEl);
+      const emailRaw = fd.get("email");
+      const passRaw = fd.get("password");
+
+      const email =
+        typeof emailRaw === "string" ? emailRaw.trim() : "";
+      const password =
+        typeof passRaw === "string" ? passRaw : "";
+
+      // If names exist, FormData is definitive.
+      if (email || password) {
+        return { email, password };
+      }
+    } catch {
+      // ignore, fallback below
+    }
+
+    // Fallback: strict selectors only (avoid generic input[type="text"])
+    const e = pick(formEl, ['input[name="email"]', '#email', 'input[type="email"]']);
+    const p = pick(formEl, ['input[name="password"]', '#password', 'input[type="password"]']);
+
     return {
       email: (e && e.value ? e.value.trim() : ""),
       password: (p && p.value ? p.value : "")
@@ -313,13 +334,25 @@
   document.addEventListener(
     "submit",
     (e) => {
-      const form = e.target && e.target.closest ? e.target.closest(".auth-form") : null;
-      if (!form) return;
+      // Hard guarantee: use the real submitted form element
+      const formEl =
+        (e.target && e.target.tagName === "FORM")
+          ? e.target
+          : (e.target && e.target.closest ? e.target.closest("form") : null);
+
+      if (!formEl) return;
+
+      // Only handle auth forms (form itself or inside auth-form wrapper)
+      const isAuth =
+        formEl.classList.contains("auth-form") ||
+        !!formEl.closest(".auth-form");
+
+      if (!isAuth) return;
 
       e.preventDefault();
       e.stopPropagation();
 
-      const { email, password } = readCreds(form);
+      const { email, password } = readCreds(formEl);
       if (!email || !password) {
         console.warn("[BEAuth] Missing email/password");
         return;
