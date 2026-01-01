@@ -254,28 +254,28 @@
   };
 
   const readCreds = (form) => {
-    const u = pick(form, ['input[name="username"]', '#username', 'input[type="text"]']);
+    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]']);
     const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
     return {
-      username: (u && u.value ? u.value.trim() : ""),
+      email: (e && e.value ? e.value.trim() : ""),
       password: (p && p.value ? p.value : "")
     };
   };
 
-  const callLogin = async (username, password) => {
+  const callLogin = async (email, password) => {
     const api = window.BEAuthAPI || window.BEAuthApi || window.BEAuth;
     if (!api || typeof api.login !== "function") {
       console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi/BEAuth");
       return;
     }
 
-    // Support both signatures: login(username, password) and login({username, password})
+    // Support both signatures: login(email, password) and login({email, password})
     try {
-      const r = api.login(username, password);
+      const r = api.login(email, password);
       if (r && typeof r.then === "function") await r;
       return;
     } catch (_) {
-      const r2 = api.login({ username, password });
+      const r2 = api.login({ email, password });
       if (r2 && typeof r2.then === "function") await r2;
     }
   };
@@ -289,13 +289,13 @@
       e.preventDefault();
       e.stopPropagation();
 
-      const { username, password } = readCreds(form);
-      if (!username || !password) {
-        console.warn("[BEAuth] Missing username/password");
+      const { email, password } = readCreds(form);
+      if (!email || !password) {
+        console.warn("[BEAuth] Missing email/password");
         return;
       }
 
-      callLogin(username, password).catch((err) => {
+      callLogin(email, password).catch((err) => {
         console.error("[BEAuth] Login failed:", err);
       });
     },
