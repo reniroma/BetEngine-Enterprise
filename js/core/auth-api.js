@@ -215,7 +215,7 @@
   /* ==================================================
      PUBLIC API (Stable Namespace)
   ================================================== */
-  window.BEAuthAPI = Object.freeze({
+  const API = Object.freeze({
     request,
     me,
     login,
@@ -225,6 +225,10 @@
     resetPassword,
     BEApiError
   });
+
+  // Backward/forward compatible aliases (auth-service expects BEAuthApi)
+  window.BEAuthApi = API;
+  window.BEAuthAPI = API;
 
   console.log("auth-api.js v1.0 READY");
 })();
