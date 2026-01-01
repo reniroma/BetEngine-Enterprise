@@ -297,15 +297,15 @@
   document.addEventListener(
     "submit",
     (e) => {
-      const form = e.target && e.target.closest ? e.target.closest(".auth-form") : null;
-      if (!form) return;
+     const { email, password } = readCreds(form);
 
-      e.preventDefault();
-      e.stopPropagation();
-
-      const { email, password } = readCreds(form);
       if (!email || !password) {
         console.warn("[BEAuth] Missing email/password");
+        return;
+      }
+
+      if (!email.includes("@")) {
+        console.warn("[BEAuth] Invalid email (must contain @)");
         return;
       }
 
