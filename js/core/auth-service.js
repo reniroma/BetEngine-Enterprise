@@ -110,6 +110,32 @@
   };
 
   /* =========================
+     UI helpers (close overlays)
+  ========================= */
+  const closeAuthOverlays = () => {
+    // Best-effort close (desktop + mobile)
+    const nodes = document.querySelectorAll(
+      "#login-modal, #register-modal, #forgot-password-modal, .be-auth-overlay"
+    );
+    nodes.forEach((el) => el.classList.remove("show", "open", "active"));
+
+    // Safety: remove common body locks
+    document.body.classList.remove("be-locked", "no-scroll");
+    document.documentElement.classList.remove("be-locked", "no-scroll");
+    document.body.style.overflow = "";
+  };
+
+  // Auto-close auth overlays after successful auth state
+  document.addEventListener("auth:changed", (e) => {
+    try {
+      const st = e && e.detail ? e.detail : null;
+      if (st && st.authenticated === true) closeAuthOverlays();
+    } catch {
+      // ignore
+    }
+  });
+
+  /* =========================
      Public API
   ========================= */
 
@@ -253,6 +279,16 @@
     return null;
   };
 
+  const closeAuthOverlays = () => {
+    const nodes = document.querySelectorAll(
+      "#login-modal, #register-modal, #forgot-password-modal, .be-auth-overlay"
+    );
+    nodes.forEach((el) => el.classList.remove("show", "open", "active"));
+    document.body.classList.remove("be-locked", "no-scroll");
+    document.documentElement.classList.remove("be-locked", "no-scroll");
+    document.body.style.overflow = "";
+  };
+
   const readCreds = (form) => {
     const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]', 'input[type="text"]']);
     const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
@@ -263,18 +299,20 @@
   };
 
   const callLogin = async (email, password) => {
-    const api = window.BEAuthAPI || window.BEAuthApi;
+    const api = window.BEAuthAPI || window.BEAuthApi || window.BEAuth;
     if (!api || typeof api.login !== "function") {
-      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi");
+      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi/BEAuth");
       return;
     }
 
-    // STRICT signature: login({ email, password })
-    await api.login({ email, password });
-
-    // Refresh UI state immediately (avoid requiring reload)
-    if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
-      await window.BEAuth.hydrate();
+    // Support both signatures: login(email, password) and login({email, password})
+    try {
+      const r = api.login(email, password);
+      if (r && typeof r.then === "function") await r;
+      return;
+    } catch (_) {
+      const r2 = api.login({ email, password });
+      if (r2 && typeof r2.then === "function") await r2;
     }
   };
 
@@ -293,7 +331,17 @@
         return;
       }
 
-      callLogin(email, password).catch((err) => {
+      (async () => {
+        await callLogin(email, password);
+
+        // Immediately refresh auth state (no Ctrl+R needed)
+        if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
+          await window.BEAuth.hydrate();
+        }
+
+        // Best-effort close overlays right away
+        closeAuthOverlays();
+      })().catch((err) => {
         console.error("[BEAuth] Login failed:", err);
       });
     },
