@@ -350,6 +350,58 @@ function initAuthActionOwnership() {
   if (document.documentElement.dataset.beAuthActionsInit === "1") return;
   document.documentElement.dataset.beAuthActionsInit = "1";
 
+  /* ======================================================
+     ERROR PARITY (UI NORMALIZER)
+     - Normalizes any thrown value into: { status, code, message, details, field }
+     - Provides consistent UI messages across:
+       VALIDATION_ERROR / INVALID_CREDENTIALS / USER_EXISTS / TIMEOUT / NETWORK_ERROR / HTTP_ERROR
+  ====================================================== */
+  const normalizeUIError = (err) => {
+    const status = Number(
+      err?.status ??
+      err?.response?.status ??
+      err?.res?.status ??
+      0
+    );
+
+    const code = String(
+      err?.code ??
+      err?.error?.code ??
+      ""
+    );
+
+    const message = String(
+      err?.message ??
+      err?.error?.message ??
+      ""
+    ).trim();
+
+    const details =
+      err?.details ??
+      err?.error?.details ??
+      null;
+
+    const field = String(details?.field || "").trim();
+
+    return { status, code, message, details, field, raw: err };
+  };
+
+  const defaultErrorMessage = ({ status, code, message }) => {
+    if (code === "TIMEOUT") return "Request timed out. Please try again.";
+    if (code === "NETWORK_ERROR") return "Network error. Please check your connection.";
+    if (message) return message;
+    return status ? `Request failed (HTTP ${status})` : "Request failed";
+  };
+
+  const clearPasswordOnlyIn = (scope) => {
+    const passEl = findPassword(scope);
+    if (passEl) passEl.value = "";
+    passEl?.focus?.();
+  };
+
+  /* =======================
+     LOGIN
+  ======================= */
   const runLogin = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -366,39 +418,43 @@ function initAuthActionOwnership() {
       setBusy(scope, true);
       await API.login({ email, password });
 
-     const me = await API.me();
+      const me = await API.me();
 
-/* SYNC STATE MANAGER (BEAuth) */
-if (window.BEAuth?.setAuth) {
-  window.BEAuth.setAuth(me);
-}
+      /* SYNC STATE MANAGER (BEAuth) */
+      if (window.BEAuth?.setAuth) {
+        window.BEAuth.setAuth(me);
+      }
 
-const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
-document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
+      const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
+      document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
 
       window.BE_closeAuthModals?.();
-      // Ensure fields reset if present
       clearLoginFieldsIn(scope);
     } catch (err) {
-      const status = Number(err?.status || 0);
-      const code = String(err?.code || "");
+      const E = normalizeUIError(err);
 
-      if (status === 401 && code === "INVALID_CREDENTIALS") {
+      if (E.status === 401 && E.code === "INVALID_CREDENTIALS") {
         setMessage(containerForMessage, "error", "Invalid email or password.");
         clearLoginFieldsIn(scope);
         return;
       }
 
-      const msg =
-        String(err?.message || "").trim() ||
-        (status ? `Request failed (HTTP ${status})` : "Request failed");
+      if (E.status === 400 && E.code === "VALIDATION_ERROR") {
+        setMessage(containerForMessage, "error", E.message || "Email and password are required.");
+        clearPasswordOnlyIn(scope);
+        return;
+      }
 
-      setMessage(containerForMessage, "error", msg);
+      setMessage(containerForMessage, "error", defaultErrorMessage(E));
+      clearPasswordOnlyIn(scope);
     } finally {
       setBusy(scope, false);
     }
   };
 
+  /* =======================
+     REGISTER
+  ======================= */
   const runRegister = async (registerModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -418,25 +474,25 @@ document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
 
       const me = await API.me();
 
-/* SYNC STATE MANAGER (BEAuth) */
-if (window.BEAuth?.setAuth) {
-  window.BEAuth.setAuth(me);
-}
+      /* SYNC STATE MANAGER (BEAuth) */
+      if (window.BEAuth?.setAuth) {
+        window.BEAuth.setAuth(me);
+      }
 
-const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
-document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
+      const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
+      document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
 
       window.BE_closeAuthModals?.();
     } catch (err) {
-      const status = Number(err?.status || 0);
-      const code = String(err?.code || "");
+      const E = normalizeUIError(err);
 
-      if (status === 409 && code === "USER_EXISTS") {
-        const field = String(err?.details?.field || "");
+      // DUPLICATE USER (server parity)
+      if (E.status === 409 && E.code === "USER_EXISTS") {
+        const f = String(E.field || "");
         const msg =
-          field === "username"
+          f === "username"
             ? "Username is already taken."
-            : field === "email"
+            : f === "email"
               ? "Email is already registered."
               : "User already exists.";
 
@@ -445,17 +501,24 @@ document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
         return;
       }
 
-      const msg =
-        String(err?.message || "").trim() ||
-        (status ? `Request failed (HTTP ${status})` : "Request failed");
+      // VALIDATION (client parity)
+      if (E.status === 400 && E.code === "VALIDATION_ERROR") {
+        setMessage(containerForMessage, "error", E.message || "Username, email, and password are required.");
+        clearRegisterFieldsIn(scope);
+        return;
+      }
 
-      setMessage(containerForMessage, "error", msg);
-      clearRegisterFieldsIn(scope);
+      // Any other error: keep username/email (optional), but ALWAYS clear password for security
+      setMessage(containerForMessage, "error", defaultErrorMessage(E));
+      clearPasswordOnlyIn(scope);
     } finally {
       setBusy(scope, false);
     }
   };
 
+  /* =======================
+     FORGOT PASSWORD
+  ======================= */
   const runForgot = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -471,100 +534,19 @@ document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
       await API.forgotPassword({ email });
       setMessage(containerForMessage, "success", "If the email exists, you will receive password reset instructions.");
     } catch (err) {
-      const status = Number(err?.status || 0);
-      const msg =
-        String(err?.message || "").trim() ||
-        (status ? `Request failed (HTTP ${status})` : "Request failed");
-      setMessage(containerForMessage, "error", msg);
+      const E = normalizeUIError(err);
+
+      if (E.status === 400 && E.code === "VALIDATION_ERROR") {
+        setMessage(containerForMessage, "error", E.message || "Email is required.");
+        findEmail(scope)?.focus?.();
+        return;
+      }
+
+      setMessage(containerForMessage, "error", defaultErrorMessage(E));
     } finally {
       setBusy(scope, false);
     }
   };
-
-
-  // CAPTURE submit ownership
-  document.addEventListener(
-    "submit",
-    async (e) => {
-      const form = e.target;
-      if (!(form instanceof HTMLFormElement)) return;
-
-      const loginModal = qs("#login-modal");
-      const registerModal = qs("#register-modal");
-
-      const inLogin = !!(loginModal && loginModal.contains(form));
-      const inRegister = !!(registerModal && registerModal.contains(form));
-      if (!inLogin && !inRegister) return;
-
-      // Take full ownership
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-      if (inLogin) {
-        const forgotOpen = loginModal.classList.contains("state-forgot-open");
-        const hasPassword = !!findPassword(form);
-        if (forgotOpen && !hasPassword) return runForgot(loginModal, form);
-        return runLogin(loginModal, form);
-      }
-
-      return runRegister(registerModal, form);
-    },
-    true
-  );
-
-  // CAPTURE click ownership (handles non-submit buttons)
-  document.addEventListener(
-    "click",
-    async (e) => {
-      const loginModal = qs("#login-modal");
-      const registerModal = qs("#register-modal");
-
-      const target = e.target;
-      if (!(target instanceof Element)) return;
-
-      // Heuristics: any primary login button likely inside login modal
-      const btn = target.closest('button, input[type="button"], input[type="submit"]');
-      if (!btn) return;
-
-      const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
-      const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
-      if (!inLogin && !inRegister) return;
-
-      // Ignore close buttons & switches
-      if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
-
-      // Only intercept likely submit actions
-      const isSubmitLike =
-        btn.getAttribute("type") === "submit" ||
-        btn.getAttribute("type") === "button" ||
-        btn.matches(".auth-submit, .auth-login, .auth-register") ||
-        /login/i.test(btn.textContent || "") ||
-        /register/i.test(btn.textContent || "");
-
-      if (!isSubmitLike) return;
-
-      // If a form exists and would submit, submit handler covers it; however we still prevent duplicates
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-      if (inLogin) {
-        const scope = btn.closest("form") || loginModal;
-        const forgotOpen = loginModal.classList.contains("state-forgot-open");
-        const hasPassword = !!findPassword(scope);
-        if (forgotOpen && !hasPassword) return runForgot(loginModal, scope);
-        return runLogin(loginModal, scope);
-      }
-
-      if (inRegister) {
-        const scope = btn.closest("form") || registerModal;
-        return runRegister(registerModal, scope);
-      }
-    },
-    true
-  );
-}
 
 /* =======================
    EVENT BINDING
