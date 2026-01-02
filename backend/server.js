@@ -248,49 +248,49 @@ const server = http.createServer(async (req, res) => {
   }
 
   /* =========================
-     REGISTER (kept as-is)
+     REGISTER
   ========================= */
-  if (method === "POST" && url === "/api/auth/register") {
-    const data = await readJsonBody(req).catch(() => null);
-    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+if (method === "POST" && url === "/api/auth/register") {
+  const data = await readJsonBody(req).catch(() => null);
+  if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
 
-    const email = normalizeEmail(data.email);
-    const password = data.password;
-    const username =
-      typeof data.username === "string" && data.username.trim()
-        ? data.username.trim()
-        : (email.includes("@") ? email.split("@")[0] : "user");
+  const email = normalizeEmail(data.email);
+  const password = data.password;
+  const username =
+    typeof data.username === "string" && data.username.trim()
+      ? data.username.trim()
+      : (email.includes("@") ? email.split("@")[0] : "user");
 
-    if (!validateEmail(email) || !validatePassword(password)) {
-      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
-    }
-
-    const existing = await getUserByEmail(email);
-    if (existing) {
-      return sendJSON(res, 409, { error: { code: "USER_EXISTS" } });
-    }
-
-    const { salt, hash } = hashPassword(password);
-    const user = await createUser({
-      email,
-      username,
-      passwordSalt: salt,
-      passwordHash: hash
-    });
-
-    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-    const expiresAt = Date.now() + SESSION_TTL_MS;
-
-    await createSession({ sessionId, userId: user.id, expiresAt });
-    setSessionCookie(req, res, sessionId);
-
-    return sendJSON(res, 201, {
-      authenticated: true,
-      user: { id: user.id, email: user.email, username: user.username },
-      role: user.role,
-      premium: !!user.premium
-    });
+  if (!validateEmail(email) || !validatePassword(password)) {
+    return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
   }
+
+  const existing = getUserByEmail(email);
+  if (existing) {
+    return sendJSON(res, 409, { error: { code: "USER_EXISTS" } });
+  }
+
+  const { hash } = hashPassword(password);
+
+  const userId = createUser(email, hash);
+
+  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+  const expiresAt = Date.now() + SESSION_TTL_MS;
+
+  await createSession(sessionId, userId, expiresAt);
+  setSessionCookie(req, res, sessionId);
+
+  return sendJSON(res, 201, {
+    authenticated: true,
+    user: {
+      id: userId,
+      email,
+      username
+    },
+    role: "user",
+    premium: false
+  });
+}
 
   /* =========================
      ME (SLIDING SESSION)
