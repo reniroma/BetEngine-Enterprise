@@ -1,17 +1,22 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (LOGIN STUB) – FIXED
+ * BetEngine Enterprise – AUTH API (LOGIN) – NO STUB
  * POST /api/auth/login
  *
  * Vercel Serverless Function (Node)
- * Sets HttpOnly cookie session (stub)
- *
- * Cookie format MUST match /api/auth/me expectations:
- * base64url(JSON.stringify({ user, role, premium, exp }))
+ * - Validates credentials against a fixed test user list
+ * - Sets HttpOnly cookie session ONLY on success
  *********************************************************/
 "use strict";
 
 const COOKIE_NAME = "be_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+// TEMP: fixed test users (Phase 1)
+// You can move these to env vars later.
+const USERS = [
+  { id: "user-1", email: "test@betengine.com", username: "test", password: "Test12345", role: "user", premium: false },
+  { id: "user-2", email: "test2@betengine.com", username: "testuser2", password: "Test12345", role: "user", premium: false }
+];
 
 function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
@@ -48,6 +53,11 @@ async function readJsonBody(req) {
   }
 }
 
+function json(res, statusCode, payload) {
+  res.statusCode = statusCode;
+  return res.end(JSON.stringify(payload));
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -60,32 +70,34 @@ module.exports = async (req, res) => {
 
   const body = await readJsonBody(req);
 
-  const email = typeof body.email === "string" ? body.email.trim() : "";
+  const emailRaw = typeof body.email === "string" ? body.email.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
+  const email = emailRaw.toLowerCase();
 
   if (!email || !password) {
-    res.statusCode = 400;
-    return res.end(
-      JSON.stringify({
-        error: {
-          code: "VALIDATION_ERROR",
-          message: "Email and password are required",
-          details: { fields: ["email", "password"] }
-        }
-      })
-    );
+    return json(res, 400, {
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Email and password are required",
+        details: { fields: ["email", "password"] }
+      }
+    });
   }
 
-  // STUB user (replace later with real credential check)
-  const user = {
-    id: "stub-1",
-    username: email.includes("@") ? email.split("@")[0] : "user",
-    email
-  };
+  const match = USERS.find(u => u.email === email);
 
+  // INVALID CREDENTIALS (NO COOKIE)
+  if (!match || match.password !== password) {
+    return json(res, 401, {
+      error: { code: "INVALID_CREDENTIALS" }
+    });
+  }
+
+  // SUCCESS: build session payload exactly as /api/auth/me expects
+  const user = { id: match.id, username: match.username, email: match.email };
   const exp = Date.now() + SESSION_TTL_MS;
 
-  const sessionPayload = { user, role: "user", premium: false, exp };
+  const sessionPayload = { user, role: match.role, premium: !!match.premium, exp };
   const cookieValue = base64UrlEncodeJson(sessionPayload);
 
   setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
@@ -96,13 +108,10 @@ module.exports = async (req, res) => {
     maxAge: Math.floor(SESSION_TTL_MS / 1000)
   });
 
-  res.statusCode = 200;
-  return res.end(
-    JSON.stringify({
-      authenticated: true,
-      user,
-      role: "user",
-      premium: false
-    })
-  );
+  return json(res, 200, {
+    authenticated: true,
+    user,
+    role: match.role,
+    premium: !!match.premium
+  });
 };
