@@ -273,6 +273,18 @@ function clearLoginFieldsIn(scope) {
   emailEl?.focus?.();
 }
 
+function clearRegisterFieldsIn(scope) {
+  const userEl = findUsername(scope);
+  const emailEl = findEmail(scope);
+  const passEl = findPassword(scope);
+
+  if (userEl) userEl.value = "";
+  if (emailEl) emailEl.value = "";
+  if (passEl) passEl.value = "";
+
+  (userEl || emailEl)?.focus?.();
+}
+
 function setBusy(scope, isBusy) {
   if (!scope) return;
   scope.dataset.beBusy = isBusy ? "1" : "0";
