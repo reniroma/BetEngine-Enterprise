@@ -353,33 +353,16 @@ function initAuthActionOwnership() {
   /* ======================================================
      ERROR PARITY (UI NORMALIZER)
      - Normalizes any thrown value into: { status, code, message, details, field }
-     - Provides consistent UI messages across:
-       VALIDATION_ERROR / INVALID_CREDENTIALS / USER_EXISTS / TIMEOUT / NETWORK_ERROR / HTTP_ERROR
+     - Works with BEApiError + any unknown thrown shapes
   ====================================================== */
   const normalizeUIError = (err) => {
-    const status = Number(
-      err?.status ??
-      err?.response?.status ??
-      err?.res?.status ??
-      0
-    );
+    const status = Number(err?.status ?? err?.response?.status ?? err?.res?.status ?? 0);
 
-    const code = String(
-      err?.code ??
-      err?.error?.code ??
-      ""
-    );
+    const code = String(err?.code ?? err?.error?.code ?? "").trim();
 
-    const message = String(
-      err?.message ??
-      err?.error?.message ??
-      ""
-    ).trim();
+    const message = String(err?.message ?? err?.error?.message ?? "").trim();
 
-    const details =
-      err?.details ??
-      err?.error?.details ??
-      null;
+    const details = err?.details ?? err?.error?.details ?? null;
 
     const field = String(details?.field || "").trim();
 
@@ -399,9 +382,6 @@ function initAuthActionOwnership() {
     passEl?.focus?.();
   };
 
-  /* =======================
-     LOGIN
-  ======================= */
   const runLogin = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -433,12 +413,14 @@ function initAuthActionOwnership() {
     } catch (err) {
       const E = normalizeUIError(err);
 
+      // Credentials (server parity)
       if (E.status === 401 && E.code === "INVALID_CREDENTIALS") {
         setMessage(containerForMessage, "error", "Invalid email or password.");
         clearLoginFieldsIn(scope);
         return;
       }
 
+      // Validation (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
         setMessage(containerForMessage, "error", E.message || "Email and password are required.");
         clearPasswordOnlyIn(scope);
@@ -452,9 +434,6 @@ function initAuthActionOwnership() {
     }
   };
 
-  /* =======================
-     REGISTER
-  ======================= */
   const runRegister = async (registerModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -487,6 +466,7 @@ function initAuthActionOwnership() {
       const E = normalizeUIError(err);
 
       // DUPLICATE USER (server parity)
+      // backend: 409 + code: "USER_EXISTS" + details.field = "email" | "username"
       if (E.status === 409 && E.code === "USER_EXISTS") {
         const f = String(E.field || "");
         const msg =
@@ -503,12 +483,16 @@ function initAuthActionOwnership() {
 
       // VALIDATION (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
-        setMessage(containerForMessage, "error", E.message || "Username, email, and password are required.");
+        setMessage(
+          containerForMessage,
+          "error",
+          E.message || "Username, email, and password are required."
+        );
         clearRegisterFieldsIn(scope);
         return;
       }
 
-      // Any other error: keep username/email (optional), but ALWAYS clear password for security
+      // Any other error: show msg, clear password only
       setMessage(containerForMessage, "error", defaultErrorMessage(E));
       clearPasswordOnlyIn(scope);
     } finally {
@@ -516,9 +500,6 @@ function initAuthActionOwnership() {
     }
   };
 
-  /* =======================
-     FORGOT PASSWORD
-  ======================= */
   const runForgot = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
@@ -532,7 +513,11 @@ function initAuthActionOwnership() {
     try {
       setBusy(scope, true);
       await API.forgotPassword({ email });
-      setMessage(containerForMessage, "success", "If the email exists, you will receive password reset instructions.");
+      setMessage(
+        containerForMessage,
+        "success",
+        "If the email exists, you will receive password reset instructions."
+      );
     } catch (err) {
       const E = normalizeUIError(err);
 
@@ -548,6 +533,87 @@ function initAuthActionOwnership() {
     }
   };
 
+  // CAPTURE submit ownership
+  document.addEventListener(
+    "submit",
+    async (e) => {
+      const form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+
+      const loginModal = qs("#login-modal");
+      const registerModal = qs("#register-modal");
+
+      const inLogin = !!(loginModal && loginModal.contains(form));
+      const inRegister = !!(registerModal && registerModal.contains(form));
+      if (!inLogin && !inRegister) return;
+
+      // Take full ownership
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+      if (inLogin) {
+        const forgotOpen = loginModal.classList.contains("state-forgot-open");
+        const hasPassword = !!findPassword(form);
+        if (forgotOpen && !hasPassword) return runForgot(loginModal, form);
+        return runLogin(loginModal, form);
+      }
+
+      return runRegister(registerModal, form);
+    },
+    true
+  );
+
+  // CAPTURE click ownership (handles non-submit buttons)
+  document.addEventListener(
+    "click",
+    async (e) => {
+      const loginModal = qs("#login-modal");
+      const registerModal = qs("#register-modal");
+
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const btn = target.closest('button, input[type="button"], input[type="submit"]');
+      if (!btn) return;
+
+      const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
+      const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
+      if (!inLogin && !inRegister) return;
+
+      // Ignore close buttons & switches
+      if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
+
+      const isSubmitLike =
+        btn.getAttribute("type") === "submit" ||
+        btn.getAttribute("type") === "button" ||
+        btn.matches(".auth-submit, .auth-login, .auth-register") ||
+        /login/i.test(btn.textContent || "") ||
+        /register/i.test(btn.textContent || "");
+
+      if (!isSubmitLike) return;
+
+      // prevent duplicates
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+      if (inLogin) {
+        const scope = btn.closest("form") || loginModal;
+        const forgotOpen = loginModal.classList.contains("state-forgot-open");
+        const hasPassword = !!findPassword(scope);
+        if (forgotOpen && !hasPassword) return runForgot(loginModal, scope);
+        return runLogin(loginModal, scope);
+      }
+
+      if (inRegister) {
+        const scope = btn.closest("form") || registerModal;
+        return runRegister(registerModal, scope);
+      }
+    },
+    true
+  );
+}
 /* =======================
    EVENT BINDING
 ======================= */
