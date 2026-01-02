@@ -1,205 +1,147 @@
-/*********************************************************
- * BetEngine Enterprise – DB LAYER (SQLite)
- * Sessions + Users + Password Reset Tokens (Enterprise Safe)
- *
- * This file assumes you already installed SQLite dep earlier.
- * Uses better-sqlite3 for deterministic behavior.
- *********************************************************/
+// db.js — ES MODULE VERSION
+// SQLite persistence layer (sessions + users + reset tokens)
 
-const fs = require("fs");
-const path = require("path");
+import Database from "better-sqlite3";
+import crypto from "crypto";
 
-// IMPORTANT: if you use a different sqlite library already, tell me,
-// and I will adapt db.js to match it exactly.
-const Database = require("better-sqlite3");
+const db = new Database("betengine.sqlite");
 
-const DB_PATH =
-  process.env.SQLITE_PATH ||
-  path.join(process.cwd(), "data", "betengine.sqlite");
-
-const dir = path.dirname(DB_PATH);
-if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
-const db = new Database(DB_PATH);
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
-
-/* =========================
-   Schema
-========================= */
+// ==============================
+// INIT
+// ==============================
 db.exec(`
 CREATE TABLE IF NOT EXISTS users (
-  id TEXT PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE,
-  username TEXT NOT NULL,
-  password_salt TEXT NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user',
-  premium INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
-  session_id TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
+  id TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL,
   expires_at INTEGER NOT NULL,
-  created_at INTEGER NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at);
 
 CREATE TABLE IF NOT EXISTS password_reset_tokens (
   selector TEXT PRIMARY KEY,
-  user_id TEXT NOT NULL,
   verifier_hash TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
   expires_at INTEGER NOT NULL,
-  created_at INTEGER NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_prt_user_id ON password_reset_tokens(user_id);
-CREATE INDEX IF NOT EXISTS idx_prt_expires_at ON password_reset_tokens(expires_at);
 `);
 
-/* =========================
-   User queries
-========================= */
+// ==============================
+// USERS
+// ==============================
 function getUserByEmail(email) {
-  const row = db
-    .prepare(
-      `SELECT id, email, username, password_salt, password_hash, role, premium
-       FROM users
-       WHERE email = ?`
-    )
-    .get(email);
-
-  return row || null;
+  return db.prepare(
+    `SELECT * FROM users WHERE email = ?`
+  ).get(email) || null;
 }
 
-function createUser({ email, username, passwordSalt, passwordHash }) {
-  const now = Date.now();
-  const id = "u_" + require("crypto").randomBytes(10).toString("hex");
+function createUser(email, passwordHash) {
+  const stmt = db.prepare(`
+    INSERT INTO users (email, password_hash, created_at)
+    VALUES (?, ?, ?)
+  `);
 
+const info = stmt.run(
+    email,
+    passwordHash,
+    Date.now()
+  );
+
+  return info.lastInsertRowid;
+}
+
+function updateUserPasswordById(userId, newHash) {
   db.prepare(
-    `INSERT INTO users (id, email, username, password_salt, password_hash, role, premium, created_at)
-     VALUES (?, ?, ?, ?, ?, 'user', 0, ?)`
-  ).run(id, email, username, passwordSalt, passwordHash, now);
-
-  return getUserByEmail(email);
+    `UPDATE users SET password_hash = ? WHERE id = ?`
+  ).run(newHash, userId);
 }
 
-function updateUserPasswordById(userId, { passwordSalt, passwordHash }) {
+// ==============================
+// SESSIONS
+// ==============================
+function createSession(id, userId, expiresAt) {
   db.prepare(
-    `UPDATE users
-     SET password_salt = ?, password_hash = ?
-     WHERE id = ?`
-  ).run(passwordSalt, passwordHash, userId);
+    `INSERT INTO sessions (id, user_id, expires_at)
+     VALUES (?, ?, ?)`
+  ).run(id, userId, expiresAt);
 }
 
-/* =========================
-   Sessions
-========================= */
-function createSession({ sessionId, userId, expiresAt }) {
-  const now = Date.now();
+function getSession(id) {
+  return db.prepare(
+    `SELECT * FROM sessions WHERE id = ?`
+  ).get(id) || null;
+}
+
+function deleteSession(id) {
   db.prepare(
-    `INSERT INTO sessions (session_id, user_id, expires_at, created_at)
-     VALUES (?, ?, ?, ?)`
-  ).run(sessionId, userId, expiresAt, now);
-}
-
-function deleteSession(sessionId) {
-  db.prepare(`DELETE FROM sessions WHERE session_id = ?`).run(sessionId);
+    `DELETE FROM sessions WHERE id = ?`
+  ).run(id);
 }
 
 function deleteAllSessionsForUser(userId) {
-  db.prepare(`DELETE FROM sessions WHERE user_id = ?`).run(userId);
-}
-
-function refreshSessionExpiry(sessionId, newExpiresAt) {
   db.prepare(
-    `UPDATE sessions
-     SET expires_at = ?
-     WHERE session_id = ?`
-  ).run(newExpiresAt, sessionId);
+    `DELETE FROM sessions WHERE user_id = ?`
+  ).run(userId);
 }
 
-function cleanupExpiredSessions() {
-  const now = Date.now();
-  db.prepare(`DELETE FROM sessions WHERE expires_at <= ?`).run(now);
-  // Also cleanup expired reset tokens
-  db.prepare(`DELETE FROM password_reset_tokens WHERE expires_at <= ?`).run(now);
+function refreshSessionExpiry(id, newExpiry) {
+  db.prepare(
+    `UPDATE sessions SET expires_at = ? WHERE id = ?`
+  ).run(newExpiry, id);
 }
 
-function getSession(sessionId) {
-  const now = Date.now();
-
-  // Join session -> user
-  const row = db.prepare(
-    `SELECT
-       u.id as id,
-       u.email as email,
-       u.username as username,
-       u.role as role,
-       u.premium as premium,
-       s.session_id as session_id,
-       s.expires_at as expires_at
-     FROM sessions s
-     JOIN users u ON u.id = s.user_id
-     WHERE s.session_id = ?`
-  ).get(sessionId);
-
-  if (!row) return null;
-
-  // Expired -> delete and return null
-  if (Number(row.expires_at) <= now) {
-    deleteSession(sessionId);
-    return null;
-  }
-
-  return row;
+function cleanupExpiredSessions(now) {
+  db.prepare(
+    `DELETE FROM sessions WHERE expires_at < ?`
+  ).run(now);
 }
 
-/* =========================
-   Password reset tokens
-========================= */
-function createPasswordResetToken({ userId, selector, verifierHash, expiresAt }) {
-  const now = Date.now();
-
-  // One active token per user (safe + simple)
-  db.prepare(`DELETE FROM password_reset_tokens WHERE user_id = ?`).run(userId);
+// ==============================
+// RESET TOKENS
+// ==============================
+function createPasswordResetToken(userId, ttlMs) {
+  const selector = crypto.randomBytes(16).toString("hex");
+  const verifier = crypto.randomBytes(32);
+  const verifierHash = crypto
+    .createHash("sha256")
+    .update(verifier)
+    .digest("hex");
 
   db.prepare(
-    `INSERT INTO password_reset_tokens (selector, user_id, verifier_hash, expires_at, created_at)
-     VALUES (?, ?, ?, ?, ?)`
-  ).run(selector, userId, verifierHash, expiresAt, now);
+    `INSERT INTO password_reset_tokens
+     (selector, verifier_hash, user_id, expires_at)
+     VALUES (?, ?, ?, ?)`
+  ).run(selector, verifierHash, userId, Date.now() + ttlMs);
+
+  return {
+    selector,
+    verifier: verifier.toString("hex")
+  };
 }
 
 function getPasswordResetTokenBySelector(selector) {
-  const row = db.prepare(
-    `SELECT
-       prt.selector as selector,
-       prt.user_id as user_id,
-       prt.verifier_hash as verifier_hash,
-       prt.expires_at as expires_at,
-       u.email as email
-     FROM password_reset_tokens prt
-     JOIN users u ON u.id = prt.user_id
-     WHERE prt.selector = ?`
-  ).get(selector);
-
-  return row || null;
+  return db.prepare(
+    `SELECT * FROM password_reset_tokens WHERE selector = ?`
+  ).get(selector) || null;
 }
 
 function consumePasswordResetToken(selector) {
-  db.prepare(`DELETE FROM password_reset_tokens WHERE selector = ?`).run(selector);
+  db.prepare(
+    `DELETE FROM password_reset_tokens WHERE selector = ?`
+  ).run(selector);
 }
 
-/* =========================
-   Exports
-========================= */
-module.exports = {
+// ==============================
+// EXPORTS (ESM)
+// ==============================
+export {
   // users
   getUserByEmail,
   createUser,
@@ -213,7 +155,7 @@ module.exports = {
   refreshSessionExpiry,
   cleanupExpiredSessions,
 
-  // reset tokens
+  // reset_toggle
   createPasswordResetToken,
   getPasswordResetTokenBySelector,
   consumePasswordResetToken
