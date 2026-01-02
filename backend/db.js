@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
 );
 `);
 
-// ==============================
+// =========================
 // USERS
-// ==============================
+// =========================
 function getUserByEmail(email) {
-  return db.prepare(
-    `SELECT * FROM users WHERE email = ?`
-  ).get(email) || null;
+  return db
+    .prepare("SELECT * FROM users WHERE email = ?")
+    .get(email) || null;
 }
 
 function createUser(email, passwordHash) {
@@ -48,7 +48,7 @@ function createUser(email, passwordHash) {
     VALUES (?, ?, ?)
   `);
 
-const info = stmt.run(
+  const info = stmt.run(
     email,
     passwordHash,
     Date.now()
@@ -59,7 +59,7 @@ const info = stmt.run(
 
 function updateUserPasswordById(userId, newHash) {
   db.prepare(
-    `UPDATE users SET password_hash = ? WHERE id = ?`
+    "UPDATE users SET password_hash = ? WHERE id = ?"
   ).run(newHash, userId);
 }
 
