@@ -15,11 +15,11 @@
  *   POST /api/auth/logout-all
  *********************************************************/
 
-const http = require("http");
-const crypto = require("crypto");
-const { serialize: serializeCookie, parse: parseCookie } = require("cookie");
+import http from "http";
+import crypto from "crypto";
+import { serialize as serializeCookie, parse as parseCookie } from "cookie";
 
-const {
+import {
   getUserByEmail,
   createUser,
   createSession,
@@ -32,7 +32,7 @@ const {
   createPasswordResetToken,
   getPasswordResetTokenBySelector,
   consumePasswordResetToken
-} = require("./db");
+} from "./db.js";
 
 const PORT = process.env.PORT || 3001;
 
