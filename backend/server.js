@@ -236,7 +236,7 @@ const server = http.createServer(async (req, res) => {
     const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
     const expiresAt = Date.now() + SESSION_TTL_MS;
 
-    await createSession(sessionId, userId, expiresAt);
+    await createSession(sessionId, user.id, expiresAt);
 setSessionCookie(req, res, sessionId);
 
     return sendJSON(res, 200, {
@@ -268,27 +268,23 @@ if (method === "POST" && url === "/api/auth/register") {
     return sendJSON(res, 409, { error: { code: "USER_EXISTS" } });
   }
 
-  const { hash } = hashPassword(password);
+ const { hash } = hashPassword(password);
 
-  // ✅ CORREKT: positional args (JO object)
-  const userId = createUser(email, hash);
+const userId = createUser(email, hash);
 
-  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-  const expiresAt = Date.now() + SESSION_TTL_MS;
+const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+const expiresAt = Date.now() + SESSION_TTL_MS;
 
- // ✅ CORREKT: positional args + await
 await createSession(sessionId, userId, expiresAt);
 setSessionCookie(req, res, sessionId);
 
 return sendJSON(res, 201, {
   authenticated: true,
-  user: {
-    id: userId,
-    email
-  },
+  user: { id: userId, email },
   role: "user",
   premium: false
 });
+}
 
   /* =========================
      ME (SLIDING SESSION)
@@ -382,14 +378,14 @@ return sendJSON(res, 201, {
     }
 
     const { salt, hash } = hashPassword(newPassword);
-    await updateUserPasswordById(user.id, { passwordSalt: salt, passwordHash: hash });
+    await updateUserPasswordById(user.id, hash );
 
     // Revoke all sessions, then create a fresh one
     await deleteAllSessionsForUser(user.id);
 
     const newSessionId = "sess_" + crypto.randomBytes(16).toString("hex");
     const expiresAt = Date.now() + SESSION_TTL_MS;
-    await createSession({ sessionId: newSessionId, userId: user.id, expiresAt });
+    await createSession(newSessionId, user.id, expiresAt );
     setSessionCookie(req, res, newSessionId);
 
     return sendJSON(res, 200, {
@@ -504,7 +500,7 @@ return sendJSON(res, 201, {
 
     const newSessionId = "sess_" + crypto.randomBytes(16).toString("hex");
     const expiresAt = Date.now() + SESSION_TTL_MS;
-    await createSession({ sessionId: newSessionId, userId: user.id, expiresAt });
+    await createSession(newSessionId, user.id, expiresAt);
     setSessionCookie(req, res, newSessionId);
 
     return sendJSON(res, 200, {
