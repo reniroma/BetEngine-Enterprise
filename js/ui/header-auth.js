@@ -438,4 +438,4 @@ if (window.__BE_HEADER_READY__ === true) {
 /* Safe eager hydrate (no-op until elements exist) */
 hydrateAuthUI();
 initAuthFormHandlers();
-```0
+
