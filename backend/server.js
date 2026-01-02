@@ -19,6 +19,8 @@ import http from "http";
 import crypto from "crypto";
 import { serialize as serializeCookie, parse as parseCookie } from "cookie";
 
+
+
 import {
   getUserByEmail,
   createUser,
@@ -213,44 +215,7 @@ const server = http.createServer(async (req, res) => {
   /* =========================
      LOGIN
   ========================= */
-  if (method === "POST" && url === "/api/auth/login") {
-    const data = await readJsonBody(req).catch(() => null);
-    if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
-
-    const email = normalizeEmail(data.email);
-    const password = data.password;
-
-    if (!validateEmail(email) || !validatePassword(password)) {
-      return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
-    }
-
-    const user = await getUserByEmail(email);
-    if (!user) {
-      return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
-    }
-
-    if (!verifyPassword(password, user.password_salt, user.password_hash)) {
-      return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
-    }
-
-    const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-    const expiresAt = Date.now() + SESSION_TTL_MS;
-
-    await createSession(sessionId, user.id, expiresAt);
-setSessionCookie(req, res, sessionId);
-
-    return sendJSON(res, 200, {
-      authenticated: true,
-      user: { id: user.id, email: user.email, username: user.username },
-      role: user.role,
-      premium: !!user.premium
-    });
-  }
-
- /* =========================
-   REGISTER (FINAL, FIXED)
-========================= */
-if (method === "POST" && url === "/api/auth/register") {
+if (method === "POST" && url === "/api/auth/login") {
   const data = await readJsonBody(req).catch(() => null);
   if (!data) {
     return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
@@ -263,29 +228,74 @@ if (method === "POST" && url === "/api/auth/register") {
     return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
   }
 
+  const user = getUserByEmail(email);
+  if (!user) {
+    return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
+  }
+
+  if (!verifyPassword(password, user.password_salt, user.password_hash)) {
+    return sendJSON(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
+  }
+
+  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+  const expiresAt = Date.now() + SESSION_TTL_MS;
+
+  await createSession(sessionId, user.id, expiresAt);
+  setSessionCookie(req, res, sessionId);
+
+  return sendJSON(res, 200, {
+    authenticated: true,
+    user: {
+      id: user.id,
+      email: user.email,
+      username: user.username
+    },
+    role: user.role,
+    premium: !!user.premium
+  });
+}
+
+ /* =========================
+   REGISTER (FINAL, FIXED)
+========================= */
+if (method === "POST" && url === "/api/auth/register") {
+  const data = await readJsonBody(req).catch(() => null);
+  if (!data) {
+    return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+  }
+
+  const email = normalizeEmail(data.email);
+  const password = data.password;
+  const username =
+    typeof data.username === "string" && data.username.trim()
+      ? data.username.trim()
+      : (email.includes("@") ? email.split("@")[0] : "user");
+
+  if (!validateEmail(email) || !validatePassword(password)) {
+    return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
+  }
+
   const existing = getUserByEmail(email);
   if (existing) {
     return sendJSON(res, 409, { error: { code: "USER_EXISTS" } });
   }
 
- const { hash } = hashPassword(password);
+  const { salt, hash } = hashPassword(password);
+  const userId = createUser(email, username, hash, salt);
 
-const userId = createUser(email, hash);
+  const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
+  const expiresAt = Date.now() + SESSION_TTL_MS;
 
-const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
-const expiresAt = Date.now() + SESSION_TTL_MS;
+  await createSession(sessionId, userId, expiresAt);
+  setSessionCookie(req, res, sessionId);
 
-await createSession(sessionId, user.id, expiresAt);
-setSessionCookie(req, res, sessionId);
-
-return sendJSON(res, 201, {
-  authenticated: true,
-  user: { id: userId, email },
-  role: "user",
-  premium: false
-});
+  return sendJSON(res, 201, {
+    authenticated: true,
+    user: { id: userId, email, username },
+    role: "user",
+    premium: false
+  });
 }
-
   /* =========================
      ME (SLIDING SESSION)
   ========================= */
@@ -318,9 +328,9 @@ return sendJSON(res, 201, {
 
     return sendJSON(res, 200, {
       authenticated: true,
-      user: { id: sess.id, email: sess.email, username: sess.username },
-      role: sess.role,
-      premium: !!sess.premium
+      user: { id: sess.user_id, email: sess.email, username: sess.username },
+      role: "user",
+      premium: false
     });
   }
 
@@ -541,7 +551,11 @@ return sendJSON(res, 201, {
    SESSION CLEANUP JOB
 ========================= */
 setInterval(() => {
-  cleanupExpiredSessions().catch(() => {});
+  try {
+    cleanupExpiredSessions();
+  } catch (err) {
+    console.error("SESSION_CLEANUP_ERROR:", err);
+  }
 }, SESSION_CLEANUP_INTERVAL_MS);
 
 /* =========================
