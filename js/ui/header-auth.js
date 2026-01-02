@@ -429,11 +429,28 @@ document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
       window.BE_closeAuthModals?.();
     } catch (err) {
       const status = Number(err?.status || 0);
+      const code = String(err?.code || "");
+
+      if (status === 409 && code === "USER_EXISTS") {
+        const field = String(err?.details?.field || "");
+        const msg =
+          field === "username"
+            ? "Username is already taken."
+            : field === "email"
+              ? "Email is already registered."
+              : "User already exists.";
+
+        setMessage(containerForMessage, "error", msg);
+        clearRegisterFieldsIn(scope);
+        return;
+      }
+
       const msg =
         String(err?.message || "").trim() ||
         (status ? `Request failed (HTTP ${status})` : "Request failed");
 
       setMessage(containerForMessage, "error", msg);
+      clearRegisterFieldsIn(scope);
     } finally {
       setBusy(scope, false);
     }
@@ -463,6 +480,7 @@ document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
       setBusy(scope, false);
     }
   };
+
 
   // CAPTURE submit ownership
   document.addEventListener(
