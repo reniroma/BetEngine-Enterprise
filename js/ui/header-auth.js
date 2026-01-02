@@ -58,20 +58,67 @@ function initAuth() {
   const registerModal = qs("#register-modal");
   if (!loginModal || !registerModal) return;
 
+  /* =======================
+     AUTH FORM RESET (SECURITY)
+  ======================= */
+  const resetAuthForm = (overlay) => {
+    if (!overlay) return;
+
+    // Reset native form state (best-effort)
+    const form = overlay.querySelector("form");
+    if (form && typeof form.reset === "function") form.reset();
+
+    // Clear inputs/selects/textareas (force)
+    const fields = overlay.querySelectorAll("input, textarea, select");
+    fields.forEach((el) => {
+      const tag = (el.tagName || "").toLowerCase();
+      const type = (el.type || "").toLowerCase();
+
+      if (tag === "select") {
+        el.selectedIndex = 0;
+        return;
+      }
+
+      if (type === "checkbox" || type === "radio") {
+        el.checked = false;
+        return;
+      }
+
+      el.value = "";
+    });
+
+    // Clear any UI messages
+    const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success");
+    msgs.forEach((m) => (m.textContent = ""));
+  };
+
   const closeAll = () => {
     loginModal.classList.remove("show", "state-forgot-open");
     registerModal.classList.remove("show");
+
+    // CLEAR FORMS ON CLOSE (prevents stale values)
+    resetAuthForm(loginModal);
+    resetAuthForm(registerModal);
+
     lockBody(false);
   };
 
   const openLogin = () => {
     closeAll();
+
+    // CLEAR BEFORE OPEN (extra safety)
+    resetAuthForm(loginModal);
+
     loginModal.classList.add("show");
     lockBody(true);
   };
 
   const openRegister = () => {
     closeAll();
+
+    // CLEAR BEFORE OPEN (extra safety)
+    resetAuthForm(registerModal);
+
     registerModal.classList.add("show");
     lockBody(true);
   };
