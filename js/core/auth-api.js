@@ -67,64 +67,88 @@
     }
   };
 
- const normalizeError = async ({ res, path, method, fallbackCode }) => {
-  const body = await safeJson(res);
+  const normalizeError = async ({ res, path, method, fallbackCode }) => {
+    const body = await safeJson(res);
 
-  const status = res?.status ?? 0;
+    const status = res?.status ?? 0;
 
-  const code =
-    body?.error?.code ||
-    body?.code ||
-    fallbackCode ||
-    "REQUEST_FAILED";
+    const code =
+      body?.error?.code ||
+      body?.code ||
+      fallbackCode ||
+      "REQUEST_FAILED";
 
-  const message =
-    body?.error?.message ||
-    body?.message ||
-    `HTTP ${status} ${res?.statusText || ""}`.trim();
+    const message =
+      body?.error?.message ||
+      body?.message ||
+      `HTTP ${status} ${res?.statusText || ""}`.trim();
 
-  // Preserve server details, but ensure UI always has details.field when possible
-  const rawDetails = body?.error?.details ?? body?.details ?? null;
+    // Preserve server details, but ensure UI always has details.field when possible
+    const rawDetails = body?.error?.details ?? body?.details ?? null;
 
-  const clonedDetails =
-    rawDetails && typeof rawDetails === "object" && !Array.isArray(rawDetails)
-      ? { ...rawDetails }
-      : rawDetails;
+    const clonedDetails =
+      rawDetails && typeof rawDetails === "object" && !Array.isArray(rawDetails)
+        ? { ...rawDetails }
+        : rawDetails;
 
-  const inferredField = (() => {
-    if (clonedDetails && typeof clonedDetails === "object" && clonedDetails.field) {
-      return String(clonedDetails.field);
-    }
-    const msg = String(message || "");
-    if (/email/i.test(msg)) return "email";
-    if (/username/i.test(msg)) return "username";
-    return "";
-  })();
+    const inferredField = (() => {
+      if (clonedDetails && typeof clonedDetails === "object" && clonedDetails.field) {
+        return String(clonedDetails.field);
+      }
+      const msg = String(message || "");
+      if (/email/i.test(msg)) return "email";
+      if (/username/i.test(msg)) return "username";
+      return "";
+    })();
 
-  const details =
-    inferredField
-      ? (clonedDetails && typeof clonedDetails === "object" && !Array.isArray(clonedDetails)
-          ? { ...clonedDetails, field: clonedDetails.field || inferredField }
-          : { field: inferredField })
-      : clonedDetails;
+    const details =
+      inferredField
+        ? (clonedDetails && typeof clonedDetails === "object" && !Array.isArray(clonedDetails)
+            ? { ...clonedDetails, field: clonedDetails.field || inferredField }
+            : { field: inferredField })
+        : clonedDetails;
 
-  const payload = {
-    status,
-    code,
-    message,
-    details,
-    requestId:
-      body?.error?.requestId ||
-      body?.requestId ||
-      res?.headers?.get("x-request-id") ||
-      null,
-    path,
-    method,
-    timestamp: body?.error?.timestamp || body?.timestamp || new Date().toISOString()
+    const payload = {
+      status,
+      code,
+      message,
+      details,
+      requestId:
+        body?.error?.requestId ||
+        body?.requestId ||
+        res?.headers?.get("x-request-id") ||
+        null,
+      path,
+      method,
+      timestamp: body?.error?.timestamp || body?.timestamp || new Date().toISOString()
+    };
+
+    return new BEApiError(payload);
   };
 
-  return new BEApiError(payload);
-};
+  const throwValidation = (path, method, message, details) => {
+    throw new BEApiError({
+      status: 400,
+      code: "VALIDATION_ERROR",
+      message,
+      details: details || null,
+      path,
+      method,
+      timestamp: new Date().toISOString()
+    });
+  };
+
+  const request = async (path, options = {}) => {
+    const url = `${BASE}${path}`;
+    const method = String(options.method || "GET").toUpperCase();
+
+    const controller = new AbortController();
+    const timeoutMs = Number.isFinite(options.timeoutMs)
+      ? options.timeoutMs
+      : DEFAULT_TIMEOUT_MS;
+
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+
     // Avoid leaking non-fetch option keys into init
     const { timeoutMs: _timeoutMs, ...fetchOptions } = options;
 
@@ -257,21 +281,21 @@
 
   // POST /api/auth/reset-password
   const resetPassword = async ({ token, newPassword } = {}) => {
-    const t = String(token ?? "").trim();
+    const tkn = String(token ?? "").trim();
     const p = String(newPassword ?? "");
-    if (!t || !p) {
+    if (!tkn || !p) {
       throwValidation(
         "/auth/reset-password",
         "POST",
         "Token and newPassword are required",
-        { hasToken: !!t, hasNewPassword: !!p }
+        { hasToken: !!tkn, hasNewPassword: !!p }
       );
     }
 
     const r = await request("/auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: t, newPassword: p })
+      body: JSON.stringify({ token: tkn, newPassword: p })
     });
     return r.data;
   };
