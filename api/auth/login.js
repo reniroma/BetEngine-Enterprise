@@ -1,22 +1,21 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (LOGIN) – NO STUB
+ * BetEngine Enterprise – AUTH API (LOGIN)
  * POST /api/auth/login
  *
- * Vercel Serverless Function (Node)
- * - Validates credentials against a fixed test user list
- * - Sets HttpOnly cookie session ONLY on success
+ * TEST CREDENTIALS (TEMP):
+ * - email:    test@betengine.com
+ * - password: Test123!
+ *
+ * Sets HttpOnly cookie session:
+ * base64url(JSON.stringify({ user, role, premium, exp }))
  *********************************************************/
 "use strict";
 
 const COOKIE_NAME = "be_session";
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-// TEMP: fixed test users (Phase 1)
-// You can move these to env vars later.
-const USERS = [
-  { id: "user-1", email: "test@betengine.com", username: "test", password: "Test12345", role: "user", premium: false },
-  { id: "user-2", email: "test2@betengine.com", username: "testuser2", password: "Test12345", role: "user", premium: false }
-];
+const TEST_EMAIL = "test@betengine.com";
+const TEST_PASSWORD = "Test123!";
 
 function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
@@ -53,11 +52,6 @@ async function readJsonBody(req) {
   }
 }
 
-function json(res, statusCode, payload) {
-  res.statusCode = statusCode;
-  return res.end(JSON.stringify(payload));
-}
-
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -70,34 +64,36 @@ module.exports = async (req, res) => {
 
   const body = await readJsonBody(req);
 
-  const emailRaw = typeof body.email === "string" ? body.email.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
-  const email = emailRaw.toLowerCase();
 
   if (!email || !password) {
-    return json(res, 400, {
-      error: {
-        code: "VALIDATION_ERROR",
-        message: "Email and password are required",
-        details: { fields: ["email", "password"] }
-      }
-    });
+    res.statusCode = 400;
+    return res.end(
+      JSON.stringify({
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Email and password are required",
+          details: { fields: ["email", "password"] }
+        }
+      })
+    );
   }
 
-  const match = USERS.find(u => u.email === email);
-
-  // INVALID CREDENTIALS (NO COOKIE)
-  if (!match || match.password !== password) {
-    return json(res, 401, {
-      error: { code: "INVALID_CREDENTIALS" }
-    });
+  // TEMP TEST AUTH ONLY
+  if (email.toLowerCase() !== TEST_EMAIL || password !== TEST_PASSWORD) {
+    res.statusCode = 401;
+    return res.end(JSON.stringify({ error: { code: "INVALID_CREDENTIALS" } }));
   }
 
-  // SUCCESS: build session payload exactly as /api/auth/me expects
-  const user = { id: match.id, username: match.username, email: match.email };
+  const user = {
+    id: "user-test-1",
+    username: "test",
+    email: TEST_EMAIL
+  };
+
   const exp = Date.now() + SESSION_TTL_MS;
-
-  const sessionPayload = { user, role: match.role, premium: !!match.premium, exp };
+  const sessionPayload = { user, role: "user", premium: false, exp };
   const cookieValue = base64UrlEncodeJson(sessionPayload);
 
   setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
@@ -108,10 +104,13 @@ module.exports = async (req, res) => {
     maxAge: Math.floor(SESSION_TTL_MS / 1000)
   });
 
-  return json(res, 200, {
-    authenticated: true,
-    user,
-    role: match.role,
-    premium: !!match.premium
-  });
+  res.statusCode = 200;
+  return res.end(
+    JSON.stringify({
+      authenticated: true,
+      user,
+      role: "user",
+      premium: false
+    })
+  );
 };
