@@ -275,7 +275,7 @@ const userId = createUser(email, hash);
 const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
 const expiresAt = Date.now() + SESSION_TTL_MS;
 
-await createSession(sessionId, userId, expiresAt);
+await createSession(sessionId, user.id, expiresAt);
 setSessionCookie(req, res, sessionId);
 
 return sendJSON(res, 201, {
