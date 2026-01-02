@@ -236,8 +236,8 @@ const server = http.createServer(async (req, res) => {
     const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
     const expiresAt = Date.now() + SESSION_TTL_MS;
 
-    await createSession({ sessionId, userId: user.id, expiresAt });
-    setSessionCookie(req, res, sessionId);
+    await createSession(sessionId, userId, expiresAt);
+setSessionCookie(req, res, sessionId);
 
     return sendJSON(res, 200, {
       authenticated: true,
@@ -270,26 +270,25 @@ if (method === "POST" && url === "/api/auth/register") {
 
   const { hash } = hashPassword(password);
 
-  // ✅ KORREKT: positional args (JO object)
+  // ✅ CORREKT: positional args (JO object)
   const userId = createUser(email, hash);
 
   const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
   const expiresAt = Date.now() + SESSION_TTL_MS;
 
-  // ✅ KORREKT: positional args
-  createSession(sessionId, userId, expiresAt);
-  setSessionCookie(req, res, sessionId);
+ // ✅ CORREKT: positional args + await
+await createSession(sessionId, userId, expiresAt);
+setSessionCookie(req, res, sessionId);
 
-  return sendJSON(res, 201, {
-    authenticated: true,
-    user: {
-      id: userId,
-      email
-    },
-    role: "user",
-    premium: false
-  });
-}
+return sendJSON(res, 201, {
+  authenticated: true,
+  user: {
+    id: userId,
+    email
+  },
+  role: "user",
+  premium: false
+});
 
   /* =========================
      ME (SLIDING SESSION)
