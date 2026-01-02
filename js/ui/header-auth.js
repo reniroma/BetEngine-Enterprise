@@ -307,8 +307,15 @@ function initAuthActionOwnership() {
       setBusy(scope, true);
       await API.login({ email, password });
 
-      const me = await API.me();
-      document.dispatchEvent(new CustomEvent("auth:changed", { detail: me || {} }));
+     const me = await API.me();
+
+/* SYNC STATE MANAGER (BEAuth) */
+if (window.BEAuth?.setAuth) {
+  window.BEAuth.setAuth(me);
+}
+
+const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
+document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
 
       window.BE_closeAuthModals?.();
       // Ensure fields reset if present
@@ -351,7 +358,14 @@ function initAuthActionOwnership() {
       await API.register({ username, email, password });
 
       const me = await API.me();
-      document.dispatchEvent(new CustomEvent("auth:changed", { detail: me || {} }));
+
+/* SYNC STATE MANAGER (BEAuth) */
+if (window.BEAuth?.setAuth) {
+  window.BEAuth.setAuth(me);
+}
+
+const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
+document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
 
       window.BE_closeAuthModals?.();
     } catch (err) {
