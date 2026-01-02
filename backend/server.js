@@ -247,19 +247,17 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
-  /* =========================
-     REGISTER
-  ========================= */
+ /* =========================
+   REGISTER (FINAL, FIXED)
+========================= */
 if (method === "POST" && url === "/api/auth/register") {
   const data = await readJsonBody(req).catch(() => null);
-  if (!data) return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+  if (!data) {
+    return sendJSON(res, 400, { error: { code: "INVALID_JSON" } });
+  }
 
   const email = normalizeEmail(data.email);
   const password = data.password;
-  const username =
-    typeof data.username === "string" && data.username.trim()
-      ? data.username.trim()
-      : (email.includes("@") ? email.split("@")[0] : "user");
 
   if (!validateEmail(email) || !validatePassword(password)) {
     return sendJSON(res, 400, { error: { code: "VALIDATION_ERROR" } });
@@ -272,20 +270,21 @@ if (method === "POST" && url === "/api/auth/register") {
 
   const { hash } = hashPassword(password);
 
+  // ✅ KORREKT: positional args (JO object)
   const userId = createUser(email, hash);
 
   const sessionId = "sess_" + crypto.randomBytes(16).toString("hex");
   const expiresAt = Date.now() + SESSION_TTL_MS;
 
-  await createSession(sessionId, userId, expiresAt);
+  // ✅ KORREKT: positional args
+  createSession(sessionId, userId, expiresAt);
   setSessionCookie(req, res, sessionId);
 
   return sendJSON(res, 201, {
     authenticated: true,
     user: {
       id: userId,
-      email,
-      username
+      email
     },
     role: "user",
     premium: false
