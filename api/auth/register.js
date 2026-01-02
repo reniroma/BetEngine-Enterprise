@@ -1,17 +1,29 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (REGISTER STUB)
+ * BetEngine Enterprise – AUTH API (REGISTER STUB) – v1.2
  * POST /api/auth/register
  *
  * Vercel Serverless Function (Node)
  * Sets HttpOnly cookie session (stub)
  *
- * Cookie format MUST match /api/auth/me expectations:
- * base64url(JSON.stringify({ user, role, premium, exp }))
+ * COMPATIBILITY FIXES:
+ * - STRICT validation: username + email + password required
+ * - Duplicate protection (best-effort): username/email uniqueness
+ * - Error shape matches auth-api.js normalizeError()
+ * - Uses 201 Created on success
  *********************************************************/
 "use strict";
 
 const COOKIE_NAME = "be_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+// Best-effort in-memory store for warm invocations
+const STORE =
+  globalThis.__BE_AUTH_STUB_STORE__ ||
+  (globalThis.__BE_AUTH_STUB_STORE__ = {
+    emails: new Set(),
+    usernames: new Set(),
+    nextId: 1
+  });
 
 function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
@@ -44,8 +56,37 @@ async function readJsonBody(req) {
     const raw = Buffer.concat(chunks).toString("utf8");
     return raw ? JSON.parse(raw) : {};
   } catch {
-    return {};
+    return null;
   }
+}
+
+function sendJson(res, statusCode, payload) {
+  res.statusCode = statusCode;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  return res.end(JSON.stringify(payload));
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function normalizeEmail(v) {
+  return typeof v === "string" ? v.trim().toLowerCase() : "";
+}
+
+function normalizeUsername(v) {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+function validateUsername(u) {
+  // Keep simple but strict for stub stage
+  if (!u) return false;
+  if (u.length < 3 || u.length > 24) return false;
+  // allow letters/numbers/._-
+  return /^[a-zA-Z0-9._-]+$/.test(u);
+}
+
+function validatePassword(p) {
+  return typeof p === "string" && p.length >= 8 && p.length <= 128;
 }
 
 module.exports = async (req, res) => {
@@ -55,41 +96,77 @@ module.exports = async (req, res) => {
     return res.end();
   }
 
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
-
   const body = await readJsonBody(req);
-
-  const username = typeof body.username === "string" ? body.username.trim() : "";
-  const email = typeof body.email === "string" ? body.email.trim() : "";
-  const password = typeof body.password === "string" ? body.password : "";
-
-  if (!email || !password) {
-    res.statusCode = 400;
-    return res.end(
-      JSON.stringify({
-        error: {
-          code: "VALIDATION_ERROR",
-          message: "Email and password are required",
-          details: { fields: ["email", "password"] }
-        }
-      })
-    );
+  if (!body) {
+    return sendJson(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON" } });
   }
 
-  const safeUsername =
-    username ||
-    (email.includes("@") ? email.split("@")[0] : "user");
+  const username = normalizeUsername(body.username);
+  const email = normalizeEmail(body.email);
+  const password = typeof body.password === "string" ? body.password : "";
 
-  // STUB user (replace later with DB user)
+  // STRICT fields required (matches auth-api.js + header-auth.js expectations)
+  const missing = [];
+  if (!username) missing.push("username");
+  if (!email) missing.push("email");
+  if (!password) missing.push("password");
+
+  if (missing.length) {
+    return sendJson(res, 400, {
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Username, email, and password are required",
+        details: { fields: missing }
+      }
+    });
+  }
+
+  if (!validateUsername(username) || !EMAIL_RE.test(email) || !validatePassword(password)) {
+    return sendJson(res, 400, {
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Invalid username, email, or password",
+        details: {
+          usernameOk: validateUsername(username),
+          emailOk: EMAIL_RE.test(email),
+          passwordOk: validatePassword(password)
+        }
+      }
+    });
+  }
+
+  // Duplicate protection (best-effort)
+  if (STORE.emails.has(email)) {
+    return sendJson(res, 409, {
+      error: {
+        code: "USER_EXISTS",
+        message: "Email is already registered",
+        details: { field: "email" }
+      }
+    });
+  }
+
+  if (STORE.usernames.has(username.toLowerCase())) {
+    return sendJson(res, 409, {
+      error: {
+        code: "USER_EXISTS",
+        message: "Username is already taken",
+        details: { field: "username" }
+      }
+    });
+  }
+
+  // Register (stub)
   const user = {
-    id: "stub-reg-1",
-    username: safeUsername,
+    id: `stub-reg-${STORE.nextId++}`,
+    username,
     email
   };
 
-  const exp = Date.now() + SESSION_TTL_MS;
+  STORE.emails.add(email);
+  STORE.usernames.add(username.toLowerCase());
 
+  const exp = Date.now() + SESSION_TTL_MS;
   const sessionPayload = { user, role: "user", premium: false, exp };
   const cookieValue = base64UrlEncodeJson(sessionPayload);
 
@@ -101,13 +178,10 @@ module.exports = async (req, res) => {
     maxAge: Math.floor(SESSION_TTL_MS / 1000)
   });
 
-  res.statusCode = 200;
-  return res.end(
-    JSON.stringify({
-      authenticated: true,
-      user,
-      role: "user",
-      premium: false
-    })
-  );
+  return sendJson(res, 201, {
+    authenticated: true,
+    user,
+    role: "user",
+    premium: false
+  });
 };
