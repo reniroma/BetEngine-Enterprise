@@ -1,5 +1,7 @@
 // backend/api/_rateLimit.js
-import { Redis } from "@upstash/redis";
+"use strict";
+
+const { Redis } = require("@upstash/redis");
 
 const redis = Redis.fromEnv();
 
@@ -34,7 +36,7 @@ const RATE_LIMIT_LUA = `
  * @param {number} params.limit - max attempts
  * @param {number} params.window - window in seconds
  */
-export async function rateLimit({ key, limit, window }) {
+async function rateLimit({ key, limit, window }) {
   const now = Date.now();
   const windowMs = window * 1000;
   const redisKey = `rl:${key}`;
@@ -52,6 +54,8 @@ export async function rateLimit({ key, limit, window }) {
 
   return {
     allowed: allowed === 1 || allowed === "1",
-    remaining: typeof remaining === "number" ? remaining : Number(remaining) || 0,
+    remaining: typeof remaining === "number" ? remaining : Number(remaining) || 0
   };
 }
+
+module.exports = { rateLimit };
