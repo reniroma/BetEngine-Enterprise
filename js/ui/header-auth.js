@@ -1,12 +1,12 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.3)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.4)
  * Single source of truth for Login / Register / Forgot
  *
- * FIX (v6.3):
- * - Capture-phase ownership for login/register submit + button clicks
- * - Prevent duplicate requests (stopImmediatePropagation)
- * - Inline error rendering (modal or form)
- * - Clear email + password on INVALID_CREDENTIALS
+ * FIX (v6.4):
+ * - Correctly targets forgot_email instead of login email
+ * - Prevents "Email is required" when forgot_email is filled
+ * - Keeps capture-phase ownership (submit + click)
+ * - Fixes aria-hidden focus warning for forgot section
  *
  * SCOPE:
  * - No CSS edits
@@ -64,11 +64,9 @@ function initAuth() {
   const resetAuthForm = (overlay) => {
     if (!overlay) return;
 
-    // Reset native form state (best-effort)
     const form = overlay.querySelector("form");
     if (form && typeof form.reset === "function") form.reset();
 
-    // Clear inputs/selects/textareas (force)
     const fields = overlay.querySelectorAll("input, textarea, select");
     fields.forEach((el) => {
       const tag = (el.tagName || "").toLowerCase();
@@ -87,7 +85,6 @@ function initAuth() {
       el.value = "";
     });
 
-    // Clear any UI messages
     const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success, .be-auth-inline-message");
     msgs.forEach((m) => (m.textContent = ""));
   };
@@ -101,14 +98,12 @@ function initAuth() {
   const closeAll = () => {
     blurActive();
 
-    // Ensure forgot section is not left in an invalid aria-hidden state
     const forgotSection = loginModal.querySelector(".auth-forgot-section");
     if (forgotSection) forgotSection.setAttribute("aria-hidden", "true");
 
     loginModal.classList.remove("show", "state-forgot-open");
     registerModal.classList.remove("show");
 
-    // CLEAR FORMS ON CLOSE (prevents stale values)
     resetAuthForm(loginModal);
     resetAuthForm(registerModal);
 
@@ -117,20 +112,14 @@ function initAuth() {
 
   const openLogin = () => {
     closeAll();
-
-    // CLEAR BEFORE OPEN (extra safety)
     resetAuthForm(loginModal);
-
     loginModal.classList.add("show");
     lockBody(true);
   };
 
   const openRegister = () => {
     closeAll();
-
-    // CLEAR BEFORE OPEN (extra safety)
     resetAuthForm(registerModal);
-
     registerModal.classList.add("show");
     lockBody(true);
   };
@@ -205,16 +194,15 @@ document.addEventListener("click", (e) => {
 
   loginModal.classList.add("state-forgot-open");
 
-  // Accessibility + console warning fix:
-  // ensure the forgot section is not aria-hidden while active.
   const forgotSection = loginModal.querySelector(".auth-forgot-section");
   if (forgotSection) forgotSection.setAttribute("aria-hidden", "false");
 
-  // Focus email input in forgot section if available
-  const emailEl =
-    forgotSection?.querySelector('input[name="email"], input[type="email"], #email, #login-email') ||
-    loginModal.querySelector('input[name="email"], input[type="email"], #email, #login-email');
-  emailEl?.focus?.();
+  const forgotEmailEl =
+    forgotSection?.querySelector('input[name="forgot_email"]') ||
+    forgotSection?.querySelector('input[type="email"]') ||
+    forgotSection?.querySelector('input[name="email"]');
+
+  forgotEmailEl?.focus?.();
 });
 
 /* ======================================================
@@ -236,7 +224,6 @@ function ensureMessageHost(container) {
   box.style.lineHeight = "1.35";
   box.style.border = "1px solid rgba(255,255,255,0.10)";
 
-  // Insert near the top of the container
   container.insertBefore(box, container.firstChild);
   return box;
 }
@@ -266,13 +253,46 @@ function setMessage(container, type, text) {
   }
 }
 
-function findEmail(scope) {
+/* ======================================================
+   FIELD FINDERS (STRICT)
+====================================================== */
+function getForgotSection(scopeOrModal) {
+  if (!scopeOrModal) return null;
   return (
-    qs('input[name="email"]', scope) ||
-    qs('input[type="email"]', scope) ||
-    qs("#email", scope) ||
-    qs("#login-email", scope)
+    scopeOrModal.querySelector?.(".auth-forgot-section") ||
+    (scopeOrModal.closest ? scopeOrModal.closest(".auth-forgot-section") : null)
   );
+}
+
+function findForgotEmail(scope, loginModal) {
+  const forgotSection = getForgotSection(scope) || getForgotSection(loginModal);
+  if (forgotSection) {
+    return (
+      qs('input[name="forgot_email"]', forgotSection) ||
+      qs('input[type="email"]', forgotSection) ||
+      qs('input[name="email"]', forgotSection)
+    );
+  }
+
+  if (loginModal) {
+    return (
+      qs('.auth-forgot-section input[name="forgot_email"]', loginModal) ||
+      qs('.auth-forgot-section input[type="email"]', loginModal) ||
+      qs('.auth-forgot-section input[name="email"]', loginModal)
+    );
+  }
+
+  return null;
+}
+
+function findLoginEmail(scope) {
+  const candidates = qsa('input[name="email"], input[type="email"], #email, #login-email', scope);
+  for (const el of candidates) {
+    if (!el) continue;
+    if (el.closest && el.closest(".auth-forgot-section")) continue;
+    return el;
+  }
+  return null;
 }
 
 function findPassword(scope) {
@@ -289,7 +309,7 @@ function findUsername(scope) {
 }
 
 function clearLoginFieldsIn(scope) {
-  const emailEl = findEmail(scope);
+  const emailEl = findLoginEmail(scope);
   const passEl = findPassword(scope);
   if (emailEl) emailEl.value = "";
   if (passEl) passEl.value = "";
@@ -298,7 +318,7 @@ function clearLoginFieldsIn(scope) {
 
 function clearRegisterFieldsIn(scope) {
   const userEl = findUsername(scope);
-  const emailEl = findEmail(scope);
+  const emailEl = qs('input[name="email"], input[type="email"], #email', scope);
   const passEl = findPassword(scope);
 
   if (userEl) userEl.value = "";
@@ -308,11 +328,18 @@ function clearRegisterFieldsIn(scope) {
   (userEl || emailEl)?.focus?.();
 }
 
-function setBusy(scope, isBusy) {
+function setBusy(scope, busy) {
   if (!scope) return;
-  scope.dataset.beBusy = isBusy ? "1" : "0";
-  const btns = qsa('button[type="submit"], input[type="submit"]', scope);
-  btns.forEach((b) => (b.disabled = !!isBusy));
+  scope.dataset.beBusy = busy ? "1" : "0";
+
+  const btns = qsa("button, input[type='submit'], input[type='button']", scope);
+  btns.forEach((b) => {
+    if (!b) return;
+    if (b.closest && b.closest(".auth-close")) return;
+    if (b.closest && b.closest(".auth-switch")) return;
+    if (b.closest && b.closest(".auth-forgot-link, .auth-forgot")) return;
+    b.disabled = !!busy;
+  });
 }
 
 function isBusy(scope) {
@@ -373,22 +400,12 @@ function initAuthActionOwnership() {
   if (document.documentElement.dataset.beAuthActionsInit === "1") return;
   document.documentElement.dataset.beAuthActionsInit = "1";
 
-  /* ======================================================
-     ERROR PARITY (UI NORMALIZER)
-     - Normalizes any thrown value into: { status, code, message, details, field }
-     - Works with BEApiError + any unknown thrown shapes
-  ====================================================== */
   const normalizeUIError = (err) => {
     const status = Number(err?.status ?? err?.response?.status ?? err?.res?.status ?? 0);
-
     const code = String(err?.code ?? err?.error?.code ?? "").trim();
-
     const message = String(err?.message ?? err?.error?.message ?? "").trim();
-
     const details = err?.details ?? err?.error?.details ?? null;
-
     const field = String(details?.field || "").trim();
-
     return { status, code, message, details, field, raw: err };
   };
 
@@ -412,7 +429,7 @@ function initAuthActionOwnership() {
     const containerForMessage = qs("form", scope) || scope;
     setMessage(containerForMessage, "info", "");
 
-    const email = String(findEmail(scope)?.value || "").trim();
+    const email = String(findLoginEmail(scope)?.value || "").trim();
     const password = String(findPassword(scope)?.value || "");
 
     if (isBusy(scope)) return;
@@ -423,10 +440,7 @@ function initAuthActionOwnership() {
 
       const me = await API.me();
 
-      /* SYNC STATE MANAGER (BEAuth) */
-      if (window.BEAuth?.setAuth) {
-        window.BEAuth.setAuth(me);
-      }
+      if (window.BEAuth?.setAuth) window.BEAuth.setAuth(me);
 
       const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
       document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
@@ -436,14 +450,12 @@ function initAuthActionOwnership() {
     } catch (err) {
       const E = normalizeUIError(err);
 
-      // Credentials (server parity)
       if (E.status === 401 && E.code === "INVALID_CREDENTIALS") {
         setMessage(containerForMessage, "error", "Invalid email or password.");
         clearLoginFieldsIn(scope);
         return;
       }
 
-      // Validation (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
         setMessage(containerForMessage, "error", E.message || "Email and password are required.");
         clearPasswordOnlyIn(scope);
@@ -465,7 +477,7 @@ function initAuthActionOwnership() {
     setMessage(containerForMessage, "info", "");
 
     const username = String(findUsername(scope)?.value || "").trim();
-    const email = String(findEmail(scope)?.value || "").trim();
+    const email = String((qs('input[name="email"], input[type="email"], #email', scope)?.value) || "").trim();
     const password = String(findPassword(scope)?.value || "");
 
     if (isBusy(scope)) return;
@@ -476,10 +488,7 @@ function initAuthActionOwnership() {
 
       const me = await API.me();
 
-      /* SYNC STATE MANAGER (BEAuth) */
-      if (window.BEAuth?.setAuth) {
-        window.BEAuth.setAuth(me);
-      }
+      if (window.BEAuth?.setAuth) window.BEAuth.setAuth(me);
 
       const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
       document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
@@ -488,8 +497,6 @@ function initAuthActionOwnership() {
     } catch (err) {
       const E = normalizeUIError(err);
 
-      // DUPLICATE USER (server parity)
-      // backend: 409 + code: "USER_EXISTS" + details.field = "email" | "username"
       if (E.status === 409 && E.code === "USER_EXISTS") {
         const f = String(E.field || "");
         const msg =
@@ -504,18 +511,12 @@ function initAuthActionOwnership() {
         return;
       }
 
-      // VALIDATION (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
-        setMessage(
-          containerForMessage,
-          "error",
-          E.message || "Username, email, and password are required."
-        );
+        setMessage(containerForMessage, "error", E.message || "Username, email, and password are required.");
         clearRegisterFieldsIn(scope);
         return;
       }
 
-      // Any other error: show msg, clear password only
       setMessage(containerForMessage, "error", defaultErrorMessage(E));
       clearPasswordOnlyIn(scope);
     } finally {
@@ -523,29 +524,27 @@ function initAuthActionOwnership() {
     }
   };
 
-  const runForgot = async (loginModal, scope) => {
+  const runForgot = async (loginModal, scope, sourceEl) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
 
-    const containerForMessage = qs("form", scope) || scope;
+    const forgotSection = getForgotSection(sourceEl) || getForgotSection(loginModal);
+    const containerForMessage = forgotSection || qs("form", scope) || scope || loginModal;
     setMessage(containerForMessage, "info", "");
 
-   let emailEl =
-  findEmail(scope) ||
-  findEmail(loginModal) ||
-  loginModal.querySelector(".auth-forgot-section input[type='email'], .auth-forgot-section input[name='email']");
+    const emailEl = findForgotEmail(sourceEl || scope, loginModal);
+    const email = String(emailEl?.value || "").trim();
 
-const email = String(emailEl?.value || "").trim();
+    if (!email) {
+      setMessage(containerForMessage, "error", "Email is required.");
+      emailEl?.focus?.();
+      return;
+    }
 
-if (!email) {
-  setMessage(containerForMessage, "error", "Email is required.");
-  emailEl?.focus?.();
-  return;
-}
-    if (isBusy(scope)) return;
+    if (isBusy(containerForMessage)) return;
 
     try {
-      setBusy(scope, true);
+      setBusy(containerForMessage, true);
       await API.forgotPassword({ email });
       setMessage(
         containerForMessage,
@@ -557,43 +556,31 @@ if (!email) {
 
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
         setMessage(containerForMessage, "error", E.message || "Email is required.");
-        findEmail(scope)?.focus?.();
+        emailEl?.focus?.();
         return;
       }
 
       setMessage(containerForMessage, "error", defaultErrorMessage(E));
     } finally {
-      setBusy(scope, false);
+      setBusy(containerForMessage, false);
     }
   };
 
-
-  /* ======================================================
-     ROUTING: Detect Forgot action reliably
-     - Forgot UI can be rendered inside the login modal alongside the login form,
-       so a password field may still exist in the DOM.
-     - We route based on modal state + source element context.
-  ====================================================== */
   const isForgotAction = (loginModal, sourceEl) => {
     if (!loginModal || !loginModal.classList.contains("state-forgot-open")) return false;
 
-    // If we can't inspect the source element, default to "forgot" while in forgot state
     if (!sourceEl || !(sourceEl instanceof Element)) return true;
 
-    // Strong signal: action came from inside forgot section
     if (sourceEl.closest && sourceEl.closest(".auth-forgot-section")) return true;
 
-    // Fallback: button text
     const t = String(sourceEl.textContent || "").trim().toLowerCase();
     if (t === "confirm" || t === "send" || t === "reset") return true;
 
-    // Optional class hooks (if present)
     if (sourceEl.matches && sourceEl.matches(".auth-forgot-submit, .auth-forgot-confirm")) return true;
 
     return false;
   };
 
-  // CAPTURE submit ownership
   document.addEventListener(
     "submit",
     async (e) => {
@@ -607,7 +594,6 @@ if (!email) {
       const inRegister = !!(registerModal && registerModal.contains(form));
       if (!inLogin && !inRegister) return;
 
-      // Take full ownership
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
@@ -618,7 +604,7 @@ if (!email) {
           (document.activeElement instanceof Element ? document.activeElement : null);
 
         if (isForgotAction(loginModal, submitter)) {
-          return runForgot(loginModal, form);
+          return runForgot(loginModal, form, submitter);
         }
 
         return runLogin(loginModal, form);
@@ -629,7 +615,6 @@ if (!email) {
     true
   );
 
-  // CAPTURE click ownership (handles non-submit buttons)
   document.addEventListener(
     "click",
     async (e) => {
@@ -646,7 +631,6 @@ if (!email) {
       const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
       if (!inLogin && !inRegister) return;
 
-      // Ignore close buttons & switches
       if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
 
       const isSubmitLike =
@@ -654,11 +638,11 @@ if (!email) {
         btn.getAttribute("type") === "button" ||
         btn.matches(".auth-submit, .auth-login, .auth-register") ||
         /login/i.test(btn.textContent || "") ||
-        /register/i.test(btn.textContent || "");
+        /register/i.test(btn.textContent || "") ||
+        /confirm/i.test(btn.textContent || "");
 
       if (!isSubmitLike) return;
 
-      // prevent duplicates
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
@@ -666,9 +650,8 @@ if (!email) {
       if (inLogin) {
         const scope = btn.closest("form") || loginModal;
 
-        // FIX: Route to forgot while in forgot state, even if a password input exists elsewhere in the form.
         if (isForgotAction(loginModal, btn)) {
-          return runForgot(loginModal, scope);
+          return runForgot(loginModal, scope, btn);
         }
 
         return runLogin(loginModal, scope);
@@ -700,3 +683,4 @@ if (window.__BE_HEADER_READY__ === true) {
 
 hydrateAuthUI();
 initAuthActionOwnership();
+```1
