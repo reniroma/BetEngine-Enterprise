@@ -530,12 +530,18 @@ function initAuthActionOwnership() {
     const containerForMessage = qs("form", scope) || scope;
     setMessage(containerForMessage, "info", "");
 
-    const email = String(findEmail(scope)?.value || "").trim();
-    if (!email) {
-      setMessage(containerForMessage, "error", "Email is required.");
-      findEmail(scope)?.focus?.();
-      return;
-    }
+   let emailEl =
+  findEmail(scope) ||
+  findEmail(loginModal) ||
+  loginModal.querySelector(".auth-forgot-section input[type='email'], .auth-forgot-section input[name='email']");
+
+const email = String(emailEl?.value || "").trim();
+
+if (!email) {
+  setMessage(containerForMessage, "error", "Email is required.");
+  emailEl?.focus?.();
+  return;
+}
     if (isBusy(scope)) return;
 
     try {
