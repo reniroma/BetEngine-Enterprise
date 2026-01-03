@@ -533,6 +533,29 @@ function initAuthActionOwnership() {
     }
   };
 
+  /* ======================================================
+     ROUTING: Detect Forgot submit reliably
+     (Forgot UI can live inside login form, so password field may still exist)
+  ====================================================== */
+  const isForgotAction = (loginModal, el) => {
+    if (!loginModal || !loginModal.classList.contains("state-forgot-open")) return false;
+
+    // If we can't inspect the source element, default to "forgot" while in forgot state
+    if (!el || !(el instanceof Element)) return true;
+
+    // Strong signal: action came from inside forgot section
+    if (el.closest && el.closest(".auth-forgot-section")) return true;
+
+    // Fallback: button text
+    const t = String(el.textContent || "").trim().toLowerCase();
+    if (t === "confirm" || t === "send" || t === "reset") return true;
+
+    // Optional class hooks (if present in HTML)
+    if (el.matches && el.matches(".auth-forgot-submit, .auth-forgot-confirm")) return true;
+
+    return false;
+  };
+
   // CAPTURE submit ownership
   document.addEventListener(
     "submit",
@@ -553,9 +576,15 @@ function initAuthActionOwnership() {
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
       if (inLogin) {
-        const forgotOpen = loginModal.classList.contains("state-forgot-open");
-        const hasPassword = !!findPassword(form);
-        if (forgotOpen && !hasPassword) return runForgot(loginModal, form);
+        const submitter =
+          (e.submitter instanceof Element) ? e.submitter :
+          (document.activeElement instanceof Element ? document.activeElement : null);
+
+        // FIX: Route to forgot even if password field exists
+        if (isForgotAction(loginModal, submitter)) {
+          return runForgot(loginModal, form);
+        }
+
         return runLogin(loginModal, form);
       }
 
@@ -563,6 +592,65 @@ function initAuthActionOwnership() {
     },
     true
   );
+
+  // CAPTURE click ownership (handles non-submit buttons)
+  document.addEventListener(
+    "click",
+    async (e) => {
+      const loginModal = qs("#login-modal");
+      const registerModal = qs("#register-modal");
+
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const btn = target.closest('button, input[type="button"], input[type="submit"]');
+      if (!btn) return;
+
+      const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
+      const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
+      if (!inLogin && !inRegister) return;
+
+      // Ignore close buttons & switches
+      if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
+
+      // FIX: If forgot is open and click is from forgot UI, always runForgot
+      if (inLogin && isForgotAction(loginModal, btn)) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+        const scope = btn.closest("form") || loginModal;
+        return runForgot(loginModal, scope);
+      }
+
+      const isSubmitLike =
+        btn.getAttribute("type") === "submit" ||
+        btn.getAttribute("type") === "button" ||
+        btn.matches(".auth-submit, .auth-login, .auth-register") ||
+        /login/i.test(btn.textContent || "") ||
+        /register/i.test(btn.textContent || "");
+
+      if (!isSubmitLike) return;
+
+      // prevent duplicates
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+      if (inLogin) {
+        const scope = btn.closest("form") || loginModal;
+        return runLogin(loginModal, scope);
+      }
+
+      if (inRegister) {
+        const scope = btn.closest("form") || registerModal;
+        return runRegister(registerModal, scope);
+      }
+    },
+    true
+  );
+}
+
 
   // CAPTURE click ownership (handles non-submit buttons)
   document.addEventListener(
