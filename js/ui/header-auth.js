@@ -88,11 +88,23 @@ function initAuth() {
     });
 
     // Clear any UI messages
-    const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success");
+    const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success, .be-auth-inline-message");
     msgs.forEach((m) => (m.textContent = ""));
   };
 
+  const blurActive = () => {
+    if (document.activeElement && typeof document.activeElement.blur === "function") {
+      document.activeElement.blur();
+    }
+  };
+
   const closeAll = () => {
+    blurActive();
+
+    // Ensure forgot section is not left in an invalid aria-hidden state
+    const forgotSection = loginModal.querySelector(".auth-forgot-section");
+    if (forgotSection) forgotSection.setAttribute("aria-hidden", "true");
+
     loginModal.classList.remove("show", "state-forgot-open");
     registerModal.classList.remove("show");
 
@@ -192,6 +204,17 @@ document.addEventListener("click", (e) => {
   e.stopPropagation();
 
   loginModal.classList.add("state-forgot-open");
+
+  // Accessibility + console warning fix:
+  // ensure the forgot section is not aria-hidden while active.
+  const forgotSection = loginModal.querySelector(".auth-forgot-section");
+  if (forgotSection) forgotSection.setAttribute("aria-hidden", "false");
+
+  // Focus email input in forgot section if available
+  const emailEl =
+    forgotSection?.querySelector('input[name="email"], input[type="email"], #email, #login-email') ||
+    loginModal.querySelector('input[name="email"], input[type="email"], #email, #login-email');
+  emailEl?.focus?.();
 });
 
 /* ======================================================
@@ -508,6 +531,11 @@ function initAuthActionOwnership() {
     setMessage(containerForMessage, "info", "");
 
     const email = String(findEmail(scope)?.value || "").trim();
+    if (!email) {
+      setMessage(containerForMessage, "error", "Email is required.");
+      findEmail(scope)?.focus?.();
+      return;
+    }
     if (isBusy(scope)) return;
 
     try {
@@ -533,6 +561,32 @@ function initAuthActionOwnership() {
     }
   };
 
+
+  /* ======================================================
+     ROUTING: Detect Forgot action reliably
+     - Forgot UI can be rendered inside the login modal alongside the login form,
+       so a password field may still exist in the DOM.
+     - We route based on modal state + source element context.
+  ====================================================== */
+  const isForgotAction = (loginModal, sourceEl) => {
+    if (!loginModal || !loginModal.classList.contains("state-forgot-open")) return false;
+
+    // If we can't inspect the source element, default to "forgot" while in forgot state
+    if (!sourceEl || !(sourceEl instanceof Element)) return true;
+
+    // Strong signal: action came from inside forgot section
+    if (sourceEl.closest && sourceEl.closest(".auth-forgot-section")) return true;
+
+    // Fallback: button text
+    const t = String(sourceEl.textContent || "").trim().toLowerCase();
+    if (t === "confirm" || t === "send" || t === "reset") return true;
+
+    // Optional class hooks (if present)
+    if (sourceEl.matches && sourceEl.matches(".auth-forgot-submit, .auth-forgot-confirm")) return true;
+
+    return false;
+  };
+
   // CAPTURE submit ownership
   document.addEventListener(
     "submit",
@@ -553,9 +607,14 @@ function initAuthActionOwnership() {
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
       if (inLogin) {
-        const forgotOpen = loginModal.classList.contains("state-forgot-open");
-        const hasPassword = !!findPassword(form);
-        if (forgotOpen && !hasPassword) return runForgot(loginModal, form);
+        const submitter =
+          (e.submitter instanceof Element) ? e.submitter :
+          (document.activeElement instanceof Element ? document.activeElement : null);
+
+        if (isForgotAction(loginModal, submitter)) {
+          return runForgot(loginModal, form);
+        }
+
         return runLogin(loginModal, form);
       }
 
@@ -600,9 +659,12 @@ function initAuthActionOwnership() {
 
       if (inLogin) {
         const scope = btn.closest("form") || loginModal;
-        const forgotOpen = loginModal.classList.contains("state-forgot-open");
-        const hasPassword = !!findPassword(scope);
-        if (forgotOpen && !hasPassword) return runForgot(loginModal, scope);
+
+        // FIX: Route to forgot while in forgot state, even if a password input exists elsewhere in the form.
+        if (isForgotAction(loginModal, btn)) {
+          return runForgot(loginModal, scope);
+        }
+
         return runLogin(loginModal, scope);
       }
 
@@ -614,6 +676,7 @@ function initAuthActionOwnership() {
     true
   );
 }
+
 /* =======================
    EVENT BINDING
 ======================= */
