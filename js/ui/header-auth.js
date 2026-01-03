@@ -1,11 +1,12 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.4)
+ * BetEngine Enterprise – HEADER AUTH JS (FINAL v6.3)
  * Single source of truth for Login / Register / Forgot
  *
- * FIX (v6.4):
- * - Remove duplicated click ownership blocks + stray braces (syntax-safe)
- * - Capture-phase ownership for login/register/forgot submit + button clicks
- * - Robust Forgot routing while state-forgot-open is active
+ * FIX (v6.3):
+ * - Capture-phase ownership for login/register submit + button clicks
+ * - Prevent duplicate requests (stopImmediatePropagation)
+ * - Inline error rendering (modal or form)
+ * - Clear email + password on INVALID_CREDENTIALS
  *
  * SCOPE:
  * - No CSS edits
@@ -63,9 +64,11 @@ function initAuth() {
   const resetAuthForm = (overlay) => {
     if (!overlay) return;
 
+    // Reset native form state (best-effort)
     const form = overlay.querySelector("form");
     if (form && typeof form.reset === "function") form.reset();
 
+    // Clear inputs/selects/textareas (force)
     const fields = overlay.querySelectorAll("input, textarea, select");
     fields.forEach((el) => {
       const tag = (el.tagName || "").toLowerCase();
@@ -84,7 +87,8 @@ function initAuth() {
       el.value = "";
     });
 
-    const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success, .be-auth-inline-message");
+    // Clear any UI messages
+    const msgs = overlay.querySelectorAll(".auth-message, .auth-error, .auth-success");
     msgs.forEach((m) => (m.textContent = ""));
   };
 
@@ -92,6 +96,7 @@ function initAuth() {
     loginModal.classList.remove("show", "state-forgot-open");
     registerModal.classList.remove("show");
 
+    // CLEAR FORMS ON CLOSE (prevents stale values)
     resetAuthForm(loginModal);
     resetAuthForm(registerModal);
 
@@ -100,14 +105,20 @@ function initAuth() {
 
   const openLogin = () => {
     closeAll();
+
+    // CLEAR BEFORE OPEN (extra safety)
     resetAuthForm(loginModal);
+
     loginModal.classList.add("show");
     lockBody(true);
   };
 
   const openRegister = () => {
     closeAll();
+
+    // CLEAR BEFORE OPEN (extra safety)
     resetAuthForm(registerModal);
+
     registerModal.classList.add("show");
     lockBody(true);
   };
@@ -202,6 +213,7 @@ function ensureMessageHost(container) {
   box.style.lineHeight = "1.35";
   box.style.border = "1px solid rgba(255,255,255,0.10)";
 
+  // Insert near the top of the container
   container.insertBefore(box, container.firstChild);
   return box;
 }
@@ -250,11 +262,7 @@ function findPassword(scope) {
 }
 
 function findUsername(scope) {
-  return (
-    qs('input[name="username"]', scope) ||
-    qs("#username", scope) ||
-    qs("#register-username", scope)
-  );
+  return qs('input[name="username"]', scope) || qs("#username", scope) || qs("#register-username", scope);
 }
 
 function clearLoginFieldsIn(scope) {
@@ -277,11 +285,11 @@ function clearRegisterFieldsIn(scope) {
   (userEl || emailEl)?.focus?.();
 }
 
-function setBusy(scope, busy) {
+function setBusy(scope, isBusy) {
   if (!scope) return;
-  scope.dataset.beBusy = busy ? "1" : "0";
+  scope.dataset.beBusy = isBusy ? "1" : "0";
   const btns = qsa('button[type="submit"], input[type="submit"]', scope);
-  btns.forEach((b) => (b.disabled = !!busy));
+  btns.forEach((b) => (b.disabled = !!isBusy));
 }
 
 function isBusy(scope) {
@@ -336,17 +344,28 @@ document.addEventListener("auth:changed", (e) => {
 
 /* ======================================================
    AUTH ACTIONS (OWNED HANDLERS)
+   - Capture-phase so other scripts cannot hijack submit/click
 ====================================================== */
 function initAuthActionOwnership() {
   if (document.documentElement.dataset.beAuthActionsInit === "1") return;
   document.documentElement.dataset.beAuthActionsInit = "1";
 
+  /* ======================================================
+     ERROR PARITY (UI NORMALIZER)
+     - Normalizes any thrown value into: { status, code, message, details, field }
+     - Works with BEApiError + any unknown thrown shapes
+  ====================================================== */
   const normalizeUIError = (err) => {
     const status = Number(err?.status ?? err?.response?.status ?? err?.res?.status ?? 0);
+
     const code = String(err?.code ?? err?.error?.code ?? "").trim();
+
     const message = String(err?.message ?? err?.error?.message ?? "").trim();
+
     const details = err?.details ?? err?.error?.details ?? null;
+
     const field = String(details?.field || "").trim();
+
     return { status, code, message, details, field, raw: err };
   };
 
@@ -363,7 +382,7 @@ function initAuthActionOwnership() {
     passEl?.focus?.();
   };
 
-  const runLogin = async (_loginModal, scope) => {
+  const runLogin = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
 
@@ -381,7 +400,10 @@ function initAuthActionOwnership() {
 
       const me = await API.me();
 
-      if (window.BEAuth?.setAuth) window.BEAuth.setAuth(me);
+      /* SYNC STATE MANAGER (BEAuth) */
+      if (window.BEAuth?.setAuth) {
+        window.BEAuth.setAuth(me);
+      }
 
       const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
       document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
@@ -391,12 +413,14 @@ function initAuthActionOwnership() {
     } catch (err) {
       const E = normalizeUIError(err);
 
+      // Credentials (server parity)
       if (E.status === 401 && E.code === "INVALID_CREDENTIALS") {
         setMessage(containerForMessage, "error", "Invalid email or password.");
         clearLoginFieldsIn(scope);
         return;
       }
 
+      // Validation (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
         setMessage(containerForMessage, "error", E.message || "Email and password are required.");
         clearPasswordOnlyIn(scope);
@@ -410,7 +434,7 @@ function initAuthActionOwnership() {
     }
   };
 
-  const runRegister = async (_registerModal, scope) => {
+  const runRegister = async (registerModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
 
@@ -429,7 +453,10 @@ function initAuthActionOwnership() {
 
       const me = await API.me();
 
-      if (window.BEAuth?.setAuth) window.BEAuth.setAuth(me);
+      /* SYNC STATE MANAGER (BEAuth) */
+      if (window.BEAuth?.setAuth) {
+        window.BEAuth.setAuth(me);
+      }
 
       const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
       document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
@@ -438,6 +465,8 @@ function initAuthActionOwnership() {
     } catch (err) {
       const E = normalizeUIError(err);
 
+      // DUPLICATE USER (server parity)
+      // backend: 409 + code: "USER_EXISTS" + details.field = "email" | "username"
       if (E.status === 409 && E.code === "USER_EXISTS") {
         const f = String(E.field || "");
         const msg =
@@ -452,12 +481,18 @@ function initAuthActionOwnership() {
         return;
       }
 
+      // VALIDATION (client parity)
       if (E.status === 400 && E.code === "VALIDATION_ERROR") {
-        setMessage(containerForMessage, "error", E.message || "Username, email, and password are required.");
+        setMessage(
+          containerForMessage,
+          "error",
+          E.message || "Username, email, and password are required."
+        );
         clearRegisterFieldsIn(scope);
         return;
       }
 
+      // Any other error: show msg, clear password only
       setMessage(containerForMessage, "error", defaultErrorMessage(E));
       clearPasswordOnlyIn(scope);
     } finally {
@@ -465,7 +500,7 @@ function initAuthActionOwnership() {
     }
   };
 
-  const runForgot = async (_loginModal, scope) => {
+  const runForgot = async (loginModal, scope) => {
     const API = window.BEAuthAPI || window.BEAuthApi;
     if (!API) return;
 
@@ -478,7 +513,11 @@ function initAuthActionOwnership() {
     try {
       setBusy(scope, true);
       await API.forgotPassword({ email });
-      setMessage(containerForMessage, "success", "If the email exists, you will receive password reset instructions.");
+      setMessage(
+        containerForMessage,
+        "success",
+        "If the email exists, you will receive password reset instructions."
+      );
     } catch (err) {
       const E = normalizeUIError(err);
 
@@ -492,21 +531,6 @@ function initAuthActionOwnership() {
     } finally {
       setBusy(scope, false);
     }
-  };
-
-  const isForgotAction = (loginModal, el) => {
-    if (!loginModal || !loginModal.classList.contains("state-forgot-open")) return false;
-
-    if (!el || !(el instanceof Element)) return true;
-
-    if (el.closest && el.closest(".auth-forgot-section")) return true;
-
-    const t = String(el.textContent || "").trim().toLowerCase();
-    if (t === "confirm" || t === "send" || t === "reset") return true;
-
-    if (el.matches && el.matches(".auth-forgot-submit, .auth-forgot-confirm")) return true;
-
-    return false;
   };
 
   // CAPTURE submit ownership
@@ -523,16 +547,15 @@ function initAuthActionOwnership() {
       const inRegister = !!(registerModal && registerModal.contains(form));
       if (!inLogin && !inRegister) return;
 
+      // Take full ownership
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
       if (inLogin) {
-        const submitter =
-          (e.submitter instanceof Element) ? e.submitter :
-          (document.activeElement instanceof Element ? document.activeElement : null);
-
-        if (isForgotAction(loginModal, submitter)) return runForgot(loginModal, form);
+        const forgotOpen = loginModal.classList.contains("state-forgot-open");
+        const hasPassword = !!findPassword(form);
+        if (forgotOpen && !hasPassword) return runForgot(loginModal, form);
         return runLogin(loginModal, form);
       }
 
@@ -558,16 +581,8 @@ function initAuthActionOwnership() {
       const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
       if (!inLogin && !inRegister) return;
 
+      // Ignore close buttons & switches
       if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
-
-      if (inLogin && isForgotAction(loginModal, btn)) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-        const scope = btn.closest("form") || loginModal;
-        return runForgot(loginModal, scope);
-      }
 
       const isSubmitLike =
         btn.getAttribute("type") === "submit" ||
@@ -578,12 +593,16 @@ function initAuthActionOwnership() {
 
       if (!isSubmitLike) return;
 
+      // prevent duplicates
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
       if (inLogin) {
         const scope = btn.closest("form") || loginModal;
+        const forgotOpen = loginModal.classList.contains("state-forgot-open");
+        const hasPassword = !!findPassword(scope);
+        if (forgotOpen && !hasPassword) return runForgot(loginModal, scope);
         return runLogin(loginModal, scope);
       }
 
@@ -595,7 +614,6 @@ function initAuthActionOwnership() {
     true
   );
 }
-
 /* =======================
    EVENT BINDING
 ======================= */
@@ -610,3 +628,6 @@ if (window.__BE_HEADER_READY__ === true) {
   initAuthActionOwnership();
   hydrateAuthUI();
 }
+
+hydrateAuthUI();
+initAuthActionOwnership();
