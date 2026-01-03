@@ -1,10 +1,9 @@
 // backend/api/_rateLimit.js
 "use strict";
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+const { Redis } = require("@upstash/redis");
+
+const redis = Redis.fromEnv();
 
 const RATE_LIMIT_LUA = `
   local key = KEYS[1]
