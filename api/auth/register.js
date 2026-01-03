@@ -67,6 +67,16 @@ function sendJson(res, statusCode, payload) {
   return res.end(JSON.stringify(payload));
 }
 
+function getClientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff.trim()) {
+    return xff.split(",")[0].trim();
+  }
+  const realIp = req.headers["x-real-ip"];
+  if (typeof realIp === "string" && realIp.trim()) return realIp.trim();
+  return (req.socket && req.socket.remoteAddress) ? String(req.socket.remoteAddress) : "unknown";
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function normalizeEmail(v) {
@@ -94,6 +104,24 @@ module.exports = async (req, res) => {
     res.statusCode = 405;
     res.setHeader("Allow", "POST");
     return res.end();
+  }
+
+  // Rate limit (enterprise, serverless-safe). Fail-open if misconfigured.
+  try {
+    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
+    const ip = getClientIp(req);
+    const key = `auth:register:${ip}`;
+    const rl = await rateLimit({ key, limit: 3, window: 10 * 60 });
+
+    if (!rl || rl.allowed !== true) {
+      return sendJson(res, 429, {
+        ok: false,
+        error: "RATE_LIMITED",
+        message: "Too many attempts. Please try again later."
+      });
+    }
+  } catch {
+    // Fail open: do not block auth if rate limiter is misconfigured
   }
 
   const body = await readJsonBody(req);
