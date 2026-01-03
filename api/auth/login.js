@@ -52,6 +52,16 @@ async function readJsonBody(req) {
   }
 }
 
+function getClientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff.trim()) {
+    return xff.split(",")[0].trim();
+  }
+  const realIp = req.headers["x-real-ip"];
+  if (typeof realIp === "string" && realIp.trim()) return realIp.trim();
+  return (req.socket && req.socket.remoteAddress) ? String(req.socket.remoteAddress) : "unknown";
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -61,6 +71,27 @@ module.exports = async (req, res) => {
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
+
+  // RATE LIMIT (STORE) — fail open
+  try {
+    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
+    const ip = getClientIp(req);
+    const key = `auth:login:${ip}`;
+    const rl = await rateLimit({ key, limit: 5, window: 5 * 60 });
+
+    if (!rl || rl.allowed !== true) {
+      res.statusCode = 429;
+      return res.end(
+        JSON.stringify({
+          ok: false,
+          error: "RATE_LIMITED",
+          message: "Too many attempts. Please try again later."
+        })
+      );
+    }
+  } catch {
+    // Fail open: do not block auth if rate limiter is misconfigured
+  }
 
   const body = await readJsonBody(req);
 
