@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "cookie": "^0.6.0",
-    "better-sqlite3": "^11.0.0"
+    "better-sqlite3": "^1.36.0"
   }
 }
