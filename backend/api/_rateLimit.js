@@ -1,9 +1,13 @@
 // backend/api/_rateLimit.js
 "use strict";
 
-const { Redis } = require("@upstash/redis");
+import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+// FIX: manual initialization (not fromEnv)
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const RATE_LIMIT_LUA = `
   local key = KEYS[1]
