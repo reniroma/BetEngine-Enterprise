@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
 
   // RATE LIMIT (STORE) — fail open
   try {
-    const { rateLimit } = require("../../backend/api/_rateLimit.js");
+    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
     const ip = getClientIp(req);
     const key = `auth:login:${ip}`;
     const rl = await rateLimit({ key, limit: 5, window: 5 * 60 });
