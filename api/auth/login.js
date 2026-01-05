@@ -1,17 +1,21 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (LOGIN STUB) – FIXED
+ * BetEngine Enterprise – AUTH API (LOGIN)
  * POST /api/auth/login
  *
- * Vercel Serverless Function (Node)
- * Sets HttpOnly cookie session (stub)
+ * TEST CREDENTIALS (TEMP):
+ * - email:    test@betengine.com
+ * - password: Test123!
  *
- * Cookie format MUST match /api/auth/me expectations:
+ * Sets HttpOnly cookie session:
  * base64url(JSON.stringify({ user, role, premium, exp }))
  *********************************************************/
 "use strict";
 
 const COOKIE_NAME = "be_session";
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+const TEST_EMAIL = "test@betengine.com";
+const TEST_PASSWORD = "Test123!";
 
 function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
@@ -48,6 +52,16 @@ async function readJsonBody(req) {
   }
 }
 
+function getClientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (typeof xff === "string" && xff.trim()) {
+    return xff.split(",")[0].trim();
+  }
+  const realIp = req.headers["x-real-ip"];
+  if (typeof realIp === "string" && realIp.trim()) return realIp.trim();
+  return (req.socket && req.socket.remoteAddress) ? String(req.socket.remoteAddress) : "unknown";
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -57,6 +71,27 @@ module.exports = async (req, res) => {
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
+
+  // RATE LIMIT (STORE) — fail open
+  try {
+    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
+    const ip = getClientIp(req);
+    const key = `auth:login:${ip}`;
+    const rl = await rateLimit({ key, limit: 5, window: 5 * 60 });
+
+    if (!rl || rl.allowed !== true) {
+      res.statusCode = 429;
+      return res.end(
+        JSON.stringify({
+          ok: false,
+          error: "RATE_LIMITED",
+          message: "Too many attempts. Please try again later."
+        })
+      );
+    }
+  } catch {
+    // Fail open: do not block auth if rate limiter is misconfigured
+  }
 
   const body = await readJsonBody(req);
 
@@ -76,15 +111,19 @@ module.exports = async (req, res) => {
     );
   }
 
-  // STUB user (replace later with real credential check)
+  // TEMP TEST AUTH ONLY
+  if (email.toLowerCase() !== TEST_EMAIL || password !== TEST_PASSWORD) {
+    res.statusCode = 401;
+    return res.end(JSON.stringify({ error: { code: "INVALID_CREDENTIALS" } }));
+  }
+
   const user = {
-    id: "stub-1",
-    username: email.includes("@") ? email.split("@")[0] : "user",
-    email
+    id: "user-test-1",
+    username: "test",
+    email: TEST_EMAIL
   };
 
   const exp = Date.now() + SESSION_TTL_MS;
-
   const sessionPayload = { user, role: "user", premium: false, exp };
   const cookieValue = base64UrlEncodeJson(sessionPayload);
 

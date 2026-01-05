@@ -1,15 +1,11 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API CLIENT (FINAL v1.0)
+ * BetEngine Enterprise – AUTH API CLIENT (FINAL v1.1)
  * Cookie-based session (HttpOnly) – Same-Origin
  *
- * Base URL:
- *   Frontend: https://www.quantumoddsportal.com
- *   API:      https://www.quantumoddsportal.com/api
- *
- * NOTES:
+ * NOTES
  * - Uses fetch with credentials: "include" so cookies work.
- * - No CORS required (same-origin).
  * - Provides a normalized error shape for UI/back-end parity.
+ * - Adds STRICT client-side validation to prevent 400 on empty payloads.
  *********************************************************/
 (() => {
   "use strict";
@@ -47,13 +43,10 @@
     };
 
     // Optional CSRF pattern (backend may implement later)
-    // If backend sets XSRF-TOKEN cookie, we echo it back.
     const xsrf = getCookie("XSRF-TOKEN");
     if (xsrf && !headers["X-CSRF-Token"]) headers["X-CSRF-Token"] = xsrf;
 
-    // Helpful for backend logs / WAF rules
     if (!headers["X-Requested-With"]) headers["X-Requested-With"] = "XMLHttpRequest";
-
     return headers;
   };
 
@@ -77,15 +70,54 @@
   const normalizeError = async ({ res, path, method, fallbackCode }) => {
     const body = await safeJson(res);
 
+    const status = res?.status ?? 0;
+
+    const code =
+      body?.error?.code ||
+      body?.code ||
+      fallbackCode ||
+      "REQUEST_FAILED";
+
+    const message =
+      body?.error?.message ||
+      body?.message ||
+      `HTTP ${status} ${res?.statusText || ""}`.trim();
+
+    // Preserve server details, but ensure UI always has details.field when possible
+    const rawDetails = body?.error?.details ?? body?.details ?? null;
+
+    const clonedDetails =
+      rawDetails && typeof rawDetails === "object" && !Array.isArray(rawDetails)
+        ? { ...rawDetails }
+        : rawDetails;
+
+    const inferredField = (() => {
+      if (clonedDetails && typeof clonedDetails === "object" && clonedDetails.field) {
+        return String(clonedDetails.field);
+      }
+      const msg = String(message || "");
+      if (/email/i.test(msg)) return "email";
+      if (/username/i.test(msg)) return "username";
+      return "";
+    })();
+
+    const details =
+      inferredField
+        ? (clonedDetails && typeof clonedDetails === "object" && !Array.isArray(clonedDetails)
+            ? { ...clonedDetails, field: clonedDetails.field || inferredField }
+            : { field: inferredField })
+        : clonedDetails;
+
     const payload = {
-      status: res?.status ?? 0,
-      code: body?.error?.code || body?.code || fallbackCode || "REQUEST_FAILED",
-      message:
-        body?.error?.message ||
-        body?.message ||
-        `HTTP ${res?.status ?? 0} ${res?.statusText || ""}`.trim(),
-      details: body?.error?.details || body?.details || null,
-      requestId: body?.error?.requestId || body?.requestId || res?.headers?.get("x-request-id") || null,
+      status,
+      code,
+      message,
+      details,
+      requestId:
+        body?.error?.requestId ||
+        body?.requestId ||
+        res?.headers?.get("x-request-id") ||
+        null,
       path,
       method,
       timestamp: body?.error?.timestamp || body?.timestamp || new Date().toISOString()
@@ -94,38 +126,52 @@
     return new BEApiError(payload);
   };
 
+  const throwValidation = (path, method, message, details) => {
+    throw new BEApiError({
+      status: 400,
+      code: "VALIDATION_ERROR",
+      message,
+      details: details || null,
+      path,
+      method,
+      timestamp: new Date().toISOString()
+    });
+  };
+
   const request = async (path, options = {}) => {
     const url = `${BASE}${path}`;
-    const method = (options.method || "GET").toUpperCase();
+    const method = String(options.method || "GET").toUpperCase();
 
     const controller = new AbortController();
-    const timeoutMs = Number.isFinite(options.timeoutMs) ? options.timeoutMs : DEFAULT_TIMEOUT_MS;
+    const timeoutMs = Number.isFinite(options.timeoutMs)
+      ? options.timeoutMs
+      : DEFAULT_TIMEOUT_MS;
+
     const t = setTimeout(() => controller.abort(), timeoutMs);
+
+    // Avoid leaking non-fetch option keys into init
+    const { timeoutMs: _timeoutMs, ...fetchOptions } = options;
 
     const init = {
       method,
       credentials: "include",
       cache: "no-store",
       signal: controller.signal,
-      ...options,
-      headers: buildHeaders(options.headers || {})
+      ...fetchOptions,
+      headers: buildHeaders(fetchOptions.headers || {})
     };
 
     try {
       const res = await fetch(url, init);
 
-      // Success
       if (res.ok) {
-        // 204 No Content
         if (res.status === 204) return { ok: true, status: res.status, data: null };
         const data = await safeJson(res);
         return { ok: true, status: res.status, data };
       }
 
-      // Error
       throw await normalizeError({ res, path, method, fallbackCode: "HTTP_ERROR" });
     } catch (err) {
-      // Network / timeout errors
       if (err?.name === "AbortError") {
         throw new BEApiError({
           status: 0,
@@ -156,61 +202,100 @@
      AUTH ENDPOINTS (Cookie Session)
   ================================================== */
 
-  // GET /api/auth/me
   const me = async () => {
     const r = await request("/auth/me", { method: "GET" });
     return r.data;
   };
 
- // POST /api/auth/login
-// body: { email, password }  (STRICT)
-const login = async ({ email, password } = {}) => {
-  const e = String(email ?? "").trim();
-  const p = String(password ?? "");
+  // POST /api/auth/login
+  // body: { email, password } (STRICT)
+  const login = async ({ email, password } = {}) => {
+    const e = String(email ?? "").trim();
+    const p = String(password ?? "");
 
-  const r = await request("/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: e, password: p })
-  });
-  return r.data;
-};
+    if (!e || !p) {
+      throwValidation(
+        "/auth/login",
+        "POST",
+        "Email and password are required",
+        { hasEmail: !!e, hasPassword: !!p }
+      );
+    }
 
-  // POST /api/auth/register
-  // body: { username, email, password }
-  const register = async ({ username, email, password } = {}) => {
-    const r = await request("/auth/register", {
+    const r = await request("/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password })
+      body: JSON.stringify({ email: e, password: p })
     });
     return r.data;
   };
 
-  // POST /api/auth/logout
+  // POST /api/auth/register
+  // body: { username, email, password }
+  const register = async ({ username, email, password } = {}) => {
+    const u = String(username ?? "").trim();
+    const e = String(email ?? "").trim();
+    const p = String(password ?? "");
+
+    if (!u || !e || !p) {
+      throwValidation(
+        "/auth/register",
+        "POST",
+        "Username, email, and password are required",
+        { hasUsername: !!u, hasEmail: !!e, hasPassword: !!p }
+      );
+    }
+
+    const r = await request("/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: u, email: e, password: p })
+    });
+    return r.data;
+  };
+
   const logout = async () => {
     const r = await request("/auth/logout", { method: "POST" });
     return r.data;
   };
 
   // POST /api/auth/forgot-password
-  // body: { email }
   const forgotPassword = async ({ email } = {}) => {
+    const e = String(email ?? "").trim();
+    if (!e) {
+      throwValidation(
+        "/auth/forgot-password",
+        "POST",
+        "Email is required",
+        { hasEmail: !!e }
+      );
+    }
+
     const r = await request("/auth/forgot-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email: e })
     });
     return r.data;
   };
 
   // POST /api/auth/reset-password
-  // body: { token, newPassword }
   const resetPassword = async ({ token, newPassword } = {}) => {
+    const tkn = String(token ?? "").trim();
+    const p = String(newPassword ?? "");
+    if (!tkn || !p) {
+      throwValidation(
+        "/auth/reset-password",
+        "POST",
+        "Token and newPassword are required",
+        { hasToken: !!tkn, hasNewPassword: !!p }
+      );
+    }
+
     const r = await request("/auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, newPassword })
+      body: JSON.stringify({ token: tkn, newPassword: p })
     });
     return r.data;
   };
@@ -229,9 +314,8 @@ const login = async ({ email, password } = {}) => {
     BEApiError
   });
 
-  // Backward/forward compatible aliases (auth-service expects BEAuthApi)
   window.BEAuthApi = API;
   window.BEAuthAPI = API;
 
-  console.log("auth-api.js v1.0 READY");
+  console.log("auth-api.js v1.1 READY");
 })();

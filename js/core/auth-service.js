@@ -30,7 +30,6 @@
   const normalizeUser = (user) => {
     if (!user || typeof user !== "object") return null;
 
-    // Ensure username exists for UI (fallback is safe)
     const username =
       typeof user.username === "string" && user.username.trim()
         ? user.username.trim()
@@ -56,10 +55,6 @@
   };
 
   const applyFromMePayload = (payload) => {
-    // Accept multiple backend shapes safely:
-    // A) { authenticated, user, role, premium }
-    // B) { user, role, premium }  (implies authenticated if user exists)
-    // C) { data: { user, ... } }  (some wrappers)
     const p = payload && payload.data ? payload.data : payload;
 
     const u = normalizeUser(p && p.user ? p.user : null);
@@ -96,43 +91,34 @@
     if (!isGitHubPagesHost()) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(getState()));
-    } catch {
-      // ignore
-    }
+    } catch {}
   };
 
   const clearPersisted = () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // ignore
-    }
+    } catch {}
   };
 
   /* =========================
      UI helpers (close overlays)
   ========================= */
   const closeAuthOverlays = () => {
-    // Best-effort close (desktop + mobile)
     const nodes = document.querySelectorAll(
       "#login-modal, #register-modal, #forgot-password-modal, .be-auth-overlay"
     );
     nodes.forEach((el) => el.classList.remove("show", "open", "active"));
 
-    // Safety: remove common body locks
     document.body.classList.remove("be-locked", "no-scroll");
     document.documentElement.classList.remove("be-locked", "no-scroll");
     document.body.style.overflow = "";
   };
 
-  // Auto-close auth overlays after successful auth state
   document.addEventListener("auth:changed", (e) => {
     try {
       const st = e && e.detail ? e.detail : null;
       if (st && st.authenticated === true) closeAuthOverlays();
-    } catch {
-      // ignore
-    }
+    } catch {}
   });
 
   /* =========================
@@ -140,7 +126,6 @@
   ========================= */
 
   async function hydrate() {
-    // GitHub Pages is static (no backend). Never call /api there.
     if (isGitHubPagesHost()) {
       const persisted = loadPersisted();
 
@@ -160,19 +145,16 @@
       return getState();
     }
 
-    // Try using the dedicated API client if present
     try {
-      // PATCH: support both names (BEAuthAPI is the canonical one)
       const api = window.BEAuthAPI || window.BEAuthApi;
 
       if (api && typeof api.me === "function") {
-        const payload = await api.me(); // should throw or return JSON
+        const payload = await api.me();
         applyFromMePayload(payload);
         emit();
         return getState();
       }
 
-      // Fallback direct fetch (same-origin cookie)
       const res = await fetch(`${API_BASE}/auth/me`, {
         method: "GET",
         credentials: "include",
@@ -183,7 +165,6 @@
         const payload = await safeJson(res);
         applyFromMePayload(payload || {});
       } else {
-        // 401/403/404/500/etc. -> keep safe unauth state
         state = { ...defaultState };
       }
 
@@ -196,7 +177,6 @@
     }
   }
 
-  // Dev/Mock helper (does NOT set cookies; UI-only)
   function setAuth(payload = {}) {
     const user = normalizeUser(payload.user || payload);
     state = {
@@ -211,7 +191,6 @@
   }
 
   async function clearAuth() {
-    // GitHub Pages is static (no backend). Never call /api there.
     if (isGitHubPagesHost()) {
       state = { ...defaultState };
       clearPersisted();
@@ -219,9 +198,7 @@
       return getState();
     }
 
-    // Try to logout server-side (cookie)
     try {
-      // PATCH: support both names (BEAuthAPI is the canonical one)
       const api = window.BEAuthAPI || window.BEAuthApi;
 
       if (api && typeof api.logout === "function") {
@@ -233,9 +210,7 @@
           headers: { Accept: "application/json" }
         });
       }
-    } catch {
-      // ignore (client must still reset UI)
-    }
+    } catch {}
 
     state = { ...defaultState };
     clearPersisted();
@@ -247,14 +222,19 @@
     return { ...state };
   }
 
+  /* ==================================================
+     ✅ FIX: expose read-only state for UI compatibility
+  ================================================== */
   window.BEAuth = {
     hydrate,
-    setAuth,     // dev-only helper (kept for auth-mock.js)
+    setAuth,
     clearAuth,
-    getState
+    getState,
+    get state() {
+      return getState();
+    }
   };
 
-  // Initial: emit safe default immediately, then hydrate async
   emit();
   hydrate();
 
@@ -289,9 +269,21 @@
     document.body.style.overflow = "";
   };
 
-  const readCreds = (form) => {
-    const e = pick(form, ['input[name="email"]', '#email', 'input[type="email"]', 'input[type="text"]']);
-    const p = pick(form, ['input[name="password"]', '#password', 'input[type="password"]']);
+  const readCreds = (formEl) => {
+    try {
+      const fd = new FormData(formEl);
+      const emailRaw = fd.get("email");
+      const passRaw = fd.get("password");
+
+      const email = typeof emailRaw === "string" ? emailRaw.trim() : "";
+      const password = typeof passRaw === "string" ? passRaw : "";
+
+      if (email || password) return { email, password };
+    } catch {}
+
+    const e = pick(formEl, ['input[name="email"]', '#email', 'input[type="email"]']);
+    const p = pick(formEl, ['input[name="password"]', '#password', 'input[type="password"]']);
+
     return {
       email: (e && e.value ? e.value.trim() : ""),
       password: (p && p.value ? p.value : "")
@@ -300,12 +292,8 @@
 
   const callLogin = async (email, password) => {
     const api = window.BEAuthAPI || window.BEAuthApi || window.BEAuth;
-    if (!api || typeof api.login !== "function") {
-      console.warn("[BEAuth] login() not available on BEAuthAPI/BEAuthApi/BEAuth");
-      return;
-    }
+    if (!api || typeof api.login !== "function") return;
 
-    // STRICT: BEAuthAPI.login expects an object { email, password }
     const r = api.login({ email, password });
     if (r && typeof r.then === "function") await r;
   };
@@ -313,31 +301,32 @@
   document.addEventListener(
     "submit",
     (e) => {
-      const form = e.target && e.target.closest ? e.target.closest(".auth-form") : null;
-      if (!form) return;
+      const formEl =
+        (e.target && e.target.tagName === "FORM")
+          ? e.target
+          : (e.target && e.target.closest ? e.target.closest("form") : null);
+
+      if (!formEl) return;
+
+      const isAuth =
+        formEl.classList.contains("auth-form") ||
+        !!formEl.closest(".auth-form");
+
+      if (!isAuth) return;
 
       e.preventDefault();
       e.stopPropagation();
 
-      const { email, password } = readCreds(form);
-      if (!email || !password) {
-        console.warn("[BEAuth] Missing email/password");
-        return;
-      }
+      const { email, password } = readCreds(formEl);
+      if (!email || !password) return;
 
       (async () => {
         await callLogin(email, password);
-
-        // Immediately refresh auth state (no Ctrl+R needed)
         if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
           await window.BEAuth.hydrate();
         }
-
-        // Best-effort close overlays right away
         closeAuthOverlays();
-      })().catch((err) => {
-        console.error("[BEAuth] Login failed:", err);
-      });
+      })().catch(() => {});
     },
     true
   );
