@@ -79,7 +79,7 @@ function normalizeUser(user) {
   return { ...user, username };
 }
 
-export default function handler(req, res) {
+module.exports = (req, res) => {
   if (req.method !== "GET") {
     res.statusCode = 405;
     res.setHeader("Allow", "GET");
@@ -141,4 +141,4 @@ export default function handler(req, res) {
       premium: false,
     });
   }
-}
+};
