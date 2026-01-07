@@ -22,6 +22,7 @@ button {
 .btn-auth,
 .odds-toggle,
 .language-toggle,
+.auth-user-toggle,
 .notif-button {
     display: inline-flex;
     align-items: center;
