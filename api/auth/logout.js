@@ -27,7 +27,7 @@ function setCookie(res, name, value, opts = {}) {
   res.setHeader("Set-Cookie", parts.join("; "));
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.setHeader("Allow", "POST");

@@ -99,7 +99,7 @@ function validatePassword(p) {
   return typeof p === "string" && p.length >= 8 && p.length <= 128;
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.statusCode = 405;
     res.setHeader("Allow", "POST");
@@ -108,7 +108,8 @@ module.exports = async (req, res) => {
 
   // Rate limit (enterprise, serverless-safe). Fail-open if misconfigured.
   try {
-    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
+    const mod = await import("../../backend/api/_rateLimit.js");
+    const rateLimit = mod?.rateLimit || mod?.default?.rateLimit;
     const ip = getClientIp(req);
     const key = `auth:register:${ip}`;
     const rl = await rateLimit({ key, limit: 3, window: 10 * 60 });
@@ -212,4 +213,4 @@ module.exports = async (req, res) => {
     role: "user",
     premium: false
   });
-};
+}
