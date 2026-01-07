@@ -6,12 +6,3 @@
   "engines": {
     "node": ">=18"
   },
-  "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "cookie": "^0.6.0",
-    "@upstash/redis": "^1.36.0"
-  }
-}
