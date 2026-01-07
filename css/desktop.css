@@ -69,6 +69,15 @@
     margin-left: 14px;
 }
 
+.header-desktop .auth-user-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 0;
+    display: block;
+    object-fit: cover;
+}
+
+
 /* =======================================================
    ROW 2 (BRAND + NAV + SEARCH)
 ======================================================= */
@@ -199,6 +208,7 @@
 
 .odds-dropdown,
 .language-dropdown,
+.user-dropdown;
 .tools-dropdown {
     position: absolute;
     z-index: 999;
