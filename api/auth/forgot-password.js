@@ -8,7 +8,9 @@
  * - Safe, no throws, no console noise
  *********************************************************/
 
+
 "use strict";
+
 
 function safeJson(res, payload) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -17,12 +19,14 @@ function safeJson(res, payload) {
   return res.end(JSON.stringify(payload));
 }
 
+
 function sendJson(res, statusCode, payload) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   res.statusCode = statusCode;
   return res.end(JSON.stringify(payload));
 }
+
 
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
@@ -32,6 +36,7 @@ function getClientIp(req) {
   return req.socket && req.socket.remoteAddress ? String(req.socket.remoteAddress) : "unknown";
 }
 
+
 function isEmail(s) {
   if (typeof s !== "string") return false;
   const v = s.trim();
@@ -39,6 +44,7 @@ function isEmail(s) {
   if (v.length > 254) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
+
 
 function readBody(req, limitBytes = 16 * 1024) {
   return new Promise((resolve, reject) => {
@@ -58,7 +64,8 @@ function readBody(req, limitBytes = 16 * 1024) {
   });
 }
 
-module.exports = async (req, res) => {
+
+export default async function handler(req, res) {
   try {
     if (req.method !== "POST") {
       return safeJson(res, {
@@ -69,12 +76,15 @@ module.exports = async (req, res) => {
       });
     }
 
+
     // Rate limit (enterprise, serverless-safe) — 3 / 10 min / IP
     try {
-      const { rateLimit } = await import("../../backend/api/_rateLimit.js");
+      const mod = await import("../../backend/api/_rateLimit.js");
+      const rateLimit = mod?.rateLimit || mod?.default?.rateLimit;
       const ip = getClientIp(req);
       const key = `auth:forgot-password:${ip}`;
       const rl = await rateLimit({ key, limit: 3, window: 10 * 60 });
+
 
       if (!rl || rl.allowed !== true) {
         return sendJson(res, 429, {
@@ -87,8 +97,10 @@ module.exports = async (req, res) => {
       // Fail open: do not block auth if rate limiter is misconfigured
     }
 
+
     const raw = await readBody(req);
     let body = null;
+
 
     try {
       body = raw ? JSON.parse(raw) : {};
@@ -101,7 +113,9 @@ module.exports = async (req, res) => {
       });
     }
 
+
     const email = typeof body.email === "string" ? body.email.trim() : "";
+
 
     if (!isEmail(email)) {
       return safeJson(res, {
@@ -111,6 +125,7 @@ module.exports = async (req, res) => {
         message: "Please enter a valid email address.",
       });
     }
+
 
     /*
       Placeholder behavior (safe):
