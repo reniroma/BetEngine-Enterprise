@@ -1,65 +1,97 @@
 // backend/api/_rateLimit.js
-"use strict";
-
 import { Redis } from "@upstash/redis";
 
-// FIX: manual initialization (not fromEnv)
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+let redisClient = null;
 
-const RATE_LIMIT_LUA = `
-  local key = KEYS[1]
-  local now = tonumber(ARGV[1])
-  local windowMs = tonumber(ARGV[2])
-  local limit = tonumber(ARGV[3])
-  local ttl = tonumber(ARGV[4])
-  local member = ARGV[5]
+function assertRedisEnv() {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  redis.call("ZREMRANGEBYSCORE", key, 0, now - windowMs)
+  if (!url || !token) {
+    const missing = [
+      !url ? "UPSTASH_REDIS_REST_URL" : null,
+      !token ? "UPSTASH_REDIS_REST_TOKEN" : null,
+    ].filter(Boolean);
 
-  local count = redis.call("ZCARD", key)
-  if count >= limit then
-    redis.call("EXPIRE", key, ttl)
-    return {0, 0}
-  end
+    const err = new Error(
+      `REDIS_NOT_CONFIGURED: Missing env vars: ${missing.join(", ")}`
+    );
+    err.code = "REDIS_NOT_CONFIGURED";
+    throw err;
+  }
 
-  redis.call("ZADD", key, now, member)
-  redis.call("EXPIRE", key, ttl)
-
-  local remaining = limit - (count + 1)
-  return {1, remaining}
-`;
-
-/**
- * Enterprise-grade rate limiter (serverless safe)
- *
- * @param {Object} params
- * @param {string} params.key - unique key (endpoint + ip)
- * @param {number} params.limit - max attempts
- * @param {number} params.window - window in seconds
- */
-async function rateLimit({ key, limit, window }) {
-  const now = Date.now();
-  const windowMs = window * 1000;
-  const redisKey = `rl:${key}`;
-
-  const member = `${now}-${Math.random()}`;
-
-  const result = await redis.eval(
-    RATE_LIMIT_LUA,
-    [redisKey],
-    [String(now), String(windowMs), String(limit), String(window), member]
-  );
-
-  const allowed = Array.isArray(result) ? result[0] : 0;
-  const remaining = Array.isArray(result) ? result[1] : 0;
-
-  return {
-    allowed: allowed === 1 || allowed === "1",
-    remaining: typeof remaining === "number" ? remaining : Number(remaining) || 0
-  };
+  return { url, token };
 }
 
-module.exports = { rateLimit };
+function createRedisClient(url, token) {
+  // Some @upstash/redis versions may not accept allowTelemetry.
+  // We try the strict config first, then fallback to minimal config.
+  try {
+    return new Redis({ url, token, allowTelemetry: false });
+  } catch {
+    return new Redis({ url, token });
+  }
+}
+
+function getRedis() {
+  if (redisClient) return redisClient;
+
+  const { url, token } = assertRedisEnv();
+  redisClient = createRedisClient(url, token);
+  return redisClient;
+}
+
+/**
+ * rateLimit({ key, limit, window })
+ * - key: string (e.g. "auth:login:1.2.3.4")
+ * - limit: number (max attempts)
+ * - window: number (seconds)
+ *
+ * Returns:
+ * { allowed: boolean, remaining: number, limit: number, reset: number|null }
+ *
+ * reset = TTL in seconds (approx), null on fail-open
+ */
+export async function rateLimit({ key, limit, window }) {
+  const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 1;
+  const safeWindow = Number.isFinite(window)
+    ? Math.max(1, Math.floor(window))
+    : 60;
+
+  if (!key || typeof key !== "string") {
+    // Invalid input should never hard-fail auth
+    return { allowed: true, remaining: safeLimit, limit: safeLimit, reset: null };
+  }
+
+  try {
+    const redis = getRedis();
+    const redisKey = `rl:${key}`;
+
+    // Increment counter
+    const count = await redis.incr(redisKey);
+
+    // Ensure TTL exists (set on first hit; repair if missing)
+    if (count === 1) {
+      await redis.expire(redisKey, safeWindow);
+    } else {
+      const ttl = await redis.ttl(redisKey);
+      if (ttl === -1) {
+        await redis.expire(redisKey, safeWindow);
+      }
+    }
+
+    const allowed = count <= safeLimit;
+    const remaining = Math.max(0, safeLimit - count);
+
+    // TTL: -2 means key does not exist, -1 means no expire
+    const ttlNow = await redis.ttl(redisKey);
+    const reset = ttlNow >= 0 ? ttlNow : null;
+
+    return { allowed, remaining, limit: safeLimit, reset };
+  } catch {
+    // Fail-open: never block auth if Redis is down/misconfigured
+    return { allowed: true, remaining: safeLimit, limit: safeLimit, reset: null };
+  }
+}
+
+export default { rateLimit };

@@ -1,0 +1,48 @@
+<!-- ====================================================
+     BetEngine Enterprise – SEARCH COMPONENT (HTML ONLY)
+     Canonical DOM contract root: .be-search
+     Isolated, standalone markup (no CSS / no JS inline)
+==================================================== -->
+
+<div class="be-search" aria-labelledby="be-search-title">
+
+    <!-- HEADER -->
+    <header class="be-search-header">
+        <h2 id="be-search-title" class="be-search-title">Search</h2>
+        <p class="be-search-subtitle">Find teams, players, leagues, or competitions.</p>
+    </header>
+
+    <!-- INPUT -->
+    <div class="be-search-input-wrapper">
+        <input
+            type="search"
+            class="be-search-input"
+            placeholder="Search teams, players, leagues..."
+            aria-label="Search"
+            autocomplete="off"
+            spellcheck="false"
+        />
+
+    </div>
+
+    <!-- STATES -->
+    <div class="be-search-states">
+
+        <!-- LOADING STATE -->
+        <div class="be-search-loading" hidden>
+            <span class="be-search-loading-text">Searching...</span>
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div class="be-search-empty" hidden>
+            <span class="be-search-empty-text">No results found.</span>
+        </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <ul class="be-search-results" role="listbox" aria-live="polite">
+        <!-- Results injected by search.js -->
+    </ul>
+
+</div>

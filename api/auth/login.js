@@ -1,21 +1,21 @@
+// api/auth/login.js
 /*********************************************************
- * BetEngine Enterprise – AUTH API (LOGIN)
+ * BetEngine Enterprise – AUTH API (LOGIN) – SAFE (ESM)
  * POST /api/auth/login
  *
- * TEST CREDENTIALS (TEMP):
- * - email:    test@betengine.com
- * - password: Test123!
+ * Goals:
+ * - Never crash (no 500 from unhandled exceptions)
+ * - Always returns JSON
+ * - Works on Vercel Serverless (ESM)
+ * - Rate limit via ../../backend/api/_rateLimit.js (fail-open)
  *
- * Sets HttpOnly cookie session:
- * base64url(JSON.stringify({ user, role, premium, exp }))
+ * Optional test credentials via ENV (NOT committed):
+ * - AUTH_TEST_EMAIL
+ * - AUTH_TEST_PASSWORD
  *********************************************************/
-"use strict";
 
 const COOKIE_NAME = "be_session";
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-
-const TEST_EMAIL = "test@betengine.com";
-const TEST_PASSWORD = "Test123!";
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function isHttps(req) {
   const proto = req.headers["x-forwarded-proto"];
@@ -41,107 +41,132 @@ function base64UrlEncodeJson(obj) {
   return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-async function readJsonBody(req) {
-  try {
-    const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
-    const raw = Buffer.concat(chunks).toString("utf8");
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+function sendJson(res, statusCode, payload) {
+  res.statusCode = statusCode;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  res.end(JSON.stringify(payload));
 }
 
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
-  if (typeof xff === "string" && xff.trim()) {
-    return xff.split(",")[0].trim();
-  }
+  if (typeof xff === "string" && xff.trim()) return xff.split(",")[0].trim();
   const realIp = req.headers["x-real-ip"];
   if (typeof realIp === "string" && realIp.trim()) return realIp.trim();
-  return (req.socket && req.socket.remoteAddress) ? String(req.socket.remoteAddress) : "unknown";
+  return req.socket && req.socket.remoteAddress ? String(req.socket.remoteAddress) : "unknown";
 }
 
-module.exports = async (req, res) => {
-  if (req.method !== "POST") {
-    res.statusCode = 405;
-    res.setHeader("Allow", "POST");
-    return res.end();
-  }
-
-  res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "no-store");
-
-  // RATE LIMIT (STORE) — fail open
+async function readJsonBody(req, limitBytes = 64 * 1024) {
   try {
-    const { rateLimit } = await import("../../backend/api/_rateLimit.js");
-    const ip = getClientIp(req);
-    const key = `auth:login:${ip}`;
-    const rl = await rateLimit({ key, limit: 5, window: 5 * 60 });
+    const chunks = [];
+    let size = 0;
 
-    if (!rl || rl.allowed !== true) {
-      res.statusCode = 429;
-      return res.end(
-        JSON.stringify({
-          ok: false,
-          error: "RATE_LIMITED",
-          message: "Too many attempts. Please try again later."
-        })
-      );
+    for await (const chunk of req) {
+      const buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+      size += buf.length;
+      if (size > limitBytes) return { __error: "BODY_TOO_LARGE" };
+      chunks.push(buf);
     }
+
+    const raw = Buffer.concat(chunks).toString("utf8");
+    if (!raw) return {};
+    return JSON.parse(raw);
   } catch {
-    // Fail open: do not block auth if rate limiter is misconfigured
+    return { __error: "INVALID_JSON" };
   }
+}
 
-  const body = await readJsonBody(req);
+async function loadRateLimit() {
+  // Your file is: backend/api/_rateLimit.js (kept)
+  const mod = await import("../../backend/api/_rateLimit.js");
+  if (mod && typeof mod.rateLimit === "function") return mod.rateLimit;
+  if (mod && mod.default && typeof mod.default.rateLimit === "function") return mod.default.rateLimit;
+  if (mod && mod.default && typeof mod.default === "function") return mod.default;
+  return null;
+}
 
-  const email = typeof body.email === "string" ? body.email.trim() : "";
-  const password = typeof body.password === "string" ? body.password : "";
+export default async function handler(req, res) {
+  try {
+    if (req.method !== "POST") {
+      res.statusCode = 405;
+      res.setHeader("Allow", "POST");
+      return res.end();
+    }
 
-  if (!email || !password) {
-    res.statusCode = 400;
-    return res.end(
-      JSON.stringify({
+    // RATE LIMIT (STORE) — fail-open
+    try {
+      const rateLimit = await loadRateLimit();
+      if (rateLimit) {
+        const ip = getClientIp(req);
+        const key = `auth:login:${ip}`;
+        const rl = await rateLimit({ key, limit: 5, window: 5 * 60 });
+        if (!rl || rl.allowed !== true) {
+          return sendJson(res, 429, {
+            ok: false,
+            error: "RATE_LIMITED",
+            message: "Too many attempts. Please try again later."
+          });
+        }
+      }
+    } catch {
+      // Fail-open
+    }
+
+    const body = await readJsonBody(req);
+
+    if (body && body.__error === "BODY_TOO_LARGE") {
+      return sendJson(res, 413, { error: { code: "PAYLOAD_TOO_LARGE" } });
+    }
+    if (body && body.__error === "INVALID_JSON") {
+      return sendJson(res, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON" } });
+    }
+
+    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const password = typeof body.password === "string" ? body.password : "";
+
+    if (!email || !password) {
+      return sendJson(res, 400, {
         error: {
           code: "VALIDATION_ERROR",
           message: "Email and password are required",
           details: { fields: ["email", "password"] }
         }
-      })
-    );
-  }
+      });
+    }
 
-  // TEMP TEST AUTH ONLY
-  if (email.toLowerCase() !== TEST_EMAIL || password !== TEST_PASSWORD) {
-    res.statusCode = 401;
-    return res.end(JSON.stringify({ error: { code: "INVALID_CREDENTIALS" } }));
-  }
+    const expectedEmail = (process.env.AUTH_TEST_EMAIL || "").trim();
+    const expectedPassword = process.env.AUTH_TEST_PASSWORD || "";
 
-  const user = {
-    id: "user-test-1",
-    username: "test",
-    email: TEST_EMAIL
-  };
+    if (!expectedEmail || !expectedPassword) {
+      return sendJson(res, 501, {
+        error: { code: "AUTH_NOT_CONFIGURED", message: "Login is not configured yet." }
+      });
+    }
 
-  const exp = Date.now() + SESSION_TTL_MS;
-  const sessionPayload = { user, role: "user", premium: false, exp };
-  const cookieValue = base64UrlEncodeJson(sessionPayload);
+    if (email.toLowerCase() !== expectedEmail.toLowerCase() || password !== expectedPassword) {
+      return sendJson(res, 401, { error: { code: "INVALID_CREDENTIALS" } });
+    }
 
-  setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
-    path: "/",
-    httpOnly: true,
-    secure: isHttps(req),
-    sameSite: "Lax",
-    maxAge: Math.floor(SESSION_TTL_MS / 1000)
-  });
+    const user = { id: "user-test-1", username: "test", email: expectedEmail };
+    const exp = Date.now() + SESSION_TTL_MS;
+    const sessionPayload = { user, role: "user", premium: false, exp };
+    const cookieValue = base64UrlEncodeJson(sessionPayload);
 
-  res.statusCode = 200;
-  return res.end(
-    JSON.stringify({
+    setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
+      path: "/",
+      httpOnly: true,
+      secure: isHttps(req),
+      sameSite: "Lax",
+      maxAge: Math.floor(SESSION_TTL_MS / 1000)
+    });
+
+    return sendJson(res, 200, {
       authenticated: true,
       user,
       role: "user",
       premium: false
-    })
-  );
-};
+    });
+  } catch {
+    return sendJson(res, 500, { error: { code: "SERVER_ERROR" } });
+  }
+}
