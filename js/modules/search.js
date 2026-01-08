@@ -174,6 +174,7 @@
         input.addEventListener("input", e => {
             debouncedSearch(e.target.value);
         });
+        
 
         clearBtn.addEventListener("click", () => {
             input.value = "";
@@ -290,6 +291,20 @@
 
     document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
     document.addEventListener("headerLoaded", initMobileSearchOverlay);
+
+    // ==================================================
+       // DESKTOP OUTSIDE-CLOSE LOGIC (ENTERPRISE)
+// ==================================================
+   document.addEventListener("pointerdown", (e) => {
+     const path = getPath(e);
+     const searchRoot = document.querySelector(".header-desktop .be-search");
+     if (!searchRoot) return;
+     if (!path.includes(searchRoot)) {
+       const input = searchRoot.querySelector(".be-search-input");
+       if (input && document.activeElement === input) input.blur();
+       searchRoot.classList.remove("show", "open", "active");
+     }
+   }, true);
 
     console.log("search.js ENTERPRISE FINAL READY");
 })();
