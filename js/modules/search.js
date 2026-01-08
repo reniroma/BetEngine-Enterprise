@@ -295,4 +295,21 @@
   
 
     console.log("search.js ENTERPRISE FINAL READY");
+
+    // ==================================================
+    // GLOBAL CLOSE HANDLER FOR DESKTOP SEARCH (ENTERPRISE)
+    // ==================================================
+    window.closeDesktopSearch = function () {
+        const root = document.querySelector(".header-desktop .be-search");
+        if (!root) return;
+
+        const input = root.querySelector(".be-search-input");
+        if (input && document.activeElement === input) input.blur();
+
+        root.classList.remove("show", "open", "active");
+
+        const results = root.querySelector(".search-results, .search-notify");
+        if (results) results.classList.remove("show", "open", "active");
+    };
 })();
+    
