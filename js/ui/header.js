@@ -57,6 +57,7 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -93,6 +94,7 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -126,6 +128,7 @@ if (userToggle && userDropdown) {
     if (isMobileDOM(e.target)) return;
 
     e.stopPropagation();
+    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
     const open = userDropdown.classList.contains("show");
     closeAllDesktopDropdowns();
     if (!open) {
@@ -144,6 +147,7 @@ if (userToggle && userDropdown) {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
