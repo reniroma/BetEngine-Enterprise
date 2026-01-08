@@ -38,19 +38,6 @@ const closeAllDesktopDropdowns = () => {
 
     state.desktopDropdownOpen = false;
 };
-const closeDesktopSearchIfOpen = () => {
-  const searchRoot = document.querySelector(".header-desktop .be-search");
-  if (!searchRoot) return;
-
-  if (searchRoot.classList.contains("show") ||
-      searchRoot.classList.contains("open") ||
-      searchRoot.classList.contains("active")) {
-    searchRoot.classList.remove("show", "open", "active");
-
-    const input = searchRoot.querySelector(".be-search-input");
-    if (input) input.blur();
-  }
-};
 
 /*******************************************************
  * DESKTOP DROPDOWNS
@@ -70,7 +57,6 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
-            closeDesktopSearch();
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -107,7 +93,6 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
-            closeDesktopSearch();
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -141,7 +126,6 @@ if (userToggle && userDropdown) {
     if (isMobileDOM(e.target)) return;
 
     e.stopPropagation();
-     closeDesktopSearch();
     const open = userDropdown.classList.contains("show");
     closeAllDesktopDropdowns();
     if (!open) {
@@ -160,7 +144,6 @@ if (userToggle && userDropdown) {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
-            closeDesktopSearch();
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -185,8 +168,8 @@ function attachDesktopGlobalListeners() {
         if (
             !isInside(e.target, ".header-desktop .odds-format") &&
             !isInside(e.target, ".header-desktop .language-selector") &&
+            !isInside(e.target, ".header-desktop .sub-item-tools") &&
             !isInside(e.target, ".header-desktop .auth-user") &&
-            !isInside(e.target, ".header-desktop .be-search") &&
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
             closeAllDesktopDropdowns();
