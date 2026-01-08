@@ -52,6 +52,18 @@
   );
 }
 
+    function closeDesktopHeaderDropdowns(exceptDropdown) {
+  const nodes = document.querySelectorAll(
+    ".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .tools-dropdown"
+  );
+
+  nodes.forEach((el) => {
+    if (!el) return;
+    if (exceptDropdown && el === exceptDropdown) return;
+    el.style.display = "none";
+  });
+}
+
 
     function bindToggle(userToggle, dropdown) {
   if (!userToggle || !dropdown) return;
@@ -60,10 +72,11 @@
   if (prev) userToggle.removeEventListener("click", prev);
 
   const handler = (e) => {
-    e.stopPropagation();
+  e.stopPropagation();
 
-    const isOpen = dropdown.style.display === "block";
+  closeDesktopHeaderDropdowns(dropdown);
 
+  const isOpen = dropdown.style.display === "block";
     // Close if same dropdown is open
     if (isOpen) {
       dropdown.style.display = "none";
