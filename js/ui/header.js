@@ -42,6 +42,22 @@ const closeAllDesktopDropdowns = () => {
 /*******************************************************
  * DESKTOP DROPDOWNS
  *******************************************************/
+const closeDesktopSearchIfOpen = () => {
+    const searchRoot = document.querySelector(".header-desktop .be-search");
+    if (!searchRoot) return;
+
+    // Only act if search is open/visible
+    if (
+        searchRoot.classList.contains("show") ||
+        searchRoot.classList.contains("open") ||
+        searchRoot.classList.contains("active")
+    ) {
+        const input = searchRoot.querySelector(".be-search-input");
+        if (input && document.activeElement === input) input.blur();
+        searchRoot.classList.remove("show", "open", "active");
+    }
+};
+
 function initDesktopDropdowns() {
     const header = document.querySelector(".header-desktop");
     if (!header) return;
@@ -57,6 +73,7 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            closeDesktopSearchIfOpen();
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -93,6 +110,7 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            closeDesktopSearchIfOpen();
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -111,8 +129,10 @@ function initDesktopDropdowns() {
                 item.classList.add("active");
 
                 if (langLabel) langLabel.textContent = item.textContent;
-
+                
                 closeAllDesktopDropdowns();
+                e.stopPropagation();
+                closeDesktopSearchIfOpen();
             });
         });
     }
@@ -126,6 +146,7 @@ if (userToggle && userDropdown) {
     if (isMobileDOM(e.target)) return;
 
     e.stopPropagation();
+    closeDesktopSearchIfOpen();
     const open = userDropdown.classList.contains("show");
     closeAllDesktopDropdowns();
     if (!open) {
@@ -144,6 +165,7 @@ if (userToggle && userDropdown) {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            closeDesktopSearchIfOpen();
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -170,9 +192,11 @@ function attachDesktopGlobalListeners() {
             !isInside(e.target, ".header-desktop .language-selector") &&
             !isInside(e.target, ".header-desktop .sub-item-tools") &&
             !isInside(e.target, ".header-desktop .auth-user") &&
+            !isInside(e.target, ".header-desktop .be-search") &&
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
             closeAllDesktopDropdowns();
+            closeDesktopSearchIfOpen();
         }
     });
 
