@@ -67,12 +67,7 @@
 
         bindDocumentClickOnce();
 
-        /* Force dropdown overlay (NO CSS changes) */
-        userBox.style.position = "relative";
-        dropdown.style.position = "absolute";
-        dropdown.style.top = "100%";
-        dropdown.style.right = "0";
-        dropdown.style.zIndex = "9999";
+        /* Dropdown default state (CSS controls positioning) */
         dropdown.style.display = "none";
 
         currentDropdown = dropdown;
