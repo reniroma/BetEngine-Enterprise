@@ -262,7 +262,6 @@ button {
      *******************************************************/
     .odds-dropdown,
     .language-dropdown,
-    .auth-user-dropdown,
     .tools-dropdown {
         position: absolute;
         top: 110%;
