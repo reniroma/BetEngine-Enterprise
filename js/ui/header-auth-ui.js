@@ -27,14 +27,25 @@
 
     const toggleHandlers = new WeakMap();
 
-    function bindDocumentClickOnce() {
-        if (documentClickBound) return;
-        documentClickBound = true;
+   function bindDocumentClickOnce() {
+    if (documentClickBound) return;
+    documentClickBound = true;
 
-        document.addEventListener("click", () => {
-            if (currentDropdown) currentDropdown.style.display = "none";
-        });
-    }
+    document.addEventListener("click", (e) => {
+        // Ignore clicks inside an open dropdown or its toggle
+        const isInsideDropdown =
+            e.target.closest(".auth-user-dropdown") ||
+            e.target.closest(".auth-user-toggle");
+
+        if (isInsideDropdown) return;
+
+        // Close current dropdown if open
+        if (currentDropdown) {
+            currentDropdown.style.display = "none";
+            currentDropdown = null;
+        }
+    });
+}
 
     function bindToggle(userToggle, dropdown) {
         if (!userToggle || !dropdown) return;
