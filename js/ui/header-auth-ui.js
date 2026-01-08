@@ -26,25 +26,28 @@
     let documentClickBound = false;
 
     const toggleHandlers = new WeakMap();
+function bindDocumentClickOnce() {
+  if (documentClickBound) return;
+  documentClickBound = true;
 
-   function bindDocumentClickOnce() {
-    if (documentClickBound) return;
-    documentClickBound = true;
+  // Capture phase so other handlers can't block it with stopPropagation()
+  document.addEventListener(
+    "click",
+    (e) => {
+      if (!currentDropdown || currentDropdown.style.display !== "block") return;
 
-    document.addEventListener("click", (e) => {
-        // Ignore clicks inside an open dropdown or its toggle
-        const isInsideDropdown =
-            e.target.closest(".auth-user-dropdown") ||
-            e.target.closest(".auth-user-toggle");
+      const t = e.target;
 
-        if (isInsideDropdown) return;
+      // Do not close if click is inside dropdown or on its toggle
+      if (currentDropdown.contains(t)) return;
+      if (currentToggle && currentToggle.contains(t)) return;
 
-        // Close current dropdown if open
-        if (currentDropdown) {
-            currentDropdown.style.display = "none";
-            currentDropdown = null;
-        }
-    });
+      currentDropdown.style.display = "none";
+      currentDropdown = null;
+      currentToggle = null;
+    },
+    true
+  );
 }
 
     function bindToggle(userToggle, dropdown) {
@@ -53,14 +56,30 @@
         const prev = toggleHandlers.get(userToggle);
         if (prev) userToggle.removeEventListener("click", prev);
 
-        const handler = (e) => {
-            e.stopPropagation();
-            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-        };
+const handler = (e) => {
+  e.stopPropagation();
 
-        userToggle.addEventListener("click", handler);
-        toggleHandlers.set(userToggle, handler);
+  const isOpen = dropdown.style.display === "block";
+
+  // Close if same dropdown is open
+  if (isOpen) {
+    dropdown.style.display = "none";
+    if (currentDropdown === dropdown) {
+      currentDropdown = null;
+      currentToggle = null;
     }
+    return;
+  }
+
+  // Close any previously open dropdown
+  if (currentDropdown && currentDropdown !== dropdown) {
+    currentDropdown.style.display = "none";
+  }
+
+  dropdown.style.display = "block";
+  currentDropdown = dropdown;
+  currentToggle = userToggle;
+};
 
     /* ============================
        DESKTOP UI
