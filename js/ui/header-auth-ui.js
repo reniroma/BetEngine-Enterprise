@@ -26,29 +26,15 @@
     let documentClickBound = false;
 
     const toggleHandlers = new WeakMap();
-function bindDocumentClickOnce() {
-  if (documentClickBound) return;
-  documentClickBound = true;
 
-  // Capture phase so other handlers can't block it with stopPropagation()
-  document.addEventListener(
-    "click",
-    (e) => {
-      if (!currentDropdown || currentDropdown.style.display !== "block") return;
+    function bindDocumentClickOnce() {
+        if (documentClickBound) return;
+        documentClickBound = true;
 
-      const t = e.target;
-
-      // Do not close if click is inside dropdown or on its toggle
-      if (currentDropdown.contains(t)) return;
-      if (currentToggle && currentToggle.contains(t)) return;
-
-      currentDropdown.style.display = "none";
-      currentDropdown = null;
-      currentToggle = null;
-    },
-    true
-  );
-}
+        document.addEventListener("click", () => {
+            if (currentDropdown) currentDropdown.style.display = "none";
+        });
+    }
 
     function bindToggle(userToggle, dropdown) {
         if (!userToggle || !dropdown) return;
@@ -56,30 +42,14 @@ function bindDocumentClickOnce() {
         const prev = toggleHandlers.get(userToggle);
         if (prev) userToggle.removeEventListener("click", prev);
 
-const handler = (e) => {
-  e.stopPropagation();
+        const handler = (e) => {
+            e.stopPropagation();
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        };
 
-  const isOpen = dropdown.style.display === "block";
-
-  // Close if same dropdown is open
-  if (isOpen) {
-    dropdown.style.display = "none";
-    if (currentDropdown === dropdown) {
-      currentDropdown = null;
-      currentToggle = null;
+        userToggle.addEventListener("click", handler);
+        toggleHandlers.set(userToggle, handler);
     }
-    return;
-  }
-
-  // Close any previously open dropdown
-  if (currentDropdown && currentDropdown !== dropdown) {
-    currentDropdown.style.display = "none";
-  }
-
-  dropdown.style.display = "block";
-  currentDropdown = dropdown;
-  currentToggle = userToggle;
-};
 
     /* ============================
        DESKTOP UI
@@ -97,7 +67,12 @@ const handler = (e) => {
 
         bindDocumentClickOnce();
 
-        /* Dropdown default state (CSS controls positioning) */
+        /* Force dropdown overlay (NO CSS changes) */
+        userBox.style.position = "relative";
+        dropdown.style.position = "absolute";
+        dropdown.style.top = "100%";
+        dropdown.style.right = "0";
+        dropdown.style.zIndex = "9999";
         dropdown.style.display = "none";
 
         currentDropdown = dropdown;
