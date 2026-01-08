@@ -208,7 +208,7 @@
 
 .odds-dropdown,
 .language-dropdown,
-.user-dropdown;
+.user-dropdown,
 .tools-dropdown {
     position: absolute;
     z-index: 999;
@@ -221,7 +221,8 @@
 }
 
 .header-desktop .odds-dropdown,
-.header-desktop .language-dropdown {
+.header-desktop .language-dropdown,
+.header-desktop .user-dropdown {
     top: calc(100% + 6px);
     right: 0;
     left: auto;
