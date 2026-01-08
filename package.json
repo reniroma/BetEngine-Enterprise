@@ -1,0 +1,12 @@
+{
+  "name": "betengine-enterprise",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.36.0"
+  }
+}
