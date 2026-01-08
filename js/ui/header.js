@@ -33,7 +33,7 @@ const isMobileDOM = (target) => {
 
 const closeAllDesktopDropdowns = () => {
     document
-        .querySelectorAll(".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .tools-dropdown")
+        .querySelectorAll(".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .auth-user-dropdown, .header-desktop .tools-dropdown")
         .forEach(el => el.classList.remove("show"));
 
     state.desktopDropdownOpen = false;
@@ -117,6 +117,24 @@ function initDesktopDropdowns() {
         });
     }
 
+    /* ---------------- USER ---------------- */
+const userToggle   = header.querySelector(".auth-user-toggle");
+const userDropdown = header.querySelector(".auth-user-dropdown");
+
+if (userToggle && userDropdown) {
+  userToggle.addEventListener("click", (e) => {
+    if (isMobileDOM(e.target)) return;
+
+    e.stopPropagation();
+    const open = userDropdown.classList.contains("show");
+    closeAllDesktopDropdowns();
+    if (!open) {
+      userDropdown.classList.add("show");
+      state.desktopDropdownOpen = true;
+    }
+  });
+}
+
     /* ---------------- BETTING TOOLS ---------------- */
     const toolsTrigger  = header.querySelector(".sub-item-tools");
     const toolsDropdown = toolsTrigger?.querySelector(".tools-dropdown");
@@ -150,6 +168,8 @@ function attachDesktopGlobalListeners() {
         if (
             !isInside(e.target, ".header-desktop .odds-format") &&
             !isInside(e.target, ".header-desktop .language-selector") &&
+            !isInside(e.target, ".header-desktop .sub-item-tools") &&
+            !isInside(e.target, ".header-desktop .auth-user") &&
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
             closeAllDesktopDropdowns();
