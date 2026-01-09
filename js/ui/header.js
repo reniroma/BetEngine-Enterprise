@@ -180,24 +180,22 @@ function attachDesktopGlobalListeners() {
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
            closeAllDesktopDropdowns();
-            // ENTERPRISE: sync close search and notify
-      if (typeof window.closeDesktopSearch === "function") {
+          // ENTERPRISE: sync close search on outside click
+        if (typeof window.closeDesktopSearch === "function") {
             window.closeDesktopSearch();
         }
 
-        document.dispatchEvent(
-            new CustomEvent("header:interaction")
-        );
+        // Notify search.js of header interaction
+        document.dispatchEvent(new CustomEvent("header:interaction"));
     }
 });
 
-    document.addEventListener("keydown", (e) => {
-        if (e.key !== "Escape") return;
-        if (!state.desktopDropdownOpen) return;
-
-        closeAllDesktopDropdowns();
-      
-  });
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!state.desktopDropdownOpen) return;
+    closeAllDesktopDropdowns();
+});
+}
 
 
 /*******************************************************
