@@ -323,5 +323,13 @@ window.closeDesktopSearch = function () {
   // Keep these removals for future-proofing (no harm)
   root.classList.remove("show", "open", "active");
 };
+
+    // ==================================================
+// HEADER → SEARCH EVENT HANDLER (ENTERPRISE)
+// ==================================================
+document.addEventListener("header:interaction", () => {
+  window.closeDesktopSearch?.();
+});
+    
 })();
     
