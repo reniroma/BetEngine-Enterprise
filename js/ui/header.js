@@ -194,8 +194,8 @@ function attachDesktopGlobalListeners() {
         if (!state.desktopDropdownOpen) return;
 
         closeAllDesktopDropdowns();
-      } 
-  });
+     });
+   }
 
 
 /*******************************************************
