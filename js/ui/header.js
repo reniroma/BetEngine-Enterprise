@@ -58,7 +58,6 @@ function initDesktopDropdowns() {
 
             e.stopPropagation();
             if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -96,7 +95,6 @@ function initDesktopDropdowns() {
 
             e.stopPropagation();
             if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -131,7 +129,6 @@ if (userToggle && userDropdown) {
 
     e.stopPropagation();
     if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-    document.dispatchEvent(new CustomEvent("header:interaction"));
     const open = userDropdown.classList.contains("show");
     closeAllDesktopDropdowns();
     if (!open) {
@@ -151,7 +148,6 @@ if (userToggle && userDropdown) {
 
             e.stopPropagation();
             if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -182,20 +178,16 @@ function attachDesktopGlobalListeners() {
            closeAllDesktopDropdowns();
           // ENTERPRISE: sync close search on outside click
         if (typeof window.closeDesktopSearch === "function") {
-            window.closeDesktopSearch();
+            window.closeDesktopSearch();  
         }
+     });
 
-        // Notify search.js of header interaction
-        document.dispatchEvent(new CustomEvent("header:interaction"));
+          document.addEventListener("keydown", (e) => {
+          if (e.key !== "Escape") return;
+          if (!state.desktopDropdownOpen) return;
+          closeAllDesktopDropdowns();
+     });
     }
-});
-
-document.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (!state.desktopDropdownOpen) return;
-    closeAllDesktopDropdowns();
-});
-}
 
 
 /*******************************************************
