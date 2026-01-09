@@ -175,20 +175,21 @@ function attachDesktopGlobalListeners() {
             !isInside(e.target, ".header-desktop .auth-user") &&
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
-           closeAllDesktopDropdowns();
-          // ENTERPRISE: sync close search on outside click
-        if (typeof window.closeDesktopSearch === "function") {
-            window.closeDesktopSearch();  
-        }
-     });
+            closeAllDesktopDropdowns();
+            // ENTERPRISE: sync close search on outside click
+            if (typeof window.closeDesktopSearch === "function") {
+            window.closeDesktopSearch();
+           }
+         }
+      });
 
-          document.addEventListener("keydown", (e) => {
-          if (e.key !== "Escape") return;
-          if (!state.desktopDropdownOpen) return;
-          closeAllDesktopDropdowns();
-     });
-    }
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (!state.desktopDropdownOpen) return;
 
+        closeAllDesktopDropdowns();
+      } 
+  });
 
 /*******************************************************
  * NAVIGATION SYNC (DESKTOP ONLY)
