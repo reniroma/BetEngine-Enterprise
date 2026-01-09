@@ -182,12 +182,14 @@ function attachDesktopGlobalListeners() {
            closeAllDesktopDropdowns();
             // ENTERPRISE: sync close search and notify
       if (typeof window.closeDesktopSearch === "function") {
-        window.closeDesktopSearch();
-      }
+            window.closeDesktopSearch();
+        }
 
-      document.dispatchEvent(new CustomEvent("header:interaction"));
+        document.dispatchEvent(
+            new CustomEvent("header:interaction")
+        );
     }
-  });
+});
 
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
