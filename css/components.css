@@ -36,6 +36,38 @@ button {
     color: rgba(255, 255, 255, 0.8);
 }
 
+/* =======================================================
+   ENTERPRISE FIX: limit click area to value + caret only
+   (Odds + Language toggles)
+   Place directly under:
+   .btn-auth, .odds-toggle, .language-toggle, .notif-button { ... }
+======================================================= */
+
+/* Disable pointer hit-test on the whole button */
+.odds-toggle,
+.language-toggle {
+  pointer-events: none;
+}
+
+/* Re-enable pointer hit-test ONLY on the parts that must open */
+.odds-toggle .value,
+.odds-toggle .icon-caret,
+.odds-toggle img,
+.odds-toggle svg,
+.language-toggle .value,
+.language-toggle .icon-caret,
+.language-toggle img,
+.language-toggle svg {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Ensure the left label never triggers opening */
+.odds-toggle .label,
+.language-toggle .label {
+  pointer-events: none;
+}
+
 
 /* =======================================================
    DESKTOP-ONLY SCOPE
