@@ -62,10 +62,13 @@
 .be-search-input::-webkit-search-results-decoration {
     display: none;
 }
-/* Hide custom Clear button – keep only native X behavior */
-.be-search-clear {
-    display: none;
+
+.be-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
+
 
 .be-search-input::placeholder {
     color: rgba(255, 255, 255, 0.40);
@@ -103,6 +106,12 @@
     border: 1px dashed rgba(255, 255, 255, 0.12);
     background: rgba(21, 24, 39, 0.55);
 }
+
+/* Enterprise: suppress "Searching..." row under the input */
+.be-search-loading {
+  display: none !important;
+}
+
 
 /* Enterprise: do not render empty-state UI */
 .be-search-empty {
@@ -290,6 +299,54 @@
     display: none;
 }
 
+/* =====================================================
+   BETENGINE — SEARCH (DESKTOP CLEAR "X" BUTTON)
+   - No external SVG
+   - Uses existing .be-search-clear button
+   - Renders a white, larger X inside the input
+===================================================== */
+
+.header-desktop .be-search-clear[hidden] {
+  display: none !important;
+}
+
+.header-desktop .be-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 38px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+
+  /* Hide any text like "Clear" */
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+
+  opacity: 0.90;
+}
+
+.header-desktop .be-search-clear::before {
+  content: "×";
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.header-desktop .be-search-clear:hover {
+  opacity: 1;
+}
 
 
 /* =====================================================
