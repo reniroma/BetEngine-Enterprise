@@ -48,6 +48,11 @@ button {
   color: rgba(255, 255, 255, 0.8);
   background: none;
   border: none;
+  flex: 0 0 auto;
+  min-width: 180px;
+  max-width: 220px;
+  white-space: nowrap;
+  justify-content:space-between;
 }
 
 .odds-toggle .label,
