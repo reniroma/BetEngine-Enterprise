@@ -44,7 +44,8 @@ button {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0;
+  padding: 6px 8px;
+  color: rgba(255, 255, 255, 0.8);
   background: none;
   border: none;
 }
