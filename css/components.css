@@ -1,9 +1,10 @@
 /*********************************************************
- * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.1)
+ * BetEngine Enterprise – COMPONENTS CSS (FINAL v5.2)
  * Desktop-only components + shared base buttons.
- * FIX:
- * - SVG icons now render correctly inside auth buttons
- * - ZERO side effects
+ * FIX (Row 1):
+ * - NO horizontal drift when values change
+ * - Click area matches real content (no oversized buttons)
+ * - Odds and Language have separate dimensions (enterprise)
  *********************************************************/
 
 
@@ -12,16 +13,16 @@
 ======================================================= */
 
 button {
-    font-family: inherit;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    background: none;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: none;
 }
 
 /* ==================================================
    SHARED BUTTONS (CLEANED STRUCTURE)
-   ================================================== */
+================================================== */
 .btn-auth,
 .notif-button {
   display: inline-flex;
@@ -36,96 +37,164 @@ button {
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* ==================================================
-   HEADER TOGGLES (ISOLATED CLICK AREA)
-   ================================================== */
-.odds-toggle,
-.language-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  color: rgba(255, 255, 255, 0.8);
-  background: none;
-  border: none;
-  flex: 0 0 auto;
-  min-width: 180px;
-  max-width: 220px;
-  white-space: nowrap;
-  justify-content:space-between;
-}
-
-.odds-toggle .label,
-.language-toggle .label {
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-.odds-toggle .odds-label,
-.odds-toggle .icon-caret,
-.language-toggle .lang-code,
-.language-toggle .icon-caret {
-  pointer-events: auto;
-  cursor: pointer;
-}
-
 /* =======================================================
-   ENTERPRISE FIX: limit click area to value + caret only
-   (Odds + Language toggles)
-  
-======================================================= */
-
-/* Disable pointer hit-test on the whole button */
-.odds-toggle,
-.language-toggle {
-  pointer-events: none;
-}
-
-/* Re-enable pointer hit-test ONLY on the parts that must open */
-.odds-toggle .value,
-.odds-toggle .icon-caret,
-.odds-toggle img,
-.odds-toggle svg,
-.language-toggle * {
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-/* Ensure the left label never triggers opening */
-.odds-toggle .label,
-.language-toggle .label {
-  pointer-events: none;
-}
-
-
-
-/* =======================================================
-   DESKTOP-ONLY SCOPE
+   ROW 1 – ODDS + LANGUAGE (DESKTOP ONLY)
+   Strategy:
+   - FIXED width on the BLOCK (.odds-format / .language-selector) => stable layout
+   - AUTO width on the BUTTON => no oversized click area
 ======================================================= */
 @media (min-width: 901px) {
 
-    /*******************************************************
-     * AUTH BUTTONS (DESKTOP)
-     *******************************************************/
-    .btn-auth.login {
-        background: var(--bg-button-secondary, #222236);
-        color: var(--text-secondary, #00eaff);
-    }
+  /* ---------------------------
+     WRAPPERS (internal spacing)
+  ---------------------------- */
+  .header-desktop .odds-toggle-wrapper,
+  .header-desktop .language-toggle-wrapper {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    gap: 4px; /* tighter than 6px to reduce internal empty spacing */
+  }
 
-    .btn-auth.register {
-        background: var(--bg-button-primary, #ffec00);
-        color: #000;
-    }
+  /* ---------------------------
+     LABELS (outside the button)
+  ---------------------------- */
+  .header-desktop .odds-toggle-wrapper .label,
+  .header-desktop .language-toggle-wrapper .label {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+  }
 
-    /* FIX: support BOTH img AND svg icons */
-    .btn-auth img,
-    .btn-auth svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-        display: block;
-    }
+  /* =======================================================
+     FIX #1: NO DRIFT
+     Lock the BLOCK widths (not the button widths)
+  ======================================================= */
+  .header-desktop .row-top .odds-format {
+    display: inline-flex;
+    align-items: center;
+    width: 235px;      /* ODDS block width (stable) */
+    flex: 0 0 235px;
+  }
 
+  .header-desktop .row-top .language-selector {
+    display: inline-flex;
+    align-items: center;
+    width: 270px;      /* LANGUAGE block width (stable, larger) */
+    flex: 0 0 270px;
+  }
+
+  /* =======================================================
+     FIX #2: REAL CLICK AREA
+     Buttons are content-sized (no fake wide clickable zone)
+  ======================================================= */
+  .header-desktop .odds-toggle,
+  .header-desktop .language-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+
+    height: 24px;
+    padding: 4px 6px;         /* slightly tighter */
+    box-sizing: border-box;
+
+    width: auto;              /* KEY: real click area */
+    flex: 0 0 auto;
+
+    background: none;
+    border: none;
+
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  /* Value text (cyan) */
+  .header-desktop .odds-toggle .odds-label,
+  .header-desktop .language-toggle .lang-label {
+    color: var(--text-secondary, #00eaff);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Give language value more usable space inside its block */
+  .header-desktop .language-toggle .lang-label {
+    max-width: 160px; /* allows "Indonesian", "Albanian", etc. without compressing */
+  }
+
+  /* Icons */
+  .header-desktop .odds-toggle .icon-caret,
+  .header-desktop .language-toggle .icon-caret {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    display: block;
+    opacity: 0.9;
+  }
+
+  .header-desktop .language-toggle .icon-lang {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    display: block;
+  }
+
+  /* Hover */
+  .header-desktop .odds-toggle:hover .odds-label,
+  .header-desktop .language-toggle:hover .lang-label {
+    color: var(--text-secondary, #00eaff);
+    opacity: 1;
+  }
+
+  /* =======================================================
+   ROW 1 – LANGUAGE label alignment fix (icon inline)
+   Goal: globe icon must sit LEFT of "Language:" on same baseline
+======================================================= */
+.header-desktop .language-toggle-wrapper .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.header-desktop .language-toggle-wrapper .label .icon-lang {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  margin: 0;
+  vertical-align: middle; /* safe fallback */
+}
+
+  /*******************************************************
+   * AUTH BUTTONS (DESKTOP)
+   *******************************************************/
+  .btn-auth.login {
+    background: var(--bg-button-secondary, #222236);
+    color: var(--text-secondary, #00eaff);
+  }
+
+  .btn-auth.register {
+    background: var(--bg-button-primary, #ffec00);
+    color: #000;
+  }
+
+  /* FIX: support BOTH img AND svg icons */
+  .btn-auth img,
+  .btn-auth svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    display: block;
+  }
 }
 
 /* =============== END OF FILE =============== */
