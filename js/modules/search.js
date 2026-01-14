@@ -174,6 +174,7 @@
         input.addEventListener("input", e => {
             debouncedSearch(e.target.value);
         });
+        
 
         clearBtn.addEventListener("click", () => {
             input.value = "";
@@ -291,5 +292,36 @@
     document.addEventListener("DOMContentLoaded", initMobileSearchOverlay);
     document.addEventListener("headerLoaded", initMobileSearchOverlay);
 
+  
+
     console.log("search.js ENTERPRISE FINAL READY");
+
+// ==================================================
+// GLOBAL CLOSE HANDLER FOR DESKTOP SEARCH (ENTERPRISE)
+// Command-driven close: clears input + results safely
+// ==================================================
+window.closeDesktopSearch = function () {
+  const root = document.querySelector(".header-desktop .be-search");
+  if (!root) return;
+
+  const input    = root.querySelector(".be-search-input");
+  const clearBtn = root.querySelector(".be-search-clear");
+  const results  = root.querySelector(".be-search-results");
+  const loading  = root.querySelector(".be-search-loading");
+  const empty    = root.querySelector(".be-search-empty");
+
+  // Blur first to avoid re-open/focus side-effects
+  if (input && document.activeElement === input) input.blur();
+
+  // Clear UI state (this matches your module's real state model)
+  if (input) input.value = "";
+  if (clearBtn) clearBtn.hidden = true;
+  if (results) results.innerHTML = "";
+  if (loading) loading.hidden = true;
+  if (empty) empty.hidden = true;
+
+  // Keep these removals for future-proofing (no harm)
+  root.classList.remove("show", "open", "active");
+};
 })();
+    

@@ -1,10 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – DESKTOP CSS (VERIFIED + SAFE FIX)
- * FIX ONLY:
- * - Restore row separators (Row1-Row2-Row3)
- * - Clean NBSP/Unicode
- * - Fix small CSS syntax issues
- * - Ensure search-box container vertical centering (no search.css edits)
+ * BetEngine Enterprise – DESKTOP CSS (LIVE BASE)
+ * Dropdown base unification (Odds/Language/Tools/User)
+ * Row 1 stability: prevent logged-in drift (desktop-only)
  *********************************************************/
 
 /* =======================================================
@@ -20,32 +17,6 @@
 }
 
 /* =======================================================
-   GLOBAL DESKTOP LAYOUT
-======================================================= */
-
-.header-desktop {
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    background: var(--bg-header, #0b0b12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.header-row {
-    width: 100%;
-    padding: 8px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.row-separator {
-    width: 100%;
-    height: 1px;
-    background: rgba(255,255,255,0.06);
-}
-
-/* =======================================================
    ROW 1 (TOP BAR)
 ======================================================= */
 
@@ -53,20 +24,120 @@
     min-height: 42px;
     position: relative;
     z-index: 300;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06); /* RESTORE SEPARATOR */
+    border-bottom: 1px solid rgba(80, 85, 88, 0.35);
 }
 
 .row-top .left { flex: 1; }
 
+/* FIX: Prevent right group drift by making it auto-width (not flex:1) */
 .row-top .right {
-    flex: 1;
+    flex: 0 0 auto;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 12px;
 }
 
-.header-desktop .row-top .right > * {
-    margin-left: 14px;
+.header-desktop .row-top .right:has(.btn-auth.register) {
+  padding-right: 32px;
+}
+
+/* Row 1 must be exactly 42px tall (no vertical padding) */
+.header-desktop .header-row.row-top {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+
+
+/* =======================================================
+   AUTH USER (ROW 1 – DESKTOP CONTRACT + VISUAL UPGRADE)
+   MOVED FROM components.css (COPY/PASTE)
+======================================================= */
+
+.header-desktop .row-top .auth-user-toggle {
+  position: relative;
+  z-index: 1;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  
+
+  /* REAL BOX */
+  background: rgba(0, 234, 255, 0.08);
+  border: 1px solid rgba(0, 234, 255, 0.25);
+  border-radius: 0;
+
+  /* REAL SIZE */
+  padding: 0 22px 0 14px;
+  gap: 10px;
+  min-width: 200px; 
+  box-sizing: border-box;
+  
+}
+
+
+/* Avatar (works for future real photos) */
+.header-desktop .row-top .auth-user-toggle .auth-user-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: 0 0 auto;
+}
+
+/* Username stays near left; caret pushed to far right */
+..header-desktop .row-top .auth-user-toggle .auth-user-name {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Avatar image inside button (future-proof for real photos) */
+.header-desktop .row-top .auth-user-toggle .auth-user-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+
+/* Username text */
+.header-desktop .row-top .auth-user-toggle .auth-user-name {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Caret icon alignment */
+.header-desktop .row-top .auth-user-toggle .icon-caret {
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+/* Caret flip when User dropdown is open */
+.header-desktop .auth-user:has(.auth-user-dropdown.show) .auth-user-toggle .icon-caret {
+  transform: rotate(180deg);
+}
+
+.header-desktop .row-top .auth-user-toggle:hover .icon-caret {
+    opacity: 1;
+}
+
+/* Row 1 compact avatar fallback (desktop-only) */
+.header-desktop .row-top .auth-user-avatar {
+    width: 24px;
+    height: 24px;
 }
 
 /* =======================================================
@@ -82,7 +153,6 @@
     position: relative;
     z-index: 250;
     padding: 8px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06); /* RESTORE SEPARATOR */
 }
 
 .row-main .brand {
@@ -98,18 +168,81 @@
     height: 36px;
 }
 
+/* BRAND TEXT (DESKTOP) — MOVED FROM components.css (COPY/PASTE) */
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.brand-text .name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary, #ffec00);
+}
+
+.brand-text .tagline {
+    font-size: 11px;
+    color: var(--text-muted, #b3b3b3);
+}
+
 .row-main nav.main-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 60px;
+    gap: 50px;
     white-space: nowrap;
-    padding-right: 80px; /* FIX: unit */
+    padding-right: 60px;
 }
 
 .row-main .main-nav .nav-item {
     font-size: 15px;
     letter-spacing: 0.06em;
+}
+
+/* MAIN NAV (DESKTOP) — MOVED FROM components.css (COPY/PASTE) */
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.main-nav .nav-item {
+    position: relative;
+    font-size: 13px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted, #b3b3b3);
+    padding: 6px 0;
+}
+
+.main-nav .nav-item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+.main-nav .nav-item.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--text-secondary, #00eaff);
+}
+
+/* PREMIUM STAR — MOVED FROM components.css (COPY/PASTE) */
+.premium-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.premium-link .premium-star {
+    font-size: 18px;
+    position: relative;
+    top: -2px;
 }
 
 /* =======================================================
@@ -124,10 +257,40 @@
     flex-shrink: 0;
 }
 
+/* SEARCH BOX (DESKTOP) — MOVED FROM components.css (COPY/PASTE) */
+.search-notify {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--bg-panel-soft, #181824);
+    min-width: 220px;
+}
+
+.search-icon {
+    width: 14px;
+    height: 14px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-secondary, #00eaff);
+    font-size: 13px;
+}
+
 /* Search box – fixed footprint (container centering only) */
 .header-desktop .search-box {
     width: 210px;
-    height: 40px; /* FIX: semicolon */
+    height: 40px;
     display: flex;
     align-items: center;
     flex: 0 0 210px;
@@ -164,11 +327,11 @@
 }
 
 /* =======================================================
-   ROW 3 (SUB NAVIGATION)  — NO SPACING CHANGES
+   ROW 3 (SUB NAVIGATION) — NO SPACING CHANGES
 ======================================================= */
 
 .row-sub {
-    padding: 6px 18px;
+    padding: 6px 42px;
     min-height: 44px;
     display: flex;
     align-items: center;
@@ -186,19 +349,74 @@
 
 .row-sub .sub-item {
     padding: 6px 8px;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.05em;
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-/* =======================================================
-   DROPDOWNS – DESKTOP ONLY (NO MOBILE CONFLICT)
-======================================================= */
+/* DESKTOP SUB NAVIGATION — MOVED FROM components.css (COPY/PASTE) */
+.row-sub {
+    display: flex;
+    align-items: center;
+}
 
+.row-sub .subnav-group {
+    display: none;
+    align-items: center;
+    gap: 22px;
+}
+
+.row-sub .subnav-group.active {
+    display: flex;
+}
+
+.sub-item {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted, #b3b3b3);
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+.sub-item:hover {
+    color: var(--text-secondary, #00eaff);
+}
+
+.sub-item-tools {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+}
+
+.sub-item-tools .caret {
+    width: 14px;
+    height: 14px;
+}
+
+/* Caret flip when Tools dropdown is open */
+.header-desktop .sub-item-tools:has(.tools-dropdown.show) .caret {
+  transform: rotate(180deg);
+}
+
+/* =======================================================
+   DROPDOWNS – DESKTOP ONLY (BASE UNIFICATION)
+======================================================= */
+/* Unified caret behavior */
+.header-desktop .caret,
+.header-desktop .icon-caret {
+  transition: transform 0.15s ease;
+  transform-origin: center;
+  display: inline-block;
+}
+
+/* Base dropdown positioning (all desktop dropdown menus) */
 .odds-dropdown,
 .language-dropdown,
+.auth-user-dropdown,
 .tools-dropdown {
     position: absolute;
     z-index: 999;
@@ -206,15 +424,150 @@
 }
 
 .header-desktop .odds-format,
-.header-desktop .language-selector {
+.header-desktop .language-selector,
+.header-desktop .auth-user,
+.header-desktop .sub-item-tools {
     position: relative;
 }
 
+/* Caret flip when Language dropdown is open */
+.header-desktop .language-selector:has(.language-dropdown.show) .caret,
+.header-desktop .language-selector:has(.language-dropdown.show) .icon-caret {
+  transform: rotate(180deg);
+}
+
+/* Caret flip when Odds dropdown is open */
+.header-desktop .odds-format:has(.odds-dropdown.show) .caret,
+.header-desktop .odds-format:has(.odds-dropdown.show) .icon-caret {
+  transform: rotate(180deg);
+}
+
+/* Base dropdown container styling (no width enforced here) */
 .header-desktop .odds-dropdown,
-.header-desktop .language-dropdown {
+.header-desktop .language-dropdown,
+.header-desktop .tools-dropdown,
+.header-desktop .auth-user-dropdown {
     top: calc(100% + 6px);
-    right: 0;
+    right: auto;
+    left: 0;
+    padding: 6px 0;
+    background-color: rgb(17, 20, 29);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    border-radius: 8px;
+}
+
+/* FIX: keep Odds dropdown width stable (prevent shrink-to-fit) */
+.header-desktop .odds-dropdown {
+    min-width: 210px;
+}
+/* Base dropdown item block layout */
+.header-desktop .odds-dropdown .item,
+.header-desktop .language-dropdown .item,
+.header-desktop .tools-dropdown .item,
+.header-desktop .auth-user-dropdown .auth-user-item,
+.header-desktop .auth-user-dropdown .auth-user-logout {
+    display: block;
+    width: 100%;
+}
+
+.header-desktop .sub-item-tools .tools-dropdown {
+    left: 0;
+    right: auto;
+}
+
+/* DESKTOP DROPDOWNS — MOVED FROM components.css (COPY/PASTE, NON-CONFLICTING PARTS) */
+.odds-dropdown,
+.language-dropdown,
+.tools-dropdown {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: all 0.15s ease;
+    z-index: 300;
+}
+
+.odds-dropdown.show,
+.language-dropdown.show,
+.tools-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.odds-dropdown .item,
+.language-dropdown .item,
+.tools-dropdown .item {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+}
+
+.odds-dropdown .item:hover,
+.language-dropdown .item:hover,
+.tools-dropdown .item:hover {
+    background: var(--bg-panel-soft, #181824);
+    color: var(--text-secondary, #00eaff);
+}
+
+.language-dropdown {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.language-dropdown .item.active,
+.odds-dropdown .item.active {
+    color: var(--text-secondary, #00eaff);
+}
+
+/* =======================================================
+   USER DROPDOWN (COMPATIBLE BEHAVIOR + TYPOGRAPHY)
+======================================================= */
+
+/* Match odds dropdown width for user dropdown */
+.header-desktop .auth-user-dropdown {
+    min-width: 210px;
+    width: 210px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    top: 100%;
     left: auto;
+    right: 0;
+    transform: none;
+    
+}
+
+/* User dropdown items: compact font + odds-like default/hover states */
+.header-desktop .auth-user-dropdown .auth-user-item,
+.header-desktop .auth-user-dropdown .auth-user-logout {
+    padding: 10px 14px;
+    font-size: 14px;
+    text-align: left;
+    background: none;
+    border: none;
+    font-family: inherit;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    cursor: pointer;
+    letter-spacing:0.08em;
+}
+
+.header-desktop .auth-user-dropdown .auth-user-item:hover,
+.header-desktop .auth-user-dropdown .auth-user-logout:hover,
+.header-desktop .auth-user-dropdown .auth-user-item:focus-visible,
+.header-desktop .auth-user-dropdown .auth-user-logout:focus-visible,
+.header-desktop .auth-user-dropdown .auth-user-item.active,
+.header-desktop .auth-user-dropdown .auth-user-logout.active {
+    color: rgb(0, 234, 255);
+    background: var(--bg-panel-soft, #181824);
+}
+
+.header-desktop .auth-user-dropdown .auth-user-separator {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 6px 0;
 }
 
 /* =======================================================
@@ -237,9 +590,8 @@
     }
 }
 
-
 /* =======================================================
-   FIX: Language dropdown width = trigger width (clean ASCII)
+   Language dropdown width = trigger width
 ======================================================= */
 
 .header-desktop .language-selector {

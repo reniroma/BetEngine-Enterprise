@@ -33,7 +33,7 @@ const isMobileDOM = (target) => {
 
 const closeAllDesktopDropdowns = () => {
     document
-        .querySelectorAll(".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .tools-dropdown")
+        .querySelectorAll(".header-desktop .odds-dropdown, .header-desktop .language-dropdown, .header-desktop .auth-user-dropdown, .header-desktop .tools-dropdown")
         .forEach(el => el.classList.remove("show"));
 
     state.desktopDropdownOpen = false;
@@ -57,6 +57,8 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -93,6 +95,8 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = langDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -117,6 +121,26 @@ function initDesktopDropdowns() {
         });
     }
 
+    /* ---------------- USER ---------------- */
+const userToggle   = header.querySelector(".auth-user-toggle");
+const userDropdown = header.querySelector(".auth-user-dropdown");
+
+if (userToggle && userDropdown) {
+  userToggle.addEventListener("click", (e) => {
+    if (isMobileDOM(e.target)) return;
+
+    e.stopPropagation();
+    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+    document.dispatchEvent(new CustomEvent("header:interaction"));
+    const open = userDropdown.classList.contains("show");
+    closeAllDesktopDropdowns();
+    if (!open) {
+      userDropdown.classList.add("show");
+      state.desktopDropdownOpen = true;
+    }
+  });
+}
+
     /* ---------------- BETTING TOOLS ---------------- */
     const toolsTrigger  = header.querySelector(".sub-item-tools");
     const toolsDropdown = toolsTrigger?.querySelector(".tools-dropdown");
@@ -126,6 +150,8 @@ function initDesktopDropdowns() {
             if (isMobileDOM(e.target)) return;
 
             e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
             if (!open) {
@@ -150,19 +176,27 @@ function attachDesktopGlobalListeners() {
         if (
             !isInside(e.target, ".header-desktop .odds-format") &&
             !isInside(e.target, ".header-desktop .language-selector") &&
+            !isInside(e.target, ".header-desktop .auth-user") &&
             !isInside(e.target, ".header-desktop .sub-item-tools")
         ) {
-            closeAllDesktopDropdowns();
-        }
-    });
+           closeAllDesktopDropdowns();
+            // ENTERPRISE: sync close search and notify
+      if (typeof window.closeDesktopSearch === "function") {
+        window.closeDesktopSearch();
+      }
+
+      document.dispatchEvent(new CustomEvent("header:interaction"));
+    }
+  });
 
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
         if (!state.desktopDropdownOpen) return;
 
         closeAllDesktopDropdowns();
-    });
-}
+     });
+   }
+
 
 /*******************************************************
  * NAVIGATION SYNC (DESKTOP ONLY)

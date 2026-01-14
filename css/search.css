@@ -62,10 +62,13 @@
 .be-search-input::-webkit-search-results-decoration {
     display: none;
 }
-/* Hide custom Clear button – keep only native X behavior */
-.be-search-clear {
-    display: none;
+
+.be-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
 }
+
 
 .be-search-input::placeholder {
     color: rgba(255, 255, 255, 0.40);
@@ -94,15 +97,25 @@
 
 /* States */
 .be-search-states {
-    margin-top: 10px;
+    margin-top: 0;
 }
 
-.be-search-loading,
-.be-search-empty {
+.be-search-loading {
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px dashed rgba(255, 255, 255, 0.12);
     background: rgba(21, 24, 39, 0.55);
+}
+
+/* Enterprise: suppress "Searching..." row under the input */
+.be-search-loading {
+  display: none !important;
+}
+
+
+/* Enterprise: do not render empty-state UI */
+.be-search-empty {
+    display: none !important;
 }
 
 .be-search-loading-text,
@@ -233,7 +246,7 @@
 }
 
 .header-desktop .be-search-results {
-    background: #11141d;
+    background: #151B2B;
 }
 
 .header-desktop .be-search-input-wrapper {
@@ -258,19 +271,81 @@
 
 .header-desktop .be-search-results {
     position: absolute;
-    top: calc(100% + 6px);     /* below input */
+    top: 100%;  
     left: 0;
     right: 0;
-
+    margin: 0;
     max-height: 320px;
     overflow-y: auto;
-
     z-index: 2000;             /* above header rows */
 }
 
 /* Ensure results do NOT affect header row height */
 .header-desktop .be-search-results[hidden] {
     display: none;
+}
+
+/* States (loading / empty) — match results overlay behavior */
+.header-desktop .be-search-states {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    z-index: 2000;
+}
+
+.header-desktop .be-search-states[hidden] {
+    display: none;
+}
+
+/* =====================================================
+   BETENGINE — SEARCH (DESKTOP CLEAR "X" BUTTON)
+   - No external SVG
+   - Uses existing .be-search-clear button
+   - Renders a white, larger X inside the input
+===================================================== */
+
+.header-desktop .be-search-clear[hidden] {
+  display: none !important;
+}
+
+.header-desktop .be-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 38px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+
+  /* Hide any text like "Clear" */
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+
+  opacity: 0.90;
+}
+
+.header-desktop .be-search-clear::before {
+  content: "×";
+  color: #ffffff;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.header-desktop .be-search-clear:hover {
+  opacity: 1;
 }
 
 
@@ -346,11 +421,10 @@
 
     /* States (loading / empty) */
     .be-search-states {
-        margin-top: 6px;
+        margin-top: o;
     }
 
-    .be-search-loading,
-    .be-search-empty {
+    .be-search-loading {
         background: rgba(21,24,39,0.9);
         border-radius: 10px;
     }
