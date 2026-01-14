@@ -434,34 +434,110 @@
         });
 
         /* ==================================================
-           LANGUAGE ACTIVE + SYNC + CLOSE
-        ================================================== */
-        qa("#mobile-language-modal .be-modal-item").forEach((item) => {
-            item.addEventListener("click", (e) => {
-                stop(e);
+   LANGUAGE STORAGE (MOBILE)
+   Unified with desktop (best-effort, safe)
+================================================== */
+const LANG_MOBILE_KEY  = "be_lang_mobile";
+const LANG_DESKTOP_KEY = "be_lang_desktop";
 
-                qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
-                item.classList.add("active");
+const readLangStorage = (key) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
 
-                const lang = item.dataset.lang;
-                const label = item.textContent.trim();
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
 
-                // Update Preferences label in mobile menu
-                const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
-                if (langValue) langValue.textContent = label;
+    const code  = typeof parsed.code === "string" ? parsed.code.trim() : "";
+    const label = typeof parsed.label === "string" ? parsed.label.trim() : "";
 
-                // Optional: sync desktop state label (no desktop logic changes)
-                qa(".header-desktop .language-dropdown .item").forEach((i) => {
-                    i.classList.toggle("active", i.dataset.lang === lang);
-                });
+    if (!code && !label) return null;
+    return { code, label };
+  } catch (_) {
+    return null;
+  }
+};
 
-                const desktopLang = qs(".header-desktop .lang-code");
-                if (desktopLang) desktopLang.textContent = label;
+const writeLangStorage = (key, payload) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(payload));
+  } catch (_) {
+    /* no-op */
+  }
+};
 
-                closeSheet(langModal);
-            });
-        });
+const applyStoredLanguageMobile = () => {
+  const saved = readLangStorage(LANG_MOBILE_KEY) || readLangStorage(LANG_DESKTOP_KEY);
+  if (!saved) return;
 
+  const items = qa("#mobile-language-modal .be-modal-item");
+  if (!items.length) return;
+
+  const matchByCode = saved.code
+    ? items.find((it) => (it.dataset.lang || "").trim() === saved.code)
+    : null;
+
+  const matchByLabel = !matchByCode && saved.label
+    ? items.find((it) => it.textContent.trim() === saved.label)
+    : null;
+
+  const match = matchByCode || matchByLabel;
+  if (!match) return;
+
+  items.forEach((i) => i.classList.remove("active"));
+  match.classList.add("active");
+
+  const resolvedLabel = match.textContent.trim();
+
+  // Update Preferences label in mobile menu
+  const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
+  if (langValue) langValue.textContent = resolvedLabel;
+
+  // Optional: sync desktop label (no desktop logic changes)
+  const desktopLang = qs(".header-desktop .lang-label");
+  if (desktopLang) desktopLang.textContent = resolvedLabel;
+
+  // Optional: sync desktop active item
+  qa(".header-desktop .language-dropdown .item").forEach((i) => {
+    i.classList.toggle("active", (i.dataset.lang || "").trim() === (match.dataset.lang || "").trim());
+  });
+};
+
+/* Apply stored language once (safe) */
+applyStoredLanguageMobile();
+
+/* ==================================================
+   LANGUAGE ACTIVE + SYNC + CLOSE
+================================================== */
+qa("#mobile-language-modal .be-modal-item").forEach((item) => {
+  item.addEventListener("click", (e) => {
+    stop(e);
+
+    qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
+    item.classList.add("active");
+
+    const lang = (item.dataset.lang || "").trim();
+    const label = item.textContent.trim();
+
+    // Update Preferences label in mobile menu
+    const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
+    if (langValue) langValue.textContent = label;
+
+    // Optional: sync desktop state label (no desktop logic changes)
+    qa(".header-desktop .language-dropdown .item").forEach((i) => {
+      i.classList.toggle("active", (i.dataset.lang || "").trim() === lang);
+    });
+
+    const desktopLang = qs(".header-desktop .lang-label");
+    if (desktopLang) desktopLang.textContent = label;
+
+    // Persist (mobile + desktop keys for cross-sync)
+    writeLangStorage(LANG_MOBILE_KEY, { code: lang || "", label: label || "" });
+    writeLangStorage(LANG_DESKTOP_KEY, { code: lang || "", label: label || "" });
+
+    closeSheet(langModal);
+  });
+});
         console.log("header-mobile.js v6.8 READY");
     }
 
