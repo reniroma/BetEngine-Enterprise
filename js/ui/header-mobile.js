@@ -434,110 +434,125 @@
         });
 
         /* ==================================================
-   LANGUAGE STORAGE (MOBILE)
-   Unified with desktop (best-effort, safe)
-================================================== */
-const LANG_MOBILE_KEY  = "be_lang_mobile";
-const LANG_DESKTOP_KEY = "be_lang_desktop";
+           LANGUAGE (MOBILE) — STORAGE + SYNC + CLOSE
+           Desktop wins conflict:
+           - If be_lang_desktop exists => use it
+           - Else fallback to be_lang_mobile
+        ================================================== */
 
-const readLangStorage = (key) => {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return null;
+        const LANG_STORAGE_MOBILE  = "be_lang_mobile";
+        const LANG_STORAGE_DESKTOP = "be_lang_desktop";
 
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object") return null;
+        const safeJsonParse = (raw) => {
+            try { return JSON.parse(raw); } catch (_) { return null; }
+        };
 
-    const code  = typeof parsed.code === "string" ? parsed.code.trim() : "";
-    const label = typeof parsed.label === "string" ? parsed.label.trim() : "";
+        const readLangStorage = (key) => {
+            const obj = safeJsonParse(localStorage.getItem(key) || "null");
+            if (!obj || typeof obj !== "object") return null;
 
-    if (!code && !label) return null;
-    return { code, label };
-  } catch (_) {
-    return null;
-  }
-};
+            const code  = typeof obj.code === "string"  ? obj.code.trim()  : "";
+            const label = typeof obj.label === "string" ? obj.label.trim() : "";
 
-const writeLangStorage = (key, payload) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(payload));
-  } catch (_) {
-    /* no-op */
-  }
-};
+            if (!code && !label) return null;
+            return { code, label };
+        };
 
-const applyStoredLanguageMobile = () => {
-  const saved = readLangStorage(LANG_MOBILE_KEY) || readLangStorage(LANG_DESKTOP_KEY);
-  if (!saved) return;
+        const writeLangStorage = (key, payload) => {
+            try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
+        };
 
-  const items = qa("#mobile-language-modal .be-modal-item");
-  if (!items.length) return;
+        const resolveLanguage = () => {
+            const d = readLangStorage(LANG_STORAGE_DESKTOP);
+            if (d && (d.code || d.label)) return d;
+            const m = readLangStorage(LANG_STORAGE_MOBILE);
+            return m;
+        };
 
-  const matchByCode = saved.code
-    ? items.find((it) => (it.dataset.lang || "").trim() === saved.code)
-    : null;
+        const syncLanguageUI = (code, label) => {
+            const items = qa("#mobile-language-modal .be-modal-item");
 
-  const matchByLabel = !matchByCode && saved.label
-    ? items.find((it) => it.textContent.trim() === saved.label)
-    : null;
+            // Mobile modal active state
+            if (items.length) {
+                items.forEach((i) => i.classList.remove("active"));
 
-  const match = matchByCode || matchByLabel;
-  if (!match) return;
+                let pick = null;
+                if (code) {
+                    pick = items.find((it) => (it.dataset.lang || "").trim() === code);
+                }
+                if (!pick && label) {
+                    pick = items.find((it) => it.textContent.trim() === label);
+                }
 
-  items.forEach((i) => i.classList.remove("active"));
-  match.classList.add("active");
+                if (pick) pick.classList.add("active");
+            }
 
-  const resolvedLabel = match.textContent.trim();
+            // Mobile menu Preferences label
+            const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
+            if (langValue && label) langValue.textContent = label;
 
-  // Update Preferences label in mobile menu
-  const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
-  if (langValue) langValue.textContent = resolvedLabel;
+            // Desktop dropdown active state (visual sync only)
+            qa(".header-desktop .language-dropdown .item").forEach((i) => {
+                i.classList.toggle("active", (i.dataset.lang || "").trim() === (code || ""));
+            });
 
-  // Optional: sync desktop label (no desktop logic changes)
-  const desktopLang = qs(".header-desktop .lang-label");
-  if (desktopLang) desktopLang.textContent = resolvedLabel;
+            // Desktop label (visual)
+            const desktopLabel = qs(".header-desktop .language-selector .lang-label");
+            if (desktopLabel && label) desktopLabel.textContent = label;
+        };
 
-  // Optional: sync desktop active item
-  qa(".header-desktop .language-dropdown .item").forEach((i) => {
-    i.classList.toggle("active", (i.dataset.lang || "").trim() === (match.dataset.lang || "").trim());
-  });
-};
+        // Apply stored language once on init (no modal open required)
+        (function applyStoredLanguageMobile() {
+            const chosen = resolveLanguage();
+            if (!chosen) return;
 
-/* Apply stored language once (safe) */
-applyStoredLanguageMobile();
+            // Normalize: prefer code match, else keep label
+            const items = qa("#mobile-language-modal .be-modal-item");
+            let pick = null;
 
-/* ==================================================
-   LANGUAGE ACTIVE + SYNC + CLOSE
-================================================== */
-qa("#mobile-language-modal .be-modal-item").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    stop(e);
+            if (items.length && chosen.code) {
+                pick = items.find((it) => (it.dataset.lang || "").trim() === chosen.code);
+            }
+            if (!pick && items.length && chosen.label) {
+                pick = items.find((it) => it.textContent.trim() === chosen.label);
+            }
 
-    qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
-    item.classList.add("active");
+            const code  = pick ? (pick.dataset.lang || "").trim() : (chosen.code || "");
+            const label = pick ? pick.textContent.trim() : (chosen.label || "");
 
-    const lang = (item.dataset.lang || "").trim();
-    const label = item.textContent.trim();
+            if (!code && !label) return;
 
-    // Update Preferences label in mobile menu
-    const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
-    if (langValue) langValue.textContent = label;
+            // Sync UI
+            syncLanguageUI(code, label);
 
-    // Optional: sync desktop state label (no desktop logic changes)
-    qa(".header-desktop .language-dropdown .item").forEach((i) => {
-      i.classList.toggle("active", (i.dataset.lang || "").trim() === lang);
-    });
+            // Persist normalized selection to BOTH keys (desktop wins anyway)
+            const payload = { code: code || "", label: label || "" };
+            writeLangStorage(LANG_STORAGE_MOBILE, payload);
+            writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+        })();
 
-    const desktopLang = qs(".header-desktop .lang-label");
-    if (desktopLang) desktopLang.textContent = label;
+        // Click handler inside mobile language modal
+        qa("#mobile-language-modal .be-modal-item").forEach((item) => {
+            item.addEventListener("click", (e) => {
+                stop(e);
 
-    // Persist (mobile + desktop keys for cross-sync)
-    writeLangStorage(LANG_MOBILE_KEY, { code: lang || "", label: label || "" });
-    writeLangStorage(LANG_DESKTOP_KEY, { code: lang || "", label: label || "" });
+                qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
+                item.classList.add("active");
 
-    closeSheet(langModal);
-  });
-});
+                const code  = (item.dataset.lang || "").trim();
+                const label = item.textContent.trim();
+
+                // Sync UI (mobile + desktop visual)
+                syncLanguageUI(code, label);
+
+                // Persist to BOTH keys (desktop wins conflict rule)
+                const payload = { code: code || "", label: label || "" };
+                writeLangStorage(LANG_STORAGE_MOBILE, payload);
+                writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+
+                closeSheet(langModal);
+            });
+        });
         console.log("header-mobile.js v6.8 READY");
     }
 
