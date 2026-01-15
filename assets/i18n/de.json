@@ -11,25 +11,36 @@
   "auth.myStatistics": "Meine Statistiken",
   "auth.myCoupons": "Meine Coupons",
   "auth.logout": "Abmelden",
+
+  
   "auth.login": "Anmelden",
   "auth.register": "Registrieren",
+
   "auth.social.signinFacebook": "Mit Facebook anmelden",
   "auth.social.signinGoogle": "Mit Google anmelden",
   "auth.social.signinApple": "Mit Apple anmelden",
+
   "auth.social.continueFacebook": "Mit Facebook fortfahren",
   "auth.social.continueGoogle": "Mit Google fortfahren",
   "auth.social.continueApple": "Mit Apple fortfahren",
+
   "auth.or": "ODER",
+
   "auth.field.username": "Benutzername",
   "auth.field.email": "E-Mail",
   "auth.field.password": "Passwort",
+
   "auth.rememberMe": "Angemeldet bleiben",
+
   "auth.button.login": "Anmelden",
   "auth.button.createAccount": "KONTO ERSTELLEN",
+
   "auth.link.noAccount": "Noch kein Konto?",
   "auth.link.createOneFree": "Kostenlos erstellen",
   "auth.link.forgotPassword": "Passwort vergessen?",
+
   "auth.marketingOptIn": "Ich möchte exklusive News und Sonderangebote von unserer Plattform und vertrauenswürdigen Partnern erhalten.",
+
   "auth.terms.prefix": "Mit einem Klick auf",
   "auth.terms.createAccountQuoted": "\"KONTO ERSTELLEN\"",
   "auth.terms.orAny": "oder auf eine",
