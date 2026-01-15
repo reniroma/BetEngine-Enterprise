@@ -13,7 +13,7 @@
             <!-- Odds format -->
             <div class="odds-format" data-dropdown="odds">
                 <div class="odds-toggle-wrapper">
-                    <span class="label">Odds format:</span>
+                    <span class="label" data-i18n="header.oddsFormat">Odds format:</span>
 
                     <button class="odds-toggle" type="button" aria-haspopup="true" aria-expanded="false">
                         <span class="value odds-label">Decimal Odds</span>
@@ -32,29 +32,28 @@
             </div>
 
             <!-- Language -->
-     <div class="language-selector" data-dropdown="language">
-  <div class="language-toggle-wrapper">
-    <!-- OUTSIDE button (must NOT trigger dropdown) -->
-    <span class="label">
-      <img src="assets/icons/language.svg" class="icon-lang" alt="">
-      Language:
-    </span>
+            <div class="language-selector" data-dropdown="language">
+                <div class="language-toggle-wrapper">
+                    <!-- OUTSIDE button (must NOT trigger dropdown) -->
+                    <span class="label">
+                        <img src="assets/icons/language.svg" class="icon-lang" alt="">
+                        <span data-i18n="header.language">Language:</span>
+                    </span>
 
-    <!-- ONLY this button triggers dropdown -->
-    <button
-      class="language-toggle"
-      type="button"
-      data-toggle="language"
-      aria-haspopup="true"
-      aria-expanded="false"
-    >
-      <span class="lang-label">English</span>
-      <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
-    </button>
-  </div>
+                    <!-- ONLY this button triggers dropdown -->
+                    <button
+                        class="language-toggle"
+                        type="button"
+                        data-toggle="language"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                    >
+                        <span class="lang-label">English</span>
+                        <img src="assets/icons/caret-down.svg" class="icon-caret" alt="">
+                    </button>
+                </div>
 
-  <div class="language-dropdown" role="menu" aria-label="Language selection">
-    
+                <div class="language-dropdown" role="menu" aria-label="Language selection">
                     <div class="item" data-lang="sq">Albanian</div>
                     <div class="item" data-lang="ar">Arabic</div>
                     <div class="item" data-lang="zh">Chinese</div>
@@ -89,7 +88,7 @@
                     <polyline points="10 17 15 12 10 7"></polyline>
                     <line x1="15" y1="12" x2="3" y2="12"></line>
                 </svg>
-                <span>LOGIN</span>
+                <span data-i18n="auth.login">LOGIN</span>
             </button>
 
             <button class="btn-auth register" type="button">
@@ -102,7 +101,7 @@
                     <line x1="19" y1="16" x2="19" y2="22"></line>
                     <line x1="16" y1="19" x2="22" y2="19"></line>
                 </svg>
-                <span>REGISTER</span>
+                <span data-i18n="auth.register">REGISTER</span>
             </button>
 
             <!-- AUTH USER (PATCH ONLY) -->
@@ -114,13 +113,13 @@
                 </button>
 
                 <div class="auth-user-dropdown">
-                    <a href="#" class="auth-user-item">PROFILE</a>
-                    <a href="#" class="auth-user-item">MY PREDICTIONS</a>
-                    <a href="#" class="auth-user-item">SETTINGS</a>
-                    <a href="#" class="auth-user-item">MY STATISTICS</a>
-                    <a href="#" class="auth-user-item">MY COUPONS</a>
+                    <a href="#" class="auth-user-item" data-i18n="auth.profile">PROFILE</a>
+                    <a href="#" class="auth-user-item" data-i18n="auth.myPredictions">MY PREDICTIONS</a>
+                    <a href="#" class="auth-user-item" data-i18n="auth.settings">SETTINGS</a>
+                    <a href="#" class="auth-user-item" data-i18n="auth.myStatistics">MY STATISTICS</a>
+                    <a href="#" class="auth-user-item" data-i18n="auth.myCoupons">MY COUPONS</a>
                     <div class="auth-user-separator"></div>
-                    <button class="auth-user-logout" type="button">LOGOUT</button>
+                    <button class="auth-user-logout" type="button" data-i18n="auth.logout">LOGOUT</button>
                 </div>
             </div>
 
@@ -136,16 +135,16 @@
             <img src="assets/logos/logo.svg" alt="BetEngine logo" class="logo">
             <div class="brand-text">
                 <span class="name">BetEngine</span>
-                <span class="tagline">Smart betting tools</span>
+                <span class="tagline" data-i18n="brand.tagline">Smart betting tools</span>
             </div>
         </div>
 
         <nav class="main-nav" aria-label="Main navigation">
-            <a href="#" class="nav-item active" data-section="odds">ODDS COMPARISON</a>
-            <a href="#" class="nav-item" data-section="community">COMMUNITY</a>
-            <a href="#" class="nav-item" data-section="bookmakers">BOOKMAKERS</a>
+            <a href="#" class="nav-item active" data-section="odds" data-i18n="nav.oddsComparison">ODDS COMPARISON</a>
+            <a href="#" class="nav-item" data-section="community" data-i18n="nav.community">COMMUNITY</a>
+            <a href="#" class="nav-item" data-section="bookmakers" data-i18n="nav.bookmakers">BOOKMAKERS</a>
             <a href="#" class="nav-item premium-link" data-section="premium">
-                PREMIUM <span class="premium-star">★</span>
+                <span data-i18n="nav.premium">PREMIUM</span> <span class="premium-star">★</span>
             </a>
         </nav>
 
@@ -157,6 +156,7 @@
                         type="search"
                         class="be-search-input"
                         placeholder="Search teams, players, leagues..."
+                        data-i18n-placeholder="search.placeholder"
                         aria-label="Search"
                         autocomplete="off"
                         spellcheck="false"
@@ -183,10 +183,10 @@
 
                 <div class="be-search-states">
                     <div class="be-search-loading" hidden>
-                        <span class="be-search-loading-text">Searching...</span>
+                        <span class="be-search-loading-text" data-i18n="search.loading">Searching...</span>
                     </div>
                     <div class="be-search-empty" hidden>
-                        <span class="be-search-empty-text">No results found.</span>
+                        <span class="be-search-empty-text" data-i18n="search.empty">No results found.</span>
                     </div>
                 </div>
 
@@ -207,59 +207,59 @@
 
         <!-- ODDS SUBNAV -->
         <div class="subnav-group active" data-subnav="odds">
-            <a href="#" class="sub-item">HOME</a>
-            <a href="#" class="sub-item">NEXT MATCHES</a>
-            <a href="#" class="sub-item">DROPPING ODDS</a>
-            <a href="#" class="sub-item">SURE BETS</a>
-            <a href="#" class="sub-item">IN PLAY ODDS</a>
-            <a href="#" class="sub-item">ALL EVENTS</a>
+            <a href="#" class="sub-item" data-i18n="common.home">HOME</a>
+            <a href="#" class="sub-item" data-i18n="common.nextMatches">NEXT MATCHES</a>
+            <a href="#" class="sub-item" data-i18n="common.droppingOdds">DROPPING ODDS</a>
+            <a href="#" class="sub-item" data-i18n="common.sureBets">SURE BETS</a>
+            <a href="#" class="sub-item" data-i18n="common.inPlayOdds">IN PLAY ODDS</a>
+            <a href="#" class="sub-item" data-i18n="common.allEvents">ALL EVENTS</a>
 
             <div class="sub-item sub-item-tools">
-                BETTING TOOLS
+                <span data-i18n="common.bettingTools">BETTING TOOLS</span>
                 <img src="assets/icons/caret-down.svg" class="caret" alt="">
                 <div class="tools-dropdown">
-                    <div class="item">Blocked Odds</div>
-                    <div class="item">Value Bets</div>
-                    <div class="item">Hot Matches</div>
-                    <div class="item">Archived Results</div>
-                    <div class="item">Standings</div>
-                    <div class="item">Bet Calculator</div>
+                    <div class="item" data-i18n="tools.blockedOdds">Blocked Odds</div>
+                    <div class="item" data-i18n="tools.valueBets">Value Bets</div>
+                    <div class="item" data-i18n="tools.hotMatches">Hot Matches</div>
+                    <div class="item" data-i18n="tools.archivedResults">Archived Results</div>
+                    <div class="item" data-i18n="tools.standings">Standings</div>
+                    <div class="item" data-i18n="tools.betCalculator">Bet Calculator</div>
                 </div>
             </div>
         </div>
 
         <!-- COMMUNITY SUBNAV -->
         <div class="subnav-group" data-subnav="community">
-            <a href="#" class="sub-item">HOME</a>
-            <a href="#" class="sub-item">FEED</a>
-            <a href="#" class="sub-item">USERS</a>
-            <a href="#" class="sub-item">TOP PREDICTIONS</a>
-            <a href="#" class="sub-item">MY STATISTICS</a>
-            <a href="#" class="sub-item">MY PROFILE</a>
-            <a href="#" class="sub-item">MY PREDICTIONS</a>
-            <a href="#" class="sub-item">MY COUPONS</a>
+            <a href="#" class="sub-item" data-i18n="common.home">HOME</a>
+            <a href="#" class="sub-item" data-i18n="community.feed">FEED</a>
+            <a href="#" class="sub-item" data-i18n="community.users">USERS</a>
+            <a href="#" class="sub-item" data-i18n="community.topPredictions">TOP PREDICTIONS</a>
+            <a href="#" class="sub-item" data-i18n="community.myStatistics">MY STATISTICS</a>
+            <a href="#" class="sub-item" data-i18n="community.myProfile">MY PROFILE</a>
+            <a href="#" class="sub-item" data-i18n="community.myPredictions">MY PREDICTIONS</a>
+            <a href="#" class="sub-item" data-i18n="community.myCoupons">MY COUPONS</a>
         </div>
 
         <!-- BOOKMAKERS SUBNAV -->
         <div class="subnav-group" data-subnav="bookmakers">
-            <a href="#" class="sub-item">BOOKIE INFO</a>
-            <a href="#" class="sub-item">BONUS OFFERS</a>
-            <a href="#" class="sub-item">ODDS QUALITY</a>
-            <a href="#" class="sub-item">BETTING APPS</a>
+            <a href="#" class="sub-item" data-i18n="bookmakers.info">BOOKIE INFO</a>
+            <a href="#" class="sub-item" data-i18n="bookmakers.bonusOffers">BONUS OFFERS</a>
+            <a href="#" class="sub-item" data-i18n="bookmakers.oddsQuality">ODDS QUALITY</a>
+            <a href="#" class="sub-item" data-i18n="bookmakers.bettingApps">BETTING APPS</a>
         </div>
 
         <!-- PREMIUM SUBNAV -->
         <div class="subnav-group" data-subnav="premium">
-            <a href="#" class="sub-item">Premium Dashboard</a>
-            <a href="#" class="sub-item">Market Insights</a>
-            <a href="#" class="sub-item">Fair Odds Engine</a>
-            <a href="#" class="sub-item">AI Predictions</a>
-            <a href="#" class="sub-item">Smart H2H Insights</a>
-            <a href="#" class="sub-item">Value Finder</a>
-            <a href="#" class="sub-item">Sharp vs Public Money</a>
-            <a href="#" class="sub-item">Shock Alerts</a>
-            <a href="#" class="sub-item">AI Live Momentum</a>
-            <a href="#" class="sub-item">Fake Trend Detector</a>
+            <a href="#" class="sub-item" data-i18n="premium.dashboard">Premium Dashboard</a>
+            <a href="#" class="sub-item" data-i18n="premium.marketInsights">Market Insights</a>
+            <a href="#" class="sub-item" data-i18n="premium.fairOddsEngine">Fair Odds Engine</a>
+            <a href="#" class="sub-item" data-i18n="premium.aiPredictions">AI Predictions</a>
+            <a href="#" class="sub-item" data-i18n="premium.smartH2HInsights">Smart H2H Insights</a>
+            <a href="#" class="sub-item" data-i18n="premium.valueFinder">Value Finder</a>
+            <a href="#" class="sub-item" data-i18n="premium.sharpVsPublic">Sharp vs Public Money</a>
+            <a href="#" class="sub-item" data-i18n="premium.shockAlerts">Shock Alerts</a>
+            <a href="#" class="sub-item" data-i18n="premium.aiLiveMomentum">AI Live Momentum</a>
+            <a href="#" class="sub-item" data-i18n="premium.fakeTrendDetector">Fake Trend Detector</a>
         </div>
 
     </nav>
