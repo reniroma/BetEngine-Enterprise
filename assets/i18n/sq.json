@@ -1,5 +1,72 @@
 {
   "header.language": "Gjuha:",
-  "header.oddsFormat": "Formati kuotave:",
-  "common.english": "Anglisht"
+  "header.oddsFormat": "Formati i koeficienteve:",
+  "common.english": "Anglisht",
+
+  "auth.login": "Hyr",
+  "auth.register": "Regjistrohu",
+  "auth.profile": "Profili",
+  "auth.myPredictions": "Prediksionet e mia",
+  "auth.settings": "Cilësimet",
+  "auth.myStatistics": "Statistikat e mia",
+  "auth.myCoupons": "Kuponët e mi",
+  "auth.logout": "Dil",
+
+  "brand.tagline": "Koeficientë të zgjuar, sinjale më të mprehta",
+
+  "nav.oddsComparison": "Krahasimi i koeficienteve",
+  "nav.community": "Community",
+  "nav.bookmakers": "Bookmaker-ët",
+  "nav.premium": "Premium",
+
+  "search.placeholder": "Kërko...",
+  "common.clear": "Pastro",
+  "search.loading": "Duke kërkuar…",
+  "search.empty": "Nuk u gjetën rezultate.",
+
+  "sport.football": "Futboll",
+  "sport.basketball": "Basketboll",
+  "sport.tennis": "Tenis",
+  "sport.hockey": "Hokej",
+  "sport.volleyball": "Volejboll",
+  "common.more": "Më shumë",
+
+  "common.home": "Ballina",
+  "common.nextMatches": "Ndeshjet e radhës",
+  "common.droppingOdds": "Koeficientë në rënie",
+  "common.sureBets": "Bastet e sigurta",
+  "common.inPlayOdds": "Koeficientë LIVE",
+  "common.allEvents": "Të gjitha eventet",
+  "common.bettingTools": "Mjetet e basteve",
+
+  "tools.blockedOdds": "Koeficientë të bllokuar",
+  "tools.valueBets": "Baste me vlerë",
+  "tools.hotMatches": "Ndeshje të nxehta",
+  "tools.archivedResults": "Rezultate të arkivuara",
+  "tools.standings": "Renditja",
+  "tools.betCalculator": "Llogaritësi i bastit",
+
+  "community.feed": "Feed",
+  "community.users": "Përdoruesit",
+  "community.topPredictions": "Prediksionet më të mira",
+  "community.myStatistics": "Statistikat e mia",
+  "community.myProfile": "Profili im",
+  "community.myPredictions": "Prediksionet e mia",
+  "community.myCoupons": "Kuponët e mi",
+
+  "bookmakers.info": "Info bookmaker",
+  "bookmakers.bonusOffers": "Oferta bonusi",
+  "bookmakers.oddsQuality": "Cilësia e koeficienteve",
+  "bookmakers.bettingApps": "Aplikacione bastesh",
+
+  "premium.dashboard": "Paneli",
+  "premium.marketInsights": "Insight-e të tregut",
+  "premium.fairOddsEngine": "Motori i koeficienteve të drejta",
+  "premium.aiPredictions": "Parashikime AI",
+  "premium.smartH2HInsights": "Insight-e Smart H2H",
+  "premium.valueFinder": "Gjetësi i vlerës",
+  "premium.sharpVsPublic": "Sharp vs Public",
+  "premium.shockAlerts": "Alarme Shock",
+  "premium.aiLiveMomentum": "Momentum AI LIVE",
+  "premium.fakeTrendDetector": "Detektori i trendit të rremë"
 }
