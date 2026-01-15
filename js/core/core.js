@@ -68,6 +68,26 @@
     }
 
     /* =====================================================
+       LANGUAGE BUS (FOUNDATION)
+       - Receives be:langChanged from header.js + header-mobile.js
+       - Keeps a stable global reference and ensures <html lang="">
+    ===================================================== */
+    document.addEventListener("be:langChanged", (e) => {
+        const detail = (e && e.detail && typeof e.detail === "object") ? e.detail : {};
+        const code = (typeof detail.code === "string") ? detail.code.trim() : "";
+        const label = (typeof detail.label === "string") ? detail.label.trim() : "";
+
+        // Stable global reference (non-visual)
+        window.BE_LANG = window.BE_LANG || {};
+        window.BE_LANG.current = { code, label };
+
+        // Safety: always keep <html lang=""> aligned with the shared payload
+        if (code && document.documentElement) {
+            document.documentElement.setAttribute("lang", code);
+        }
+    });
+
+    /* =====================================================
        BOOTSTRAP
     ===================================================== */
 
