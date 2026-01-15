@@ -90,18 +90,21 @@ const langDropdown = header.querySelector('.language-dropdown');
 const langItems    = langDropdown ? Array.from(langDropdown.querySelectorAll('.item')) : [];
 const langLabel    = header.querySelector('.language-selector .lang-label');
 
-/* Storage (desktop language) */
-const LANG_STORAGE_KEY = 'be_lang_desktop';
+/* Unified storage (desktop + mobile) */
+const LANG_STORAGE_DESKTOP = 'be_lang_desktop';
+const LANG_STORAGE_MOBILE  = 'be_lang_mobile';
 
-const readLangStorage = () => {
+const safeJsonParse = (raw) => {
+  try { return JSON.parse(raw); } catch (_) { return null; }
+};
+
+const readLangStorage = (key) => {
   try {
-    const raw = localStorage.getItem(LANG_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
+    const parsed = safeJsonParse(localStorage.getItem(key) || 'null');
     if (!parsed || typeof parsed !== 'object') return null;
 
-    const code  = typeof parsed.code === 'string' ? parsed.code : '';
-    const label = typeof parsed.label === 'string' ? parsed.label : '';
+    const code  = typeof parsed.code === 'string'  ? parsed.code.trim()  : '';
+    const label = typeof parsed.label === 'string' ? parsed.label.trim() : '';
 
     if (!code && !label) return null;
     return { code, label };
@@ -110,35 +113,100 @@ const readLangStorage = () => {
   }
 };
 
-const writeLangStorage = (payload) => {
+const writeLangStorage = (key, payload) => {
   try {
-    localStorage.setItem(LANG_STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem(key, JSON.stringify(payload));
   } catch (_) {
     /* no-op */
   }
 };
 
+/* Desktop wins resolver (on load/init) */
+const resolveLanguage = () => {
+  const d = readLangStorage(LANG_STORAGE_DESKTOP);
+  if (d && (d.code || d.label)) return d;
+
+  const m = readLangStorage(LANG_STORAGE_MOBILE);
+  if (m && (m.code || m.label)) return m;
+
+  return null;
+};
+
+/* Single source of truth apply (shared for desktop + mobile) */
+const applyLanguage = (payload) => {
+  if (!payload) return;
+
+  const code  = typeof payload.code === 'string'  ? payload.code.trim()  : '';
+  const label = typeof payload.label === 'string' ? payload.label.trim() : '';
+
+  if (!code && !label) return;
+
+  /* 1) <html lang=""> */
+  if (code) {
+    try { document.documentElement.setAttribute('lang', code); } catch (_) {}
+  }
+
+  /* 2) Desktop dropdown active state */
+  if (langItems.length) {
+    langItems.forEach((i) => {
+      const c = (i.getAttribute('data-lang') || '').trim();
+      i.classList.toggle('active', !!code && c === code);
+      // UX: show clickable cursor on options
+      i.style.cursor = 'pointer';
+    });
+  }
+
+  /* 3) Desktop label */
+  if (langLabel && label) langLabel.textContent = label;
+
+  /* 4) Mobile modal active state (if present) */
+  const mobileItems = Array.from(document.querySelectorAll('#mobile-language-modal .be-modal-item'));
+  if (mobileItems.length) {
+    mobileItems.forEach((i) => {
+      const c = (i.dataset.lang || '').trim();
+      i.classList.toggle('active', !!code && c === code);
+      // UX: show clickable cursor on options
+      i.style.cursor = 'pointer';
+    });
+  }
+
+  /* 5) Mobile menu Preferences label (if present) */
+  const mobileMenuValue = document.querySelector('.menu-section.preferences .menu-item.menu-lang .value');
+  if (mobileMenuValue && label) mobileMenuValue.textContent = label;
+};
+
+/* Expose shared function name (desktop is authoritative on conflict) */
+window.applyLanguage = applyLanguage;
+
+/* Apply stored language once (resolver + mirror both keys) */
 const applyStoredLanguage = () => {
   if (!langItems.length) return;
 
-  const saved = readLangStorage();
-  if (!saved) return;
+  const chosen = resolveLanguage();
+  if (!chosen) return;
 
-  const matchByCode = saved.code
-    ? langItems.find((it) => (it.getAttribute('data-lang') || '').trim() === saved.code)
+  // Normalize against desktop list first (prefer data-lang match)
+  const matchByCode = chosen.code
+    ? langItems.find((it) => (it.getAttribute('data-lang') || '').trim() === chosen.code)
     : null;
 
-  const matchByLabel = !matchByCode && saved.label
-    ? langItems.find((it) => it.textContent.trim() === saved.label)
+  const matchByLabel = !matchByCode && chosen.label
+    ? langItems.find((it) => it.textContent.trim() === chosen.label)
     : null;
 
   const item = matchByCode || matchByLabel;
   if (!item) return;
 
-  langItems.forEach((i) => i.classList.remove('active'));
-  item.classList.add('active');
+  const code  = (item.getAttribute('data-lang') || '').trim();
+  const label = item.textContent.trim();
 
-  if (langLabel) langLabel.textContent = item.textContent.trim();
+  const payload = { code: code || '', label: label || '' };
+
+  // Desktop wins conflict => after resolution, mirror BOTH
+  writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+  writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+  applyLanguage(payload);
 };
 
 /* Enterprise positioning: dropdown must open directly under the BUTTON (not label) */
@@ -150,7 +218,6 @@ const positionLangDropdown = () => {
   const btnRect = langToggle.getBoundingClientRect();
   const gap = 6;              // keeps consistent with other dropdown spacing
   const pad = 8;              // viewport padding (prevent edge overflow)
-  
 
   const width = Math.max(0, Math.round(btnRect.width));
   let left = Math.round(btnRect.right - width);     // align RIGHT edge to the button's right edge
@@ -170,7 +237,7 @@ const positionLangDropdown = () => {
   langDropdown.style.marginTop = '0';
   langDropdown.style.zIndex = '9999';
 
-  // <<< remove horizontal scrollbar at the bottom
+  // remove horizontal scrollbar at the bottom
   langDropdown.style.boxSizing = 'border-box';
   langDropdown.style.overflowX = 'hidden';
 };
@@ -190,13 +257,8 @@ const bindLangViewportHooks = () => {
 };
 
 if (langToggle && langDropdown) {
-  /* Apply stored language once (safe, no behavior changes) */
+  /* Apply stored language once (desktop wins conflict + mirrors both keys) */
   applyStoredLanguage();
-
-  /* Cursor must show clickable on dropdown options */
-  langItems.forEach((item) => {
-    item.style.cursor = 'pointer';
-  });
 
   langToggle.addEventListener('click', (e) => {
     if (isMobileDOM(e.target)) return;
@@ -224,23 +286,25 @@ if (langToggle && langDropdown) {
   });
 
   langItems.forEach((item) => {
+    // UX: pointer on dropdown options
+    item.style.cursor = 'pointer';
+
     item.addEventListener('click', (e) => {
       if (isMobileDOM(e.target)) return;
 
       e.stopPropagation();
 
-      langItems.forEach((i) => i.classList.remove('active'));
-      item.classList.add('active');
+      const code  = (item.getAttribute('data-lang') || '').trim();
+      const label = item.textContent.trim();
 
-      const nextLabel = item.textContent.trim();
-      if (langLabel) langLabel.textContent = nextLabel;
+      const payload = { code: code || '', label: label || '' };
 
-      /* Persist selection (code preferred, label fallback) */
-      const code = (item.getAttribute('data-lang') || '').trim();
-      writeLangStorage({
-        code: code || '',
-        label: nextLabel || ''
-      });
+      // Persist to BOTH keys (desktop wins conflict rule)
+      writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+      writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+      // Apply everywhere (desktop + mobile UI + <html lang>)
+      applyLanguage(payload);
 
       langToggle.setAttribute('aria-expanded', 'false');
       closeAllDesktopDropdowns();
