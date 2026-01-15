@@ -163,6 +163,7 @@ const applyLanguage = (payload) => {
   /* 5) Mobile menu Preferences label (visual sync only) */
   const mobileMenuValue = document.querySelector(".menu-section.preferences .menu-item.menu-lang .value");
   if (mobileMenuValue && label) mobileMenuValue.textContent = label;
+  document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
 };
 
 /* Expose shared function name (both desktop + mobile may call it) */
