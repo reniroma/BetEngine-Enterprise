@@ -33,6 +33,9 @@
   "auth.link.createOneFree": "Krijo një falas",
   "auth.link.forgotPassword": "Harrove fjalëkalimin?",
   "auth.link.alreadyAccount": "Ke tashmë llogari?",
+  "auth.forgot.title": "Keni harruar fjalëkalimin",
+  "auth.forgot.text": "Shkruani email-in tuaj për të rivendosur fjalëkalimin. Informacioni shtesë do t’ju dërgohet në email.",
+  "common.confirm": "KONFIRMO",
 
   "auth.marketingOptIn": "Dua të marr lajme ekskluzive dhe oferta speciale nga platforma jonë dhe partnerët tanë të besuar.",
 
