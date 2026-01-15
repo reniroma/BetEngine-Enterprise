@@ -1,84 +1,94 @@
 <!-- ====================================================
-     REGISTER MODAL (BetEngine Enterprise – FINAL)
+     REGISTER MODAL (BetEngine Enterprise – FINAL + i18n)
 ======================================================= -->
 <div class="be-auth-overlay" id="register-modal">
-    <div class="be-auth-box">
+  <div class="be-auth-box">
 
-        <!-- HEADER -->
-        <div class="auth-header">
-            <span class="auth-header-title">Register</span>
-            <button class="auth-close" type="button" aria-label="Close">
-                <img src="assets/icons/close.svg" alt="Close">
-            </button>
-        </div>
-
-        <!-- BODY -->
-        <div class="auth-body">
-            <div class="auth-scroll">
-
-                <!-- Social register buttons -->
-                <div class="auth-social">
-                    <button class="auth-social-btn facebook" type="button">
-                        <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
-                        <span>Continue with Facebook</span>
-                    </button>
-
-                    <button class="auth-social-btn google" type="button">
-                        <img src="assets/icons/google.svg" class="auth-social-icon" alt="">
-                        <span>Continue with Google</span>
-                    </button>
-
-                    <button class="auth-social-btn apple" type="button">
-                        <img src="assets/icons/apple.svg" class="auth-social-icon" alt="">
-                        <span>Continue with Apple</span>
-                    </button>
-                </div>
-
-                <div class="auth-divider"><span>OR</span></div>
-
-                <!-- Register form -->
-                <form class="auth-form" autocomplete="on">
-                    <label class="auth-field">
-                        <span class="auth-label">Username</span>
-                        <input type="text" name="username" autocomplete="username">
-                    </label>
-
-                    <label class="auth-field">
-                        <span class="auth-label">Email</span>
-                        <input type="email" name="email" autocomplete="email">
-                    </label>
-
-                    <label class="auth-field">
-                        <span class="auth-label">Password</span>
-                        <input type="password" name="password" autocomplete="new-password">
-                    </label>
-
-                    <label class="auth-checkbox">
-                        <input type="checkbox" name="marketing">
-                        <span>
-                            I would like to receive exclusive news and special offers from our platform and trusted partners.
-                        </span>
-                    </label>
-
-                    <p class="auth-legal-text">
-                        By clicking “CREATE MY ACCOUNT” or any “SIGN IN” button, you agree to the
-                    <a href="/terms">Terms of Use</a> and acknowledge our
-                    <a href="/privacy">Privacy Policy</a> on our website.
-                    </p>
-
-                    <button class="auth-submit primary" type="submit">Create account</button>
-
-                    <div class="auth-footer-text">
-                        <span>Already have an account?</span>
-                        <button type="button"
-                                class="auth-link auth-switch"
-                                data-auth-target="login">
-                            Sign in
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
+    <!-- HEADER -->
+    <div class="auth-header">
+      <span class="auth-header-title" data-i18n="auth.register">Register</span>
+      <button class="auth-close" type="button" aria-label="Close">
+        <img src="assets/icons/close.svg" alt="Close">
+      </button>
     </div>
+
+    <!-- BODY -->
+    <div class="auth-body">
+      <div class="auth-scroll">
+
+        <!-- Social register buttons -->
+        <div class="auth-social">
+          <button class="auth-social-btn facebook" type="button">
+            <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
+            <span data-i18n="auth.social.continueFacebook">Continue with Facebook</span>
+          </button>
+
+          <button class="auth-social-btn google" type="button">
+            <img src="assets/icons/google.svg" class="auth-social-icon" alt="">
+            <span data-i18n="auth.social.continueGoogle">Continue with Google</span>
+          </button>
+
+          <button class="auth-social-btn apple" type="button">
+            <img src="assets/icons/apple.svg" class="auth-social-icon" alt="">
+            <span data-i18n="auth.social.continueApple">Continue with Apple</span>
+          </button>
+        </div>
+
+        <div class="auth-divider"><span data-i18n="auth.or">OR</span></div>
+
+        <!-- Register form -->
+        <form class="auth-form" autocomplete="on">
+          <label class="auth-field">
+            <span class="auth-label" data-i18n="auth.field.username">Username</span>
+            <input type="text" name="username" autocomplete="username" data-i18n-placeholder="auth.field.username">
+          </label>
+
+          <label class="auth-field">
+            <span class="auth-label" data-i18n="auth.field.email">Email</span>
+            <input type="email" name="email" autocomplete="email" data-i18n-placeholder="auth.field.email">
+          </label>
+
+          <label class="auth-field">
+            <span class="auth-label" data-i18n="auth.field.password">Password</span>
+            <input type="password" name="password" autocomplete="new-password" data-i18n-placeholder="auth.field.password">
+          </label>
+
+          <label class="auth-checkbox">
+            <input type="checkbox" name="marketing">
+            <span data-i18n="auth.marketingOptIn">
+              I would like to receive exclusive news and special offers from our platform and trusted partners.
+            </span>
+          </label>
+
+          <p class="auth-legal-text">
+            <span data-i18n="auth.terms.prefix">By clicking</span>
+            <strong data-i18n="auth.terms.createAccountQuoted">"CREATE MY ACCOUNT"</strong>
+            <span data-i18n="auth.terms.orAny">or any</span>
+            <strong data-i18n="auth.terms.signInQuoted">"SIGN IN"</strong>
+            <span data-i18n="auth.terms.button">button, you agree to the</span>
+            <a href="/terms" data-i18n="auth.terms.termsOfUse">Terms of Use</a>
+            <span data-i18n="auth.terms.and">and acknowledge our</span>
+            <a href="/privacy" data-i18n="auth.terms.privacyPolicy">Privacy Policy</a>
+            <span data-i18n="auth.terms.suffix">on our website.</span>
+          </p>
+
+          <button class="auth-submit primary" type="submit" data-i18n="auth.button.createAccount">
+            Create account
+          </button>
+
+          <div class="auth-footer-text">
+            <span data-i18n="auth.link.alreadyAccount">Already have an account?</span>
+            <button
+              type="button"
+              class="auth-link auth-switch"
+              data-auth-target="login"
+              data-i18n="auth.login">
+              Sign in
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
 </div>
