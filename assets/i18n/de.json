@@ -33,6 +33,9 @@
   "auth.link.createOneFree": "Kostenlos registrieren",
   "auth.link.forgotPassword": "Passwort vergessen?",
   "auth.link.alreadyAccount": "Bereits ein Konto?",
+  "auth.forgot.title": "Passwort vergessen",
+  "auth.forgot.text": "Gib deine E-Mail-Adresse ein, um dein Passwort zurückzusetzen. Weitere Informationen werden an deine E-Mail gesendet.",
+  "common.confirm": "BESTÄTIGEN",
 
   "auth.marketingOptIn": "Ich möchte exklusive Neuigkeiten und Sonderangebote von unserer Plattform und vertrauenswürdigen Partnern erhalten.",
 
