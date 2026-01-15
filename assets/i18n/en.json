@@ -33,6 +33,9 @@
   "auth.link.createOneFree": "Create one for free",
   "auth.link.forgotPassword": "Forgot password?",
   "auth.link.alreadyAccount": "Already have an account?",
+  "auth.forgot.title": "Forgotten password",
+  "auth.forgot.text": "Fill in your email to get forgotten password. Additional information will be sent to your email.",
+  "common.confirm": "CONFIRM",
 
   "auth.marketingOptIn": "I would like to receive exclusive news and special offers from our platform and trusted partners.",
 
