@@ -1,7 +1,7 @@
 <!-- ====================================================
-     LOGIN MODAL (BetEngine Enterprise – FINAL / FIXED)
-     Master Developer – Single Source of Truth
-     Includes INLINE Forgot Password section
+     LOGIN MODAL (BetEngine Enterprise – FINAL)
+     Master Developer – Fully i18n Compatible
+     Includes inline Forgot Password section
 ======================================================= -->
 <div class="be-auth-overlay" id="login-modal">
   <div class="be-auth-box">
@@ -22,32 +22,32 @@
         <div class="auth-social">
           <button class="auth-social-btn facebook" type="button">
             <img src="assets/icons/facebook.svg" class="auth-social-icon" alt="">
-            <span data-i18n="auth.social.facebook">Sign in with Facebook</span>
+            <span data-i18n="auth.social.signinFacebook">Sign in with Facebook</span>
           </button>
 
           <button class="auth-social-btn google" type="button">
             <img src="assets/icons/google.svg" class="auth-social-icon" alt="">
-            <span data-i18n="auth.social.google">Sign in with Google</span>
+            <span data-i18n="auth.social.signinGoogle">Sign in with Google</span>
           </button>
 
           <button class="auth-social-btn apple" type="button">
             <img src="assets/icons/apple.svg" class="auth-social-icon" alt="">
-            <span data-i18n="auth.social.apple">Sign in with Apple</span>
+            <span data-i18n="auth.social.signinApple">Sign in with Apple</span>
           </button>
         </div>
 
-        <div class="auth-divider"><span data-i18n="common.or">OR</span></div>
+        <div class="auth-divider"><span data-i18n="auth.or">OR</span></div>
 
         <!-- LOGIN FORM -->
         <form class="auth-form" autocomplete="on">
           <label class="auth-field">
-            <span class="auth-label" data-i18n="auth.email">Email</span>
-            <input type="text" name="email" autocomplete="email">
+            <span class="auth-label" data-i18n="auth.field.email">Email</span>
+            <input type="text" name="email" autocomplete="email" data-i18n-placeholder="auth.field.email">
           </label>
 
           <label class="auth-field">
-            <span class="auth-label" data-i18n="auth.password">Password</span>
-            <input type="password" name="password" autocomplete="current-password">
+            <span class="auth-label" data-i18n="auth.field.password">Password</span>
+            <input type="password" name="password" autocomplete="current-password" data-i18n-placeholder="auth.field.password">
           </label>
 
           <label class="auth-checkbox">
@@ -55,23 +55,23 @@
             <span data-i18n="auth.rememberMe">Remember me</span>
           </label>
 
-          <button class="auth-submit primary" type="submit" data-i18n="auth.login">
+          <button class="auth-submit primary" type="submit" data-i18n="auth.button.login">
             Login
           </button>
 
           <div class="auth-footer-text">
-            <span data-i18n="auth.noAccount">Don't have an account?</span>
+            <span data-i18n="auth.link.noAccount">Don't have an account?</span>
             <button
               type="button"
               class="auth-link auth-switch"
               data-auth-target="register"
-              data-i18n="auth.createFree">
+              data-i18n="auth.link.createOneFree">
               Create one for free
             </button>
           </div>
 
           <!-- FORGOT PASSWORD TRIGGER -->
-          <button type="button" class="auth-link auth-forgot-link" data-i18n="auth.forgotPassword">
+          <button type="button" class="auth-link auth-forgot-link" data-i18n="auth.link.forgotPassword">
             Forgot password?
           </button>
         </form>
@@ -88,8 +88,8 @@
           </p>
 
           <label class="auth-field">
-            <span class="auth-label" data-i18n="auth.emailRequired">Email *</span>
-            <input type="email" name="forgot_email" autocomplete="email">
+            <span class="auth-label" data-i18n="auth.field.email">Email *</span>
+            <input type="email" name="forgot_email" autocomplete="email" data-i18n-placeholder="auth.field.email">
           </label>
 
           <button type="button" class="auth-submit primary" data-i18n="common.confirm">
