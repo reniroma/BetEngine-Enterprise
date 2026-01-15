@@ -12,26 +12,60 @@
   "auth.myCoupons": "Meine Coupons",
   "auth.logout": "Abmelden",
 
-  "brand.tagline": "Smarte Quoten, schärfere Signale",
+  "auth.social.signinFacebook": "Mit Facebook anmelden",
+  "auth.social.signinGoogle": "Mit Google anmelden",
+  "auth.social.signinApple": "Mit Apple anmelden",
+  "auth.social.continueFacebook": "Mit Facebook fortfahren",
+  "auth.social.continueGoogle": "Mit Google fortfahren",
+  "auth.social.continueApple": "Mit Apple fortfahren",
+
+  "auth.or": "ODER",
+
+  "auth.field.username": "Benutzername",
+  "auth.field.email": "E-Mail",
+  "auth.field.password": "Passwort",
+  "auth.rememberMe": "Angemeldet bleiben",
+
+  "auth.button.login": "Anmelden",
+  "auth.button.createAccount": "KONTO ERSTELLEN",
+
+  "auth.link.noAccount": "Noch kein Konto?",
+  "auth.link.createOneFree": "Kostenlos registrieren",
+  "auth.link.forgotPassword": "Passwort vergessen?",
+  "auth.link.alreadyAccount": "Bereits ein Konto?",
+
+  "auth.marketingOptIn": "Ich möchte exklusive Neuigkeiten und Sonderangebote von unserer Plattform und vertrauenswürdigen Partnern erhalten.",
+
+  "auth.terms.prefix": "Mit einem Klick auf",
+  "auth.terms.createAccountQuoted": "\"KONTO ERSTELLEN\"",
+  "auth.terms.orAny": "oder auf eine beliebige",
+  "auth.terms.signInQuoted": "\"ANMELDEN\"",
+  "auth.terms.button": "-Schaltfläche stimmst du den",
+  "auth.terms.termsOfUse": "Nutzungsbedingungen",
+  "auth.terms.and": "zu und bestätigst unsere",
+  "auth.terms.privacyPolicy": "Datenschutzrichtlinie",
+  "auth.terms.suffix": "auf unserer Website.",
+
+  "brand.tagline": "Smart Odds, schärfere Signale",
 
   "nav.oddsComparison": "Quotenvergleich",
   "nav.community": "Community",
   "nav.bookmakers": "Buchmacher",
   "nav.premium": "Premium",
 
-  "search.placeholder": "Suche...",
-  "common.clear": "Leeren",
+  "search.placeholder": "Suchen...",
+  "common.clear": "Löschen",
   "search.loading": "Suche…",
   "search.empty": "Keine Ergebnisse gefunden.",
 
   "sport.football": "Fußball",
   "sport.basketball": "Basketball",
   "sport.tennis": "Tennis",
-  "sport.hockey": "Hockey",
+  "sport.hockey": "Eishockey",
   "sport.volleyball": "Volleyball",
   "common.more": "Mehr",
 
-  "common.home": "Startseite",
+  "common.home": "Start",
   "common.nextMatches": "Nächste Spiele",
   "common.droppingOdds": "Fallende Quoten",
   "common.sureBets": "Sure Bets",
@@ -41,9 +75,9 @@
 
   "tools.blockedOdds": "Gesperrte Quoten",
   "tools.valueBets": "Value Bets",
-  "tools.hotMatches": "Heiße Spiele",
+  "tools.hotMatches": "Top-Spiele",
   "tools.archivedResults": "Archivierte Ergebnisse",
-  "tools.standings": "Tabellen",
+  "tools.standings": "Tabelle",
   "tools.betCalculator": "Wett-Rechner",
 
   "community.feed": "Feed",
@@ -62,11 +96,11 @@
   "premium.dashboard": "Dashboard",
   "premium.marketInsights": "Markt-Insights",
   "premium.fairOddsEngine": "Fair-Odds-Engine",
-  "premium.aiPredictions": "KI-Prognosen",
-  "premium.smartH2HInsights": "Smarte H2H-Insights",
-  "premium.valueFinder": "Value-Finder",
+  "premium.aiPredictions": "KI-Tipps",
+  "premium.smartH2HInsights": "Smart H2H Insights",
+  "premium.valueFinder": "Value Finder",
   "premium.sharpVsPublic": "Sharp vs Public",
-  "premium.shockAlerts": "Shock-Alerts",
-  "premium.aiLiveMomentum": "KI-Live-Momentum",
+  "premium.shockAlerts": "Shock Alerts",
+  "premium.aiLiveMomentum": "KI Live Momentum",
   "premium.fakeTrendDetector": "Fake-Trend-Detektor"
 }
