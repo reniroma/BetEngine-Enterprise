@@ -512,6 +512,7 @@ const applyLanguageLocal = (payload) => {
   // 5) Desktop label (correct selector)
   const desktopLabel = qs(".header-desktop .language-selector .lang-label");
   if (desktopLabel && label) desktopLabel.textContent = label;
+  document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
 };
 
 // Do NOT override if desktop already defined it
