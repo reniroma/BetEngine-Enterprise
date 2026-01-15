@@ -1,5 +1,72 @@
 {
   "header.language": "Sprache:",
   "header.oddsFormat": "Quotenformat:",
-  "common.english": "Englisch"
+  "common.english": "Englisch",
+
+  "auth.login": "Anmelden",
+  "auth.register": "Registrieren",
+  "auth.profile": "Profil",
+  "auth.myPredictions": "Meine Tipps",
+  "auth.settings": "Einstellungen",
+  "auth.myStatistics": "Meine Statistiken",
+  "auth.myCoupons": "Meine Coupons",
+  "auth.logout": "Abmelden",
+
+  "brand.tagline": "Smarte Quoten, schärfere Signale",
+
+  "nav.oddsComparison": "Quotenvergleich",
+  "nav.community": "Community",
+  "nav.bookmakers": "Buchmacher",
+  "nav.premium": "Premium",
+
+  "search.placeholder": "Suche...",
+  "common.clear": "Leeren",
+  "search.loading": "Suche…",
+  "search.empty": "Keine Ergebnisse gefunden.",
+
+  "sport.football": "Fußball",
+  "sport.basketball": "Basketball",
+  "sport.tennis": "Tennis",
+  "sport.hockey": "Hockey",
+  "sport.volleyball": "Volleyball",
+  "common.more": "Mehr",
+
+  "common.home": "Startseite",
+  "common.nextMatches": "Nächste Spiele",
+  "common.droppingOdds": "Fallende Quoten",
+  "common.sureBets": "Sure Bets",
+  "common.inPlayOdds": "Live-Quoten",
+  "common.allEvents": "Alle Events",
+  "common.bettingTools": "Wett-Tools",
+
+  "tools.blockedOdds": "Gesperrte Quoten",
+  "tools.valueBets": "Value Bets",
+  "tools.hotMatches": "Heiße Spiele",
+  "tools.archivedResults": "Archivierte Ergebnisse",
+  "tools.standings": "Tabellen",
+  "tools.betCalculator": "Wett-Rechner",
+
+  "community.feed": "Feed",
+  "community.users": "Nutzer",
+  "community.topPredictions": "Top-Tipps",
+  "community.myStatistics": "Meine Statistiken",
+  "community.myProfile": "Mein Profil",
+  "community.myPredictions": "Meine Tipps",
+  "community.myCoupons": "Meine Coupons",
+
+  "bookmakers.info": "Buchmacher-Info",
+  "bookmakers.bonusOffers": "Bonusangebote",
+  "bookmakers.oddsQuality": "Quotenqualität",
+  "bookmakers.bettingApps": "Wett-Apps",
+
+  "premium.dashboard": "Dashboard",
+  "premium.marketInsights": "Markt-Insights",
+  "premium.fairOddsEngine": "Fair-Odds-Engine",
+  "premium.aiPredictions": "KI-Prognosen",
+  "premium.smartH2HInsights": "Smarte H2H-Insights",
+  "premium.valueFinder": "Value-Finder",
+  "premium.sharpVsPublic": "Sharp vs Public",
+  "premium.shockAlerts": "Shock-Alerts",
+  "premium.aiLiveMomentum": "KI-Live-Momentum",
+  "premium.fakeTrendDetector": "Fake-Trend-Detektor"
 }
