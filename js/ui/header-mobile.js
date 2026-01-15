@@ -434,10 +434,16 @@
         });
 
         /* ==================================================
-           LANGUAGE (MOBILE) — STORAGE + SYNC + CLOSE
-           Desktop wins conflict:
-           - If be_lang_desktop exists => use it
-           - Else fallback to be_lang_mobile
+           LANGUAGE (MOBILE) — UNIFIED STORAGE + SYNC + CLOSE
+           - Payload: { code:"xx", label:"LanguageName" }
+           - Mirrors to: be_lang_desktop + be_lang_mobile
+           - Resolver on init (desktop wins on conflict)
+           - Updates:
+             - document.documentElement.lang
+             - .header-desktop .lang-label
+             - .header-desktop .language-dropdown .item
+             - #mobile-language-modal .be-modal-item
+             - .menu-section.preferences .menu-item.menu-lang .value
         ================================================== */
 
         const LANG_STORAGE_MOBILE  = "be_lang_mobile";
@@ -462,77 +468,118 @@
             try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
         };
 
-        const resolveLanguage = () => {
-            const d = readLangStorage(LANG_STORAGE_DESKTOP);
-            if (d && (d.code || d.label)) return d;
-            const m = readLangStorage(LANG_STORAGE_MOBILE);
-            return m;
+        const samePayload = (a, b) => {
+            if (!a || !b) return false;
+            return (a.code || "") === (b.code || "") && (a.label || "") === (b.label || "");
         };
 
-        const syncLanguageUI = (code, label) => {
-            const items = qa("#mobile-language-modal .be-modal-item");
+        // Single "apply" (shared-ready). If desktop defines window.applyLanguage later, we will use it.
+        const applyLanguageLocal = (payload) => {
+            if (!payload) return;
 
-            // Mobile modal active state
-            if (items.length) {
-                items.forEach((i) => i.classList.remove("active"));
+            const code  = (payload.code || "").trim();
+            const label = (payload.label || "").trim();
+            if (!code && !label) return;
+
+            // 1) <html lang="">
+            if (code) {
+                try { document.documentElement.setAttribute("lang", code); } catch (_) {}
+            }
+
+            // 2) Mobile modal active state
+            const mobileItems = qa("#mobile-language-modal .be-modal-item");
+            if (mobileItems.length) {
+                mobileItems.forEach((i) => {
+                    i.classList.remove("active");
+                    // UX cursor without CSS changes
+                    i.style.cursor = "pointer";
+                });
 
                 let pick = null;
-                if (code) {
-                    pick = items.find((it) => (it.dataset.lang || "").trim() === code);
-                }
-                if (!pick && label) {
-                    pick = items.find((it) => it.textContent.trim() === label);
-                }
-
+                if (code) pick = mobileItems.find((it) => (it.dataset.lang || "").trim() === code);
+                if (!pick && label) pick = mobileItems.find((it) => it.textContent.trim() === label);
                 if (pick) pick.classList.add("active");
             }
 
-            // Mobile menu Preferences label
+            // 3) Mobile menu Preferences label
             const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
             if (langValue && label) langValue.textContent = label;
 
-            // Desktop dropdown active state (visual sync only)
+            // 4) Desktop dropdown visual sync (active state)
             qa(".header-desktop .language-dropdown .item").forEach((i) => {
+                // UX cursor without CSS changes
+                i.style.cursor = "pointer";
                 i.classList.toggle("active", (i.dataset.lang || "").trim() === (code || ""));
             });
 
-            // Desktop label (visual)
+            // 5) Desktop label
             const desktopLabel = qs(".header-desktop .language-selector .lang-label");
             if (desktopLabel && label) desktopLabel.textContent = label;
         };
 
-        // Apply stored language once on init (no modal open required)
-        (function applyStoredLanguageMobile() {
-            const chosen = resolveLanguage();
-            if (!chosen) return;
+        // Expose a shared function name if not already defined (desktop can call the same name later)
+        if (typeof window.applyLanguage !== "function") {
+            window.applyLanguage = (payload) => applyLanguageLocal(payload);
+        }
 
-            // Normalize: prefer code match, else keep label
-            const items = qa("#mobile-language-modal .be-modal-item");
+        // Resolver on init (desktop wins)
+        (function resolveAndApplyLanguageOnInit() {
+            const d = readLangStorage(LANG_STORAGE_DESKTOP);
+            const m = readLangStorage(LANG_STORAGE_MOBILE);
+
+            let chosen = null;
+
+            if (d && (d.code || d.label)) {
+                chosen = d;
+            } else if (m && (m.code || m.label)) {
+                chosen = m;
+            } else {
+                // nothing stored => do not force defaults
+                return;
+            }
+
+            // Normalize against existing UI items (prefer matching data-lang if possible)
+            const mobileItems = qa("#mobile-language-modal .be-modal-item");
             let pick = null;
 
-            if (items.length && chosen.code) {
-                pick = items.find((it) => (it.dataset.lang || "").trim() === chosen.code);
+            if (mobileItems.length && chosen.code) {
+                pick = mobileItems.find((it) => (it.dataset.lang || "").trim() === chosen.code);
             }
-            if (!pick && items.length && chosen.label) {
-                pick = items.find((it) => it.textContent.trim() === chosen.label);
+            if (!pick && mobileItems.length && chosen.label) {
+                pick = mobileItems.find((it) => it.textContent.trim() === chosen.label);
             }
 
-            const code  = pick ? (pick.dataset.lang || "").trim() : (chosen.code || "");
-            const label = pick ? pick.textContent.trim() : (chosen.label || "");
+            const normalized = {
+                code:  pick ? (pick.dataset.lang || "").trim() : (chosen.code || "").trim(),
+                label: pick ? pick.textContent.trim()          : (chosen.label || "").trim()
+            };
 
-            if (!code && !label) return;
+            if (!normalized.code && !normalized.label) return;
 
-            // Sync UI
-            syncLanguageUI(code, label);
+            // If conflict exists (both set but differ), desktop wins by definition above.
+            // After decision => mirror to both keys
+            writeLangStorage(LANG_STORAGE_DESKTOP, normalized);
+            writeLangStorage(LANG_STORAGE_MOBILE, normalized);
 
-            // Persist normalized selection to BOTH keys (desktop wins anyway)
-            const payload = { code: code || "", label: label || "" };
-            writeLangStorage(LANG_STORAGE_MOBILE, payload);
-            writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+            // Apply via shared function (if desktop later overrides, still ok)
+            try {
+                window.applyLanguage(normalized);
+            } catch (_) {
+                applyLanguageLocal(normalized);
+            }
+
+            // Also: if both existed and differ, we already enforced desktop choice.
+            // If both existed and same, this is idempotent.
+            if (d && m && !samePayload(d, m)) {
+                // No extra behavior; storage already unified above.
+            }
         })();
 
         // Click handler inside mobile language modal
         qa("#mobile-language-modal .be-modal-item").forEach((item) => {
+            // UX cursor without CSS changes
+            item.style.cursor = "pointer";
+
             item.addEventListener("click", (e) => {
                 stop(e);
 
@@ -542,13 +589,18 @@
                 const code  = (item.dataset.lang || "").trim();
                 const label = item.textContent.trim();
 
-                // Sync UI (mobile + desktop visual)
-                syncLanguageUI(code, label);
+                const payload = { code: code || "", label: label || "" };
 
                 // Persist to BOTH keys (desktop wins conflict rule)
-                const payload = { code: code || "", label: label || "" };
-                writeLangStorage(LANG_STORAGE_MOBILE, payload);
                 writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+                writeLangStorage(LANG_STORAGE_MOBILE, payload);
+
+                // Apply everywhere
+                try {
+                    window.applyLanguage(payload);
+                } catch (_) {
+                    applyLanguageLocal(payload);
+                }
 
                 closeSheet(langModal);
             });
