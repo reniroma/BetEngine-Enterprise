@@ -84,42 +84,221 @@ function initDesktopDropdowns() {
         });
     }
 
-    /* ---------------- LANGUAGE ---------------- */
-    const langToggle   = header.querySelector(".language-toggle");
-    const langDropdown = header.querySelector(".language-dropdown");
-    const langItems    = langDropdown?.querySelectorAll(".item") || [];
-    const langLabel    = header.querySelector(".language-selector .lang-code");
+/* ---------------- LANGUAGE ---------------- */
+const langToggle   = header.querySelector(".language-toggle");
+const langDropdown = header.querySelector(".language-dropdown");
+const langItems    = langDropdown ? Array.from(langDropdown.querySelectorAll(".item")) : [];
+const langLabel    = header.querySelector(".language-selector .lang-label");
 
-    if (langToggle && langDropdown) {
-        langToggle.addEventListener("click", (e) => {
-            if (isMobileDOM(e.target)) return;
+/* Unified storage (desktop + mobile) */
+const LANG_STORAGE_DESKTOP = "be_lang_desktop";
+const LANG_STORAGE_MOBILE  = "be_lang_mobile";
 
-            e.stopPropagation();
-            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-            document.dispatchEvent(new CustomEvent("header:interaction"));
-            const open = langDropdown.classList.contains("show");
-            closeAllDesktopDropdowns();
-            if (!open) {
-                langDropdown.classList.add("show");
-                state.desktopDropdownOpen = true;
-            }
-        });
+const safeJsonParse = (raw) => {
+  try { return JSON.parse(raw); } catch (_) { return null; }
+};
 
-        langItems.forEach(item => {
-            item.addEventListener("click", (e) => {
-                if (isMobileDOM(e.target)) return;
+const readLangStorage = (key) => {
+  const parsed = safeJsonParse(localStorage.getItem(key) || "null");
+  if (!parsed || typeof parsed !== "object") return null;
 
-                e.stopPropagation();
+  const code  = typeof parsed.code === "string"  ? parsed.code.trim()  : "";
+  const label = typeof parsed.label === "string" ? parsed.label.trim() : "";
 
-                langItems.forEach(i => i.classList.remove("active"));
-                item.classList.add("active");
+  if (!code && !label) return null;
+  return { code, label };
+};
 
-                if (langLabel) langLabel.textContent = item.textContent;
+const writeLangStorage = (key, payload) => {
+  try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
+};
 
-                closeAllDesktopDropdowns();
-            });
-        });
+/* Desktop wins resolver (always mirrors both keys after decision) */
+const resolveLanguage = () => {
+  const d = readLangStorage(LANG_STORAGE_DESKTOP);
+  if (d && (d.code || d.label)) return d;
+
+  const m = readLangStorage(LANG_STORAGE_MOBILE);
+  if (m && (m.code || m.label)) return m;
+
+  return null;
+};
+
+/* Single source of truth apply (desktop + mobile UI + <html lang>) */
+const applyLanguage = (payload) => {
+  if (!payload) return;
+
+  const code  = typeof payload.code === "string"  ? payload.code.trim()  : "";
+  const label = typeof payload.label === "string" ? payload.label.trim() : "";
+
+  if (!code && !label) return;
+
+  /* 1) <html lang=""> */
+  if (code) {
+    try { document.documentElement.setAttribute("lang", code); } catch (_) {}
+  }
+
+  /* 2) Desktop dropdown active state + cursor UX */
+  if (langItems.length) {
+    langItems.forEach((i) => {
+      const c = (i.getAttribute("data-lang") || "").trim();
+      if (code) i.classList.toggle("active", c === code);
+      i.style.cursor = "pointer";
+    });
+  }
+
+  /* 3) Desktop label */
+  if (langLabel && label) langLabel.textContent = label;
+
+  /* 4) Mobile modal active state (visual sync only) */
+  const mobileItems = Array.from(document.querySelectorAll("#mobile-language-modal .be-modal-item"));
+  if (mobileItems.length) {
+    mobileItems.forEach((i) => {
+      const c = (i.dataset.lang || "").trim();
+      if (code) i.classList.toggle("active", c === code);
+      i.style.cursor = "pointer";
+    });
+  }
+
+  /* 5) Mobile menu Preferences label (visual sync only) */
+  const mobileMenuValue = document.querySelector(".menu-section.preferences .menu-item.menu-lang .value");
+  if (mobileMenuValue && label) mobileMenuValue.textContent = label;
+  document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
+};
+
+/* Expose shared function name (both desktop + mobile may call it) */
+window.applyLanguage = applyLanguage;
+
+/* Normalize chosen payload against desktop list if possible (best-effort) */
+const normalizeAgainstDesktop = (chosen) => {
+  if (!chosen) return null;
+
+  let picked = null;
+
+  if (langItems.length && chosen.code) {
+    picked = langItems.find((it) => ((it.getAttribute("data-lang") || "").trim() === chosen.code));
+  }
+  if (!picked && langItems.length && chosen.label) {
+    picked = langItems.find((it) => (it.textContent.trim() === chosen.label));
+  }
+
+  const code  = picked ? ((picked.getAttribute("data-lang") || "").trim()) : (chosen.code || "");
+  const label = picked ? (picked.textContent.trim()) : (chosen.label || "");
+
+  if (!code && !label) return null;
+  return { code: code || "", label: label || "" };
+};
+
+/* Apply stored language once (desktop wins conflict + mirrors both keys) */
+const applyStoredLanguage = () => {
+  const chosen = resolveLanguage();
+  if (!chosen) return;
+
+  const payload = normalizeAgainstDesktop(chosen) || { code: chosen.code || "", label: chosen.label || "" };
+
+  /* Desktop wins conflict => after decision, mirror BOTH */
+  writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+  writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+  applyLanguage(payload);
+};
+
+/* Enterprise positioning: dropdown must open directly under the BUTTON (not label) */
+let langViewportHooksBound = false;
+
+const positionLangDropdown = () => {
+  if (!langToggle || !langDropdown) return;
+
+  const btnRect = langToggle.getBoundingClientRect();
+  const gap = 6;
+  const pad = 8;
+
+  const width = Math.max(0, Math.round(btnRect.width));
+  let left = Math.round(btnRect.right - width);
+  let top  = Math.round(btnRect.bottom + gap);
+
+  const maxLeft = Math.max(pad, Math.round(window.innerWidth - pad - width));
+  if (left < pad) left = pad;
+  if (left > maxLeft) left = maxLeft;
+
+  langDropdown.style.position  = "fixed";
+  langDropdown.style.top       = `${top}px`;
+  langDropdown.style.left      = `${left}px`;
+  langDropdown.style.right     = "auto";
+  langDropdown.style.width     = `${width}px`;
+  langDropdown.style.marginTop = "0";
+  langDropdown.style.zIndex    = "9999";
+
+  langDropdown.style.boxSizing  = "border-box";
+  langDropdown.style.overflowX  = "hidden";
+};
+
+const bindLangViewportHooks = () => {
+  if (langViewportHooksBound) return;
+  langViewportHooksBound = true;
+
+  const onViewportChange = () => {
+    if (!langDropdown || !langDropdown.classList.contains("show")) return;
+    positionLangDropdown();
+  };
+
+  window.addEventListener("resize", onViewportChange, { passive: true });
+  window.addEventListener("scroll", onViewportChange, true);
+};
+
+if (langToggle && langDropdown) {
+  /* Apply stored language once (desktop wins conflict + mirrors both keys) */
+  applyStoredLanguage();
+
+  langToggle.addEventListener("click", (e) => {
+    if (isMobileDOM(e.target)) return;
+
+    e.stopPropagation();
+
+    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+    document.dispatchEvent(new CustomEvent("header:interaction"));
+
+    const isOpen = langDropdown.classList.contains("show");
+
+    closeAllDesktopDropdowns();
+
+    if (!isOpen) {
+      langDropdown.classList.add("show");
+      langToggle.setAttribute("aria-expanded", "true");
+      state.desktopDropdownOpen = true;
+
+      positionLangDropdown();
+      bindLangViewportHooks();
+    } else {
+      langToggle.setAttribute("aria-expanded", "false");
     }
+  });
+
+  langItems.forEach((item) => {
+    item.style.cursor = "pointer";
+
+    item.addEventListener("click", (e) => {
+      if (isMobileDOM(e.target)) return;
+
+      e.stopPropagation();
+
+      const code  = (item.getAttribute("data-lang") || "").trim();
+      const label = item.textContent.trim();
+      const payload = { code: code || "", label: label || "" };
+
+      /* Persist to BOTH keys (desktop wins conflict rule) */
+      writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+      writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+      /* Apply everywhere (desktop + mobile UI + <html lang>) */
+      applyLanguage(payload);
+
+      langToggle.setAttribute("aria-expanded", "false");
+      closeAllDesktopDropdowns();
+    });
+  });
+}
+
 
     /* ---------------- USER ---------------- */
 const userToggle   = header.querySelector(".auth-user-toggle");

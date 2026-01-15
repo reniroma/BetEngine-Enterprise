@@ -434,34 +434,160 @@
         });
 
         /* ==================================================
-           LANGUAGE ACTIVE + SYNC + CLOSE
-        ================================================== */
-        qa("#mobile-language-modal .be-modal-item").forEach((item) => {
-            item.addEventListener("click", (e) => {
-                stop(e);
+   LANGUAGE (MOBILE) — UNIFIED STORAGE + SYNC + CLOSE
+   - Payload: { code:"xx", label:"LanguageName" }
+   - Mirrors to: be_lang_desktop + be_lang_mobile
+   - Resolver on init (desktop wins on conflict)
+   - Updates:
+     - document.documentElement.lang
+     - .header-desktop .lang-label
+     - .header-desktop .language-dropdown .item
+     - #mobile-language-modal .be-modal-item
+     - .menu-section.preferences .menu-item.menu-lang .value
+================================================== */
 
-                qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
-                item.classList.add("active");
+const LANG_STORAGE_MOBILE  = "be_lang_mobile";
+const LANG_STORAGE_DESKTOP = "be_lang_desktop";
 
-                const lang = item.dataset.lang;
-                const label = item.textContent.trim();
+const safeJsonParse = (raw) => {
+  try { return JSON.parse(raw); } catch (_) { return null; }
+};
 
-                // Update Preferences label in mobile menu
-                const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
-                if (langValue) langValue.textContent = label;
+const readLangStorage = (key) => {
+  const obj = safeJsonParse(localStorage.getItem(key) || "null");
+  if (!obj || typeof obj !== "object") return null;
 
-                // Optional: sync desktop state label (no desktop logic changes)
-                qa(".header-desktop .language-dropdown .item").forEach((i) => {
-                    i.classList.toggle("active", i.dataset.lang === lang);
-                });
+  const code  = typeof obj.code === "string"  ? obj.code.trim()  : "";
+  const label = typeof obj.label === "string" ? obj.label.trim() : "";
 
-                const desktopLang = qs(".header-desktop .lang-code");
-                if (desktopLang) desktopLang.textContent = label;
+  if (!code && !label) return null;
+  return { code, label };
+};
 
-                closeSheet(langModal);
-            });
-        });
+const writeLangStorage = (key, payload) => {
+  try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
+};
 
+const samePayload = (a, b) => {
+  if (!a || !b) return false;
+  return (a.code || "") === (b.code || "") && (a.label || "") === (b.label || "");
+};
+
+const applyLanguageLocal = (payload) => {
+  if (!payload) return;
+
+  const code  = (payload.code || "").trim();
+  const label = (payload.label || "").trim();
+  if (!code && !label) return;
+
+  // 1) <html lang="">
+  if (code) {
+    try { document.documentElement.setAttribute("lang", code); } catch (_) {}
+  }
+
+  // 2) Mobile modal active state
+  const mobileItems = qa("#mobile-language-modal .be-modal-item");
+  if (mobileItems.length) {
+    mobileItems.forEach((i) => {
+      i.classList.remove("active");
+      i.style.cursor = "pointer";
+    });
+
+    let pick = null;
+    if (code) pick = mobileItems.find((it) => (it.dataset.lang || "").trim() === code);
+    if (!pick && label) pick = mobileItems.find((it) => it.textContent.trim() === label);
+    if (pick) pick.classList.add("active");
+  }
+
+  // 3) Mobile menu Preferences label
+  const langValue = qs(".menu-section.preferences .menu-item.menu-lang .value", panel);
+  if (langValue && label) langValue.textContent = label;
+
+  // 4) Desktop dropdown visual sync
+  qa(".header-desktop .language-dropdown .item").forEach((i) => {
+    i.style.cursor = "pointer";
+    i.classList.toggle("active", (i.dataset.lang || "").trim() === (code || ""));
+  });
+
+  // 5) Desktop label (correct selector)
+  const desktopLabel = qs(".header-desktop .language-selector .lang-label");
+  if (desktopLabel && label) desktopLabel.textContent = label;
+  document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
+};
+
+// Do NOT override if desktop already defined it
+if (typeof window.applyLanguage !== "function") {
+  window.applyLanguage = (payload) => applyLanguageLocal(payload);
+}
+
+// Resolver on init (desktop wins)
+(function resolveAndApplyLanguageOnInit() {
+  const d = readLangStorage(LANG_STORAGE_DESKTOP);
+  const m = readLangStorage(LANG_STORAGE_MOBILE);
+
+  let chosen = null;
+  if (d && (d.code || d.label)) chosen = d;
+  else if (m && (m.code || m.label)) chosen = m;
+  else return;
+
+  // Normalize against mobile modal list
+  const mobileItems = qa("#mobile-language-modal .be-modal-item");
+  let pick = null;
+
+  if (mobileItems.length && chosen.code) {
+    pick = mobileItems.find((it) => (it.dataset.lang || "").trim() === chosen.code);
+  }
+  if (!pick && mobileItems.length && chosen.label) {
+    pick = mobileItems.find((it) => it.textContent.trim() === chosen.label);
+  }
+
+  const normalized = {
+    code:  pick ? (pick.dataset.lang || "").trim() : (chosen.code || "").trim(),
+    label: pick ? pick.textContent.trim()          : (chosen.label || "").trim()
+  };
+
+  if (!normalized.code && !normalized.label) return;
+
+  // Mirror to both keys
+  writeLangStorage(LANG_STORAGE_DESKTOP, normalized);
+  writeLangStorage(LANG_STORAGE_MOBILE,  normalized);
+
+  // Apply everywhere
+  try { window.applyLanguage(normalized); }
+  catch (_) { applyLanguageLocal(normalized); }
+
+  // (optional) keep note if conflict existed
+  if (d && m && !samePayload(d, m)) {
+    // unified above
+  }
+})();
+
+// Click handler inside mobile language modal
+qa("#mobile-language-modal .be-modal-item").forEach((item) => {
+  item.style.cursor = "pointer";
+
+  item.addEventListener("click", (e) => {
+    stop(e);
+
+    qa("#mobile-language-modal .be-modal-item").forEach((i) => i.classList.remove("active"));
+    item.classList.add("active");
+
+    const code  = (item.dataset.lang || "").trim();
+    const label = item.textContent.trim();
+
+    const payload = { code: code || "", label: label || "" };
+
+    // Persist to BOTH keys
+    writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+    writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+    // Apply everywhere
+    try { window.applyLanguage(payload); }
+    catch (_) { applyLanguageLocal(payload); }
+
+    closeSheet(langModal);
+  });
+});
         console.log("header-mobile.js v6.8 READY");
     }
 

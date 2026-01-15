@@ -35,7 +35,9 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 12px;
+
+    /* FIX: bring Odds + Language closer */
+    gap: 8px;
 }
 
 .header-desktop .row-top .right:has(.btn-auth.register) {
@@ -47,8 +49,6 @@
     padding-top: 0;
     padding-bottom: 0;
 }
-
-
 
 /* =======================================================
    AUTH USER (ROW 1 – DESKTOP CONTRACT + VISUAL UPGRADE)
@@ -62,7 +62,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  
 
   /* REAL BOX */
   background: rgba(0, 234, 255, 0.08);
@@ -74,9 +73,7 @@
   gap: 10px;
   min-width: 200px; 
   box-sizing: border-box;
-  
 }
-
 
 /* Avatar (works for future real photos) */
 .header-desktop .row-top .auth-user-toggle .auth-user-avatar {
@@ -88,7 +85,7 @@
 }
 
 /* Username stays near left; caret pushed to far right */
-..header-desktop .row-top .auth-user-toggle .auth-user-name {
+.header-desktop .row-top .auth-user-toggle .auth-user-name {
     max-width: 110px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -460,6 +457,7 @@
 .header-desktop .odds-dropdown {
     min-width: 210px;
 }
+
 /* Base dropdown item block layout */
 .header-desktop .odds-dropdown .item,
 .header-desktop .language-dropdown .item,
@@ -534,7 +532,6 @@
     left: auto;
     right: 0;
     transform: none;
-    
 }
 
 /* User dropdown items: compact font + odds-like default/hover states */
