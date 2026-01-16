@@ -26,22 +26,32 @@
             </svg>
         </button>
 
-       !-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
-  <div class="mobile-search-anchor">
-    <div class="mobile-search-inline" hidden>
-      <div class="mobile-search-overlay" aria-hidden="true"></div>
+        <!-- SEARCH ANCHOR (ROW 1 – ZERO FOOTPRINT) -->
+        <div class="mobile-search-anchor">
 
-      <div class="be-search">
-        <div class="be-search-input-wrapper">
-          <input
-            type="search"
-            class="be-search-input"
-            placeholder="Search teams/player"
-            data-i18n-placeholder="search.placeholder"
-            aria-label="Search"
-            autocomplete="off"
-            spellcheck="false"
-          />
+            <!-- ============================
+                 MOBILE SEARCH INLINE
+                 (OVERLAY – ANCHORED TO ROW 1)
+            ============================ -->
+            <div class="mobile-search-inline" hidden>
+
+                <!-- OVERLAY (CLICK OUTSIDE TO CLOSE) -->
+                <div class="mobile-search-overlay" aria-hidden="true"></div>
+
+                <div class="be-search">
+
+                    <!-- INPUT ROW -->
+                    <div class="be-search-input-wrapper">
+
+                        <input
+                            type="search"
+                            class="be-search-input"
+                            placeholder="Search teams/player"
+                            data-i18n-placeholder="search.placeholder"
+                            aria-label="Search"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
 
                         <!-- SEARCH ICON -->
                         <button
