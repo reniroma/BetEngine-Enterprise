@@ -63,6 +63,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     // INJECT HEADER
     // ==================================================
     mainEl.insertAdjacentHTML("beforebegin", parts.join("\n"));
+    // ==================================================
+// ENTERPRISE SANITY GUARD – REMOVE DUPLICATE SEARCH
+// ==================================================
+(() => {
+  const allSearch = document.querySelectorAll(".mobile-search-inline");
+  if (allSearch.length > 1) {
+    console.warn(`[HeaderLoader] Duplicate mobile-search-inline detected (${allSearch.length}). Keeping first, removing others.`);
+    allSearch.forEach((el, idx) => {
+      if (idx > 0) el.remove();
+    });
+  }
+
+  const allAnchors = document.querySelectorAll(".mobile-search-anchor");
+  if (allAnchors.length > 1) {
+    allAnchors.forEach((el, idx) => {
+      if (idx > 0) el.remove();
+    });
+  }
+})();
 
     // ==================================================
     // DISPATCH (SAFE + IDEMPOTENT)
