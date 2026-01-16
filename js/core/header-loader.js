@@ -84,6 +84,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 })();
 
     // ==================================================
+// ENTERPRISE FIX – RELOCATE SEARCH INLINE INTO TOP BAR
+// ==================================================
+(() => {
+  try {
+    const topBar = document.querySelector('.header-mobile .mobile-top-bar');
+    const anchor = document.querySelector('.header-mobile .mobile-search-anchor');
+    const inline = anchor?.querySelector('.mobile-search-inline');
+
+    if (topBar && inline) {
+      topBar.appendChild(inline);
+      console.log('[HeaderLoader] Search inline moved inside top bar context');
+    } else {
+      console.warn('[HeaderLoader] Search relocation skipped – missing element(s):', { topBar, anchor, inline });
+    }
+  } catch (err) {
+    console.error('[HeaderLoader] Error while relocating search inline:', err);
+  }
+})();
+
+    // ==================================================
     // DISPATCH (SAFE + IDEMPOTENT)
     // ==================================================
     const dispatchHeaderLoaded = () => {
