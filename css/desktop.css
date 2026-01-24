@@ -335,7 +335,7 @@
     align-items: center;
     position: relative;
     z-index: 200;
-    overflow: hidden;      /* prevent vertical expansion */
+    overflow: visible;     /* allow dropdowns (e.g., Betting Tools) to render outside Row 3 */
 }
 
 .row-sub .subnav-group {
@@ -343,8 +343,6 @@
     align-items: center;
     gap: 22px;
 }
-
-.row-sub .subnav-group.active { display: flex; }
 
 .row-sub .sub-item {
     padding: 6px 8px;
@@ -360,7 +358,7 @@
     display: flex;
     align-items: center;
     height: 44px;     /* lock Row 3 to normal height */
-    overflow: hidden; /* prevent vertical expansion */
+    overflow: visible; /* allow dropdowns (e.g., Betting Tools) to render outside Row 3 */
 }
 
 .row-sub .subnav-group {
@@ -402,6 +400,7 @@
 .header-desktop .sub-item-tools:has(.tools-dropdown.show) .caret {
   transform: rotate(180deg);
 }
+
 
 /* =======================================================
    DROPDOWNS – DESKTOP ONLY (BASE UNIFICATION)
