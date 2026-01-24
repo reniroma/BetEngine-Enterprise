@@ -348,25 +348,30 @@ function attachDesktopGlobalListeners() {
     if (desktopListenersAttached) return;
     desktopListenersAttached = true;
 
-    document.addEventListener("click", (e) => {
-        if (isMobileDOM(e.target)) return;
-        if (!state.desktopDropdownOpen) return;
+   document.addEventListener("click", (e) => {
+    if (isMobileDOM(e.target)) return;
 
-        if (
-            !isInside(e.target, ".header-desktop .odds-format") &&
-            !isInside(e.target, ".header-desktop .language-selector") &&
-            !isInside(e.target, ".header-desktop .auth-user") &&
-            !isInside(e.target, ".header-desktop .sub-item-tools")
-        ) {
-           closeAllDesktopDropdowns();
-            // ENTERPRISE: sync close search and notify
-      if (typeof window.closeDesktopSearch === "function") {
+    /* ENTERPRISE: search closes on ANY outside click */
+    if (
+        typeof window.closeDesktopSearch === "function" &&
+        !isInside(e.target, ".header-desktop .be-search")
+    ) {
         window.closeDesktopSearch();
-      }
-
-      document.dispatchEvent(new CustomEvent("header:interaction"));
     }
-  });
+
+    /* Existing dropdown logic (unchanged) */
+    if (!state.desktopDropdownOpen) return;
+
+    if (
+        !isInside(e.target, ".header-desktop .odds-format") &&
+        !isInside(e.target, ".header-desktop .language-selector") &&
+        !isInside(e.target, ".header-desktop .auth-user") &&
+        !isInside(e.target, ".header-desktop .sub-item-tools")
+    ) {
+        closeAllDesktopDropdowns();
+        document.dispatchEvent(new CustomEvent("header:interaction"));
+    }
+});
 
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
