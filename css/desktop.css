@@ -334,6 +334,9 @@
     align-items: center;
     position: relative;
     z-index: 200;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
 }
 
 .row-sub .subnav-group {
@@ -341,8 +344,6 @@
     align-items: center;
     gap: 22px;
 }
-
-.row-sub .subnav-group.active { display: flex; }
 
 .row-sub .sub-item {
     padding: 6px 8px;
@@ -351,22 +352,13 @@
     display: flex;
     align-items: center;
     gap: 4px;
-}
-
-/* DESKTOP SUB NAVIGATION — MOVED FROM components.css (COPY/PASTE) */
-.row-sub {
-    display: flex;
-    align-items: center;
-}
-
-.row-sub .subnav-group {
-    display: none;
-    align-items: center;
-    gap: 22px;
+    white-space: nowrap;
+    flex: 0 0 auto;
 }
 
 .row-sub .subnav-group.active {
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .sub-item {
