@@ -62,6 +62,87 @@
     }
 
     /* ==================================================
+   MOBILE SEARCH OVERLAY — ENTERPRISE FIX (V2)
+   ================================================== */
+
+/* Top bar must not be clipped (dropdown must be visible) */
+.header-mobile,
+.header-mobile .mobile-top-bar {
+  overflow: visible;
+}
+
+/* Keep top bar stable */
+.header-mobile .mobile-top-bar {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  box-sizing: border-box;
+  position: relative; /* positioning context for overlay */
+}
+
+/* Anchor must be zero-footprint AND not a positioning context */
+.header-mobile .mobile-search-anchor {
+  position: static;     /* IMPORTANT: do NOT be relative */
+  width: 0;
+  height: 0;
+  flex: 0 0 0;
+  overflow: visible;
+}
+
+/* True overlay positioned relative to .mobile-top-bar */
+.header-mobile .mobile-search-inline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;            /* fill the top bar */
+  height: auto;
+  z-index: 5000;        /* above row 2 */
+  overflow: visible;    /* allow dropdown to extend */
+  pointer-events: none; /* inactive when closed */
+}
+
+body.mobile-search-open .header-mobile .mobile-search-inline {
+  pointer-events: auto;
+}
+
+/* Search container fills the bar */
+.header-mobile .mobile-search-inline .be-search {
+  position: relative;   /* anchor for results */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: var(--bg-header, #0b0b12);
+}
+
+/* Input row: stable vertical alignment */
+.header-mobile .mobile-search-inline .be-search-input-wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+}
+
+/* Input sizing */
+.header-mobile .mobile-search-inline .be-search-input {
+  height: 36px;
+  line-height: 36px;
+}
+
+/* Results dropdown must attach under the bar and stay visible */
+.header-mobile .mobile-search-inline .be-search-results {
+  position: absolute;
+  top: 100% !important;
+  left: 14px;
+  right: 14px;
+  margin: 0;
+  z-index: 5001;
+  margin-top: 0;
+}
+
+
+    /* ==================================================
        MOBILE HEADER ACTIONS
     ================================================== */
     .mobile-actions {
@@ -898,3 +979,5 @@
         text-align: left;
         padding: 10px 0;
     }
+
+  
