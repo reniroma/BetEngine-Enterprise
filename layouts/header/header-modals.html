@@ -253,10 +253,10 @@
      MOBILE BOOKMARKS MODAL (GLOBAL)
 ============================ -->
 <div class="be-modal-overlay" id="mobile-bookmarks-modal">
-  <div class="be-modal" role="dialog" aria-modal="true">
+  <div class="be-modal" role="dialog" aria-modal="true" aria-labelledby="mobile-bookmarks-title">
 
     <div class="be-modal-header">
-      <span class="be-modal-title" data-i18n="bookmarks.manageMyLeagues">Manage My Leagues</span>
+      <span class="be-modal-title" id="mobile-bookmarks-title" data-i18n="bookmarks.manageMyLeagues">Manage My Leagues</span>
       <button class="be-modal-close" type="button" aria-label="Close">
         <img src="assets/icons/close.svg" alt="">
       </button>
@@ -268,8 +268,14 @@
       </div>
     </div>
 
+    <!-- Footer action (clickable, link target to be wired later) -->
+    <div class="be-modal-footer">
+      <a class="be-modal-footer-link" href="#" data-i18n="bookmarks.manageLink">Manage my leagues</a>
+    </div>
+
   </div>
 </div>
+
 
 <!-- ============================
      MOBILE MY COUPON MODAL (GLOBAL)
