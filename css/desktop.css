@@ -484,7 +484,8 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(6px);
-    transition: all 0.15s ease;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    will-change: opacity, transform;
     z-index: 300;
 }
 
