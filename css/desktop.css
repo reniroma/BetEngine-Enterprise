@@ -325,35 +325,43 @@
 
 /* =======================================================
    ROW 3 (SUB NAVIGATION) — NO SPACING CHANGES
-   Enterprise fix: keep 2-line labels, remove scroll, reserve stable height
+   Enterprise fix: keep items in a single row, allow 2-line labels inside each item
 ======================================================= */
 
 .row-sub {
     padding: 6px 42px;
-    min-height: 80px; /* stable 2-line height (prevents vertical jump on PREMIUM) */
+    min-height: 44px;
     display: flex;
     align-items: center;
     position: relative;
     z-index: 200;
-    overflow: hidden; /* prevents horizontal/vertical scrollbars and tracks */
+    overflow: hidden; /* prevent any scrollbars/tracks */
 }
 
 .row-sub .subnav-group {
     display: none;
     align-items: center;
     gap: 22px;
-    flex-wrap: wrap; /* allow 2-line wrapping naturally */
+    flex-wrap: nowrap; /* keep Row 3 as one horizontal row */
 }
 
 .row-sub .sub-item {
     padding: 6px 8px;
     font-size: 14px;
     letter-spacing: 0.05em;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
-    white-space: normal; /* allow wrapping (2-line labels) */
-    flex: 0 1 auto;      /* allow shrink/wrap without forcing overflow */
+
+    /* Allow 2-line label inside the item */
+    white-space: normal;
+    line-height: 1.1;
+
+    /* Lock item width so it wraps internally (two lines) instead of pushing the row */
+    max-width: 140px;
+    flex: 0 0 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .row-sub .subnav-group.active {
