@@ -421,7 +421,7 @@
 
     /* States (loading / empty) */
     .be-search-states {
-        margin-top: o;
+        margin-top: 0;
     }
 
     .be-search-loading {
