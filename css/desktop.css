@@ -325,24 +325,24 @@
 
 /* =======================================================
    ROW 3 (SUB NAVIGATION) — NO SPACING CHANGES
+   Enterprise fix: keep 2-line labels, remove scroll, reserve stable height
 ======================================================= */
 
 .row-sub {
     padding: 6px 42px;
-    min-height: 44px;
+    min-height: 80px; /* stable 2-line height (prevents vertical jump on PREMIUM) */
     display: flex;
     align-items: center;
     position: relative;
     z-index: 200;
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
+    overflow: hidden; /* prevents horizontal/vertical scrollbars and tracks */
 }
 
 .row-sub .subnav-group {
     display: none;
     align-items: center;
     gap: 22px;
+    flex-wrap: wrap; /* allow 2-line wrapping naturally */
 }
 
 .row-sub .sub-item {
@@ -352,13 +352,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    white-space: nowrap;
-    flex: 0 0 auto;
+    white-space: normal; /* allow wrapping (2-line labels) */
+    flex: 0 1 auto;      /* allow shrink/wrap without forcing overflow */
 }
 
 .row-sub .subnav-group.active {
     display: flex;
-    flex-wrap: nowrap;
 }
 
 .sub-item {
@@ -390,6 +389,7 @@
 .header-desktop .sub-item-tools:has(.tools-dropdown.show) .caret {
   transform: rotate(180deg);
 }
+
 
 /* =======================================================
    DROPDOWNS – DESKTOP ONLY (BASE UNIFICATION)
