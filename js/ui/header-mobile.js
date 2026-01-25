@@ -44,6 +44,7 @@
         const oddsModal = qs("#mobile-odds-modal");
         const langModal = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
+        const couponModal = qs("#mobile-coupon-modal");
 
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
@@ -328,6 +329,12 @@
             stop(e);
             openModal(bookmarksModal);
         });
+
+        qs(".mobile-coupon-btn")?.addEventListener("click", (e) => {
+            stop(e);
+            openModal(couponModal);
+        });
+
 
         /* ==================================================
            AUTH
