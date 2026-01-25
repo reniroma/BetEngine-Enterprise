@@ -60,6 +60,7 @@
         padding: 6px;
         cursor: pointer;
     }
+    
 
     /* ==================================================
    MOBILE SEARCH OVERLAY — ENTERPRISE FIX (V2)
@@ -204,8 +205,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         width: 86%;
         max-width: 340px;
         max-height: 100dvh;
-        background: linear-gradient(180deg, #0f131a 0%, #0c1016 100%);
-        color: #e6e6e6;
+        background: linear-gradient(180deg, #272d31, #0f1112);        color: #e6e6e6;        color: #e6e6e6;
         transform: translateX(-100%);
         transition: transform .25s ease;
         z-index: 2000;
@@ -213,52 +213,58 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         -webkit-overflow-scrolling: touch;
         pointer-events: auto;
         padding-bottom: 18px;
+        --mobile-menu-header-h: 56px;
+        --mobile-menu-close-area: 52px;
     }
 
     .mobile-menu-panel.open {
         transform: translateX(0);
     }
 
-    /* Close button */
-    .mobile-menu-panel > button[aria-label="Close menu"] {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        z-index: 10;
-        background: none;
-        border: none;
-        padding: 6px;
-    }
+    /* Close button (supports both legacy aria-label and current .mobile-menu-close) */
+.mobile-menu-panel > button[aria-label="Close menu"],
+.mobile-menu-panel > .mobile-menu-close {
+    position: absolute;
+    left: 12px;
+    top: calc(var(--mobile-menu-header-h, 56px) / 2);
+    transform: translateY(-50%);
+    z-index: 20;
+    background: none;
+    border: none;
+    padding: 6px;
+    line-height: 0;
+}
 
-    .mobile-menu-panel > button[aria-label="Close menu"] img,
-    .mobile-menu-panel > button[aria-label="Close menu"] svg {
-        width: 22px;
-        height: 22px;
-        display: block;
-    }
+.mobile-menu-panel > button[aria-label="Close menu"] img,
+.mobile-menu-panel > button[aria-label="Close menu"] svg,
+.mobile-menu-panel > .mobile-menu-close img,
+.mobile-menu-panel > .mobile-menu-close svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+
+}
+
 
     /* ==================================================
        MENU HEADER
     ================================================== */
     .mobile-menu-panel .menu-brand {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         gap: 10px;
-        padding: 12px 16px;
+        padding: 0px 1px;
         background: #0f121b;
         border-bottom: 1px solid rgba(255,255,255,0.08);
+        min-height: var(--mobile-menu-header-h, 56px);
+        padding-left: var(--mobile-menu-close-area, 52px);
+        box-sizing: border-box;
     }
 
-    .mobile-menu-panel .menu-brand .logo {
-        height: 26px;
-        width: auto;
-    }
-
-    .mobile-menu-panel .brand-text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.1;
+    .mobile-menu-panel .menu-brand-img {
+        display: block;
+        height: auto;
     }
 
     /* ==================================================
@@ -311,7 +317,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         display: none;
         flex-direction: column;
         margin-top: 6px;
-        padding-left: 12px;
+        padding-left: 18px;
     }
 
     .menu-section.navigation .submenu.open {
@@ -333,7 +339,13 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.navigation .submenu-item.active {
         color: #ffec00;
         font-weight: 600;
+        
     }
+
+    .menu-section.navigation {
+        margin-top: 1px;
+    
+}
 
 
     /* ==================================================
@@ -350,9 +362,9 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.account h4 {
         grid-column: 1 / -1;
         margin-bottom: 6px;
-        font-size: 13px;
-        letter-spacing: 0.08em;
-        opacity: 0.6;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        
     }
 
     /* Buttons base */
@@ -431,6 +443,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     width: 100%;
+    margin-top: 16px
 }
 
 .mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-register,
@@ -438,8 +451,6 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     width: 100%;
     min-width: 0;
 }
-
-
   
     /* ==================================================
        PREFERENCES
