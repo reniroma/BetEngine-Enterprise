@@ -79,6 +79,7 @@
   max-height: 48px;
   box-sizing: border-box;
   position: relative; /* positioning context for overlay */
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
 }
 
 /* Anchor must be zero-footprint AND not a positioning context */
@@ -845,7 +846,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         align-items: center;
         gap: 8px;
         padding: 8px 10px;
-        background: #131826; /* darker grey to visually separate from Row 1 */
+        background: linear-gradient(180deg, #272d31, #0f1112);
         border-bottom: 1px solid rgba(255,255,255,0.06);
         height: 48px;
         overflow-x: visible;
