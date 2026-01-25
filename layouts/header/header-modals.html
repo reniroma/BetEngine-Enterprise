@@ -284,15 +284,30 @@
   <div class="be-modal" role="dialog" aria-modal="true">
 
     <div class="be-modal-header">
-      <span class="be-modal-title" data-i18n="coupon.title">My Coupon</span>
+      <span class="be-modal-title">
+        <img class="be-modal-title-icon" src="assets/icons/coupon.svg" alt="">
+        <span data-i18n="coupon.title">My Coupon</span>
+      </span>
+
       <button class="be-modal-close" type="button" aria-label="Close">
-        <img src="assets/icons/coupon.svg">
+        <img src="assets/icons/close.svg" alt="">
       </button>
     </div>
 
     <div class="be-modal-body">
-      <div class="be-modal-placeholder" data-i18n="coupon.placeholder">
-        Your selected matches will appear here.
+      <!-- Empty state (hide this when coupon has items) -->
+      <div class="be-modal-placeholder coupon-empty" data-i18n="coupon.placeholder">
+        Add selections from match odds to build your coupon. Sign in to save it to your account.
+      </div>
+
+      <!-- Items container (show this when coupon has items) -->
+      <div class="coupon-items" hidden></div>
+
+      <!-- Footer link (clickable, will be wired later) -->
+      <div class="be-modal-footer">
+        <a class="be-modal-footer-link" href="#" data-action="coupon.saved" data-i18n="coupon.savedLink">
+          My saved coupons
+        </a>
       </div>
     </div>
 
