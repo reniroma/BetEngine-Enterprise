@@ -979,5 +979,185 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         text-align: left;
         padding: 10px 0;
     }
+/* ==================================================
+   BOOKMARKS (MY LEAGUES) — TOP RIGHT PANEL
+   - Width: 75vw (anchored to right)
+   - Height: 40vh (fixed)
+   - Internal scroll in body
+================================================== */
 
-  
+#mobile-bookmarks-modal {
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    padding: 0 !important;
+}
+
+#mobile-bookmarks-modal .be-modal {
+    width: min(75vw, 560px);
+    height: 40vh;
+    max-height: 40vh;
+    margin: 0 !important;
+
+    position: relative;
+    top: 0;
+    right: 0;
+
+    border-radius: 18px;
+}
+
+#mobile-bookmarks-modal .be-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#mobile-bookmarks-modal .be-modal-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(40vh - 56px);
+    padding: 16px 14px;
+}
+
+    /* ==================================================
+   BOOKMARKS HEADER — ICON LEFT + THIN DIVIDER
+================================================== */
+
+/* Ensure header layout matches OddsPortal */
+#mobile-bookmarks-modal .be-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* Title: icon on the left, text pushed right */
+#mobile-bookmarks-modal .be-modal-header h2,
+#mobile-bookmarks-modal .be-modal-header .be-modal-title,
+#mobile-bookmarks-modal .be-modal-header .title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+/* Bookmark icon (OddsPortal-style) */
+#mobile-bookmarks-modal .be-modal-header h2::before,
+#mobile-bookmarks-modal .be-modal-header .be-modal-title::before,
+#mobile-bookmarks-modal .be-modal-header .title::before {
+  content: "★";
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  color: #f5b400;
+}
+
+    #mobile-bookmarks-modal .be-modal {
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+}
+
+/* ===== BOOKMARKS MODAL: footer action aligned + divider ===== */
+#mobile-bookmarks-modal .be-modal-footer{
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 12px 14px;
+}
+
+#mobile-bookmarks-modal .be-modal-footer-link{
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: rgba(255,255,255,.9);
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+#mobile-bookmarks-modal .be-modal-footer-link:hover{
+  color: var(--text-secondary, #00eaff);
+}
+
+  /* ==================================================
+   MY COUPON (MOBILE) — TOP RIGHT PANEL (Enterprise)
+   - Width: 75vw
+   - Height: 30vh
+   - Body scroll only
+   - Footer pinned at bottom (like bookmarks)
+   - Divider lines
+================================================== */
+
+#mobile-coupon-modal{
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+}
+
+/* Panel */
+#mobile-coupon-modal .be-modal{
+  width: min(75vw, 560px);
+  height: 30vh;
+  max-height: 30vh;
+  margin: 0 !important;
+
+  border-radius: 16px;
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+  overflow: hidden;
+
+  /* KEY: split into header/body/footer layout */
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER: icon + label in one line */
+#mobile-coupon-modal .be-modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Left side */
+#mobile-coupon-modal .be-modal-title{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Icon sizing + gold color (IMG via filter) */
+#mobile-coupon-modal .be-modal-title-icon{
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  filter: brightness(0) saturate(100%) invert(74%) sepia(55%) saturate(1900%) hue-rotate(2deg) brightness(102%) contrast(103%);
+}
+
+/* BODY: scroll area only */
+#mobile-coupon-modal .be-modal-body{
+  flex: 1 1 auto; /* KEY: consume remaining height */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px;
+}
+
+/* FOOTER: pinned at bottom (outside scroll) */
+#mobile-coupon-modal .be-modal-footer{
+  flex: 0 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 14px;
+}
+
+#mobile-coupon-modal .be-modal-footer-link{
+  display: block;
+  width: 100%;
+  text-align: left;
+  text-decoration: underline;
+  color: rgba(0,234,255,0.9);
+}
+
+#mobile-coupon-modal .be-modal-footer-link:hover{
+  color: rgba(0,234,255,1);
+}
