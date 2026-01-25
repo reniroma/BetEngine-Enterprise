@@ -290,10 +290,11 @@
       </span>
 
       <button class="be-modal-close" type="button" aria-label="Close">
-        <img src="assets/icons/coupon.svg" alt="">
+        <img src="assets/icons/close.svg" alt="">
       </button>
     </div>
 
+    <!-- Scroll area ONLY -->
     <div class="be-modal-body">
       <!-- Empty state (hide this when coupon has items) -->
       <div class="be-modal-placeholder coupon-empty" data-i18n="coupon.placeholder">
@@ -302,17 +303,18 @@
 
       <!-- Items container (show this when coupon has items) -->
       <div class="coupon-items" hidden></div>
+    </div>
 
-      <!-- Footer link (clickable, will be wired later) -->
-      <div class="be-modal-footer">
-        <a class="be-modal-footer-link" href="#" data-action="coupon.saved" data-i18n="coupon.savedLink">
-          My saved coupons
-        </a>
-      </div>
+    <!-- Footer pinned at bottom (NOT inside scroll) -->
+    <div class="be-modal-footer">
+      <a class="be-modal-footer-link" href="#" data-action="coupon.saved" data-i18n="coupon.savedLink">
+        My saved coupons
+      </a>
     </div>
 
   </div>
 </div>
+
 <!-- ============================
      MOBILE NOTIFICATIONS MODAL (GLOBAL)
 ============================ -->
