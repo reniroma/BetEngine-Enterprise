@@ -216,6 +216,19 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         padding-bottom: 18px;
         --mobile-menu-header-h: 56px;
         --mobile-menu-close-area: 52px;
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(0, 0, 0, 0.35) transparent; /* thumb, track */
+    }
+
+    .mobile-menu-panel::-webkit-scrollbar-thumb {
+         background-color: rgba(0, 0, 0, 0.35);
+         border-radius: 999px;
+         border: 2px solid transparent;
+         background-clip: content-box;
+    }
+
+    .mobile-menu-panel::-webkit-scrollbar-thumb:hover {
+         background-color: rgba(0, 0, 0, 0.45);
     }
 
     .mobile-menu-panel.open {
@@ -223,8 +236,8 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     }
 
     /* Close button (supports both legacy aria-label and current .mobile-menu-close) */
-.mobile-menu-panel > button[aria-label="Close menu"],
-.mobile-menu-panel > .mobile-menu-close {
+    .mobile-menu-panel > button[aria-label="Close menu"],
+    .mobile-menu-panel > .mobile-menu-close {
     position: absolute;
     left: 12px;
     top: calc(var(--mobile-menu-header-h, 56px) / 2);
@@ -245,7 +258,6 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     display: block;
 
 }
-
 
     /* ==================================================
        MENU HEADER
@@ -340,14 +352,11 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.navigation .submenu-item.active {
         color: #ffec00;
         font-weight: 600;
-        
     }
 
     .menu-section.navigation {
         margin-top: 1px;
-    
-}
-
+    }
 
     /* ==================================================
        ACCOUNT
