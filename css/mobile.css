@@ -275,19 +275,6 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
   z-index: 10;
 }
 
-    /* PATCH: Stabilize mobile tap/focus repaint jitter inside hamburger panel */
-.mobile-menu-panel .menu-link {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* Remove paint transitions during interaction (prevents shimmer/jitter) */
-.mobile-menu-panel .menu-link:active,
-.mobile-menu-panel .menu-link:focus {
-  transition: none !important;
-}
-
 
     /* ==================================================
        MENU HEADER
@@ -315,7 +302,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     ================================================== */
     .menu-section {
         padding: 14px 16px;
-        
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .menu-section + .menu-section {
@@ -491,6 +478,50 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     width: 100%;
     min-width: 0;
 }
+
+    /* ================================
+   ACCOUNT USER ROW — FIX ALIGNMENT
+================================ */
+
+/* Make header a positioned anchor like menu links */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;              /* tighter spacing between icon and username */
+  padding-right: 34px;   /* reserve space for caret (same logic as menu links) */
+}
+
+/* Smaller avatar */
+.mobile-menu-panel .mobile-auth-user .mobile-user-avatar {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+/* Force JS-injected caret to align with other carets */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  position: absolute !important;
+  right: 18px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-left: 0 !important;   /* cancel inline margin */
+  flex: 0 0 auto !important;
+}
+/* PATCH: Standardize user caret size to match other carets */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  border-left-width: 7px !important;
+  border-right-width: 7px !important;
+  border-top-width: 8px !important;
+  border-bottom-width: 8px !important;
+}
+/* PATCH: move user caret to bottom (align with ROI row) */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  top: auto !important;
+  bottom: 2px !important;   /* adjust 8–12px if needed */
+  transform: none !important;
+}
+
   
     /* ==================================================
        PREFERENCES
@@ -498,6 +529,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menu-section h4 {
@@ -629,6 +661,8 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .mobile-menu-panel .menu-group:has(> .submenu.open) > .menu-link::after {
         transform: translateY(-50%) rotate(180deg);
     }
+
+
 
 /* ==================================================
    MODALS — MOBILE (Enterprise Order)
@@ -1217,3 +1251,5 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
 #mobile-coupon-modal .be-modal-footer-link:hover{
   color: rgba(0,234,255,1);
 }
+
+   
