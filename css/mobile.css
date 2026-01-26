@@ -302,8 +302,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     ================================================== */
     .menu-section {
         padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    
+        
     }
 
     .menu-section + .menu-section {
@@ -463,6 +462,22 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
    /* PATCH: ACCOUNT container must stay single-column (prevents conflicts) */
 .mobile-menu-panel .menu-section.account {
     display: block;
+    
+}
+/* ACCOUNT divider: inset line (not full-width) */
+.mobile-menu-panel .menu-section.account {
+  border-bottom: none; /* ensure no full-width border */
+  position: relative;
+}
+
+.mobile-menu-panel .menu-section.account::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* PATCH: Guest auth buttons side-by-side (only inside .mobile-auth-guest) */
@@ -478,6 +493,13 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
 .mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-login {
     width: 100%;
     min-width: 0;
+}
+.mobile-menu-panel .menu-section.account {
+  border-bottom: 0;
+}
+
+.mobile-menu-panel .menu-section.account {
+  border-bottom: 0;
 }
 
     /* ================================
@@ -553,6 +575,40 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         font-weight: 600;
         cursor: pointer;
     }
+
+    /* PREFERENCES: inset divider under label + inset divider at section bottom */
+.mobile-menu-panel .menu-section.preferences {
+  position: relative;
+}
+
+/* 1) Divider directly under the Preferences label */
+.mobile-menu-panel .menu-section.preferences > h4 {
+  position: relative;
+  margin-bottom: 10px; /* keep spacing consistent */
+  padding-bottom: 10px;
+}
+
+.mobile-menu-panel .menu-section.preferences > h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 2) Divider at the bottom of Preferences section */
+.mobile-menu-panel .menu-section.preferences::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
 
     /* --------------------------------------------------
        Odds Format & Language — VISUALLY SECONDARY LABELS
@@ -990,8 +1046,8 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
 
     .mobile-sport-more .sport-icon {
         color: #ff9d00;
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
     }
 
     /* FIX: prevent sports row container from blocking clicks */
