@@ -275,6 +275,19 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
   z-index: 10;
 }
 
+    /* PATCH: Stabilize mobile tap/focus repaint jitter inside hamburger panel */
+.mobile-menu-panel .menu-link {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Remove paint transitions during interaction (prevents shimmer/jitter) */
+.mobile-menu-panel .menu-link:active,
+.mobile-menu-panel .menu-link:focus {
+  transition: none !important;
+}
+
 
     /* ==================================================
        MENU HEADER
@@ -302,7 +315,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     ================================================== */
     .menu-section {
         padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        
     }
 
     .menu-section + .menu-section {
@@ -485,7 +498,6 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menu-section h4 {
