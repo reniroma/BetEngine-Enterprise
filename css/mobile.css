@@ -302,6 +302,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     ================================================== */
     .menu-section {
         padding: 14px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     
     }
 
