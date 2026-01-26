@@ -302,7 +302,7 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     ================================================== */
     .menu-section {
         padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    
     }
 
     .menu-section + .menu-section {
@@ -529,7 +529,6 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menu-section h4 {
