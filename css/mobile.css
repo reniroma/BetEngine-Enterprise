@@ -235,19 +235,29 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
         transform: translateX(0);
     }
 
-    /* Close button (supports both legacy aria-label and current .mobile-menu-close) */
-    .mobile-menu-panel > button[aria-label="Close menu"],
-    .mobile-menu-panel > .mobile-menu-close {
-    position: absolute;
-    left: 12px;
-    top: calc(var(--mobile-menu-header-h, 56px) / 2);
-    transform: translateY(-50%);
-    z-index: 20;
-    background: none;
-    border: none;
-    padding: 6px;
-    line-height: 0;
+    /* Close button (sticky inside panel; does NOT push brand down) */
+.mobile-menu-panel > button[aria-label="Close menu"],
+.mobile-menu-panel > .mobile-menu-close {
+  position: sticky;
+  top: 0;
+  left: 12px;
+  z-index: 30;
+
+  height: var(--mobile-menu-header-h, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: none;
+  background: none;
+  border: none;
+  padding: 6px;
+  line-height: 0;
+
+  /* Key: cancel the layout space so brand does not move down */
+  margin-bottom: calc(-1 * var(--mobile-menu-header-h, 56px));
 }
+
 
 .mobile-menu-panel > button[aria-label="Close menu"] img,
 .mobile-menu-panel > button[aria-label="Close menu"] svg,
@@ -258,6 +268,13 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     display: block;
 
 }
+
+    .mobile-menu-panel .menu-brand {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 
     /* ==================================================
        MENU HEADER
