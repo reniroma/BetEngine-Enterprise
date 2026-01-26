@@ -315,4 +315,160 @@
         color: #cfd3df;
         margin-bottom: 14px;
     }
+
+    /* ==================================================
+   ACCOUNT (MOBILE) — USER ROW CLEANUP
+   1) username closer to icon
+   2) icon slightly bigger
+   3) username on top, ROI under it (smaller)
+   4) icon aligned with left column like other labels
+   5) top border + consistent spacing before ACCOUNT label
+================================================== */
+
+/* 5) Border + spacing before ACCOUNT label */
+.mobile-menu-panel .menu-section.account {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  margin-top: 0;
+}
+
+/* Ensure the ACCOUNT label uses consistent spacing */
+.mobile-menu-panel .menu-section.account > h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+/* PATCH: top divider above user row */
+.mobile-menu-panel .mobile-auth-user {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 2px;
+  
+}
+
+
+/* User header layout (keep your caret absolute rules intact) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header {
+  display: flex;
+  flex-wrap: wrap;          /* allows ROI to drop to row 2 */
+  align-items: center;
+  gap: 6px;                 /* 1) closer username to icon */
+  padding-left: 16px;       /* 4) align with other menu labels */
+  padding-right: 34px;      /* keep caret reserved like others */
+  box-sizing: border-box;
+  padding-top: 16px;
+  
+}
+    /* PATCH: add space between user header and its dropdown (next sibling) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header + * {
+  margin-top: 14px;
+}
+    /* PATCH: align user dropdown content with main menu left column */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header + * {
+  padding-left: 8px;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
+
+
+/* 3) Username row 1 (slightly bigger than ROI) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .username {
+  flex: 1 1 auto;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+/* 3) ROI row 2 under username */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .roi {
+  flex: 1 1 100%;
+  margin-left: 26px;        /* icon(20) + gap(6) => aligns under username */
+  margin-top: 0;
+  font-size: 13px;          /* smaller than username */
+  line-height: 1.0;
+}
+
+  /* PATCH: OddsPortal-style user block (avatar bottom aligned with ROI) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header{
+  display: grid;
+  grid-template-columns: 40px 1fr; /* wider icon column */
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: start;
+}
+
+/* avatar: bigger than username+ROI stack, bottom aligned with ROI row */
+.mobile-menu-panel .mobile-auth-user .mobile-user-avatar{
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 36px;
+  height: 36px;
+  align-self: end; /* key: bottom aligns with ROI row */
+}
+
+/* username row 1 */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .username{
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+}
+
+/* ROI row 2 */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .roi{
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+}
+/* FORCE: enlarge user icon (override any earlier rules) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-avatar {
+  width: 34px !important;
+  height: 34px !important;
+  max-width: none !important;
+  max-height: none !important;
+  display: block !important;
+}
+/* FORCE: keep ROI in column 2 (not under avatar) */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header {
+  display: grid !important;
+  grid-template-columns: 40px 1fr !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 10px; 
+  row-gap: 2px; 
+  align-items: start;
+}
+
+.mobile-menu-panel .mobile-auth-user .mobile-user-avatar {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: end;
+}
+
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .username {
+  grid-column: 2;
+  grid-row: 1;
+  flex: none !important;
+}
+
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .roi {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  flex: none !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+
+/* PATCH: tighten username↔ROI spacing + match username color to Odds Comparison */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header {
+  row-gap: 0 !important; /* was 2px (or inherited) */
+}
+
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .username {
+  margin: 0 !important;
+  line-height: 1.0 !important;
+  color: var(--color-accent, #f4a11a) !important; /* same accent as Odds Comparison */
+}
+
+.mobile-menu-panel .mobile-auth-user .mobile-user-header .roi {
+  margin: 0 !important;
+  line-height: 1.0 !important;
 }
