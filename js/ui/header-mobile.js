@@ -45,6 +45,8 @@
         const langModal = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
         const couponModal = qs("#mobile-coupon-modal");
+        const notificationsModal = qs("#mobile-notifications-modal");
+
 
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
@@ -335,6 +337,10 @@
             openModal(couponModal);
         });
 
+        qs(".mobile-notifications-btn")?.addEventListener("click", (e) => {
+            stop(e);
+            openModal(notificationsModal);
+        });
 
         /* ==================================================
            AUTH
