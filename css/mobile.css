@@ -612,6 +612,12 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
     .menu-section.preferences .menu-item.menu-lang::after {
         border-top-color: #f4a11a;
     }
+
+    /* Open state (modern browsers): rotate caret UP when submenu is open */
+    .mobile-menu-panel .menu-group:has(> .submenu.open) > .menu-link::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
 /* ==================================================
    MODALS — MOBILE (Enterprise Order)
    Scope:
