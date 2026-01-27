@@ -338,7 +338,7 @@
        so do NOT add (8px * 2) again. */
     --be-row2-h: 58px;
 
-    --be-row-sep-h: 0.6px;
+    --be-row-sep-h: 0.5px;
 
     --be-row3-top: calc(var(--be-row1-h) + var(--be-row-sep-h) + var(--be-row2-h) + var(--be-row-sep-h));
 
@@ -399,8 +399,8 @@
     justify-content: flex-start;
     gap: 10px;
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     letter-spacing: 0.08em;
     color: var(--text-secondary, #00eaff); /* cyan label */
     line-height: 1;
@@ -458,6 +458,12 @@
 .be-notif-view-all:focus-visible {
     color: var(--text-secondary, #00eaff);
     outline: none;
+}
+
+/* Minimal patch: shrink only images inside the notification panel header */
+.be-notif-panel-header img{
+  width: 18px !important;
+  height: 18px !important;
 }
 
 
