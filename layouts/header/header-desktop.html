@@ -194,28 +194,11 @@
 
             </div>
 
-            <!-- ============================
-           DESKTOP NOTIFICATIONS MODAL
-          ============================ -->
-<div class="be-modal-overlay" id="desktop-notifications-modal">
-  <div class="be-modal" role="dialog" aria-modal="true">
-    <div class="be-modal-header">
-      <span class="be-modal-title">
-        <img class="be-modal-title-icon" src="assets/icons/notification.svg" alt="">
-        <span data-i18n="notifications.title">Notifications</span>
-      </span>
-      <button class="be-modal-close" type="button" aria-label="Close">
-        <img src="assets/icons/close.svg" alt="">
-      </button>
+           <button class="notif-button" type="button" aria-label="Notifications" aria-haspopup="dialog" aria-expanded="false" aria-controls="be-notif-panel" data-notif-toggle>
+                <img src="assets/icons/notification.svg" class="notif-icon" alt="">
+            </button>
+        </div>
     </div>
-
-    <div class="be-modal-body">
-      <div class="be-modal-placeholder" data-i18n="notifications.placeholder">
-        You have no notifications yet.
-      </div>
-    </div>
-  </div>
-</div>
 
     <div class="row-separator"></div>
 
@@ -281,3 +264,46 @@
 
     </nav>
 </header>
+
+<!-- ====================================================
+     DESKTOP NOTIFICATIONS (STRUCTURE ONLY)
+     - Hidden by default
+     - Controlled by header.js (Step 2)
+======================================================= -->
+<div id="be-notif-overlay" class="be-notif-overlay" data-notif-overlay hidden></div>
+
+<aside
+    id="be-notif-panel"
+    class="be-notif-panel"
+    data-notif-panel
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-label="Notifications"
+    hidden
+>
+    <div class="be-notif-panel-header">
+        <span class="be-notif-title" data-i18n="notifications.title">Notifications</span>
+
+        <button
+            type="button"
+            class="be-notif-close"
+            data-notif-close
+            aria-label="Close notifications"
+        >
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+
+    <div class="be-notif-panel-body" role="region" aria-live="polite">
+        <div class="be-notif-empty" data-notif-empty>
+            <span data-i18n="notifications.empty">No notifications.</span>
+        </div>
+
+        <ul class="be-notif-list" data-notif-list></ul>
+    </div>
+
+    <div class="be-notif-panel-footer">
+        <a href="#" class="be-notif-view-all" data-notif-view-all data-i18n="notifications.viewAll">View all</a>
+    </div>
+</aside>
