@@ -1,5 +1,5 @@
 /*********************************************************
- * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.4)
+ * BetEngine Enterprise – HEADER JS (ENTERPRISE v7.5)
  * Desktop-only header behaviour
  *
  * ENTERPRISE FIX:
@@ -13,7 +13,8 @@
 let desktopListenersAttached = false;
 
 const state = {
-    desktopDropdownOpen: false
+    desktopDropdownOpen: false,
+    desktopNotifOpen: false
 };
 
 /*******************************************************
@@ -40,6 +41,176 @@ const closeAllDesktopDropdowns = () => {
 };
 
 /*******************************************************
+ * DESKTOP NOTIFICATIONS (OVERLAY + PANEL)
+ * - Desktop-only, does not touch mobile DOM
+ * - DOM is created lazily and kept hidden until opened
+ *******************************************************/
+const ensureDesktopNotificationsDOM = () => {
+    let overlay = document.getElementById("be-notif-overlay");
+    let panel = document.getElementById("be-notif-panel");
+
+    if (overlay && panel) return { overlay, panel };
+
+    const tpl = document.getElementById("be-notif-template");
+    if (tpl && tpl.content) {
+        const frag = tpl.content.cloneNode(true);
+        document.body.appendChild(frag);
+
+        overlay = document.getElementById("be-notif-overlay");
+        panel = document.getElementById("be-notif-panel");
+
+        if (overlay && panel) return { overlay, panel };
+    }
+
+    overlay = document.createElement("div");
+    overlay.id = "be-notif-overlay";
+    overlay.className = "be-notif-overlay";
+    overlay.setAttribute("data-notif-overlay", "");
+    overlay.hidden = true;
+
+    panel = document.createElement("aside");
+    panel.id = "be-notif-panel";
+    panel.className = "be-notif-panel";
+    panel.setAttribute("data-notif-panel", "");
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.setAttribute("aria-hidden", "true");
+    panel.setAttribute("aria-label", "Notifications");
+    panel.hidden = true;
+
+    panel.innerHTML = `
+        <div class="be-notif-panel-header">
+            <span class="be-notif-title" data-i18n="notifications.title">Notifications</span>
+            <button type="button" class="be-notif-close" data-notif-close aria-label="Close notifications">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="be-notif-panel-body" role="region" aria-live="polite">
+            <div class="be-notif-empty" data-notif-empty>
+                <span data-i18n="notifications.empty">No notifications.</span>
+            </div>
+            <ul class="be-notif-list" data-notif-list></ul>
+        </div>
+        <div class="be-notif-panel-footer">
+            <a href="#" class="be-notif-view-all" data-notif-view-all data-i18n="notifications.viewAll">View all</a>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(panel);
+
+    return { overlay, panel };
+};
+
+const setDesktopNotifExpanded = (btn, expanded) => {
+    if (!btn) return;
+    btn.setAttribute("aria-expanded", expanded ? "true" : "false");
+};
+
+const closeDesktopNotifications = () => {
+    const btn = document.querySelector(".header-desktop .notif-button");
+    const overlay = document.getElementById("be-notif-overlay");
+    const panel = document.getElementById("be-notif-panel");
+
+    if (overlay) overlay.hidden = true;
+    if (panel) {
+        panel.hidden = true;
+        panel.setAttribute("aria-hidden", "true");
+    }
+
+    setDesktopNotifExpanded(btn, false);
+    state.desktopNotifOpen = false;
+};
+
+const openDesktopNotifications = () => {
+    const btn = document.querySelector(".header-desktop .notif-button");
+    const { overlay, panel } = ensureDesktopNotificationsDOM();
+
+    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+    closeAllDesktopDropdowns();
+    document.dispatchEvent(new CustomEvent("header:interaction"));
+
+    overlay.hidden = false;
+    panel.hidden = false;
+    panel.setAttribute("aria-hidden", "false");
+
+    setDesktopNotifExpanded(btn, true);
+    state.desktopNotifOpen = true;
+};
+
+window.closeDesktopNotifications = closeDesktopNotifications;
+
+function initDesktopNotifications() {
+    const header = document.querySelector(".header-desktop");
+    if (!header) return;
+
+    const btn = header.querySelector(".notif-button");
+    if (!btn) return;
+
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.setAttribute("aria-controls", "be-notif-panel");
+    if (!btn.hasAttribute("aria-expanded")) btn.setAttribute("aria-expanded", "false");
+
+    const bindPanelHandlers = () => {
+        const overlay = document.getElementById("be-notif-overlay");
+        const panel = document.getElementById("be-notif-panel");
+        if (!overlay || !panel) return;
+
+        if (panel.dataset.notifBound === "1") return;
+        panel.dataset.notifBound = "1";
+
+        panel.addEventListener("click", (ev) => {
+            if (isMobileDOM(ev.target)) return;
+            ev.stopPropagation();
+        });
+
+        overlay.addEventListener("click", (ev) => {
+            if (isMobileDOM(ev.target)) return;
+            closeDesktopNotifications();
+        });
+
+        const closeBtn = panel.querySelector("[data-notif-close], .be-notif-close");
+        if (closeBtn) {
+            closeBtn.addEventListener("click", (ev) => {
+                if (isMobileDOM(ev.target)) return;
+                ev.preventDefault();
+                ev.stopPropagation();
+                closeDesktopNotifications();
+            });
+        }
+
+        const viewAll = panel.querySelector("[data-notif-view-all], .be-notif-view-all");
+        if (viewAll) {
+            viewAll.addEventListener("click", (ev) => {
+                if (isMobileDOM(ev.target)) return;
+                closeDesktopNotifications();
+            });
+        }
+    };
+
+    btn.addEventListener("click", (e) => {
+        if (isMobileDOM(e.target)) return;
+
+        e.stopPropagation();
+
+        if (state.desktopNotifOpen) {
+            closeDesktopNotifications();
+            return;
+        }
+
+        openDesktopNotifications();
+        bindPanelHandlers();
+    });
+
+    bindPanelHandlers();
+
+    window.openDesktopNotifications = () => {
+        openDesktopNotifications();
+        bindPanelHandlers();
+    };
+}
+
+/*******************************************************
  * DESKTOP DROPDOWNS
  *******************************************************/
 function initDesktopDropdowns() {
@@ -58,6 +229,7 @@ function initDesktopDropdowns() {
 
             e.stopPropagation();
             if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            if (typeof window.closeDesktopNotifications === "function") window.closeDesktopNotifications();
             document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = oddsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
@@ -84,241 +256,227 @@ function initDesktopDropdowns() {
         });
     }
 
-/* ---------------- LANGUAGE ---------------- */
-const langToggle   = header.querySelector(".language-toggle");
-const langDropdown = header.querySelector(".language-dropdown");
-const langItems    = langDropdown ? Array.from(langDropdown.querySelectorAll(".item")) : [];
-const langLabel    = header.querySelector(".language-selector .lang-label");
+    /* ---------------- LANGUAGE ---------------- */
+    const langToggle   = header.querySelector(".language-toggle");
+    const langDropdown = header.querySelector(".language-dropdown");
+    const langItems    = langDropdown ? Array.from(langDropdown.querySelectorAll(".item")) : [];
+    const langLabel    = header.querySelector(".language-selector .lang-label");
 
-/* Unified storage (desktop + mobile) */
-const LANG_STORAGE_DESKTOP = "be_lang_desktop";
-const LANG_STORAGE_MOBILE  = "be_lang_mobile";
+    const LANG_STORAGE_DESKTOP = "be_lang_desktop";
+    const LANG_STORAGE_MOBILE  = "be_lang_mobile";
 
-const safeJsonParse = (raw) => {
-  try { return JSON.parse(raw); } catch (_) { return null; }
-};
+    const safeJsonParse = (raw) => {
+        try { return JSON.parse(raw); } catch (_) { return null; }
+    };
 
-const readLangStorage = (key) => {
-  const parsed = safeJsonParse(localStorage.getItem(key) || "null");
-  if (!parsed || typeof parsed !== "object") return null;
+    const readLangStorage = (key) => {
+        const parsed = safeJsonParse(localStorage.getItem(key) || "null");
+        if (!parsed || typeof parsed !== "object") return null;
 
-  const code  = typeof parsed.code === "string"  ? parsed.code.trim()  : "";
-  const label = typeof parsed.label === "string" ? parsed.label.trim() : "";
+        const code  = typeof parsed.code === "string"  ? parsed.code.trim()  : "";
+        const label = typeof parsed.label === "string" ? parsed.label.trim() : "";
 
-  if (!code && !label) return null;
-  return { code, label };
-};
+        if (!code && !label) return null;
+        return { code, label };
+    };
 
-const writeLangStorage = (key, payload) => {
-  try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
-};
+    const writeLangStorage = (key, payload) => {
+        try { localStorage.setItem(key, JSON.stringify(payload)); } catch (_) {}
+    };
 
-/* Desktop wins resolver (always mirrors both keys after decision) */
-const resolveLanguage = () => {
-  const d = readLangStorage(LANG_STORAGE_DESKTOP);
-  if (d && (d.code || d.label)) return d;
+    const resolveLanguage = () => {
+        const d = readLangStorage(LANG_STORAGE_DESKTOP);
+        if (d && (d.code || d.label)) return d;
 
-  const m = readLangStorage(LANG_STORAGE_MOBILE);
-  if (m && (m.code || m.label)) return m;
+        const m = readLangStorage(LANG_STORAGE_MOBILE);
+        if (m && (m.code || m.label)) return m;
 
-  return null;
-};
+        return null;
+    };
 
-/* Single source of truth apply (desktop + mobile UI + <html lang>) */
-const applyLanguage = (payload) => {
-  if (!payload) return;
+    const applyLanguage = (payload) => {
+        if (!payload) return;
 
-  const code  = typeof payload.code === "string"  ? payload.code.trim()  : "";
-  const label = typeof payload.label === "string" ? payload.label.trim() : "";
+        const code  = typeof payload.code === "string"  ? payload.code.trim()  : "";
+        const label = typeof payload.label === "string" ? payload.label.trim() : "";
 
-  if (!code && !label) return;
+        if (!code && !label) return;
 
-  /* 1) <html lang=""> */
-  if (code) {
-    try { document.documentElement.setAttribute("lang", code); } catch (_) {}
-  }
+        if (code) {
+            try { document.documentElement.setAttribute("lang", code); } catch (_) {}
+        }
 
-  /* 2) Desktop dropdown active state + cursor UX */
-  if (langItems.length) {
-    langItems.forEach((i) => {
-      const c = (i.getAttribute("data-lang") || "").trim();
-      if (code) i.classList.toggle("active", c === code);
-      i.style.cursor = "pointer";
-    });
-  }
+        if (langItems.length) {
+            langItems.forEach((i) => {
+                const c = (i.getAttribute("data-lang") || "").trim();
+                if (code) i.classList.toggle("active", c === code);
+                i.style.cursor = "pointer";
+            });
+        }
 
-  /* 3) Desktop label */
-  if (langLabel && label) langLabel.textContent = label;
+        if (langLabel && label) langLabel.textContent = label;
 
-  /* 4) Mobile modal active state (visual sync only) */
-  const mobileItems = Array.from(document.querySelectorAll("#mobile-language-modal .be-modal-item"));
-  if (mobileItems.length) {
-    mobileItems.forEach((i) => {
-      const c = (i.dataset.lang || "").trim();
-      if (code) i.classList.toggle("active", c === code);
-      i.style.cursor = "pointer";
-    });
-  }
+        const mobileItems = Array.from(document.querySelectorAll("#mobile-language-modal .be-modal-item"));
+        if (mobileItems.length) {
+            mobileItems.forEach((i) => {
+                const c = (i.dataset.lang || "").trim();
+                if (code) i.classList.toggle("active", c === code);
+                i.style.cursor = "pointer";
+            });
+        }
 
-  /* 5) Mobile menu Preferences label (visual sync only) */
-  const mobileMenuValue = document.querySelector(".menu-section.preferences .menu-item.menu-lang .value");
-  if (mobileMenuValue && label) mobileMenuValue.textContent = label;
-  document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
-};
+        const mobileMenuValue = document.querySelector(".menu-section.preferences .menu-item.menu-lang .value");
+        if (mobileMenuValue && label) mobileMenuValue.textContent = label;
 
-/* Expose shared function name (both desktop + mobile may call it) */
-window.applyLanguage = applyLanguage;
+        document.dispatchEvent(new CustomEvent("be:langChanged", { detail: payload }));
+    };
 
-/* Normalize chosen payload against desktop list if possible (best-effort) */
-const normalizeAgainstDesktop = (chosen) => {
-  if (!chosen) return null;
+    window.applyLanguage = applyLanguage;
 
-  let picked = null;
+    const normalizeAgainstDesktop = (chosen) => {
+        if (!chosen) return null;
 
-  if (langItems.length && chosen.code) {
-    picked = langItems.find((it) => ((it.getAttribute("data-lang") || "").trim() === chosen.code));
-  }
-  if (!picked && langItems.length && chosen.label) {
-    picked = langItems.find((it) => (it.textContent.trim() === chosen.label));
-  }
+        let picked = null;
 
-  const code  = picked ? ((picked.getAttribute("data-lang") || "").trim()) : (chosen.code || "");
-  const label = picked ? (picked.textContent.trim()) : (chosen.label || "");
+        if (langItems.length && chosen.code) {
+            picked = langItems.find((it) => ((it.getAttribute("data-lang") || "").trim() === chosen.code));
+        }
+        if (!picked && langItems.length && chosen.label) {
+            picked = langItems.find((it) => (it.textContent.trim() === chosen.label));
+        }
 
-  if (!code && !label) return null;
-  return { code: code || "", label: label || "" };
-};
+        const code  = picked ? ((picked.getAttribute("data-lang") || "").trim()) : (chosen.code || "");
+        const label = picked ? (picked.textContent.trim()) : (chosen.label || "");
 
-/* Apply stored language once (desktop wins conflict + mirrors both keys) */
-const applyStoredLanguage = () => {
-  const chosen = resolveLanguage();
-  if (!chosen) return;
+        if (!code && !label) return null;
+        return { code: code || "", label: label || "" };
+    };
 
-  const payload = normalizeAgainstDesktop(chosen) || { code: chosen.code || "", label: chosen.label || "" };
+    const applyStoredLanguage = () => {
+        const chosen = resolveLanguage();
+        if (!chosen) return;
 
-  /* Desktop wins conflict => after decision, mirror BOTH */
-  writeLangStorage(LANG_STORAGE_DESKTOP, payload);
-  writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+        const payload = normalizeAgainstDesktop(chosen) || { code: chosen.code || "", label: chosen.label || "" };
 
-  applyLanguage(payload);
-};
+        writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+        writeLangStorage(LANG_STORAGE_MOBILE,  payload);
 
-/* Enterprise positioning: dropdown must open directly under the BUTTON (not label) */
-let langViewportHooksBound = false;
+        applyLanguage(payload);
+    };
 
-const positionLangDropdown = () => {
-  if (!langToggle || !langDropdown) return;
+    let langViewportHooksBound = false;
 
-  const btnRect = langToggle.getBoundingClientRect();
-  const gap = 6;
-  const pad = 8;
+    const positionLangDropdown = () => {
+        if (!langToggle || !langDropdown) return;
 
-  const width = Math.max(0, Math.round(btnRect.width));
-  let left = Math.round(btnRect.right - width);
-  let top  = Math.round(btnRect.bottom + gap);
+        const btnRect = langToggle.getBoundingClientRect();
+        const gap = 6;
+        const pad = 8;
 
-  const maxLeft = Math.max(pad, Math.round(window.innerWidth - pad - width));
-  if (left < pad) left = pad;
-  if (left > maxLeft) left = maxLeft;
+        const width = Math.max(0, Math.round(btnRect.width));
+        let left = Math.round(btnRect.right - width);
+        let top  = Math.round(btnRect.bottom + gap);
 
-  langDropdown.style.position  = "fixed";
-  langDropdown.style.top       = `${top}px`;
-  langDropdown.style.left      = `${left}px`;
-  langDropdown.style.right     = "auto";
-  langDropdown.style.width     = `${width}px`;
-  langDropdown.style.marginTop = "0";
-  langDropdown.style.zIndex    = "9999";
+        const maxLeft = Math.max(pad, Math.round(window.innerWidth - pad - width));
+        if (left < pad) left = pad;
+        if (left > maxLeft) left = maxLeft;
 
-  langDropdown.style.boxSizing  = "border-box";
-  langDropdown.style.overflowX  = "hidden";
-};
+        langDropdown.style.position  = "fixed";
+        langDropdown.style.top       = `${top}px`;
+        langDropdown.style.left      = `${left}px`;
+        langDropdown.style.right     = "auto";
+        langDropdown.style.width     = `${width}px`;
+        langDropdown.style.marginTop = "0";
+        langDropdown.style.zIndex    = "9999";
 
-const bindLangViewportHooks = () => {
-  if (langViewportHooksBound) return;
-  langViewportHooksBound = true;
+        langDropdown.style.boxSizing  = "border-box";
+        langDropdown.style.overflowX  = "hidden";
+    };
 
-  const onViewportChange = () => {
-    if (!langDropdown || !langDropdown.classList.contains("show")) return;
-    positionLangDropdown();
-  };
+    const bindLangViewportHooks = () => {
+        if (langViewportHooksBound) return;
+        langViewportHooksBound = true;
 
-  window.addEventListener("resize", onViewportChange, { passive: true });
-  window.addEventListener("scroll", onViewportChange, true);
-};
+        const onViewportChange = () => {
+            if (!langDropdown || !langDropdown.classList.contains("show")) return;
+            positionLangDropdown();
+        };
 
-if (langToggle && langDropdown) {
-  /* Apply stored language once (desktop wins conflict + mirrors both keys) */
-  applyStoredLanguage();
+        window.addEventListener("resize", onViewportChange, { passive: true });
+        window.addEventListener("scroll", onViewportChange, true);
+    };
 
-  langToggle.addEventListener("click", (e) => {
-    if (isMobileDOM(e.target)) return;
+    if (langToggle && langDropdown) {
+        applyStoredLanguage();
 
-    e.stopPropagation();
+        langToggle.addEventListener("click", (e) => {
+            if (isMobileDOM(e.target)) return;
 
-    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-    document.dispatchEvent(new CustomEvent("header:interaction"));
+            e.stopPropagation();
 
-    const isOpen = langDropdown.classList.contains("show");
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            if (typeof window.closeDesktopNotifications === "function") window.closeDesktopNotifications();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
 
-    closeAllDesktopDropdowns();
+            const isOpen = langDropdown.classList.contains("show");
 
-    if (!isOpen) {
-      langDropdown.classList.add("show");
-      langToggle.setAttribute("aria-expanded", "true");
-      state.desktopDropdownOpen = true;
+            closeAllDesktopDropdowns();
 
-      positionLangDropdown();
-      bindLangViewportHooks();
-    } else {
-      langToggle.setAttribute("aria-expanded", "false");
+            if (!isOpen) {
+                langDropdown.classList.add("show");
+                langToggle.setAttribute("aria-expanded", "true");
+                state.desktopDropdownOpen = true;
+
+                positionLangDropdown();
+                bindLangViewportHooks();
+            } else {
+                langToggle.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        langItems.forEach((item) => {
+            item.style.cursor = "pointer";
+
+            item.addEventListener("click", (e) => {
+                if (isMobileDOM(e.target)) return;
+
+                e.stopPropagation();
+
+                const code  = (item.getAttribute("data-lang") || "").trim();
+                const label = item.textContent.trim();
+                const payload = { code: code || "", label: label || "" };
+
+                writeLangStorage(LANG_STORAGE_DESKTOP, payload);
+                writeLangStorage(LANG_STORAGE_MOBILE,  payload);
+
+                applyLanguage(payload);
+
+                langToggle.setAttribute("aria-expanded", "false");
+                closeAllDesktopDropdowns();
+            });
+        });
     }
-  });
-
-  langItems.forEach((item) => {
-    item.style.cursor = "pointer";
-
-    item.addEventListener("click", (e) => {
-      if (isMobileDOM(e.target)) return;
-
-      e.stopPropagation();
-
-      const code  = (item.getAttribute("data-lang") || "").trim();
-      const label = item.textContent.trim();
-      const payload = { code: code || "", label: label || "" };
-
-      /* Persist to BOTH keys (desktop wins conflict rule) */
-      writeLangStorage(LANG_STORAGE_DESKTOP, payload);
-      writeLangStorage(LANG_STORAGE_MOBILE,  payload);
-
-      /* Apply everywhere (desktop + mobile UI + <html lang>) */
-      applyLanguage(payload);
-
-      langToggle.setAttribute("aria-expanded", "false");
-      closeAllDesktopDropdowns();
-    });
-  });
-}
-
 
     /* ---------------- USER ---------------- */
-const userToggle   = header.querySelector(".auth-user-toggle");
-const userDropdown = header.querySelector(".auth-user-dropdown");
+    const userToggle   = header.querySelector(".auth-user-toggle");
+    const userDropdown = header.querySelector(".auth-user-dropdown");
 
-if (userToggle && userDropdown) {
-  userToggle.addEventListener("click", (e) => {
-    if (isMobileDOM(e.target)) return;
+    if (userToggle && userDropdown) {
+        userToggle.addEventListener("click", (e) => {
+            if (isMobileDOM(e.target)) return;
 
-    e.stopPropagation();
-    if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
-    document.dispatchEvent(new CustomEvent("header:interaction"));
-    const open = userDropdown.classList.contains("show");
-    closeAllDesktopDropdowns();
-    if (!open) {
-      userDropdown.classList.add("show");
-      state.desktopDropdownOpen = true;
+            e.stopPropagation();
+            if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            if (typeof window.closeDesktopNotifications === "function") window.closeDesktopNotifications();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
+            const open = userDropdown.classList.contains("show");
+            closeAllDesktopDropdowns();
+            if (!open) {
+                userDropdown.classList.add("show");
+                state.desktopDropdownOpen = true;
+            }
+        });
     }
-  });
-}
 
     /* ---------------- BETTING TOOLS ---------------- */
     const toolsTrigger  = header.querySelector(".sub-item-tools");
@@ -330,6 +488,7 @@ if (userToggle && userDropdown) {
 
             e.stopPropagation();
             if (typeof window.closeDesktopSearch === "function") window.closeDesktopSearch();
+            if (typeof window.closeDesktopNotifications === "function") window.closeDesktopNotifications();
             document.dispatchEvent(new CustomEvent("header:interaction"));
             const open = toolsDropdown.classList.contains("show");
             closeAllDesktopDropdowns();
@@ -348,39 +507,58 @@ function attachDesktopGlobalListeners() {
     if (desktopListenersAttached) return;
     desktopListenersAttached = true;
 
-   document.addEventListener("click", (e) => {
-    if (isMobileDOM(e.target)) return;
+    document.addEventListener("click", (e) => {
+        if (isMobileDOM(e.target)) return;
 
-    /* ENTERPRISE: search closes on ANY outside click */
-    if (
-        typeof window.closeDesktopSearch === "function" &&
-        !isInside(e.target, ".header-desktop .be-search")
-    ) {
-        window.closeDesktopSearch();
-    }
+        /* ENTERPRISE: search closes on ANY outside click */
+        if (
+            typeof window.closeDesktopSearch === "function" &&
+            !isInside(e.target, ".header-desktop .be-search")
+        ) {
+            window.closeDesktopSearch();
+        }
 
-    /* Existing dropdown logic (unchanged) */
-    if (!state.desktopDropdownOpen) return;
+        /* ENTERPRISE: notifications close on outside click */
+        if (state.desktopNotifOpen) {
+            const panel = document.getElementById("be-notif-panel");
+            const overlay = document.getElementById("be-notif-overlay");
+            const btn = document.querySelector(".header-desktop .notif-button");
 
-    if (
-        !isInside(e.target, ".header-desktop .odds-format") &&
-        !isInside(e.target, ".header-desktop .language-selector") &&
-        !isInside(e.target, ".header-desktop .auth-user") &&
-        !isInside(e.target, ".header-desktop .sub-item-tools")
-    ) {
-        closeAllDesktopDropdowns();
-        document.dispatchEvent(new CustomEvent("header:interaction"));
-    }
-});
+            const clickedInsidePanel = panel && isInside(e.target, "#be-notif-panel");
+            const clickedButton = btn && isInside(e.target, ".header-desktop .notif-button");
+
+            if (!clickedInsidePanel && !clickedButton) {
+                closeDesktopNotifications();
+            } else {
+                if (overlay && e.target === overlay) closeDesktopNotifications();
+            }
+        }
+
+        /* Existing dropdown logic (unchanged) */
+        if (!state.desktopDropdownOpen) return;
+
+        if (
+            !isInside(e.target, ".header-desktop .odds-format") &&
+            !isInside(e.target, ".header-desktop .language-selector") &&
+            !isInside(e.target, ".header-desktop .auth-user") &&
+            !isInside(e.target, ".header-desktop .sub-item-tools")
+        ) {
+            closeAllDesktopDropdowns();
+            document.dispatchEvent(new CustomEvent("header:interaction"));
+        }
+    });
 
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
+        if (state.desktopNotifOpen) {
+            closeDesktopNotifications();
+            return;
+        }
         if (!state.desktopDropdownOpen) return;
 
         closeAllDesktopDropdowns();
-     });
-   }
-
+    });
+}
 
 /*******************************************************
  * NAVIGATION SYNC (DESKTOP ONLY)
@@ -414,6 +592,7 @@ function initSectionNavigation() {
  *******************************************************/
 function initHeader() {
     initDesktopDropdowns();
+    initDesktopNotifications();
     attachDesktopGlobalListeners();
     initSectionNavigation();
 }
