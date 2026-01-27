@@ -275,6 +275,18 @@ body.mobile-search-open .header-mobile .mobile-search-inline {
   z-index: 10;
 }
 
+    /* PATCH: Stabilize mobile tap/focus repaint jitter inside hamburger panel */
+.mobile-menu-panel .menu-link {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Remove paint transitions during interaction (prevents shimmer/jitter) */
+.mobile-menu-panel .menu-link:active,
+.mobile-menu-panel .menu-link:focus {
+  transition: none !important;
+}
 
     /* ==================================================
        MENU HEADER
