@@ -194,11 +194,28 @@
 
             </div>
 
-            <button class="notif-button" type="button">
-                <img src="assets/icons/notification.svg" class="notif-icon" alt="">
-            </button>
-        </div>
+            <!-- ============================
+           DESKTOP NOTIFICATIONS MODAL
+          ============================ -->
+<div class="be-modal-overlay" id="desktop-notifications-modal">
+  <div class="be-modal" role="dialog" aria-modal="true">
+    <div class="be-modal-header">
+      <span class="be-modal-title">
+        <img class="be-modal-title-icon" src="assets/icons/notification.svg" alt="">
+        <span data-i18n="notifications.title">Notifications</span>
+      </span>
+      <button class="be-modal-close" type="button" aria-label="Close">
+        <img src="assets/icons/close.svg" alt="">
+      </button>
     </div>
+
+    <div class="be-modal-body">
+      <div class="be-modal-placeholder" data-i18n="notifications.placeholder">
+        You have no notifications yet.
+      </div>
+    </div>
+  </div>
+</div>
 
     <div class="row-separator"></div>
 
