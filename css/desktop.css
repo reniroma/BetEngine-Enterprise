@@ -324,6 +324,145 @@
 }
 
 /* =======================================================
+   DESKTOP NOTIFICATIONS (OVERLAY + PANEL)
+   - Anchored to Row 3 top (desktop)
+   - Right-aligned (flush to viewport edge)
+   - Header: icon + label + close aligned in one horizontal row
+   - Min panel height: 2x Row 3 base height (44px * 2 = 88px)
+======================================================= */
+
+:root {
+    --be-row1-h: 42px;
+
+    /* FIX: Row 2 real vertical footprint is 58px in practice (padding already included),
+       so do NOT add (8px * 2) again. */
+    --be-row2-h: 58px;
+
+    --be-row-sep-h: 0.6px;
+
+    --be-row3-top: calc(var(--be-row1-h) + var(--be-row-sep-h) + var(--be-row2-h) + var(--be-row-sep-h));
+
+    --be-row3-h: 44px;
+    --be-notif-min-h: calc(var(--be-row3-h) * 2);
+
+    --be-notif-panel-w: 283px;
+    --be-notif-side-pad: 0px; /* flush right */
+}
+
+.be-notif-overlay[hidden],
+.be-notif-panel[hidden] {
+    display: none !important;
+}
+
+.be-notif-overlay {
+    position: fixed;
+    top: var(--be-row3-top);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 640;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.be-notif-panel {
+    position: fixed;
+    top: var(--be-row3-top);     /* exactly where Row 3 starts */
+    right: var(--be-notif-side-pad);/* flush to right edge */
+    width: var(--be-notif-panel-w);
+    max-width: 100vw;
+    min-height: var(--be-notif-min-h);
+    z-index: 1000;
+
+    background-color: rgb(17, 20, 29);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    border: 1px solid rgba(80, 85, 88, 0.35);
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.be-notif-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(80, 85, 88, 0.35);
+}
+
+.be-notif-title {
+    flex: 1 1 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary, #00eaff); /* cyan label */
+    line-height: 1;
+    min-width: 0;
+}
+
+.be-notif-close {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+
+    color: #ffffff;
+}
+
+.be-notif-close span {
+    font-size: 22px;
+    line-height: 1;
+    color: #ffffff; /* white X */
+}
+
+.be-notif-panel-body {
+    padding: 10px 14px;
+    overflow: auto;
+    max-height: calc(100vh - var(--be-row3-top) - 120px);
+}
+
+.be-notif-empty span,
+.be-notif-panel-body span,
+.be-notif-panel-body li {
+    font-size: 13px;
+    color: var(--text-muted, #b3b3b3);
+}
+
+.be-notif-panel-footer {
+    padding: 10px 14px;
+    border-top: 1px solid rgba(80, 85, 88, 0.35);
+}
+
+.be-notif-view-all {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+}
+
+.be-notif-view-all:hover,
+.be-notif-view-all:focus-visible {
+    color: var(--text-secondary, #00eaff);
+    outline: none;
+}
+
+
+
+/* =======================================================
    ROW 3 (SUB NAVIGATION) — NO SPACING CHANGES
 ======================================================= */
 
