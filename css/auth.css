@@ -26,7 +26,7 @@
 ====================================================== */
 .be-auth-box {
     width: 100%;
-    max-width: 420px;
+    max-width: 350px;
     background: var(--c-auth-surface);
     border-radius: var(--r-auth-box);
     box-shadow: var(--shadow-auth-box);
@@ -35,7 +35,7 @@
     /* ENTERPRISE SCROLL OWNER (DESKTOP + MOBILE CONSISTENCY) */
 
     display: flex;
-    max-height: 82vh;
+    max-height: 97vh;
     flex-direction: column;
     
 }
@@ -102,7 +102,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 46px;
+    height: 35px;
     border-radius: 12px;
     background: var(--c-auth-input-bg);
     border: 1px solid var(--c-auth-border);
@@ -129,7 +129,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 16px 0 18px;
+    margin: 1px 0 1px;
     color: var(--c-auth-text-secondary);
     font-size: 12px;
 }
@@ -159,7 +159,7 @@
 
 .auth-field input,
 .auth-field select {
-    height: 42px;
+    height: 35px;
     padding: 0 10px;
     border-radius: 8px;
     border: 1px solid var(--c-auth-border);
@@ -206,7 +206,7 @@
 .auth-submit {
     margin-top: 12px;      /* FIX: restore vertical spacing */
     width: 100%;           /* FIX: always full-width */
-    height: 44px;
+    height: 35px;
     border: none;          /* FIX: remove default button border */
     border-radius: var(--r-auth-pill);
     background: var(--c-auth-submit-bg);
@@ -215,7 +215,6 @@
     cursor: pointer;
     display: block;
     text-align: center;
-    margin-top: 18px;
     margin-bottom: 12px;
 }
 
@@ -223,7 +222,7 @@
    FOOTER
 ====================================================== */
 .auth-footer-text {
-    margin-top: 18px;
+    margin-top: 16px;
     font-size: 12px;
     color: var(--c-auth-text-muted);
     text-align: center;
@@ -235,34 +234,30 @@
     color: var(--c-auth-accent);
     cursor: pointer;
     display; block;
-    text-align: center;
-    
+    text-align: center;    
 }
 
 /* FIX: ensure forgot row is centered even if parent uses flex */
 form.auth-form .auth-forgot-link {
   align-self: center;
   width: 100%;
-  padding-top: 12px
+  padding-top: 6px
 }
-
 
 /* ======================================================
    FORGOT PASSWORD — DEFAULT (HIDDEN)
 ====================================================== */
 .auth-forgot-section {
     display: none;
-    margin-top: 28px;
-    padding-top: 8px;
-    
+    margin-top: 6px;   
 }
 
 .auth-forgot-title {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .auth-forgot-text {
-    margin-bottom: 18px;
+    margin-bottom: 6px;
     line-height: 1.5;
 }
 
@@ -270,7 +265,7 @@ form.auth-form .auth-forgot-link {
     width: 100%;
     max-width: 260px;
     margin: 18px auto 0;
-    height: 46px;
+    height: 30px;
     display: block;
     text-align: center;
 }
@@ -294,6 +289,37 @@ form.auth-form .auth-forgot-link {
 .auth-forgot-section input {
   text-align: left;
 }
+
+/* ======================================================
+   AUTH OVERLAY — SCOPED SCROLLBAR OVERRIDE (WEBKIT)
+   Applies ONLY inside .be-auth-overlay (auth modal).
+   Does NOT affect global site scrollbars.
+====================================================== */
+.be-auth-overlay *::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-thumb {
+    background: var(--c-auth-divider) !important;
+    border-radius: 999px !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-thumb:hover {
+    background: var(--c-auth-text-muted) !important;
+}
+
+/* Firefox (scoped) */
+.be-auth-overlay * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-auth-divider) transparent;
+}
+
+.be-auth-overlay { align-items: flex-start; padding-top: 0px; }
 
 
 /* ======================================================
