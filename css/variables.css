@@ -59,7 +59,7 @@
   --c-auth-ink: #11141d;
   --c-auth-surface: #11141d;
   --c-auth-text: #ffffff;
-  --c-auth-overlay-bg: rgba(0, 0, 0, 0.65);
+  --c-auth-overlay-bg: transparent;
   --z-auth-overlay: 4000;
   --shadow-auth-box: 0 22px 60px rgba(0,0,0,0.8);
   --c-auth-accent: #00eaff;
