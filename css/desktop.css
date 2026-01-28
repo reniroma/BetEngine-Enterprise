@@ -472,8 +472,8 @@
 
 .row-sub {
     padding: 6px 42px;
-    min-height: 44px;
-    height: 44px;          /* lock Row 3 to normal height */
+    min-height: 54px;
+    height: 54px;          /* lock Row 3 to normal height */
     display: flex;
     align-items: center;
     position: relative;
@@ -663,6 +663,30 @@
 .odds-dropdown .item.active {
     color: var(--text-secondary, #00eaff);
 }
+
+/* DESKTOP — Language dropdown scrollbar (thin + matches dropdown bg) */
+.header-desktop .language-dropdown{
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255,255,255,0.07) rgb(17,20,29) ; /* thumb / track */
+}
+
+.header-desktop .language-dropdown::-webkit-scrollbar{
+  width: 1px; 
+}
+
+.header-desktop .language-dropdown::-webkit-scrollbar-track{
+  background: rgb(17,20,29); 
+}
+
+.header-desktop .language-dropdown::-webkit-scrollbar-thumb{
+  background-color: rgba(255,255,255,0.16);
+  border-radius: 999px;
+}
+
+.header-desktop .language-dropdown::-webkit-scrollbar-thumb:hover{
+  background-color: rgba(255,255,255,0.26);
+}
+
 
 /* =======================================================
    USER DROPDOWN (COMPATIBLE BEHAVIOR + TYPOGRAPHY)
