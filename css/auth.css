@@ -27,10 +27,13 @@
 .be-auth-box {
     width: 100%;
     max-width: 350px;
-    background: var(--c-auth-surface);
+    background-color: var(--c-auth-box-bg);
     border-radius: var(--r-auth-box);
     box-shadow: var(--shadow-auth-box);
     color: var(--c-auth-text);
+    border: 1px solid var(--c-auth-box-border);
+    background-image: var(--auth-box-bg-gradient);
+    background-clip: padding-box;
 
     /* ENTERPRISE SCROLL OWNER (DESKTOP + MOBILE CONSISTENCY) */
 
@@ -93,6 +96,8 @@
     flex-direction: column;
     gap: 10px;
     margin-bottom: 14px;
+    
+
 }
 
 /* Support both markup styles: .auth-social-btn OR button inside .auth-social */
@@ -113,8 +118,11 @@
 
 .auth-social-btn:hover,
 .auth-social button:hover {
-    background: var(--c-auth-hover-bg);
+      border-color: var(--c-auth-social-hover-border);
 }
+
+    
+
 
 .auth-social-btn img,
 .auth-social button img {
@@ -335,14 +343,17 @@ form.auth-form .auth-forgot-link {
         margin: 0;
         border-radius: 0;
         overflow: hidden;
-        background: var(--c-auth-surface);
+        background-color: var(--c-auth-box-bg);
+        border: 1px solid var(--c-auth-box-border);
+        background-image: var(--auth-box-bg-gradient);
+
     }
 
     .auth-header {
         position: sticky;
         top: 0;
         z-index: 2;
-        background: var(--c-auth-surface);
+        
     }
 
     .auth-body {
