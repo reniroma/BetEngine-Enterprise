@@ -63,7 +63,7 @@
   --z-auth-overlay: 4000;
   --shadow-auth-box: 0 22px 60px rgba(0,0,0,0.8);
   --c-auth-accent: #00eaff;
-  --c-auth-input-bg: #151827;
+  --c-auth-input-bg: rgb(3, 5, 8);
   --c-auth-border: #2b3040;
   --c-auth-hover-bg: #20243a;
   --c-auth-text-secondary: #cfd3df;
@@ -76,7 +76,12 @@
   --c-auth-premium-accent: #f4a11a;
   --r-auth-box: 14px;
   --r-auth-pill: 999px;
+  --c-auth-box-bg: rgb(20 34 48 / 1);
+  --c-auth-box-border: rgba(255, 255, 255, 0.06);
+  --c-auth-social-hover-border: rgba(0, 234, 255, 0.65);
 
+  --auth-box-bg-gradient: linear-gradient(180deg,  rgb(18, 60, 78), rgb(10, 36, 53),  rgb(9, 19, 30) );
+    
   /* SEARCH TOKENS (NO nested :root) */
   --c-search-bg: #11141d;
   --c-search-input-bg: #151827;
