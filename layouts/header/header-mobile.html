@@ -47,6 +47,7 @@
                             type="search"
                             class="be-search-input"
                             placeholder="Search teams/player"
+                            data-i18n-placeholder="search.placeholder"
                             aria-label="Search"
                             autocomplete="off"
                             spellcheck="false"
@@ -68,6 +69,7 @@
                             class="be-search-clear"
                             aria-label="Clear search"
                             hidden
+                            data-i18n="common.clear"
                         >
                             Clear
                         </button>
@@ -86,10 +88,10 @@
                     <!-- STATES -->
                     <div class="be-search-states">
                         <div class="be-search-loading" hidden>
-                            <span class="be-search-loading-text">Searching...</span>
+                            <span class="be-search-loading-text" data-i18n="search.loading">Searching...</span>
                         </div>
                         <div class="be-search-empty" hidden>
-                            <span class="be-search-empty-text">No results found.</span>
+                            <span class="be-search-empty-text" data-i18n="search.empty">No results found.</span>
                         </div>
                     </div>
 
@@ -171,27 +173,27 @@
 
         <button class="mobile-sport-item active">
             <img src="assets/icons/sport-football.svg" alt="Football">
-            <span class="sport-label">Football</span>
+            <span class="sport-label" data-i18n="sport.football">Football</span>
         </button>
 
         <button class="mobile-sport-item">
             <img src="assets/icons/sport-basketball.svg" alt="Basketball">
-            <span class="sport-label">Basketball</span>
+            <span class="sport-label" data-i18n="sport.basketball">Basketball</span>
         </button>
 
         <button class="mobile-sport-item">
             <img src="assets/icons/sport-tennis.svg" alt="Tennis">
-            <span class="sport-label">Tennis</span>
+            <span class="sport-label" data-i18n="sport.tennis">Tennis</span>
         </button>
 
         <button class="mobile-sport-item">
             <img src="assets/icons/sport-hockey.svg" alt="Hockey">
-            <span class="sport-label">Hockey</span>
+            <span class="sport-label" data-i18n="sport.hockey">Hockey</span>
         </button>
 
         <button class="mobile-sport-item">
             <img src="assets/icons/sport-volleyball.svg" alt="Volleyball">
-            <span class="sport-label">Volleyball</span>
+            <span class="sport-label" data-i18n="sport.volleyball">Volleyball</span>
         </button>
 
         <button class="mobile-sport-item mobile-sport-more" type="button">
@@ -206,7 +208,7 @@
                 <path d="M16 5h6"></path>
                 <path d="M19 8V2"></path>
             </svg>
-            <span class="sport-label">More</span>
+            <span class="sport-label" data-i18n="common.more">More</span>
         </button>
 
     </div>

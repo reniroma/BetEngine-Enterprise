@@ -1,5 +1,109 @@
 {
   "header.language": "Gjuha:",
-  "header.oddsFormat": "Formati kuotave:",
-  "common.english": "Anglisht"
+  "header.oddsFormat": "Formati i kuotave:",
+  "common.english": "Anglisht",
+
+  "auth.login": "Hyr",
+  "auth.register": "Regjistrohu",
+  "auth.profile": "Profili",
+  "auth.myPredictions": "Parashikimet e mia",
+  "auth.settings": "Cilësimet",
+  "auth.myStatistics": "Statistikat e mia",
+  "auth.myCoupons": "Kuponët e mi",
+  "auth.logout": "Dil",
+
+  "auth.social.signinFacebook": "Hyr me Facebook",
+  "auth.social.signinGoogle": "Hyr me Google",
+  "auth.social.signinApple": "Hyr me Apple",
+  "auth.social.continueFacebook": "Vazhdo me Facebook",
+  "auth.social.continueGoogle": "Vazhdo me Google",
+  "auth.social.continueApple": "Vazhdo me Apple",
+
+  "auth.or": "OSE",
+
+  "auth.field.username": "Emri i përdoruesit",
+  "auth.field.email": "Email",
+  "auth.field.password": "Fjalëkalimi",
+  "auth.rememberMe": "Më mbaj mend",
+
+  "auth.button.login": "Hyr",
+  "auth.button.createAccount": "KRIJO LLOGARINË TIME",
+
+  "auth.link.noAccount": "Nuk ke llogari?",
+  "auth.link.createOneFree": "Krijo një falas",
+  "auth.link.forgotPassword": "Harrove fjalëkalimin?",
+  "auth.link.alreadyAccount": "Ke tashmë llogari?",
+  "auth.forgot.title": "Keni harruar fjalëkalimin",
+  "auth.forgot.text": "Shkruani email-in tuaj për të rivendosur fjalëkalimin. Informacioni shtesë do t’ju dërgohet në email.",
+  "common.confirm": "KONFIRMO",
+
+  "auth.marketingOptIn": "Dua të marr lajme ekskluzive dhe oferta speciale nga platforma jonë dhe partnerët tanë të besuar.",
+
+  "auth.terms.prefix": "Duke klikuar",
+  "auth.terms.createAccountQuoted": "\"KRIJO LLOGARINË TIME\"",
+  "auth.terms.orAny": "ose ndonjë buton",
+  "auth.terms.signInQuoted": "\"HYR\"",
+  "auth.terms.button": ", ti pranon",
+  "auth.terms.termsOfUse": "Kushtet e Përdorimit",
+  "auth.terms.and": "dhe njeh",
+  "auth.terms.privacyPolicy": "Politikën e Privatësisë",
+  "auth.terms.suffix": "në faqen tonë.",
+
+  "brand.tagline": "Kuota smart, sinjale më të mprehta",
+
+  "nav.oddsComparison": "Krahasimi i kuotave",
+  "nav.community": "Komuniteti",
+  "nav.bookmakers": "Bookmaker-at",
+  "nav.premium": "Premium",
+
+  "search.placeholder": "Kërko...",
+  "common.clear": "Pastro",
+  "search.loading": "Duke kërkuar…",
+  "search.empty": "Nuk u gjetën rezultate.",
+
+  "sport.football": "Futboll",
+  "sport.basketball": "Basketboll",
+  "sport.tennis": "Tenis",
+  "sport.hockey": "Hokej",
+  "sport.volleyball": "Volejboll",
+  "common.more": "Më shumë",
+
+  "common.home": "Kreu",
+  "common.nextMatches": "Ndeshjet e radhës",
+  "common.droppingOdds": "Kuota në rënie",
+  "common.sureBets": "Sure Bets",
+  "common.inPlayOdds": "Kuota Live",
+  "common.allEvents": "Të gjitha eventet",
+  "common.bettingTools": "Mjetet e bastit",
+
+  "tools.blockedOdds": "Kuota të bllokuara",
+  "tools.valueBets": "Value Bets",
+  "tools.hotMatches": "Ndeshje të nxehta",
+  "tools.archivedResults": "Rezultate të arkivuara",
+  "tools.standings": "Renditja",
+  "tools.betCalculator": "Kalkulator bastesh",
+
+  "community.feed": "Feed",
+  "community.users": "Përdoruesit",
+  "community.topPredictions": "Parashikimet më të mira",
+  "community.myStatistics": "Statistikat e mia",
+  "community.myProfile": "Profili im",
+  "community.myPredictions": "Parashikimet e mia",
+  "community.myCoupons": "Kuponët e mi",
+
+  "bookmakers.info": "Info Bookmaker",
+  "bookmakers.bonusOffers": "Oferta bonusi",
+  "bookmakers.oddsQuality": "Cilësia e kuotave",
+  "bookmakers.bettingApps": "Aplikacione bastesh",
+
+  "premium.dashboard": "Paneli",
+  "premium.marketInsights": "Insight-e tregu",
+  "premium.fairOddsEngine": "Fair Odds Engine",
+  "premium.aiPredictions": "Parashikime AI",
+  "premium.smartH2HInsights": "Smart H2H Insights",
+  "premium.valueFinder": "Value Finder",
+  "premium.sharpVsPublic": "Sharp vs Public",
+  "premium.shockAlerts": "Shock Alerts",
+  "premium.aiLiveMomentum": "AI Live Momentum",
+  "premium.fakeTrendDetector": "Fake Trend Detector"
 }

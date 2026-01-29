@@ -44,6 +44,9 @@
         const oddsModal = qs("#mobile-odds-modal");
         const langModal = qs("#mobile-language-modal");
         const bookmarksModal = qs("#mobile-bookmarks-modal");
+        const couponModal = qs("#mobile-coupon-modal");
+        const notificationsModal = qs("#mobile-notifications-modal");
+
 
         if (!overlay || !panel || !toggleBtn) return;
         initialized = true;
@@ -327,6 +330,16 @@
         qs(".mobile-bookmarks-btn")?.addEventListener("click", (e) => {
             stop(e);
             openModal(bookmarksModal);
+        });
+
+        qs(".mobile-coupon-btn")?.addEventListener("click", (e) => {
+            stop(e);
+            openModal(couponModal);
+        });
+
+        qs(".mobile-notifications-btn")?.addEventListener("click", (e) => {
+            stop(e);
+            openModal(notificationsModal);
         });
 
         /* ==================================================

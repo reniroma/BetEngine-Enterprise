@@ -1,5 +1,109 @@
 {
   "header.language": "Language:",
   "header.oddsFormat": "Odds format:",
-  "common.english": "English"
+  "common.english": "English",
+
+  "auth.login": "Login",
+  "auth.register": "Register",
+  "auth.profile": "Profile",
+  "auth.myPredictions": "My Predictions",
+  "auth.settings": "Settings",
+  "auth.myStatistics": "My Statistics",
+  "auth.myCoupons": "My Coupons",
+  "auth.logout": "Logout",
+
+  "auth.social.signinFacebook": "Sign in with Facebook",
+  "auth.social.signinGoogle": "Sign in with Google",
+  "auth.social.signinApple": "Sign in with Apple",
+  "auth.social.continueFacebook": "Continue with Facebook",
+  "auth.social.continueGoogle": "Continue with Google",
+  "auth.social.continueApple": "Continue with Apple",
+
+  "auth.or": "OR",
+
+  "auth.field.username": "Username",
+  "auth.field.email": "Email",
+  "auth.field.password": "Password",
+  "auth.rememberMe": "Remember me",
+
+  "auth.button.login": "Login",
+  "auth.button.createAccount": "CREATE MY ACCOUNT",
+
+  "auth.link.noAccount": "Don't have an account?",
+  "auth.link.createOneFree": "Create one for free",
+  "auth.link.forgotPassword": "Forgot password?",
+  "auth.link.alreadyAccount": "Already have an account?",
+  "auth.forgot.title": "Forgotten password",
+  "auth.forgot.text": "Fill in your email to get forgotten password. Additional information will be sent to your email.",
+  "common.confirm": "CONFIRM",
+
+  "auth.marketingOptIn": "I would like to receive exclusive news and special offers from our platform and trusted partners.",
+
+  "auth.terms.prefix": "By clicking",
+  "auth.terms.createAccountQuoted": "\"CREATE MY ACCOUNT\"",
+  "auth.terms.orAny": "or any",
+  "auth.terms.signInQuoted": "\"SIGN IN\"",
+  "auth.terms.button": "button, you agree to the",
+  "auth.terms.termsOfUse": "Terms of Use",
+  "auth.terms.and": "and acknowledge our",
+  "auth.terms.privacyPolicy": "Privacy Policy",
+  "auth.terms.suffix": "on our website.",
+
+  "brand.tagline": "Smart odds, sharper signals",
+
+  "nav.oddsComparison": "Odds Comparison",
+  "nav.community": "Community",
+  "nav.bookmakers": "Bookmakers",
+  "nav.premium": "Premium",
+
+  "search.placeholder": "Search...",
+  "common.clear": "Clear",
+  "search.loading": "Searching…",
+  "search.empty": "No results found.",
+
+  "sport.football": "Football",
+  "sport.basketball": "Basketball",
+  "sport.tennis": "Tennis",
+  "sport.hockey": "Hockey",
+  "sport.volleyball": "Volleyball",
+  "common.more": "More",
+
+  "common.home": "Home",
+  "common.nextMatches": "Next Matches",
+  "common.droppingOdds": "Dropping Odds",
+  "common.sureBets": "Sure Bets",
+  "common.inPlayOdds": "In-Play Odds",
+  "common.allEvents": "All Events",
+  "common.bettingTools": "Betting Tools",
+
+  "tools.blockedOdds": "Blocked Odds",
+  "tools.valueBets": "Value Bets",
+  "tools.hotMatches": "Hot Matches",
+  "tools.archivedResults": "Archived Results",
+  "tools.standings": "Standings",
+  "tools.betCalculator": "Bet Calculator",
+
+  "community.feed": "Feed",
+  "community.users": "Users",
+  "community.topPredictions": "Top Predictions",
+  "community.myStatistics": "My Statistics",
+  "community.myProfile": "My Profile",
+  "community.myPredictions": "My Predictions",
+  "community.myCoupons": "My Coupons",
+
+  "bookmakers.info": "Bookmaker Info",
+  "bookmakers.bonusOffers": "Bonus Offers",
+  "bookmakers.oddsQuality": "Odds Quality",
+  "bookmakers.bettingApps": "Betting Apps",
+
+  "premium.dashboard": "Dashboard",
+  "premium.marketInsights": "Market Insights",
+  "premium.fairOddsEngine": "Fair Odds Engine",
+  "premium.aiPredictions": "AI Predictions",
+  "premium.smartH2HInsights": "Smart H2H Insights",
+  "premium.valueFinder": "Value Finder",
+  "premium.sharpVsPublic": "Sharp vs Public",
+  "premium.shockAlerts": "Shock Alerts",
+  "premium.aiLiveMomentum": "AI Live Momentum",
+  "premium.fakeTrendDetector": "Fake Trend Detector"
 }

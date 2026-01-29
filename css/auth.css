@@ -1,7 +1,7 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH.CSS (FINAL v5.5)
+ * BetEngine Enterprise – AUTH.CSS (RESTORE + FIX v5.8)
  * Desktop + Mobile authentication modals
- * ENTERPRISE SAFE – Vercel compatible
+ * Tokenize COLORS/RADIUS/SHADOW only (no typography token drift)
  *********************************************************/
 
 /* ======================================================
@@ -13,8 +13,8 @@
     display: none;
     align-items: center;
     justify-content: center;
-    background: rgba(0,0,0,0.65);
-    z-index: 4000;
+    background: var(--c-auth-overlay-bg);
+    z-index: var(--z-auth-overlay);
 }
 
 .be-auth-overlay.show {
@@ -26,16 +26,21 @@
 ====================================================== */
 .be-auth-box {
     width: 100%;
-    max-width: 420px;
-    background: #11141d;
-    border-radius: 14px;
-    box-shadow: 0 22px 60px rgba(0,0,0,0.8);
-    color: #ffffff;
+    max-width: 350px;
+    background-color: var(--c-auth-box-bg);
+    border-radius: var(--r-auth-box);
+    box-shadow: var(--shadow-auth-box);
+    color: var(--c-auth-text);
+    border: 1px solid var(--c-auth-box-border);
+    background-image: var(--auth-box-bg-gradient);
+    background-clip: padding-box;
 
-    /* ENTERPRISE SCROLL OWNER (GLOBAL) */
-    max-height: 82vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    /* ENTERPRISE SCROLL OWNER (DESKTOP + MOBILE CONSISTENCY) */
+
+    display: flex;
+    max-height: 97vh;
+    flex-direction: column;
+    
 }
 
 /* ======================================================
@@ -46,14 +51,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 18px 22px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid var(--c-auth-divider);
+    flex-shrink: 0;
 }
 
 .auth-header-title,
 .auth-title {
     font-size: 17px;
     font-weight: 600;
-    color: #00eaff;
+    color: var(--c-auth-accent);
 }
 
 .auth-close {
@@ -68,31 +74,10 @@
 }
 
 /* ======================================================
-   BODY
+   BODY (SCROLL CONTAINER)
 ====================================================== */
 .auth-body {
     padding: 22px;
-}
-
-/* ======================================================
-   DESKTOP AUTH MODAL — INTERNAL SCROLL OWNER
-   Enterprise fix (mirrors mobile behaviour)
-====================================================== */
-
-/* Modal box becomes a flex container */
-.be-auth-box {
-    display: flex;
-    flex-direction: column;
-    max-height: 82vh; /* identical constraint as mobile */
-}
-
-/* Header never scrolls */
-.auth-header {
-    flex-shrink: 0;
-}
-
-/* Body becomes the scroll container */
-.auth-body {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -111,191 +96,272 @@
     flex-direction: column;
     gap: 10px;
     margin-bottom: 14px;
+    
+
 }
 
-.auth-social-btn {
+/* Support both markup styles: .auth-social-btn OR button inside .auth-social */
+.auth-social-btn,
+.auth-social button {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 46px;
+    height: 35px;
     border-radius: 12px;
-    background: #151827;
-    border: 1px solid #2b3040;
-    color: #ffffff;
+    background: var(--c-auth-input-bg);
+    border: 1px solid var(--c-auth-border);
+    color: var(--c-auth-text);
     font-size: 14px;
     cursor: pointer;
 }
 
-.auth-social-btn:hover {
-    background: #20243a;
-    border-color: rgba(255,255,255,0.18);
+.auth-social-btn:hover,
+.auth-social button:hover {
+      border-color: var(--c-auth-social-hover-border);
+}
+
+    
+
+
+.auth-social-btn img,
+.auth-social button img {
+    width: 18px;
+    height: 18px;
 }
 
 /* ======================================================
    DIVIDER
 ====================================================== */
 .auth-divider {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1px 0 1px;
+    color: var(--c-auth-text-secondary);
     font-size: 12px;
-    color: #9aa0b5;
-    margin: 18px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--c-auth-divider);
 }
 
 /* ======================================================
-   FORM
+   FIELDS
 ====================================================== */
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.auth-label {
-    font-size: 12px;
-    color: #cfd3df;
-}
-
 .auth-field {
     display: flex;
     flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.auth-field label {
+    font-size: 13px;
+    color: var(--c-auth-text-secondary);
+    margin-bottom: 6px;
 }
 
 .auth-field input,
 .auth-field select {
-    height: 42px;
+    height: 35px;
     padding: 0 10px;
     border-radius: 8px;
-    border: 1px solid #2b3040;
-    background: #151827;
-    color: #ffffff;
+    border: 1px solid var(--c-auth-border);
+    background: var(--c-auth-input-bg);
+    color: var(--c-auth-text);
     font-size: 14px;
 }
 
+.auth-field input::placeholder {
+    color: var(--c-auth-text-muted);
+}
+
 /* ======================================================
-   CHECKBOX
+   CHECKBOX + LEGAL (FIX SPACING)
 ====================================================== */
 .auth-checkbox {
     display: flex;
     gap: 8px;
     font-size: 12px;
-    color: #cfd3df;
-} 
-.auth-checkbox span {
-    color: #ffffff;
+    color: var(--c-auth-text-secondary);
+    margin: 10px 0 12px; /* FIX: restore vertical breathing room */
 }
+
+.auth-checkbox span {
+    color: var(--c-auth-text);
+}
+
 .auth-legal-text {
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--c-auth-text-soft);
     font-size: 12px;
     line-height: 1.5;
     text-align: center;
+    margin-top: 10px; /* FIX: prevent "By clicking..." from sticking */
 }
+
 .auth-legal-text a {
-    color: #00eaff; /* ose accent-i yt zyrtar */
+    color: var(--c-auth-accent);
     text-decoration: underline;
-}   
+}
 
 /* ======================================================
-   PRIMARY BUTTON
+   PRIMARY BUTTON (FIX WIDTH + SPACING)
 ====================================================== */
 .auth-submit {
-    margin-top: 6px;
-    height: 44px;
-    border-radius: 999px;
-    background: #ffec00;
-    color: #11141d;
+    margin-top: 12px;      /* FIX: restore vertical spacing */
+    width: 100%;           /* FIX: always full-width */
+    height: 35px;
+    border: none;          /* FIX: remove default button border */
+    border-radius: var(--r-auth-pill);
+    background: var(--c-auth-submit-bg);
+    color: var(--c-auth-ink);
     font-weight: 600;
     cursor: pointer;
+    display: block;
+    text-align: center;
+    margin-bottom: 12px;
 }
 
 /* ======================================================
    FOOTER
 ====================================================== */
 .auth-footer-text {
-    margin-top: 18px;
+    margin-top: 16px;
     font-size: 12px;
-    color: #9aa0b5;
+    color: var(--c-auth-text-muted);
     text-align: center;
 }
 
 .auth-link {
     background: none;
     border: none;
-    color: #00eaff;
+    color: var(--c-auth-accent);
     cursor: pointer;
+    display; block;
+    text-align: center;    
+}
+
+/* FIX: ensure forgot row is centered even if parent uses flex */
+form.auth-form .auth-forgot-link {
+  align-self: center;
+  width: 100%;
+  padding-top: 6px
 }
 
 /* ======================================================
    FORGOT PASSWORD — DEFAULT (HIDDEN)
-   IMPORTANT: Global default hidden
 ====================================================== */
 .auth-forgot-section {
     display: none;
-}
-.auth-forgot-section {
-    margin-top: 28px;
-    padding-top: 8px;
+    margin-top: 6px;   
 }
 
 .auth-forgot-title {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .auth-forgot-text {
-    margin-bottom: 18px;
+    margin-bottom: 6px;
     line-height: 1.5;
 }
+
 .auth-forgot-section .auth-submit {
     width: 100%;
     max-width: 260px;
     margin: 18px auto 0;
-    height: 46px;
+    height: 30px;
     display: block;
     text-align: center;
 }
 
-/* =========================================
-   FORGOT PASSWORD — INLINE (DESKTOP)
-   Enterprise fix
-========================================= */
+/* ======================================================
+   FORGOT PASSWORD — SHOW (PROJECT LOGIC)
+====================================================== */ 
+
+/* FIX: Center only title/text, keep fields left */
 #login-modal.state-forgot-open .auth-forgot-section {
-    display: block;
+  display: block;
+}
+
+.auth-forgot-title,
+.auth-forgot-text {
+  text-align: center;
+}
+
+.auth-forgot-section .auth-field,
+.auth-forgot-section label,
+.auth-forgot-section input {
+  text-align: left;
 }
 
 /* ======================================================
-   MOBILE ONLY — FORGOT PASSWORD LOGIC
-   Shown ONLY after click via .state-forgot-open
+   AUTH OVERLAY — SCOPED SCROLLBAR OVERRIDE (WEBKIT)
+   Applies ONLY inside .be-auth-overlay (auth modal).
+   Does NOT affect global site scrollbars.
+====================================================== */
+.be-auth-overlay *::-webkit-scrollbar {
+    width: 4px !important;
+    height: 4px !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-thumb {
+    background: var(--c-auth-divider) !important;
+    border-radius: 999px !important;
+}
+
+.be-auth-overlay *::-webkit-scrollbar-thumb:hover {
+    background: var(--c-auth-text-muted) !important;
+}
+
+/* Firefox (scoped) */
+.be-auth-overlay * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--c-auth-divider) transparent;
+}
+
+.be-auth-overlay { align-items: flex-start; padding-top: 0px; }
+
+
+/* ======================================================
+   MOBILE ONLY — STICKY HEADER + BODY SCROLL
 ====================================================== */
 @media (max-width: 900px) {
 
     .be-auth-box {
-    width: 100%;
-    max-width: 100%;
-    height: 100dvh;
-    max-height: 100dvh;
-
-    margin: 0;
-    border-radius: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-    background: #11141d;
+        width: 100%;
+        max-width: 100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        margin: 0;
+        border-radius: 0;
+        overflow: hidden;
+        background-color: var(--c-auth-box-bg);
+        border: 1px solid var(--c-auth-box-border);
+        background-image: var(--auth-box-bg-gradient);
 
     }
+
     .auth-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    background: #11141d;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        
     }
 
     .auth-body {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
+
     .auth-forgot-section {
         margin-top: 22px;
     }
@@ -312,7 +378,89 @@
 
     .auth-forgot-text {
         font-size: 13px;
-        color: #cfd3df;
+        color: var(--c-auth-text-secondary);
         margin-bottom: 14px;
+    }
+
+    /* ==================================================
+       ACCOUNT (MOBILE) — EXISTING PATCHES (UNCHANGED LOGIC)
+       NOTE: kept here to avoid breaking current mobile menu.
+    ================================================== */
+
+    .mobile-menu-panel .menu-section.account {
+        border-top: 1px solid var(--c-auth-divider-soft);
+        padding-top: 14px;
+        margin-top: 0;
+    }
+
+    .mobile-menu-panel .menu-section.account > h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .mobile-menu-panel .mobile-auth-user {
+        border-top: 1px solid var(--c-auth-divider-soft);
+        padding-top: 2px;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        padding-left: 16px;
+        padding-right: 34px;
+        box-sizing: border-box;
+        padding-top: 16px;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header + * {
+        margin-top: 14px;
+        padding-left: 8px;
+        padding-right: 12px;
+        box-sizing: border-box;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header .username {
+        flex: 1 1 auto;
+        font-size: 18px;
+        line-height: 1.1;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header .roi {
+        flex: 1 1 100%;
+        margin-left: 26px;
+        margin-top: 0;
+        font-size: 13px;
+        line-height: 1.0;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header {
+        display: grid !important;
+        grid-template-columns: 40px 1fr !important;
+        grid-template-rows: auto auto !important;
+        column-gap: 10px;
+        row-gap: 2px;
+        align-items: start;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-avatar {
+        width: 34px !important;
+        height: 34px !important;
+        max-width: none !important;
+        max-height: none !important;
+        display: block !important;
+        align-self: end;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header .username {
+        margin: 0 !important;
+        line-height: 1.0 !important;
+        color: var(--color-accent, #f4a11a) !important;
+    }
+
+    .mobile-menu-panel .mobile-auth-user .mobile-user-header .roi {
+        margin: 0 !important;
+        line-height: 1.0 !important;
     }
 }

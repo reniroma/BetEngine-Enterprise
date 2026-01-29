@@ -60,6 +60,89 @@
         padding: 6px;
         cursor: pointer;
     }
+    
+
+    /* ==================================================
+   MOBILE SEARCH OVERLAY — ENTERPRISE FIX (V2)
+   ================================================== */
+
+/* Top bar must not be clipped (dropdown must be visible) */
+.header-mobile,
+.header-mobile .mobile-top-bar {
+  overflow: visible;
+}
+
+/* Keep top bar stable */
+.header-mobile .mobile-top-bar {
+  height: 48px;
+  min-height: 48px;
+  max-height: 48px;
+  box-sizing: border-box;
+  position: relative; /* positioning context for overlay */
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+}
+
+/* Anchor must be zero-footprint AND not a positioning context */
+.header-mobile .mobile-search-anchor {
+  position: static;     /* IMPORTANT: do NOT be relative */
+  width: 0;
+  height: 0;
+  flex: 0 0 0;
+  overflow: visible;
+}
+
+/* True overlay positioned relative to .mobile-top-bar */
+.header-mobile .mobile-search-inline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;            /* fill the top bar */
+  height: auto;
+  z-index: 5000;        /* above row 2 */
+  overflow: visible;    /* allow dropdown to extend */
+  pointer-events: none; /* inactive when closed */
+}
+
+body.mobile-search-open .header-mobile .mobile-search-inline {
+  pointer-events: auto;
+}
+
+/* Search container fills the bar */
+.header-mobile .mobile-search-inline .be-search {
+  position: relative;   /* anchor for results */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background: var(--bg-header, #0b0b12);
+}
+
+/* Input row: stable vertical alignment */
+.header-mobile .mobile-search-inline .be-search-input-wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+}
+
+/* Input sizing */
+.header-mobile .mobile-search-inline .be-search-input {
+  height: 36px;
+  line-height: 36px;
+}
+
+/* Results dropdown must attach under the bar and stay visible */
+.header-mobile .mobile-search-inline .be-search-results {
+  position: absolute;
+  top: 100% !important;
+  left: 14px;
+  right: 14px;
+  margin: 0;
+  z-index: 5001;
+  margin-top: 0;
+}
+
 
     /* ==================================================
        MOBILE HEADER ACTIONS
@@ -123,8 +206,7 @@
         width: 86%;
         max-width: 340px;
         max-height: 100dvh;
-        background: linear-gradient(180deg, #0f131a 0%, #0c1016 100%);
-        color: #e6e6e6;
+        background: linear-gradient(180deg, #272d31, #0f1112);        color: #e6e6e6;        color: #e6e6e6;
         transform: translateX(-100%);
         transition: transform .25s ease;
         z-index: 2000;
@@ -132,52 +214,99 @@
         -webkit-overflow-scrolling: touch;
         pointer-events: auto;
         padding-bottom: 18px;
+        --mobile-menu-header-h: 56px;
+        --mobile-menu-close-area: 52px;
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(0, 0, 0, 0.35) transparent; /* thumb, track */
+    }
+
+    .mobile-menu-panel::-webkit-scrollbar-thumb {
+         background-color: rgba(0, 0, 0, 0.35);
+         border-radius: 999px;
+         border: 2px solid transparent;
+         background-clip: content-box;
+    }
+
+    .mobile-menu-panel::-webkit-scrollbar-thumb:hover {
+         background-color: rgba(0, 0, 0, 0.45);
     }
 
     .mobile-menu-panel.open {
         transform: translateX(0);
     }
 
-    /* Close button */
-    .mobile-menu-panel > button[aria-label="Close menu"] {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        z-index: 10;
-        background: none;
-        border: none;
-        padding: 6px;
-    }
+    /* Close button (sticky inside panel; does NOT push brand down) */
+.mobile-menu-panel > button[aria-label="Close menu"],
+.mobile-menu-panel > .mobile-menu-close {
+  position: sticky;
+  top: 0;
+  left: 12px;
+  z-index: 30;
 
-    .mobile-menu-panel > button[aria-label="Close menu"] img,
-    .mobile-menu-panel > button[aria-label="Close menu"] svg {
-        width: 22px;
-        height: 22px;
-        display: block;
-    }
+  height: var(--mobile-menu-header-h, 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform: none;
+  background: none;
+  border: none;
+  padding: 6px;
+  line-height: 0;
+
+  /* Key: cancel the layout space so brand does not move down */
+  margin-bottom: calc(-1 * var(--mobile-menu-header-h, 56px));
+}
+
+
+.mobile-menu-panel > button[aria-label="Close menu"] img,
+.mobile-menu-panel > button[aria-label="Close menu"] svg,
+.mobile-menu-panel > .mobile-menu-close img,
+.mobile-menu-panel > .mobile-menu-close svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+
+}
+
+    .mobile-menu-panel .menu-brand {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+    /* PATCH: Stabilize mobile tap/focus repaint jitter inside hamburger panel */
+.mobile-menu-panel .menu-link {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Remove paint transitions during interaction (prevents shimmer/jitter) */
+.mobile-menu-panel .menu-link:active,
+.mobile-menu-panel .menu-link:focus {
+  transition: none !important;
+}
 
     /* ==================================================
        MENU HEADER
     ================================================== */
     .mobile-menu-panel .menu-brand {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         gap: 10px;
-        padding: 12px 16px;
+        padding: 0px 1px;
         background: #0f121b;
         border-bottom: 1px solid rgba(255,255,255,0.08);
+        min-height: var(--mobile-menu-header-h, 56px);
+        padding-left: var(--mobile-menu-close-area, 52px);
+        box-sizing: border-box;
     }
 
-    .mobile-menu-panel .menu-brand .logo {
-        height: 26px;
-        width: auto;
-    }
-
-    .mobile-menu-panel .brand-text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.1;
+    .mobile-menu-panel .menu-brand-img {
+        display: block;
+        height: auto;
     }
 
     /* ==================================================
@@ -185,7 +314,7 @@
     ================================================== */
     .menu-section {
         padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        
     }
 
     .menu-section + .menu-section {
@@ -230,7 +359,7 @@
         display: none;
         flex-direction: column;
         margin-top: 6px;
-        padding-left: 12px;
+        padding-left: 18px;
     }
 
     .menu-section.navigation .submenu.open {
@@ -254,6 +383,9 @@
         font-weight: 600;
     }
 
+    .menu-section.navigation {
+        margin-top: 1px;
+    }
 
     /* ==================================================
        ACCOUNT
@@ -269,9 +401,9 @@
     .menu-section.account h4 {
         grid-column: 1 / -1;
         margin-bottom: 6px;
-        font-size: 13px;
-        letter-spacing: 0.08em;
-        opacity: 0.6;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        
     }
 
     /* Buttons base */
@@ -342,6 +474,22 @@
    /* PATCH: ACCOUNT container must stay single-column (prevents conflicts) */
 .mobile-menu-panel .menu-section.account {
     display: block;
+    
+}
+/* ACCOUNT divider: inset line (not full-width) */
+.mobile-menu-panel .menu-section.account {
+  border-bottom: none; /* ensure no full-width border */
+  position: relative;
+}
+
+.mobile-menu-panel .menu-section.account::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* PATCH: Guest auth buttons side-by-side (only inside .mobile-auth-guest) */
@@ -350,6 +498,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     width: 100%;
+    margin-top: 16px
 }
 
 .mobile-menu-panel .menu-section.account .mobile-auth-guest .menu-auth-register,
@@ -357,7 +506,56 @@
     width: 100%;
     min-width: 0;
 }
+.mobile-menu-panel .menu-section.account {
+  border-bottom: 0;
+}
 
+.mobile-menu-panel .menu-section.account {
+  border-bottom: 0;
+}
+
+    /* ================================
+   ACCOUNT USER ROW — FIX ALIGNMENT
+================================ */
+
+/* Make header a positioned anchor like menu links */
+.mobile-menu-panel .mobile-auth-user .mobile-user-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;              /* tighter spacing between icon and username */
+  padding-right: 34px;   /* reserve space for caret (same logic as menu links) */
+}
+
+/* Smaller avatar */
+.mobile-menu-panel .mobile-auth-user .mobile-user-avatar {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+/* Force JS-injected caret to align with other carets */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  position: absolute !important;
+  right: 18px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin-left: 0 !important;   /* cancel inline margin */
+  flex: 0 0 auto !important;
+}
+/* PATCH: Standardize user caret size to match other carets */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  border-left-width: 7px !important;
+  border-right-width: 7px !important;
+  border-top-width: 8px !important;
+  border-bottom-width: 8px !important;
+}
+/* PATCH: move user caret to bottom (align with ROI row) */
+.mobile-menu-panel .mobile-auth-user .be-user-caret {
+  top: auto !important;
+  bottom: 2px !important;   /* adjust 8–12px if needed */
+  transform: none !important;
+}
 
   
     /* ==================================================
@@ -366,7 +564,6 @@
     .menu-section.preferences {
         margin-top: 16px;
         padding-top: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menu-section h4 {
@@ -390,6 +587,40 @@
         font-weight: 600;
         cursor: pointer;
     }
+
+    /* PREFERENCES: inset divider under label + inset divider at section bottom */
+.mobile-menu-panel .menu-section.preferences {
+  position: relative;
+}
+
+/* 1) Divider directly under the Preferences label */
+.mobile-menu-panel .menu-section.preferences > h4 {
+  position: relative;
+  margin-bottom: 10px; /* keep spacing consistent */
+  padding-bottom: 10px;
+}
+
+.mobile-menu-panel .menu-section.preferences > h4::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* 2) Divider at the bottom of Preferences section */
+.mobile-menu-panel .menu-section.preferences::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
 
     /* --------------------------------------------------
        Odds Format & Language — VISUALLY SECONDARY LABELS
@@ -493,6 +724,14 @@
     .menu-section.preferences .menu-item.menu-lang::after {
         border-top-color: #f4a11a;
     }
+
+    /* Open state (modern browsers): rotate caret UP when submenu is open */
+    .mobile-menu-panel .menu-group:has(> .submenu.open) > .menu-link::after {
+        transform: translateY(-50%) rotate(180deg);
+    }
+
+
+
 /* ==================================================
    MODALS — MOBILE (Enterprise Order)
    Scope:
@@ -753,7 +992,7 @@
         align-items: center;
         gap: 8px;
         padding: 8px 10px;
-        background: #131826; /* darker grey to visually separate from Row 1 */
+        background: linear-gradient(180deg, #272d31, #0f1112);
         border-bottom: 1px solid rgba(255,255,255,0.06);
         height: 48px;
         overflow-x: visible;
@@ -807,20 +1046,15 @@
         text-transform: capitalize;
     }
 
-    /* Active: change LABEL only */
-    .mobile-sport-item.active .sport-label {
-        color: #ff9d00; /* light orange */
-    }
-
     /* "More" always light orange (icon + label) */
     .mobile-sport-more .sport-label {
-        color: #ff9d00;
+        color: #f4a11a;
     }
 
     .mobile-sport-more .sport-icon {
-        color: #ff9d00;
-        width: 20px;
-        height: 20px;
+        color: #f4a11a;
+        width: 24px;
+        height: 24px;
     }
 
     /* FIX: prevent sports row container from blocking clicks */
@@ -898,3 +1132,253 @@
         text-align: left;
         padding: 10px 0;
     }
+/* ==================================================
+   BOOKMARKS (MY LEAGUES) — TOP RIGHT PANEL
+   - Width: 75vw (anchored to right)
+   - Height: 40vh (fixed)
+   - Internal scroll in body
+================================================== */
+
+#mobile-bookmarks-modal {
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    padding: 0 !important;
+}
+
+#mobile-bookmarks-modal .be-modal {
+    width: min(75vw, 560px);
+    height: 20vh;
+    max-height: 40vh;
+    margin: 0 !important;
+
+    position: relative;
+    top: 0;
+    right: 0;
+
+    border-radius: 18px;
+}
+
+#mobile-bookmarks-modal .be-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#mobile-bookmarks-modal .be-modal-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(40vh - 56px);
+    padding: 16px 14px;
+}
+
+    /* ==================================================
+   BOOKMARKS HEADER — ICON LEFT + THIN DIVIDER
+================================================== */
+
+/* Ensure header layout matches OddsPortal */
+#mobile-bookmarks-modal .be-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* Title: icon on the left, text pushed right */
+#mobile-bookmarks-modal .be-modal-header h2,
+#mobile-bookmarks-modal .be-modal-header .be-modal-title,
+#mobile-bookmarks-modal .be-modal-header .title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+/* Bookmark icon (OddsPortal-style) */
+#mobile-bookmarks-modal .be-modal-header h2::before,
+#mobile-bookmarks-modal .be-modal-header .be-modal-title::before,
+#mobile-bookmarks-modal .be-modal-header .title::before {
+  content: "★";
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  color: #f5b400;
+}
+
+    #mobile-bookmarks-modal .be-modal {
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+}
+
+/* ===== BOOKMARKS MODAL: footer action aligned + divider ===== */
+#mobile-bookmarks-modal .be-modal-footer{
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 12px 14px;
+}
+
+#mobile-bookmarks-modal .be-modal-footer-link{
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: rgba(255,255,255,.9);
+  text-decoration: none;
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+#mobile-bookmarks-modal .be-modal-footer-link:hover{
+  color: var(--text-secondary, #00eaff);
+}
+
+  /* ==================================================
+   MY COUPON (MOBILE) — TOP RIGHT PANEL (Enterprise)
+   - Width: 75vw
+   - Height: 30vh
+   - Body scroll only
+   - Footer pinned at bottom (like bookmarks)
+   - Divider lines
+================================================== */
+
+#mobile-coupon-modal{
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+}
+
+/* Panel */
+#mobile-coupon-modal .be-modal{
+  width: min(75vw, 560px);
+  height: 20vh;
+  max-height: 50vh;
+  margin: 0 !important;
+
+  border-radius: 16px;
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+  overflow: hidden;
+
+  /* KEY: split into header/body/footer layout */
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER: icon + label in one line */
+#mobile-coupon-modal .be-modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Left side */
+#mobile-coupon-modal .be-modal-title{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Icon sizing + gold color (IMG via filter) */
+#mobile-coupon-modal .be-modal-title-icon{
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  filter: brightness(0) saturate(100%) invert(74%) sepia(55%) saturate(1900%) hue-rotate(2deg) brightness(102%) contrast(103%);
+}
+
+/* BODY: scroll area only */
+#mobile-coupon-modal .be-modal-body{
+  flex: 1 1 auto; /* KEY: consume remaining height */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px;
+}
+
+/* FOOTER: pinned at bottom (outside scroll) */
+#mobile-coupon-modal .be-modal-footer{
+  flex: 0 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 14px;
+}
+
+#mobile-coupon-modal .be-modal-footer-link{
+  display: block;
+  width: 100%;
+  text-align: left;
+  text-decoration: underline;
+  color: rgba(0,234,255,0.9);
+}
+
+#mobile-coupon-modal .be-modal-footer-link:hover{
+  color: rgba(0,234,255,1);
+}
+
+/* ==================================================
+   NOTIFICATIONS (MOBILE) — TOP RIGHT PANEL (same as Bookmarks/Coupon)
+   - Width: 75vw
+   - Height: 40vh (same as Bookmarks; use 30vh if you prefer Coupon height)
+   - Body scroll only
+   - Header divider, title icon 18px gold (via filter)
+================================================== */
+
+#mobile-notifications-modal {
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+#mobile-notifications-modal .be-modal {
+  width: min(75vw, 560px);
+  height: 15vh;           /* use 30vh if you want Coupon height */
+  max-height: 40vh;
+  margin: 0 !important;
+
+  border-radius: 16px;
+  background-image: linear-gradient(180deg, rgb(39, 45, 49) 0%, rgb(10, 12, 18) 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header matches Bookmarks/Coupon */
+#mobile-notifications-modal .be-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* Title layout (icon + label) */
+#mobile-notifications-modal .be-modal-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Icon sizing + gold tint (same filter used on Coupon icon IMG) */
+#mobile-notifications-modal .be-modal-title-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  display: block;
+  filter: brightness(0) saturate(100%) invert(74%) sepia(55%) saturate(1900%) hue-rotate(2deg) brightness(102%) contrast(103%);
+}
+
+/* Body scroll area */
+#mobile-notifications-modal .be-modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px 16px;
+}
+
+/* Placeholder text style (optional, mirrors others) */
+#mobile-notifications-modal .be-modal-placeholder {
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+}
