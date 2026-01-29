@@ -1,28 +1,29 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (REGISTER STUB) – v1.2
+ * BetEngine Enterprise – AUTH API (REGISTER STUB) – v1.3
  * POST /api/auth/register
  *
- * Vercel Serverless Function (Node)
- * Sets HttpOnly cookie session (stub)
+ * Vercel Serverless Function (Node, ESM)
+ * Sets HttpOnly session cookie (HMAC signed, matches login.js)
  *
- * COMPATIBILITY FIXES:
- * - STRICT validation: username + email + password required
- * - Duplicate protection (best-effort): username/email uniqueness
- * - Error shape matches auth-api.js normalizeError()
- * - Uses 201 Created on success
+ * Enterprise fixes:
+ * - Anti-enumeration: no "user exists" leakage (email/username)
+ * - Signed cookie: be_session = <payload_b64url>.<sig_b64url>
+ * - 405 returns JSON (no empty bodies)
  *********************************************************/
 "use strict";
+
+import { createHmac } from "node:crypto";
 
 const COOKIE_NAME = "be_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// Best-effort in-memory store for warm invocations
+// Best-effort in-memory store for warm invocations (stub only; NOT durable on serverless)
 const STORE =
   globalThis.__BE_AUTH_STUB_STORE__ ||
   (globalThis.__BE_AUTH_STUB_STORE__ = {
     emails: new Set(),
     usernames: new Set(),
-    nextId: 1
+    nextId: 1,
   });
 
 function isHttps(req) {
@@ -49,10 +50,28 @@ function base64UrlEncodeJson(obj) {
   return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
+function base64ToBase64Url(b64) {
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function signPayloadB64Url(payloadB64Url) {
+  const secret = (process.env.AUTH_SESSION_SECRET || "").trim();
+  if (!secret) return null;
+  const sigB64 = createHmac("sha256", secret).update(payloadB64Url, "utf8").digest("base64");
+  return base64ToBase64Url(sigB64);
+}
+
 async function readJsonBody(req) {
   try {
     const chunks = [];
-    for await (const chunk of req) chunks.push(chunk);
+    let total = 0;
+
+    for await (const chunk of req) {
+      total += chunk.length || 0;
+      if (total > 64 * 1024) return null; // prevent oversized payload
+      chunks.push(chunk);
+    }
+
     const raw = Buffer.concat(chunks).toString("utf8");
     return raw ? JSON.parse(raw) : {};
   } catch {
@@ -69,12 +88,10 @@ function sendJson(res, statusCode, payload) {
 
 function getClientIp(req) {
   const xff = req.headers["x-forwarded-for"];
-  if (typeof xff === "string" && xff.trim()) {
-    return xff.split(",")[0].trim();
-  }
+  if (typeof xff === "string" && xff.trim()) return xff.split(",")[0].trim();
   const realIp = req.headers["x-real-ip"];
   if (typeof realIp === "string" && realIp.trim()) return realIp.trim();
-  return (req.socket && req.socket.remoteAddress) ? String(req.socket.remoteAddress) : "unknown";
+  return req.socket && req.socket.remoteAddress ? String(req.socket.remoteAddress) : "unknown";
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,10 +105,8 @@ function normalizeUsername(v) {
 }
 
 function validateUsername(u) {
-  // Keep simple but strict for stub stage
   if (!u) return false;
   if (u.length < 3 || u.length > 24) return false;
-  // allow letters/numbers/._-
   return /^[a-zA-Z0-9._-]+$/.test(u);
 }
 
@@ -99,11 +114,14 @@ function validatePassword(p) {
   return typeof p === "string" && p.length >= 8 && p.length <= 128;
 }
 
+function looksValidInput(username, email, password) {
+  return validateUsername(username) && EMAIL_RE.test(email) && validatePassword(password);
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.statusCode = 405;
     res.setHeader("Allow", "POST");
-    return res.end();
+    return sendJson(res, 405, { error: { code: "METHOD_NOT_ALLOWED" } });
   }
 
   // Rate limit (enterprise, serverless-safe). Fail-open if misconfigured.
@@ -118,7 +136,7 @@ export default async function handler(req, res) {
       return sendJson(res, 429, {
         ok: false,
         error: "RATE_LIMITED",
-        message: "Too many attempts. Please try again later."
+        message: "Too many attempts. Please try again later.",
       });
     }
   } catch {
@@ -134,7 +152,6 @@ export default async function handler(req, res) {
   const email = normalizeEmail(body.email);
   const password = typeof body.password === "string" ? body.password : "";
 
-  // STRICT fields required (matches auth-api.js + header-auth.js expectations)
   const missing = [];
   if (!username) missing.push("username");
   if (!email) missing.push("email");
@@ -145,43 +162,26 @@ export default async function handler(req, res) {
       error: {
         code: "VALIDATION_ERROR",
         message: "Username, email, and password are required",
-        details: { fields: missing }
-      }
+        details: { fields: missing },
+      },
     });
   }
 
-  if (!validateUsername(username) || !EMAIL_RE.test(email) || !validatePassword(password)) {
+  // Anti-enumeration:
+  // - Do not reveal whether email/username exists.
+  // - Do not return per-field validation booleans.
+  if (!looksValidInput(username, email, password)) {
     return sendJson(res, 400, {
-      error: {
-        code: "VALIDATION_ERROR",
-        message: "Invalid username, email, or password",
-        details: {
-          usernameOk: validateUsername(username),
-          emailOk: EMAIL_RE.test(email),
-          passwordOk: validatePassword(password)
-        }
-      }
+      error: { code: "VALIDATION_ERROR", message: "Invalid username, email, or password" },
     });
   }
 
-  // Duplicate protection (best-effort)
-  if (STORE.emails.has(email)) {
-    return sendJson(res, 409, {
-      error: {
-        code: "USER_EXISTS",
-        message: "Email is already registered",
-        details: { field: "email" }
-      }
-    });
-  }
-
-  if (STORE.usernames.has(username.toLowerCase())) {
-    return sendJson(res, 409, {
-      error: {
-        code: "USER_EXISTS",
-        message: "Username is already taken",
-        details: { field: "username" }
-      }
+  // Duplicate protection (best-effort) WITHOUT leakage
+  const emailExists = STORE.emails.has(email);
+  const usernameExists = STORE.usernames.has(username.toLowerCase());
+  if (emailExists || usernameExists) {
+    return sendJson(res, 400, {
+      error: { code: "VALIDATION_ERROR", message: "Invalid username, email, or password" },
     });
   }
 
@@ -189,7 +189,7 @@ export default async function handler(req, res) {
   const user = {
     id: `stub-reg-${STORE.nextId++}`,
     username,
-    email
+    email,
   };
 
   STORE.emails.add(email);
@@ -197,20 +197,31 @@ export default async function handler(req, res) {
 
   const exp = Date.now() + SESSION_TTL_MS;
   const sessionPayload = { user, role: "user", premium: false, exp };
-  const cookieValue = base64UrlEncodeJson(sessionPayload);
+
+  const payloadB64Url = base64UrlEncodeJson(sessionPayload);
+  const sigB64Url = signPayloadB64Url(payloadB64Url);
+
+  if (!sigB64Url) {
+    return sendJson(res, 500, {
+      ok: false,
+      error: { code: "AUTH_SECRET_MISSING", message: "Server auth secret is not configured." },
+    });
+  }
+
+  const cookieValue = `${payloadB64Url}.${sigB64Url}`;
 
   setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
     path: "/",
     httpOnly: true,
     secure: isHttps(req),
     sameSite: "Lax",
-    maxAge: Math.floor(SESSION_TTL_MS / 1000)
+    maxAge: Math.floor(SESSION_TTL_MS / 1000),
   });
 
   return sendJson(res, 201, {
     authenticated: true,
     user,
     role: "user",
-    premium: false
+    premium: false,
   });
 }
