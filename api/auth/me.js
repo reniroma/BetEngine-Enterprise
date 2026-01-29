@@ -1,14 +1,18 @@
 /*********************************************************
- * BetEngine Enterprise – AUTH API (COOKIE SESSION)
+ * BetEngine Enterprise – AUTH API (SIGNED COOKIE SESSION)
  * GET /api/auth/me
  *
  * Behavior:
  * - Always returns 200 (no console noise)
- * - If session cookie exists -> authenticated true
+ * - If session cookie exists and is valid -> authenticated true
  * - If missing/invalid/expired -> authenticated false (and clears cookie)
+ *
+ * Signed cookie format:
+ * - be_session = <payload_b64url>.<sig_b64url>
+ * - sig = HMAC_SHA256(AUTH_SESSION_SECRET, payload_b64url)
  *********************************************************/
 
-"use strict";
+import { createHmac, timingSafeEqual } from "node:crypto";
 
 const COOKIE_NAME = "be_session";
 
@@ -26,10 +30,32 @@ function parseCookies(cookieHeader = "") {
 }
 
 function base64UrlToString(b64url) {
-  // base64url -> base64
   const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
   const pad = b64.length % 4 ? "=".repeat(4 - (b64.length % 4)) : "";
   return Buffer.from(b64 + pad, "base64").toString("utf8");
+}
+
+function base64ToBase64Url(b64) {
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function signPayloadB64Url(payloadB64Url) {
+  const secret = (process.env.AUTH_SESSION_SECRET || "").trim();
+  if (!secret) return null;
+  const sigB64 = createHmac("sha256", secret).update(payloadB64Url, "utf8").digest("base64");
+  return base64ToBase64Url(sigB64);
+}
+
+function safeSigEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  const ba = Buffer.from(a, "utf8");
+  const bb = Buffer.from(b, "utf8");
+  if (ba.length !== bb.length) return false;
+  try {
+    return timingSafeEqual(ba, bb);
+  } catch {
+    return false;
+  }
 }
 
 function isHttps(req) {
@@ -99,8 +125,55 @@ export default function handler(req, res) {
       });
     }
 
-    // Expected cookie payload: base64url(JSON.stringify({ user, role, premium, exp }))
-    const jsonStr = base64UrlToString(raw);
+    const secret = (process.env.AUTH_SESSION_SECRET || "").trim();
+    if (!secret) {
+      // Fail-closed: clear any existing cookie and return unauthenticated
+      clearSessionCookie(res, req);
+      return safeResponse(res, {
+        authenticated: false,
+        user: null,
+        role: "user",
+        premium: false,
+      });
+    }
+
+    // Expected cookie value: <payload_b64url>.<sig_b64url>
+    const dot = raw.indexOf(".");
+    if (dot === -1) {
+      clearSessionCookie(res, req);
+      return safeResponse(res, {
+        authenticated: false,
+        user: null,
+        role: "user",
+        premium: false,
+      });
+    }
+
+    const payloadB64Url = raw.slice(0, dot);
+    const sigB64Url = raw.slice(dot + 1);
+
+    if (!payloadB64Url || !sigB64Url) {
+      clearSessionCookie(res, req);
+      return safeResponse(res, {
+        authenticated: false,
+        user: null,
+        role: "user",
+        premium: false,
+      });
+    }
+
+    const expectedSig = signPayloadB64Url(payloadB64Url);
+    if (!expectedSig || !safeSigEqual(expectedSig, sigB64Url)) {
+      clearSessionCookie(res, req);
+      return safeResponse(res, {
+        authenticated: false,
+        user: null,
+        role: "user",
+        premium: false,
+      });
+    }
+
+    const jsonStr = base64UrlToString(payloadB64Url);
     const data = JSON.parse(jsonStr);
 
     const exp = typeof data.exp === "number" ? data.exp : null;
@@ -131,8 +204,7 @@ export default function handler(req, res) {
       role: typeof data.role === "string" && data.role ? data.role : "user",
       premium: !!data.premium,
     });
-  } catch (e) {
-    // Any parse error -> clear cookie and return unauth safely
+  } catch {
     clearSessionCookie(res, req);
     return safeResponse(res, {
       authenticated: false,
