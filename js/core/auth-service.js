@@ -333,90 +333,152 @@
 })();
 
 
-/* ==================================================
-   GOOGLE SOCIAL AUTH (GIS) — enterprise bind
-   - Loads GIS script on demand
-   - Fetches clientId from /api/auth/google-config via BEAuthAPI
-   - Uses /api/auth/google to create cookie session
-================================================== */
-(() => {
-  "use strict";
+  // ==================================================
+  // GOOGLE SOCIAL AUTH (GIS) — enterprise module
+  // - Preloads config + GIS script (async, on page load)
+  // - Click remains synchronous (proxy click to rendered Google button)
+  // ==================================================
+  if (!window.__BE_GIS_BIND_INSTALLED__) {
+    window.__BE_GIS_BIND_INSTALLED__ = true;
 
-  let __beGisPromise = null;
+    const __beGisState = {
+      ready: false,
+      initStarted: false,
+      clientId: "",
+      holder: null,
+      clickable: null
+    };
 
-  const __beLoadGIS = () => {
-    if (__beGisPromise) return __beGisPromise;
-    __beGisPromise = new Promise((resolve, reject) => {
-      if (window.google?.accounts?.id) return resolve(true);
-      const s = document.createElement("script");
-      s.src = "https://accounts.google.com/gsi/client";
-      s.async = true;
-      s.defer = true;
-      s.onload = () => resolve(true);
-      s.onerror = () => reject(new Error("GIS_LOAD_FAILED"));
-      document.head.appendChild(s);
-    });
-    return __beGisPromise;
-  };
-
-  const getClientId = async () => {
-    const API = window.BEAuthAPI || window.BEAuthApi;
-    if (!API || typeof API.getGoogleConfig !== "function") return "";
-    const cfg = await API.getGoogleConfig();
-    return String(cfg?.clientId || "").trim();
-  };
-
-  const ensureInit = (clientId) => {
-    if (window.__BE_GIS_INIT__ === true) return;
-    window.__BE_GIS_INIT__ = true;
-
-    const API = window.BEAuthAPI || window.BEAuthApi;
-
-    window.google.accounts.id.initialize({
-      client_id: clientId,
-      callback: async (resp) => {
-        try {
-          const cred = String(resp?.credential || "").trim();
-          if (!cred) throw new Error("NO_CREDENTIAL");
-          if (!API || typeof API.googleLogin !== "function") throw new Error("NO_API");
-
-          await API.googleLogin({ credential: cred });
-
-          if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
-            await window.BEAuth.hydrate();
+    const __beWaitForAuthAPI = (timeoutMs = 5000) =>
+      new Promise((resolve) => {
+        const t0 = Date.now();
+        const tick = () => {
+          const API = window.BEAuthAPI || window.BEAuthApi;
+          if (API && typeof API.getGoogleConfig === "function" && typeof API.googleLogin === "function") {
+            return resolve(API);
           }
+          if (Date.now() - t0 >= timeoutMs) return resolve(null);
+          setTimeout(tick, 50);
+        };
+        tick();
+      });
 
-          if (typeof window.BE_closeAuthModals === "function") window.BE_closeAuthModals();
-        } catch (e) {
-          console.error("Google login failed", e);
-        }
+    const __beLoadGisScript = () =>
+      new Promise((resolve, reject) => {
+        if (window.google?.accounts?.id) return resolve(true);
+
+        const existing = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+        if (existing) return resolve(true);
+
+        const s = document.createElement("script");
+        s.src = "https://accounts.google.com/gsi/client";
+        s.async = true;
+        s.defer = true;
+        s.onload = () => resolve(true);
+        s.onerror = () => reject(new Error("GIS_LOAD_FAILED"));
+        document.head.appendChild(s);
+      });
+
+    const __beEnsureHiddenButton = () => {
+      const holderId = "be-gis-hidden";
+      let holder = document.getElementById(holderId);
+      if (!holder) {
+        holder = document.createElement("div");
+        holder.id = holderId;
+        holder.style.position = "fixed";
+        holder.style.left = "-9999px";
+        holder.style.top = "-9999px";
+        holder.style.width = "1px";
+        holder.style.height = "1px";
+        holder.style.overflow = "hidden";
+        document.body.appendChild(holder);
       }
-    });
-  };
+      __beGisState.holder = holder;
 
-  document.addEventListener(
-    "click",
-    async (e) => {
-      const btn = e.target?.closest?.(".auth-social-btn.google, .auth-social button.google");
-      if (!btn) return;
+      if (!holder.dataset.beGisRendered && typeof window.google?.accounts?.id?.renderButton === "function") {
+        window.google.accounts.id.renderButton(holder, {
+          type: "standard",
+          theme: "outline",
+          size: "large"
+        });
+        holder.dataset.beGisRendered = "1";
+      }
 
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+      __beGisState.clickable = holder.querySelector('div[role="button"], button');
+    };
+
+    const __beGisInit = async () => {
+      if (__beGisState.ready || __beGisState.initStarted) return;
+      __beGisState.initStarted = true;
 
       try {
-        const clientId = await getClientId();
+        const API = await __beWaitForAuthAPI(5000);
+        if (!API) return;
+
+        const cfg = await API.getGoogleConfig();
+        const clientId = String(cfg?.clientId || "").trim();
         if (!clientId) return;
 
-        await __beLoadGIS();
+        await __beLoadGisScript();
         if (!window.google?.accounts?.id) return;
 
-        ensureInit(clientId);
-        window.google.accounts.id.prompt();
-      } catch (err) {
-        console.error("Google GIS init/prompt failed", err);
+        if (window.__BE_GIS_INIT__ !== true) {
+          window.__BE_GIS_INIT__ = true;
+
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: async (resp) => {
+              try {
+                const cred = String(resp?.credential || "").trim();
+                if (!cred) throw new Error("NO_CREDENTIAL");
+
+                await API.googleLogin({ credential: cred });
+
+                if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
+                  await window.BEAuth.hydrate();
+                }
+
+                if (typeof window.BE_closeAuthModals === "function") window.BE_closeAuthModals();
+              } catch (e) {
+                console.error("Google login failed", e);
+              }
+            },
+            auto_select: false
+          });
+        }
+
+        __beEnsureHiddenButton();
+        if (__beGisState.clickable) __beGisState.ready = true;
+      } catch (e) {
+        console.error("GIS init failed", e);
       }
-    },
-    true
-  );
+    };
+
+    // Preload in background (does NOT depend on user gesture)
+    Promise.resolve().then(__beGisInit);
+
+    // Custom button click proxy (MUST stay synchronous)
+    document.addEventListener(
+      "click",
+      (e) => {
+        const btn = e.target?.closest?.(".auth-social-btn.google, .auth-social button.google");
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+        if (__beGisState.ready && __beGisState.clickable && typeof __beGisState.clickable.click === "function") {
+          __beGisState.clickable.click();
+          return;
+        }
+
+        // Not ready yet: start init (async) but do NOT await here (keep user gesture clean)
+        __beGisInit();
+        console.warn("Google login is still initializing. Please click again in 1–2 seconds.");
+      },
+      true
+    );
+  }
+
 })();
