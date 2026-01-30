@@ -170,6 +170,23 @@ function initAuth() {
     });
   });
 
+  // Google Social Auth (GIS) — minimal click handler for both modals
+  let __beGisPromise = null;
+  const __beLoadGIS = () => {
+    if (__beGisPromise) return __beGisPromise;
+    __beGisPromise = new Promise((resolve, reject) => {
+      if (window.google?.accounts?.id) return resolve(true);
+      const s = document.createElement("script");
+      s.src = "https://accounts.google.com/gsi/client";
+      s.async = true; s.defer = true;
+      s.onload = () => resolve(true);
+      s.onerror = () => reject(new Error("GIS_LOAD_FAILED"));
+      document.head.appendChild(s);
+    });
+    return __beGisPromise;
+  };
+
+ 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAll();
   });
@@ -626,6 +643,9 @@ function initAuthActionOwnership() {
 
       const btn = target.closest('button, input[type="button"], input[type="submit"]');
       if (!btn) return;
+
+     // Social auth buttons must NOT be treated as login/register submit-like actions
+     if (btn.closest(".auth-social-btn, .auth-social")) return;
 
       const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
       const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));

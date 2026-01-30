@@ -12,7 +12,13 @@
  * Optional test credentials via ENV (NOT committed):
  * - AUTH_TEST_EMAIL
  * - AUTH_TEST_PASSWORD
+ *
+ * Session cookie (HMAC signed):
+ * - be_session = <payload_b64url>.<sig_b64url>
+ * - sig = HMAC_SHA256(AUTH_SESSION_SECRET, payload_b64url)
  *********************************************************/
+
+import { createHmac } from "node:crypto";
 
 const COOKIE_NAME = "be_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -39,6 +45,17 @@ function base64UrlEncodeJson(obj) {
   const json = JSON.stringify(obj);
   const b64 = Buffer.from(json, "utf8").toString("base64");
   return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function base64ToBase64Url(b64) {
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function signPayloadB64Url(payloadB64Url) {
+  const secret = (process.env.AUTH_SESSION_SECRET || "").trim();
+  if (!secret) return null;
+  const sigB64 = createHmac("sha256", secret).update(payloadB64Url, "utf8").digest("base64");
+  return base64ToBase64Url(sigB64);
 }
 
 function sendJson(res, statusCode, payload) {
@@ -93,6 +110,15 @@ export default async function handler(req, res) {
       return res.end();
     }
 
+    // AUTH SECRET (required for signed cookie)
+    const authSecret = (process.env.AUTH_SESSION_SECRET || "").trim();
+    if (!authSecret) {
+      return sendJson(res, 500, {
+        ok: false,
+        error: { code: "AUTH_SECRET_MISSING", message: "Server auth secret is not configured." },
+      });
+    }
+
     // RATE LIMIT (STORE) — fail-open
     try {
       const rateLimit = await loadRateLimit();
@@ -104,7 +130,7 @@ export default async function handler(req, res) {
           return sendJson(res, 429, {
             ok: false,
             error: "RATE_LIMITED",
-            message: "Too many attempts. Please try again later."
+            message: "Too many attempts. Please try again later.",
           });
         }
       }
@@ -129,8 +155,8 @@ export default async function handler(req, res) {
         error: {
           code: "VALIDATION_ERROR",
           message: "Email and password are required",
-          details: { fields: ["email", "password"] }
-        }
+          details: { fields: ["email", "password"] },
+        },
       });
     }
 
@@ -139,7 +165,7 @@ export default async function handler(req, res) {
 
     if (!expectedEmail || !expectedPassword) {
       return sendJson(res, 501, {
-        error: { code: "AUTH_NOT_CONFIGURED", message: "Login is not configured yet." }
+        error: { code: "AUTH_NOT_CONFIGURED", message: "Login is not configured yet." },
       });
     }
 
@@ -150,21 +176,32 @@ export default async function handler(req, res) {
     const user = { id: "user-test-1", username: "test", email: expectedEmail };
     const exp = Date.now() + SESSION_TTL_MS;
     const sessionPayload = { user, role: "user", premium: false, exp };
-    const cookieValue = base64UrlEncodeJson(sessionPayload);
+
+    const payloadB64Url = base64UrlEncodeJson(sessionPayload);
+    const sigB64Url = signPayloadB64Url(payloadB64Url);
+
+    if (!sigB64Url) {
+      return sendJson(res, 500, {
+        ok: false,
+        error: { code: "AUTH_SECRET_MISSING", message: "Server auth secret is not configured." },
+      });
+    }
+
+    const cookieValue = `${payloadB64Url}.${sigB64Url}`;
 
     setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
       path: "/",
       httpOnly: true,
       secure: isHttps(req),
       sameSite: "Lax",
-      maxAge: Math.floor(SESSION_TTL_MS / 1000)
+      maxAge: Math.floor(SESSION_TTL_MS / 1000),
     });
 
     return sendJson(res, 200, {
       authenticated: true,
       user,
       role: "user",
-      premium: false
+      premium: false,
     });
   } catch {
     return sendJson(res, 500, { error: { code: "SERVER_ERROR" } });
