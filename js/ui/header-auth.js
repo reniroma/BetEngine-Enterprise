@@ -186,66 +186,7 @@ function initAuth() {
     return __beGisPromise;
   };
 
-  // Google Social Auth (GIS) — enterprise: dynamic load + config fetch + prompt
-const bindGoogleSocial = () => {
-  const googleBtns = document.querySelectorAll(".auth-social-btn.google, .auth-social button.google");
-  googleBtns.forEach((btn) => {
-    if (btn.dataset.beGoogleBound === "1") return;
-    btn.dataset.beGoogleBound = "1";
-    btn.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-      const API = window.BEAuthAPI || window.BEAuthApi;
-      if (!API) return;
-
-      const container = btn.closest("form") || btn.closest(".be-modal") || btn.closest(".auth-modal") || document.body;
-      setMessage(container, "info", "");
-
-      try {
-        const cfg = await API.getGoogleConfig();
-        const clientId = String(cfg?.clientId || "").trim();
-        if (!clientId) {
-          setMessage(container, "error", "Google login is not configured yet.");
-          return;
-        }
-
-        await __beLoadGIS();
-        if (!window.google?.accounts?.id) {
-          setMessage(container, "error", "Google SDK failed to load.");
-          return;
-        }
-
-        if (!window.__BE_GIS_INIT__) {
-          window.__BE_GIS_INIT__ = true;
-          window.google.accounts.id.initialize({
-            client_id: clientId,
-            callback: async (resp) => {
-              try {
-                const cred = String(resp?.credential || "").trim();
-                if (!cred) throw new Error("NO_CREDENTIAL");
-                await API.googleLogin({ credential: cred });
-                const me = await API.me();
-                if (window.BEAuth?.setAuth) window.BEAuth.setAuth(me);
-                const nextState = window.BEAuth?.getState ? window.BEAuth.getState() : (me || {});
-                document.dispatchEvent(new CustomEvent("auth:changed", { detail: nextState }));
-                window.BE_closeAuthModals?.();
-              } catch {
-                setMessage(container, "error", "Google login failed. Please try again.");
-              }
-            }
-          });
-        }
-
-        window.google.accounts.id.prompt();
-      } catch {
-        setMessage(container, "error", "Google login failed. Please try again.");
-      }
-    }, true);
-  });
-};
-
+ 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAll();
   });
