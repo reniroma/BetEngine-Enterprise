@@ -254,6 +254,27 @@
     return r.data;
   };
 
+  // POST /api/auth/google
+  // body: { credential }
+  const googleLogin = async ({ credential } = {}) => {
+    const c = String(credential ?? "").trim();
+    if (!c) {
+      throwValidation("/auth/google", "POST", "Credential is required", { hasCredential: !!c });
+    }
+    const r = await request("/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: c })
+    });
+    return r.data;
+  };
+
+  // GET /api/auth/google-config
+  const getGoogleConfig = async () => {
+    const r = await request("/auth/google-config", { method: "GET" });
+    return r.data;
+  };
+
   const logout = async () => {
     const r = await request("/auth/logout", { method: "POST" });
     return r.data;
@@ -308,6 +329,8 @@
     me,
     login,
     register,
+    googleLogin,
+    getGoogleConfig,
     logout,
     forgotPassword,
     resetPassword,
