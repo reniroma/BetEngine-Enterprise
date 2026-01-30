@@ -332,6 +332,7 @@
   );
 })();
 
+
 /* ==================================================
    GOOGLE SOCIAL AUTH (GIS) — enterprise bind
    - Loads GIS script on demand
@@ -368,94 +369,6 @@
   const ensureInit = (clientId) => {
     if (window.__BE_GIS_INIT__ === true) return;
     window.__BE_GIS_INIT__ = true;
-
-    const API = window.BEAuthAPI || window.BEAuthApi;
-
-    window.google.accounts.id.initialize({
-      client_id: clientId,
-      callback: async (resp) => {
-        try {
-          const cred = String(resp?.credential || "").trim();
-          if (!cred) throw new Error("NO_CREDENTIAL");
-          if (!API || typeof API.googleLogin !== "function") throw new Error("NO_API");
-
-          await API.googleLogin({ credential: cred });
-
-          if (window.BEAuth && typeof window.BEAuth.hydrate === "function") {
-            await window.BEAuth.hydrate();
-          }
-
-          if (typeof window.BE_closeAuthModals === "function") window.BE_closeAuthModals();
-        } catch (e) {
-          console.error("Google login failed", e);
-        }
-      }
-    });
-  };
-
-  document.addEventListener(
-    "click",
-    async (e) => {
-      const btn = e.target?.closest?.(".auth-social-btn.google, .auth-social button.google");
-      if (!btn) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-      try {
-        const clientId = await getClientId();
-        if (!clientId) return;
-
-        await __beLoadGIS();
-        if (!window.google?.accounts?.id) return;
-
-        ensureInit(clientId);
-        window.google.accounts.id.prompt();
-      } catch (err) {
-        console.error("Google GIS init/prompt failed", err);
-      }
-    },
-    true
-  );
-})();
-
-/* ==================================================
-   GOOGLE SOCIAL AUTH (GIS) — enterprise bind
-   - Loads GIS script on demand
-   - Fetches clientId from /api/auth/google-config via BEAuthAPI
-   - Uses /api/auth/google to create cookie session
-================================================== */
-(() => {
-  "use strict";
-
-  let __beGisPromise = null;
-
-  const __beLoadGIS = () => {
-    if (__beGisPromise) return __beGisPromise;
-    __beGisPromise = new Promise((resolve, reject) => {
-      if (window.google?.accounts?.id) return resolve(true);
-      const s = document.createElement("script");
-      s.src = "https://accounts.google.com/gsi/client";
-      s.async = true;
-      s.defer = true;
-      s.onload = () => resolve(true);
-      s.onerror = () => reject(new Error("GIS_LOAD_FAILED"));
-      document.head.appendChild(s);
-    });
-    return __beGisPromise;
-  };
-
-  const getClientId = async () => {
-    const API = window.BEAuthAPI || window.BEAuthApi;
-    if (!API || typeof API.getGoogleConfig !== "function") return "";
-    const cfg = await API.getGoogleConfig();
-    return String(cfg?.clientId || "").trim();
-  };
-
-  const ensureInit = (clientId) => {
-    if (window._BE_GIS_INIT_ === true) return;
-    window._BE_GIS_INIT_ = true;
 
     const API = window.BEAuthAPI || window.BEAuthApi;
 
