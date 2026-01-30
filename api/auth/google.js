@@ -1,16 +1,20 @@
 // api/auth/google.js
 /*********************************************************
- * BetEngine Enterprise – AUTH API (GOOGLE) – v1.0
+ * BetEngine Enterprise – AUTH API (GOOGLE) – v1.1
  * POST /api/auth/google
  *
  * Flow:
  * - Browser obtains a Google ID token (GIS) and sends it as `credential`.
  * - Server verifies the ID token via Google's tokeninfo endpoint.
- * - On success, sets the same HttpOnly cookie session used by login/register stubs.
+ * - On success, sets the SAME signed HttpOnly cookie session format
+ *   expected by /api/auth/me: payloadB64Url + "." + sigB64Url (HMAC-SHA256)
  *
  * ENV:
- * - GOOGLE_CLIENT_ID (required) – used to validate `aud`.
+ * - GOOGLE_CLIENT_ID (required)
+ * - AUTH_SESSION_SECRET (required) – HMAC signing secret for be_session
  *********************************************************/
+
+import crypto from "crypto";
 
 const COOKIE_NAME = "be_session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -39,10 +43,22 @@ function setCookie(res, name, value, opts = {}) {
   res.setHeader("Set-Cookie", parts.join("; "));
 }
 
+function base64UrlFromBuffer(buf) {
+  return Buffer.from(buf)
+    .toString("base64")
+    .replace(/=+$/g, "")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_");
+}
+
 function base64UrlEncodeJson(obj) {
   const json = JSON.stringify(obj);
-  const b64 = Buffer.from(json, "utf8").toString("base64");
-  return b64.replace(/=+$/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  return base64UrlFromBuffer(Buffer.from(json, "utf8"));
+}
+
+function hmacSha256Base64Url(secret, data) {
+  const mac = crypto.createHmac("sha256", secret).update(data, "utf8").digest();
+  return base64UrlFromBuffer(mac);
 }
 
 function safeJsonBody(req) {
@@ -81,13 +97,25 @@ export default async function handler(req, res) {
       });
     }
 
+    const sessionSecret = String(process.env.AUTH_SESSION_SECRET || "").trim();
+    if (!sessionSecret) {
+      return sendJson(res, 501, {
+        ok: false,
+        error: { code: "AUTH_NOT_CONFIGURED", message: "Missing AUTH_SESSION_SECRET." }
+      });
+    }
+
     const body = safeJsonBody(req);
     const credential = String(body?.credential || "").trim();
 
     if (!credential) {
       return sendJson(res, 400, {
         ok: false,
-        error: { code: "VALIDATION_ERROR", message: "Credential is required.", details: { field: "credential" } }
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "Credential is required.",
+          details: { field: "credential" }
+        }
       });
     }
 
@@ -129,7 +157,11 @@ export default async function handler(req, res) {
 
     const exp = Date.now() + SESSION_TTL_MS;
     const sessionPayload = { user, role: "user", premium: false, exp };
-    const cookieValue = base64UrlEncodeJson(sessionPayload);
+
+    // SIGNED COOKIE FORMAT: payloadB64Url.signatureB64Url
+    const payloadB64Url = base64UrlEncodeJson(sessionPayload);
+    const sigB64Url = hmacSha256Base64Url(sessionSecret, payloadB64Url);
+    const cookieValue = `${payloadB64Url}.${sigB64Url}`;
 
     setCookie(res, COOKIE_NAME, encodeURIComponent(cookieValue), {
       path: "/",
