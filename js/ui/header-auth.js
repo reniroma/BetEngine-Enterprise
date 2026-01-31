@@ -188,14 +188,12 @@ const __beLoadGIS = () => {
 };
 
 /* ======================================================
-   FACEBOOK SOCIAL AUTH — CLICK HANDLER (SAFE)
+   FACEBOOK SOCIAL AUTH — CLICK HANDLER (MATCH REAL HTML)
 ====================================================== */
 document.addEventListener(
   "click",
   (e) => {
-    const fbBtn = e.target.closest(
-      '[data-provider="facebook"], .auth-social-facebook, .btn-facebook'
-    );
+    const fbBtn = e.target.closest(".auth-social-btn.facebook");
     if (!fbBtn) return;
 
     e.preventDefault();
