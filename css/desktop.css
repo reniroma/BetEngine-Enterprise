@@ -71,7 +71,7 @@
   /* REAL SIZE */
   padding: 0 22px 0 14px;
   gap: 10px;
-  min-width: 200px; 
+  min-width: 210px; 
   box-sizing: border-box;
 }
 
@@ -471,9 +471,9 @@
 ======================================================= */
 
 .row-sub {
-    padding: 6px 42px;
-    min-height: 54px;
-    height: 54px;          /* lock Row 3 to normal height */
+    padding: 6px 44px;
+    min-height: 48px;
+    height: 48px;          /* lock Row 3 to normal height */
     display: flex;
     align-items: center;
     position: relative;
@@ -494,14 +494,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-}
 
-/* DESKTOP SUB NAVIGATION — MOVED FROM components.css (COPY/PASTE) */
-.row-sub {
-    display: flex;
-    align-items: center;
-    height: 44px;     /* lock Row 3 to normal height */
-    overflow: visible; /* allow dropdowns (e.g., Betting Tools) to render outside Row 3 */
 }
 
 .row-sub .subnav-group {
@@ -563,7 +556,7 @@
 .tools-dropdown {
     position: absolute;
     z-index: 999;
-    margin-top: 4px;
+    margin-top: 1.5px;
 }
 
 .header-desktop .odds-format,
