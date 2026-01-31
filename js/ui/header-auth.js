@@ -170,7 +170,7 @@ function initAuth() {
     });
   });
 
-// Google Social Auth (GIS) — minimal click handler for both modals
+ // Google Social Auth (GIS) — minimal click handler for both modals
 let __beGisPromise = null;
 const __beLoadGIS = () => {
   if (__beGisPromise) return __beGisPromise;
@@ -214,7 +214,6 @@ window.BE_openLogin = openLogin;
 window.BE_openRegister = openRegister;
 window.BE_closeAuthModals = closeAll;
 }
-
 /* ======================================================
    FORGOT PASSWORD (EVENT DELEGATION)
 ====================================================== */
@@ -651,85 +650,60 @@ function initAuthActionOwnership() {
     true
   );
 
-document.addEventListener(
-  "click",
-  async (e) => {
-    const loginModal = qs("#login-modal");
-    const registerModal = qs("#register-modal");
+  document.addEventListener(
+    "click",
+    async (e) => {
+      const loginModal = qs("#login-modal");
+      const registerModal = qs("#register-modal");
 
-    const target = e.target;
-    if (!(target instanceof Element)) return;
+      const target = e.target;
+      if (!(target instanceof Element)) return;
 
-    const btn = target.closest('button, input[type="button"], input[type="submit"]');
-    if (!btn) return;
+      const btn = target.closest('button, input[type="button"], input[type="submit"]');
+      if (!btn) return;
 
-    // ==================================================
-    // SOCIAL AUTH: do NOT treat as login/register submit
-    // ==================================================
+     // Social auth buttons must NOT be treated as login/register submit-like actions
+     if (btn.closest(".auth-social-btn, .auth-social")) return;
 
-    // Facebook redirect (sync)
-    const isFacebookSocial = btn.matches(".auth-social-btn.facebook, .auth-social button.facebook");
-    if (isFacebookSocial) {
+      const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
+      const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
+      if (!inLogin && !inRegister) return;
+
+      if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
+
+      const isSubmitLike =
+        btn.getAttribute("type") === "submit" ||
+        btn.getAttribute("type") === "button" ||
+        btn.matches(".auth-submit, .auth-login, .auth-register") ||
+        /login/i.test(btn.textContent || "") ||
+        /register/i.test(btn.textContent || "") ||
+        /confirm/i.test(btn.textContent || "");
+
+      if (!isSubmitLike) return;
+
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
-      const returnTo = location.pathname + location.search;
-      window.location.href = "/api/auth/facebook?returnTo=" + encodeURIComponent(returnTo);
-      return;
-    }
+      if (inLogin) {
+        const scope = btn.closest("form") || loginModal;
 
-    // Google handled by GIS module (do not hijack here)
-    const isGoogleSocial = btn.matches(".auth-social-btn.google, .auth-social button.google");
-    if (isGoogleSocial) return;
+        if (isForgotAction(loginModal, btn)) {
+          return runForgot(loginModal, scope, btn);
+        }
 
-    // Any other social buttons: do not hijack (leave to their own handlers)
-    const isAnySocialButton =
-      btn.matches(".auth-social-btn") ||
-      (btn.closest(".auth-social") && btn.matches("button"));
-    if (isAnySocialButton) return;
-
-    // ==================================================
-    // NORMAL AUTH (Login/Register/Forgot)
-    // ==================================================
-
-    const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
-    const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
-    if (!inLogin && !inRegister) return;
-
-    if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
-
-    const isSubmitLike =
-      btn.getAttribute("type") === "submit" ||
-      btn.getAttribute("type") === "button" ||
-      btn.matches(".auth-submit, .auth-login, .auth-register") ||
-      /login/i.test(btn.textContent || "") ||
-      /register/i.test(btn.textContent || "") ||
-      /confirm/i.test(btn.textContent || "");
-
-    if (!isSubmitLike) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-    if (inLogin) {
-      const scope = btn.closest("form") || loginModal;
-
-      if (isForgotAction(loginModal, btn)) {
-        return runForgot(loginModal, scope, btn);
+        return runLogin(loginModal, scope);
       }
 
-      return runLogin(loginModal, scope);
-    }
+      if (inRegister) {
+        const scope = btn.closest("form") || registerModal;
+        return runRegister(registerModal, scope);
+      }
+    },
+    true
+  );
+}
 
-    if (inRegister) {
-      const scope = btn.closest("form") || registerModal;
-      return runRegister(registerModal, scope);
-    }
-  },
-  true
-);
 /* =======================
    EVENT BINDING
 ======================= */
@@ -747,4 +721,3 @@ if (window.__BE_HEADER_READY__ === true) {
 
 hydrateAuthUI();
 initAuthActionOwnership();
-
