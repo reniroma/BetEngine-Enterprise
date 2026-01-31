@@ -633,84 +633,76 @@ function initAuthActionOwnership() {
   );
 
  document.addEventListener(
-  "click",
-  async (e) => {
-    const loginModal = qs("#login-modal");
-    const registerModal = qs("#register-modal");
+    "click",
+    async (e) => {
+      const loginModal = qs("#login-modal");
+      const registerModal = qs("#register-modal");
 
-    const target = e.target;
-    if (!(target instanceof Element)) return;
+      const target = e.target;
+      if (!(target instanceof Element)) return;
 
-    const btn = target.closest('button, input[type="button"], input[type="submit"]');
-    if (!btn) return;
+      const btn = target.closest('button, input[type="button"], input[type="submit"]');
+      if (!btn) return;
 
-    // ============================
-    // SOCIAL BUTTONS (DO NOT HIJACK LOGIN/REGISTER)
-    // ============================
+      // Social auth buttons must NOT be treated as login/register submit-like actions
+      const isFacebookSocial = btn.matches(".auth-social-btn.facebook, .auth-social button.facebook");
+      if (isFacebookSocial) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
-    // Facebook redirect (we DO hijack this one intentionally)
-    const fbBtn = btn.closest(".auth-social-btn.facebook, .auth-social button.facebook");
-    if (fbBtn) {
+        const returnTo = location.pathname + location.search;
+        window.location.href = "/api/auth/facebook?returnTo=" + encodeURIComponent(returnTo);
+        return;
+      }
+
+      // Google is handled by the GIS module (do not hijack here)
+      const isGoogleSocial = btn.matches(".auth-social-btn.google, .auth-social button.google");
+      if (isGoogleSocial) return;
+
+      // Any other social buttons: do not hijack (keep their own handlers)
+      const isOtherSocial =
+        btn.matches(".auth-social-btn") ||
+        (btn.matches("button.apple") && btn.closest(".auth-social"));
+      if (isOtherSocial) return;
+
+      const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
+      const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
+      if (!inLogin && !inRegister) return;
+
+      if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
+
+      const isSubmitLike =
+        btn.getAttribute("type") === "submit" ||
+        btn.getAttribute("type") === "button" ||
+        btn.matches(".auth-submit, .auth-login, .auth-register") ||
+        /login/i.test(btn.textContent || "") ||
+        /register/i.test(btn.textContent || "") ||
+        /confirm/i.test(btn.textContent || "");
+
+      if (!isSubmitLike) return;
+
       e.preventDefault();
       e.stopPropagation();
       if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
 
-      const returnTo = location.pathname + location.search;
-      window.location.href = "/api/auth/facebook?returnTo=" + encodeURIComponent(returnTo);
-      return;
-    }
+      if (inLogin) {
+        const scope = btn.closest("form") || loginModal;
 
-    // Google is handled elsewhere (GIS module) — do not intercept
-    if (btn.closest(".auth-social-btn.google, .auth-social button.google")) return;
+        if (isForgotAction(loginModal, btn)) {
+          return runForgot(loginModal, scope, btn);
+        }
 
-    // Any other social auth button — do not treat as submit-like
-    // IMPORTANT: do NOT use ".auth-social" alone (it may wrap the whole modal)
-    if (btn.closest(".auth-social-btn, .auth-social button")) return;
-
-    // ============================
-    // LOGIN / REGISTER SUBMIT HANDLER
-    // ============================
-
-    const inLogin =
-      !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
-    const inRegister =
-      !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
-    if (!inLogin && !inRegister) return;
-
-    if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
-
-    const isSubmitLike =
-      btn.getAttribute("type") === "submit" ||
-      btn.getAttribute("type") === "button" ||
-      btn.matches(".auth-submit, .auth-login, .auth-register") ||
-      /login/i.test(btn.textContent || "") ||
-      /register/i.test(btn.textContent || "") ||
-      /confirm/i.test(btn.textContent || "");
-
-    if (!isSubmitLike) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-    if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
-    if (inLogin) {
-      const scope = btn.closest("form") || loginModal;
-
-      if (isForgotAction(loginModal, btn)) {
-        return runForgot(loginModal, scope, btn);
+        return runLogin(loginModal, scope);
       }
 
-      return runLogin(loginModal, scope);
-    }
-
-    if (inRegister) {
-      const scope = btn.closest("form") || registerModal;
-      return runRegister(registerModal, scope);
-    }
-  },
-  true
-);
-
+      if (inRegister) {
+        const scope = btn.closest("form") || registerModal;
+        return runRegister(registerModal, scope);
+      }
+    },
+    true
+  );
 /* =======================
    EVENT BINDING
 ======================= */
