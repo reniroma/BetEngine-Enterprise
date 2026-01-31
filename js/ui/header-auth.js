@@ -632,7 +632,7 @@ function initAuthActionOwnership() {
     true
   );
 
-  document.addEventListener(
+ document.addEventListener(
   "click",
   async (e) => {
     const loginModal = qs("#login-modal");
@@ -644,7 +644,11 @@ function initAuthActionOwnership() {
     const btn = target.closest('button, input[type="button"], input[type="submit"]');
     if (!btn) return;
 
-    // Social auth buttons must NOT be treated as login/register submit-like actions
+    // ============================
+    // SOCIAL BUTTONS (DO NOT HIJACK LOGIN/REGISTER)
+    // ============================
+
+    // Facebook redirect (we DO hijack this one intentionally)
     const fbBtn = btn.closest(".auth-social-btn.facebook, .auth-social button.facebook");
     if (fbBtn) {
       e.preventDefault();
@@ -656,14 +660,21 @@ function initAuthActionOwnership() {
       return;
     }
 
-    // Google is handled by the GIS module (do not hijack here)
+    // Google is handled elsewhere (GIS module) — do not intercept
     if (btn.closest(".auth-social-btn.google, .auth-social button.google")) return;
 
-    // Any other social auth buttons: do not treat as submit-like actions
-    if (btn.closest(".auth-social-btn, .auth-social")) return;
+    // Any other social auth button — do not treat as submit-like
+    // IMPORTANT: do NOT use ".auth-social" alone (it may wrap the whole modal)
+    if (btn.closest(".auth-social-btn, .auth-social button")) return;
 
-    const inLogin = !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
-    const inRegister = !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
+    // ============================
+    // LOGIN / REGISTER SUBMIT HANDLER
+    // ============================
+
+    const inLogin =
+      !!(loginModal && loginModal.classList.contains("show") && loginModal.contains(btn));
+    const inRegister =
+      !!(registerModal && registerModal.classList.contains("show") && registerModal.contains(btn));
     if (!inLogin && !inRegister) return;
 
     if (btn.closest(".auth-close, .auth-switch, .auth-forgot-link, .auth-forgot")) return;
